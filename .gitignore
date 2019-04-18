@@ -1,0 +1,41 @@
+### Bob defaults ###
+*~
+*.swp
+*.pyc
+*.so
+*.dylib
+bin
+eggs
+parts
+.installed.cfg
+.mr.developer.cfg
+*.egg-info
+develop-eggs
+sphinx
+dist
+.nfs*
+.gdb_history
+build
+*.egg
+src/
+record.txt
+core
+output_temp
+
+
+### JupyterNotebook ###
+*.ipynb
+.ipynb_checkpoints
+*/.ipynb_checkpoints/*
+
+
+### VisualStudioCode ###
+.vscode/*
+.vscode/settings.json
+.vscode/tasks.json
+.vscode/launch.json
+.vscode/extensions.json
+
+### VisualStudioCode Patch ###
+# Ignore all local history of files
+.history
