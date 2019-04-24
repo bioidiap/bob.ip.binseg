@@ -21,6 +21,7 @@ src/
 record.txt
 core
 output_temp
+output
 
 
 ### JupyterNotebook ###

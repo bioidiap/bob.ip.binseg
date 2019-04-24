@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 from bob.db.drive import Database as DRIVE
 from bob.ip.binseg.data.binsegdataset import BinSegDataset
 from bob.ip.binseg.data.transforms import ToTensor
@@ -6,7 +9,7 @@ from bob.ip.binseg.modeling.driu import build_driu
 from torch.utils.data import DataLoader
 import torch.optim as optim
 from torch.optim.lr_scheduler import MultiStepLR
-from bob.ip.binseg.utils.checkpointer import Checkpointer
+from bob.ip.binseg.utils.checkpointer import Checkpointer, DetectronCheckpointer
 from torch.nn import BCEWithLogitsLoss
 
 import logging
@@ -45,10 +48,13 @@ def train():
     scheduler = MultiStepLR(optimizer, milestones=[150], gamma=0.1)
 
     # checkpointer
-    checkpointer = Checkpointer(model, optimizer, scheduler,save_dir = "./output_temp", save_to_disk=True)
+    checkpointer = DetectronCheckpointer(model, optimizer, scheduler,save_dir = "./output_temp", save_to_disk=True)
 
-    # checkpoint period (iteration)
+    # checkpoint period
     checkpoint_period = 2
+
+    # pretrained backbone
+    pretraind_backbone = model_urls['vgg16']
 
     # device 
     device = "cpu"
@@ -57,6 +63,8 @@ def train():
     arguments = {}
     arguments["epoch"] = 0 
     arguments["max_epoch"] = 6
+    extra_checkpoint_data = checkpointer.load(pretraind_backbone)
+    arguments.update(extra_checkpoint_data)
     logger.info("Training for {} epochs".format(arguments["max_epoch"]))
     logger.info("Continuing from epoch {}".format(arguments["epoch"]))
     do_train(model

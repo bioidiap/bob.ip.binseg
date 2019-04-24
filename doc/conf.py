@@ -233,6 +233,7 @@ if os.path.exists(sphinx_requirements):
 else:
     intersphinx_mapping = link_documentation()
 
+intersphinx_mapping['torch'] = ('https://pytorch.org/docs/stable/', None)
 # We want to remove all private (i.e. _. or __.__) members
 # that are not in the list of accepted functions
 accepted_private_functions = ['__array__']

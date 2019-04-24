@@ -24,6 +24,7 @@ class BinSegDataset(Dataset):
     def __init__(self, bobdb, split = None, transform = None):
         self.database = bobdb.samples(split)
         self.transform = transform
+        self.split = split
     
     def __len__(self):
         """

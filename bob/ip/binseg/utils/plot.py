@@ -1,3 +1,9 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+# author='Andre Anjos',
+# author_email='andre.anjos@idiap.ch',
+
 import numpy as np
 
 def precision_recall_f1iso(precision, recall, names, title=None, human_perf_bsds500=False):

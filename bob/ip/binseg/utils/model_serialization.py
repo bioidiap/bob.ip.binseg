@@ -20,7 +20,9 @@ def align_and_update_state_dicts(model_state_dict, loaded_state_dict):
     backbone[0].body.res2.conv1.weight to res2.conv1.weight.
     """
     current_keys = sorted(list(model_state_dict.keys()))
+    print(current_keys)
     loaded_keys = sorted(list(loaded_state_dict.keys()))
+    print(loaded_keys)
     # get a matrix of string matches, where each (i, j) entry correspond to the size of the
     # loaded_key string, if it matches
     match_matrix = [

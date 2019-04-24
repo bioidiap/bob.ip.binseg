@@ -60,7 +60,7 @@ class VGG(nn.Module):
 
 
 def make_layers(cfg, batch_norm=False):
-    layers = nn.ModuleList()
+    layers = []
     in_channels = 3
     for v in cfg:
         if v == 'M':
@@ -68,11 +68,11 @@ def make_layers(cfg, batch_norm=False):
         else:
             conv2d = nn.Conv2d(in_channels, v, kernel_size=3, padding=1)
             if batch_norm:
-                layers.append(nn.Sequential(conv2d, nn.BatchNorm2d(v), nn.ReLU(inplace=True)))
+                layers += [conv2d, nn.BatchNorm2d(v), nn.ReLU(inplace=True)]
             else:
-                layers.append(nn.Sequential(conv2d, nn.ReLU(inplace=True)))
+                layers += [conv2d, nn.ReLU(inplace=True)]
             in_channels = v
-    return layers
+    return nn.Sequential(*layers)
 
 
 cfg = {
@@ -144,7 +144,7 @@ def vgg16(pretrained=False, **kwargs):
         kwargs['init_weights'] = False
     model = VGG(make_layers(cfg['D']), **kwargs)
     if pretrained:
-        model.load_state_dict(model_zoo.load_url(model_urls['vgg16']))
+        model.load_state_dict(model_zoo.load_url(model_urls['vgg16']),strict=False)
     return model
 
 

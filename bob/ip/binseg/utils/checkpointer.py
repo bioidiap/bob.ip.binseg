@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 # Adapted from https://github.com/facebookresearch/maskrcnn-benchmark/blob/master/maskrcnn_benchmark/engine/trainer.py 
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
 
@@ -5,6 +8,7 @@ import logging
 import torch
 import os
 from bob.ip.binseg.utils.model_serialization import load_state_dict
+from bob.ip.binseg.utils.model_zoo import cache_url
 
 class Checkpointer:
     def __init__(
@@ -42,8 +46,8 @@ class Checkpointer:
 
         save_file = os.path.join(self.save_dir, "{}.pth".format(name))
         self.logger.info("Saving checkpoint to {}".format(save_file))
-        torch.save(data, str(save_file))
-        self.tag_last_checkpoint(str(save_file))
+        torch.save(data, save_file)
+        self.tag_last_checkpoint(save_file)
 
     def load(self, f=None):
         if self.has_checkpoint():
@@ -92,3 +96,31 @@ class Checkpointer:
 
     def _load_model(self, checkpoint):
         load_state_dict(self.model, checkpoint.pop("model"))
+
+
+class DetectronCheckpointer(Checkpointer):
+    def __init__(
+        self,
+        model,
+        optimizer=None,
+        scheduler=None,
+        save_dir="",
+        save_to_disk=None,
+        logger=None,
+    ):
+        super(DetectronCheckpointer, self).__init__(
+            model, optimizer, scheduler, save_dir, save_to_disk, logger
+        )
+
+    def _load_file(self, f):
+        # download url files
+        if f.startswith("http"):
+            # if the file is a url path, download it and cache it
+            cached_f = cache_url(f)
+            self.logger.info("url {} cached in {}".format(f, cached_f))
+            f = cached_f
+        # load checkpoint
+        loaded = super(DetectronCheckpointer, self)._load_file(f)
+        if "model" not in loaded:
+            loaded = dict(model=loaded)
+        return loaded

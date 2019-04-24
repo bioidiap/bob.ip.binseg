@@ -10,16 +10,15 @@
    Write here a small (1 paragraph) introduction explaining this project. See
    other projects for examples.
 
-
-
-Users Guide
-===========
+Datasets
+========
 
 .. toctree::
    :maxdepth: 2
 
-   api
+   datasets
 
-.. todolist::
+Users Guide
+===========
 
 .. include:: links.rst

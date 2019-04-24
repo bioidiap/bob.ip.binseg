@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 from bob.db.drive import Database as DRIVE
 from bob.ip.binseg.data.binsegdataset import BinSegDataset
 from bob.ip.binseg.data.transforms import ToTensor

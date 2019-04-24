@@ -37,9 +37,26 @@ setup(
 
     install_requires=install_requires,
 
-    entry_points={
-      # add entry points (scripts, bob resources here, if any)
-      },
+  entry_points={
+
+        # main entry for bob hed cli
+        'bob.cli': [
+            'binseg = bob.ip.binseg.script.binseg:binseg',
+        ],
+
+         #bob hed sub-commands
+        'bob.ip.binseg.cli': [
+          'train = bob.ip.binseg.script.binseg:train',
+        ],
+
+         #bob hed train configurations
+        'bob.ip.binseg.config': [
+          'DriuDefault = bob.ip.binseg.configs.models.driu_default',
+          'DriveDefault = bob.ip.binseg.configs.datasets.drive_default',
+          ]
+    },
+
+
 
     # check classifiers, add and remove as you see fit
     # full list here: https://pypi.org/classifiers/

@@ -10,7 +10,7 @@ bob.db.rimoner3
 bob.db.drishtigs1
 bob.db.refuge
 bob.db.iostar
-pytorch >=1.0.1
+torch
 torchvision
 pandas
 matplotlib

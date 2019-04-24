@@ -20,12 +20,13 @@ def do_train(
     device,
     arguments
 ):
+    """ Trains the model """
     logger = logging.getLogger("bob.ip.binseg.engine.trainer")
     logger.info("Start training")
     start_epoch = arguments["epoch"]
     max_epoch = arguments["max_epoch"]
 
-    model.train()
+    model.train().to(device)
     # Total training timer
     start_training_time = time.time()
 

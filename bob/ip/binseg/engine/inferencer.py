@@ -42,10 +42,10 @@ def batch_metrics(predictions, ground_truths, masks, names, output_folder, logge
         # ground truth byte
         gts = ground_truths[j].byte()
 
-        single_metrics_file_path = os.path.join(output_folder, "{}.csv".format(names[j]))
-        logger.info("saving {}".format(single_metrics_file_path))
+        file_name = "{}.csv".format(names[j])
+        logger.info("saving {}".format(file_name))
         
-        with open (single_metrics_file_path, "w+") as outfile:
+        with open (os.path.join(output_folder,file_name), "w+") as outfile:
 
             outfile.write("threshold, precision, recall, specificity, accuracy, jaccard, f1_score\n")
 
@@ -88,11 +88,13 @@ def batch_metrics(predictions, ground_truths, masks, names, output_folder, logge
 
 
 def save_probability_images(predictions, names, output_folder, logger):
+    images_subfolder = os.path.join(output_folder,'images') 
+    if not os.path.exists(images_subfolder): os.makedirs(images_subfolder)
     for j in range(predictions.size()[0]):
         img = VF.to_pil_image(predictions.cpu().data[j])
         filename = '{}_prob.gif'.format(names[j])
         logger.info("saving {}".format(filename))
-        img.save(os.path.join(output_folder, filename))
+        img.save(os.path.join(images_subfolder, filename))
 
 
 
@@ -104,8 +106,11 @@ def do_inference(
 ):
     logger = logging.getLogger("bob.ip.binseg.engine.inference")
     logger.info("Start evaluation")
-    logger.info("Output folder: {}, Device: {}".format(output_folder, device))
-    model.eval()
+    logger.info("Split: {}, Output folder: {}, Device: {}".format(data_loader.dataset.split, output_folder, device))
+    results_subfolder = os.path.join(output_folder,'results') 
+    if not os.path.exists(results_subfolder): os.makedirs(results_subfolder)
+    
+    model.eval().to(device)
     # Sigmoid for probabilities 
     sigmoid = torch.nn.Sigmoid() 
 
@@ -129,14 +134,12 @@ def do_inference(
             times.append(batch_time)
             logger.info("Batch time: {:.5f} s".format(batch_time))
             
-            b_metrics = batch_metrics(probabilities, ground_truths, masks, names, output_folder, logger)
+            b_metrics = batch_metrics(probabilities, ground_truths, masks, names, results_subfolder, logger)
             metrics.extend(b_metrics)
+
+            # Create probability images
             save_probability_images(probabilities, names, output_folder, logger)
 
-    # NOTE: comment out for debugging
-    #with open (os.path.join(output_folder, "metrics.pkl"), "wb+") as outfile:
-    #    logger.debug("Saving metrics to {}".format(output_folder))
-    #    pickle.dump(metrics, outfile)
 
     df_metrics = pd.DataFrame(metrics,columns= \
                            ["name",
@@ -148,12 +151,11 @@ def do_inference(
                             "jaccard", 
                             "f1_score"])
 
+    # Report and Averages
+    metrics_file = "Metrics_{}.csv".format(model.name)
+    metrics_path = os.path.join(results_subfolder, metrics_file)
+    logger.info("Saving average over all input images: {}".format(metrics_file))
     
-    # Save to disk
-    metrics_path = os.path.join(output_folder, "Metrics.csv")
-    logging.info("Saving average over all inputs: {}".format(metrics_path))
-    
-    # Report Averages
     avg_metrics = df_metrics.groupby('threshold').mean()
     avg_metrics.to_csv(metrics_path)
 
@@ -163,12 +165,14 @@ def do_inference(
     maxf1 = avg_metrics['f1_score'].max()
     optimal_f1_threshold = avg_metrics['f1_score'].idxmax()
     
-    logging.info("Highest F1-score of {:.5f}, achieved at threshold {}".format(maxf1, optimal_f1_threshold))
+    logger.info("Highest F1-score of {:.5f}, achieved at threshold {}".format(maxf1, optimal_f1_threshold))
     
-    logging.info("Plotting Precision vs Recall")
+    # Plotting
     np_avg_metrics = avg_metrics.to_numpy().T
-    fig = precision_recall_f1iso([np_avg_metrics[0]],[np_avg_metrics[1]],model.name)
-    fig_filename = os.path.join(output_folder, 'simple-precision-recall.pdf')
+    fig_name = "precision_recall_{}.pdf".format(model.name)
+    logger.info("saving {}".format(fig_name))
+    fig = precision_recall_f1iso([np_avg_metrics[0]],[np_avg_metrics[1]], model.name)
+    fig_filename = os.path.join(results_subfolder, fig_name)
     fig.savefig(fig_filename)
     
     # Report times
@@ -176,9 +180,16 @@ def do_inference(
     average_batch_inference_time = np.mean(times)
     total_evalution_time = str(datetime.timedelta(seconds=int(time.time() - start_total_time )))
 
-    # Logging 
-    logger.info("Total evaluation run-time: {}".format(total_evalution_time))
     logger.info("Average batch inference time: {:.5f}s".format(average_batch_inference_time))
-    logger.info("Total inference time: {}".format(total_inference_time))
+
+    times_file = "Times_{}.txt".format(model.name)
+    logger.info("saving {}".format(times_file))
+        
+    with open (os.path.join(results_subfolder,times_file), "w+") as outfile:
+        date = datetime.datetime.now()
+        outfile.write("Date: {} \n".format(date.strftime("%Y-%m-%d %H:%M:%S")))
+        outfile.write("Total evaluation run-time: {} \n".format(total_evalution_time))
+        outfile.write("Average batch inference time: {} \n".format(average_batch_inference_time))
+        outfile.write("Total inference time: {} \n".format(total_inference_time))
 
 
