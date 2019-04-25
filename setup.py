@@ -47,12 +47,17 @@ setup(
          #bob hed sub-commands
         'bob.ip.binseg.cli': [
           'train = bob.ip.binseg.script.binseg:train',
+          'test = bob.ip.binseg.script.binseg:test',
+          'testcheckpoints = bob.ip.binseg.script.binseg:testcheckpoints',
         ],
 
          #bob hed train configurations
         'bob.ip.binseg.config': [
-          'DriuDefault = bob.ip.binseg.configs.models.driu_default',
-          'DriveDefault = bob.ip.binseg.configs.datasets.drive_default',
+          'DRIU = bob.ip.binseg.configs.models.driu',
+          'HED = bob.ip.binseg.configs.models.hed',
+          'DRIUADABOUND = bob.ip.binseg.configs.models.driuadabound',
+          'DRIVETRAIN = bob.ip.binseg.configs.datasets.drivetrain',
+          'DRIVETEST = bob.ip.binseg.configs.datasets.drivetest',
           ]
     },
 

@@ -53,7 +53,6 @@ class DRIU(nn.Module):
         return out
 
 def build_driu():
-    #backbone = vgg16(pretrained=False, return_features = [1, 4, 8, 12])
     backbone = vgg16(pretrained=False, return_features = [3, 8, 14, 22])
     driu_head = DRIU([64, 128, 256, 512])
 

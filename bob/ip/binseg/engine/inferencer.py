@@ -128,6 +128,10 @@ def do_inference(
             start_time = time.perf_counter()
 
             outputs = model(images)
+            # necessary check for hed architecture that uses several outputs 
+            # for loss calculation instead of just the last concatfuse block
+            if isinstance(outputs,list):
+                outputs = outputs[-1]
             probabilities = sigmoid(outputs)
             
             batch_time = time.perf_counter() - start_time

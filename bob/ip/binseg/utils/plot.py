@@ -33,6 +33,8 @@ def precision_recall_f1iso(precision, recall, names, title=None, human_perf_bsds
       figure : matplotlib.figure.Figure
         A matplotlib figure you can save or display 
     ''' 
+    import matplotlib
+    matplotlib.use('agg')
     import matplotlib.pyplot as plt 
     fig, ax1 = plt.subplots(1)  
     for p, r, n in zip(precision, recall, names):   
@@ -87,3 +89,30 @@ def precision_recall_f1iso(precision, recall, names, title=None, human_perf_bsds
     ax2.spines['bottom'].set_visible(False) 
     plt.tight_layout()  
     return fig  
+
+
+
+def loss_curve(df):
+    ''' Creates a loss curve
+    Dataframe with column names:
+    ["avg. loss", "median loss","lr","max memory"]
+    Arguments
+    ---------
+    df : :py:class.`pandas.DataFrame`
+    
+    Returns
+    -------
+    fig : matplotlib.figure.Figure
+    ''' 
+    import matplotlib
+    matplotlib.use('agg')
+    import matplotlib.pyplot as plt 
+    ax1 = df.plot(y="median loss", grid=True)
+    ax1.set_ylabel('median loss')
+    ax1.grid(linestyle='--', linewidth=1, color='gray', alpha=0.2)
+    ax2 = df['lr'].plot(secondary_y=True,legend=True,grid=True,)
+    ax2.set_ylabel('lr')
+    ax1.set_xlabel('epoch')
+    plt.tight_layout()  
+    fig = ax1.get_figure()
+    return fig

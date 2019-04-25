@@ -17,6 +17,7 @@ import warnings
 import zipfile
 from urllib.request import urlopen
 from urllib.parse import urlparse
+from tqdm import tqdm 
 
 modelurls = {
     "vgg11": "https://download.pytorch.org/models/vgg11-bbd30ac9.pth",

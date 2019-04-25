@@ -56,7 +56,7 @@ class HED(nn.Module):
         return out
 
 def build_hed():
-    backbone = vgg16(pretrained=False, return_features = [1, 4, 8, 12, 16])
+    backbone = vgg16(pretrained=False, return_features = [3, 8, 14, 22, 29])
     hed_head = HED([64, 128, 256, 512, 512])
 
     model = nn.Sequential(OrderedDict([("backbone", backbone), ("head", hed_head)]))
