@@ -46,7 +46,7 @@ def precision_recall_f1iso(precision, recall, names, title=None, human_perf_bsds
         valid = (pi+ri) > 0
         f1 = 2 * (pi[valid]*ri[valid]) / (pi[valid]+ri[valid])    
         # Plot Recall/Precision as threshold changes
-        ax1.plot(ri[pi>0], pi[pi>0], label='[F=%.3f] %s' % (f1.max(), n)) 
+        ax1.plot(ri[pi>0], pi[pi>0], label='[F={:.3f}] {}'.format(f1.max(), n)) 
     ax1.grid(linestyle='--', linewidth=1, color='gray', alpha=0.2)  
     if len(names) > 1:
         plt.legend(loc='lower left', framealpha=0.5)  

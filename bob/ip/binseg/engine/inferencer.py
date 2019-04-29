@@ -138,9 +138,8 @@ def do_inference(
             times.append(batch_time)
             logger.info("Batch time: {:.5f} s".format(batch_time))
             
-            b_metrics = batch_metrics(probabilities, ground_truths, masks, names, results_subfolder, logger)
+            b_metrics = batch_metrics(probabilities, ground_truths, masks, names,results_subfolder, logger)
             metrics.extend(b_metrics)
-
             # Create probability images
             save_probability_images(probabilities, names, output_folder, logger)
 
@@ -161,6 +160,7 @@ def do_inference(
     logger.info("Saving average over all input images: {}".format(metrics_file))
     
     avg_metrics = df_metrics.groupby('threshold').mean()
+    avg_metrics["model_name"] = model.name
     avg_metrics.to_csv(metrics_path)
 
     avg_metrics["f1_score"] =  2* avg_metrics["precision"]*avg_metrics["recall"]/ \
@@ -175,7 +175,7 @@ def do_inference(
     np_avg_metrics = avg_metrics.to_numpy().T
     fig_name = "precision_recall_{}.pdf".format(model.name)
     logger.info("saving {}".format(fig_name))
-    fig = precision_recall_f1iso([np_avg_metrics[0]],[np_avg_metrics[1]], model.name)
+    fig = precision_recall_f1iso([np_avg_metrics[0]],[np_avg_metrics[1]], np_avg_metrics[-1])
     fig_filename = os.path.join(results_subfolder, fig_name)
     fig.savefig(fig_filename)
     
