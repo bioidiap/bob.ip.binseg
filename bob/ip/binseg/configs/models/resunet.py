@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from torch.optim.lr_scheduler import MultiStepLR
-from bob.ip.binseg.modeling.driu import build_driu
+from bob.ip.binseg.modeling.resunet import build_res50unet
 import torch.optim as optim
 from torch.nn import BCEWithLogitsLoss
 from bob.ip.binseg.utils.model_zoo import modelurls
@@ -23,13 +23,12 @@ scheduler_milestones = [150]
 scheduler_gamma = 0.1
 
 # model
-model = build_driu()
+model = build_res50unet()
 
 # pretrained backbone
-pretrained_backbone = modelurls['vgg16']
+pretrained_backbone = modelurls['resnet50']
 
 # optimizer
-# TODO: Add Adabound
 optimizer = AdaBound(model.parameters(), lr=lr, betas=betas, final_lr=final_lr, gamma=gamma,
                  eps=eps, weight_decay=weight_decay, amsbound=amsbound) 
     

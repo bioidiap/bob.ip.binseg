@@ -27,6 +27,7 @@ requirements:
     - setuptools {{ setuptools }}
     - torchvision  {{ torchvision }}
     - pytorch {{ pytorch }}
+    - cudatoolkit=8.0
     - numpy {{ numpy }}
     - bob.extension
     # place your other host dependencies here

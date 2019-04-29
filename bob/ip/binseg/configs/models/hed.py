@@ -6,16 +6,22 @@ from bob.ip.binseg.modeling.hed import build_hed
 import torch.optim as optim
 from bob.ip.binseg.modeling.losses import HEDWeightedBCELogitsLoss
 from bob.ip.binseg.utils.model_zoo import modelurls
+from bob.ip.binseg.engine.adabound import AdaBound
+
 
 ##### Config #####
 lr = 0.001
 betas = (0.9, 0.999)
 eps = 1e-08
 weight_decay = 0
-amsgrad = False
+final_lr = 0.1
+gamma = 1e-3
+eps = 1e-8
+amsbound = False
 
 scheduler_milestones = [150]
 scheduler_gamma = 0.1
+
 
 # model
 model = build_hed()
@@ -24,8 +30,8 @@ model = build_hed()
 pretrained_backbone = modelurls['vgg16']
 
 # optimizer
-optimizer = optim.Adam(model.parameters(), lr=lr, betas=betas, eps=eps, weight_decay=weight_decay, amsgrad=amsgrad)
-    
+optimizer = AdaBound(model.parameters(), lr=lr, betas=betas, final_lr=final_lr, gamma=gamma,
+                 eps=eps, weight_decay=weight_decay, amsbound=amsbound) 
 # criterion
 criterion = HEDWeightedBCELogitsLoss(reduction='mean')
 

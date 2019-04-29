@@ -1,7 +1,5 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 # Adapted from https://github.com/pytorch/vision/blob/master/torchvision/models/resnet.py 
+# resnet50_trained_on_SIN_and_IN_then_finetuned_on_IN : https://github.com/rgeirhos/texture-vs-shap
 
 import torch.nn as nn
 import torch.utils.model_zoo as model_zoo
@@ -17,7 +15,7 @@ model_urls = {
     'resnet50': 'https://download.pytorch.org/models/resnet50-19c8e357.pth',
     'resnet101': 'https://download.pytorch.org/models/resnet101-5d3b4d8f.pth',
     'resnet152': 'https://download.pytorch.org/models/resnet152-b121ed2d.pth',
-    'resnet50__SIN_IN': 'https://bitbucket.org/robert_geirhos/texture-vs-shape-pretrained-models/raw/60b770e128fffcbd8562a3ab3546c1a735432d03/resnet50_finetune_60_epochs_lr_decay_after_30_start_resnet50_train_45_epochs_combined_IN_SF-ca06340c.pth.tar',
+    'resnet50_trained_on_SIN_and_IN_then_finetuned_on_IN': 'https://bitbucket.org/robert_geirhos/texture-vs-shape-pretrained-models/raw/60b770e128fffcbd8562a3ab3546c1a735432d03/resnet50_finetune_60_epochs_lr_decay_after_30_start_resnet50_train_45_epochs_combined_IN_SF-ca06340c.pth.tar',
 }
 
 
@@ -115,18 +113,19 @@ class ResNet(nn.Module):
         super(ResNet, self).__init__()
         self.inplanes = 64
         self.return_features = return_features
-        conv1 = nn.Conv2d(3, 64, kernel_size=7, stride=2, padding=3,
+        self.conv1 = nn.Conv2d(3, 64, kernel_size=7, stride=2, padding=3,
                                bias=False)
-        bn1 = nn.BatchNorm2d(64)
-        relu = nn.ReLU(inplace=True)
-        maxpool = nn.MaxPool2d(kernel_size=3, stride=2, padding=1)
-        layer1 = self._make_layer(block, 64, layers[0])
-        layer2 = self._make_layer(block, 128, layers[1], stride=2)
-        layer3 = self._make_layer(block, 256, layers[2], stride=2)
-        layer4 = self._make_layer(block, 512, layers[3], stride=2)
+        self.bn1 = nn.BatchNorm2d(64)
+        self.relu = nn.ReLU(inplace=True)
+        self.maxpool = nn.MaxPool2d(kernel_size=3, stride=2, padding=1)
+        self.layer1 = self._make_layer(block, 64, layers[0])
+        self.layer2 = self._make_layer(block, 128, layers[1], stride=2)
+        self.layer3 = self._make_layer(block, 256, layers[2], stride=2)
+        self.layer4 = self._make_layer(block, 512, layers[3], stride=2)
+
         
-        self.features = nn.ModuleList([conv1, bn1, relu, maxpool
-                                    ,layer1,layer2,layer3,layer4])
+        self.features = [self.conv1, self.bn1, self.relu, self.maxpool
+                                    ,self.layer1,self.layer2,self.layer3,self.layer4]
 
         for m in self.modules():
             if isinstance(m, nn.Conv2d):
@@ -203,6 +202,16 @@ def resnet50(pretrained=False, **kwargs):
     model = ResNet(Bottleneck, [3, 4, 6, 3], **kwargs)
     if pretrained:
         model.load_state_dict(model_zoo.load_url(model_urls['resnet50']))
+    return model
+
+def shaperesnet50(pretrained=False, **kwargs):
+    """Constructs a ResNet-50 model, pretrained on Stylized-ImageNe and ImageNet and fine-tuned on ImageNet.
+    Args:
+        pretrained (bool): If True, returns a model pre-trained on ImageNet
+    """
+    model = ResNet(Bottleneck, [3, 4, 6, 3], **kwargs)
+    if pretrained:
+        model.load_state_dict(model_zoo.load_url(model_urls['resnet50_trained_on_SIN_and_IN_then_finetuned_on_IN']))
     return model
 
 def resnet101(pretrained=False, **kwargs):

@@ -89,3 +89,72 @@ class UpsampleCropBlock(nn.Module):
         x = x[:,:,h_s:h_e,w_s:w_e] # crop to input size 
         
         return x
+
+
+
+def ifnone(a, b):
+    "`a` if `a` is not None, otherwise `b`."
+    return b if a is None else a
+
+def icnr(x, scale=2, init=nn.init.kaiming_normal_):
+    """
+    https://docs.fast.ai/layers.html#PixelShuffle_ICNR
+    ICNR init of `x`, with `scale` and `init` function.
+    """
+    ni,nf,h,w = x.shape
+    ni2 = int(ni/(scale**2))
+    k = init(torch.zeros([ni2,nf,h,w])).transpose(0, 1)
+    k = k.contiguous().view(ni2, nf, -1)
+    k = k.repeat(1, 1, scale**2)
+    k = k.contiguous().view([nf,ni,h,w]).transpose(0, 1)
+    x.data.copy_(k)
+
+class PixelShuffle_ICNR(nn.Module):
+    """
+    https://docs.fast.ai/layers.html#PixelShuffle_ICNR 
+    Upsample by `scale` from `ni` filters to `nf` (default `ni`), using `nn.PixelShuffle`, `icnr` init, and `weight_norm`.
+    """
+    def __init__(self, ni:int, nf:int=None, scale:int=2):
+        super().__init__()
+        nf = ifnone(nf, ni)
+        self.conv = conv_with_kaiming_uniform(ni, nf*(scale**2), 1)
+        icnr(self.conv.weight)
+        self.shuf = nn.PixelShuffle(scale)
+        # Blurring over (h*w) kernel
+        # "Super-Resolution using Convolutional Neural Networks without Any Checkerboard Artifacts"
+        # - https://arxiv.org/abs/1806.02658
+        self.pad = nn.ReplicationPad2d((1,0,1,0))
+        self.blur = nn.AvgPool2d(2, stride=1)
+        self.relu = nn.ReLU(inplace=True)
+
+    def forward(self,x):
+        x = self.shuf(self.relu(self.conv(x)))
+        x = self.blur(self.pad(x))
+        return x
+
+class UnetBlock(nn.Module):
+    def __init__(self, up_in_c, x_in_c, pixel_shuffle=False, middle_block=False):
+        super().__init__()
+
+        # middle block for VGG based U-Net
+        if middle_block:
+            up_out_c =  up_in_c
+        else:
+            up_out_c =  up_in_c // 2
+        cat_channels = x_in_c + up_out_c
+        inner_channels = cat_channels // 2
+        
+        if pixel_shuffle:
+            self.upsample = PixelShuffle_ICNR( up_in_c, up_out_c )
+        else:
+            self.upsample = convtrans_with_kaiming_uniform( up_in_c, up_out_c, 2, 2)
+        self.convtrans1 = convtrans_with_kaiming_uniform( cat_channels, inner_channels, 3, 1, 1)
+        self.convtrans2 = convtrans_with_kaiming_uniform( inner_channels, inner_channels, 3, 1, 1)
+        self.relu = nn.ReLU(inplace=True)
+
+    def forward(self, up_in, x_in):
+        up_out = self.upsample(up_in)
+        cat_x = torch.cat([up_out, x_in] , dim=1)
+        x = self.relu(self.convtrans1(cat_x))
+        x = self.relu(self.convtrans2(x))
+        return x

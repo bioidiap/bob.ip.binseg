@@ -55,8 +55,13 @@ setup(
         'bob.ip.binseg.config': [
           'DRIU = bob.ip.binseg.configs.models.driu',
           'HED = bob.ip.binseg.configs.models.hed',
+          'M2UNet = bob.ip.binseg.configs.models.m2unet',
+          'UNet = bob.ip.binseg.configs.models.unet',
+          'ResUNet = bob.ip.binseg.configs.models.resunet',
           'DRIUADABOUND = bob.ip.binseg.configs.models.driuadabound',
           'DRIVETRAIN = bob.ip.binseg.configs.datasets.drivetrain',
+          'DRIVECROPTRAIN = bob.ip.binseg.configs.datasets.drivecroptrain',
+          'DRIVECROPTEST = bob.ip.binseg.configs.datasets.drivecroptest',
           'DRIVETEST = bob.ip.binseg.configs.datasets.drivetest',
           ]
     },
