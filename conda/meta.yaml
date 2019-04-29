@@ -6,6 +6,7 @@ package:
   version: {{ environ.get('BOB_PACKAGE_VERSION', '0.0.1') }}
 
 build:
+  skip: true  # [not linux]
   number: {{ environ.get('BOB_BUILD_NUMBER', 0) }}
   run_exports:
     - {{ pin_subpackage(name) }}
@@ -38,6 +39,7 @@ requirements:
     - {{ pin_compatible('numpy') }}
     - pandas
     - matplotlib
+    - tqdm
     - bob.db.drive
     - bob.db.stare
     - bob.db.chasedb1
@@ -56,6 +58,8 @@ test:
     # test commands ("script" entry-points) from your package here
     - bob binseg --help
     - bob binseg train --help
+    - bob binseg test --help
+    - bob binseg compare --help
     - nosetests --with-coverage --cover-package={{ name }} -sv {{ name }}
     - sphinx-build -aEW {{ project_dir }}/doc {{ project_dir }}/sphinx
     - sphinx-build -aEb doctest {{ project_dir }}/doc sphinx

@@ -25,6 +25,8 @@ from bob.ip.binseg.utils.checkpointer import DetectronCheckpointer
 from torch.utils.data import DataLoader
 from bob.ip.binseg.engine.trainer import do_train
 from bob.ip.binseg.engine.inferencer import do_inference
+from bob.ip.binseg.utils.plot import plot_overview
+from bob.ip.binseg.utils.click import OptionEatAll
 
 logger = logging.getLogger(__name__)
 
@@ -276,3 +278,27 @@ def testcheckpoints(model
         checkpointer = DetectronCheckpointer(model, save_dir = output_subfolder, save_to_disk=False)
         checkpointer.load(checkpoint)
         do_inference(model, data_loader, device, output_subfolder)
+
+# Plot comparison
+@binseg.command(entry_point_group='bob.ip.binseg.config', cls=ConfigCommand)
+@click.option(
+    '--output-path-list',
+    '-l',
+    required=True,
+    help='Pass all output paths as arguments',
+    cls=OptionEatAll,
+    )
+@click.option(
+    '--output-path',
+    '-o',
+    required=True,
+    )
+@verbosity_option(cls=ResourceOption)
+def compare(output_path_list, output_path,**kwargs):
+    """ Compares multiple metrics files that are stored in the format mymodel/results/Metrics.csv """
+    logger.debug("Output paths: {}".format(output_path_list))
+    logger.info('Plotting precision vs recall curves for {}'.format(output_path_list))
+    fig = plot_overview(output_path_list)
+    fig_filename = os.path.join(output_path, 'precision_recall_comparison.pdf')
+    logger.info('saving {}'.format(fig_filename))
+    fig.savefig(fig_filename)

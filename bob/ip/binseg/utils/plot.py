@@ -5,6 +5,8 @@
 # author_email='andre.anjos@idiap.ch',
 
 import numpy as np
+import os
+import csv 
 
 def precision_recall_f1iso(precision, recall, names, title=None, human_perf_bsds500=False):
     '''Creates a precision-recall plot of the given data.   
@@ -115,4 +117,55 @@ def loss_curve(df):
     ax1.set_xlabel('epoch')
     plt.tight_layout()  
     fig = ax1.get_figure()
+    return fig
+
+
+def read_metricscsv(file):
+    """
+    Read precision and recall from csv file
+    
+    Arguments
+    ---------
+    file: str
+           path to file
+    
+    Returns
+    -------
+        precision : :py:class:`np.ndarray`
+        recall : :py:class:`np.ndarray`
+    """
+    with open (file, "r") as infile:
+        metricsreader = csv.reader(infile)
+        # skip header row
+        next(metricsreader)
+        precision = []
+        recall = []
+        for row in metricsreader:
+            precision.append(float(row[1]))
+            recall.append(float(row[2]))
+    return np.array(precision), np.array(recall)
+
+
+def plot_overview(outputfolders):
+    """
+    Plots comparison chart of all trained models
+    Arguments
+    ---------
+    outputfolder : list
+                    list containing output paths of all evaluated models (e.g. ['output/model1', 'output/model2'])
+    
+    Returns
+    -------
+    fig : matplotlib.figure.Figure
+    """
+    precisions = []
+    recalls = []
+    names = []
+    for folder in outputfolders:
+        metrics_path = os.path.join(folder,'results/Metrics.csv')
+        pr, re = read_metricscsv(metrics_path)
+        precisions.append(pr)
+        recalls.append(re)
+        names.append(folder)
+    fig = precision_recall_f1iso(precisions,recalls,names)
     return fig

@@ -48,6 +48,7 @@ setup(
         'bob.ip.binseg.cli': [
           'train = bob.ip.binseg.script.binseg:train',
           'test = bob.ip.binseg.script.binseg:test',
+          'compare =  bob.bin.binseg.script.binseg:compare',
           'testcheckpoints = bob.ip.binseg.script.binseg:testcheckpoints',
         ],
 
