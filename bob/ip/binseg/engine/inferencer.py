@@ -155,7 +155,7 @@ def do_inference(
                             "f1_score"])
 
     # Report and Averages
-    metrics_file = "Metrics_{}.csv".format(model.name)
+    metrics_file = "Metrics.csv".format(model.name)
     metrics_path = os.path.join(results_subfolder, metrics_file)
     logger.info("Saving average over all input images: {}".format(metrics_file))
     
@@ -173,7 +173,7 @@ def do_inference(
     
     # Plotting
     np_avg_metrics = avg_metrics.to_numpy().T
-    fig_name = "precision_recall_{}.pdf".format(model.name)
+    fig_name = "precision_recall.pdf".format(model.name)
     logger.info("saving {}".format(fig_name))
     fig = precision_recall_f1iso([np_avg_metrics[0]],[np_avg_metrics[1]], np_avg_metrics[-1])
     fig_filename = os.path.join(results_subfolder, fig_name)
@@ -186,7 +186,7 @@ def do_inference(
 
     logger.info("Average batch inference time: {:.5f}s".format(average_batch_inference_time))
 
-    times_file = "Times_{}.txt".format(model.name)
+    times_file = "Times.txt".format(model.name)
     logger.info("saving {}".format(times_file))
         
     with open (os.path.join(results_subfolder,times_file), "w+") as outfile:
