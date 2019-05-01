@@ -11,7 +11,7 @@ class BinSegDataset(Dataset):
     It supports indexing such that dataset[i] can be used to get ith sample, e.g.: 
     img, gt, mask, name = db[0]
     
-    Attributes
+    Parameters
     ----------
     database  : binary segmentation `bob.db.database`
                

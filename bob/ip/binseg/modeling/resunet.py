@@ -12,9 +12,11 @@ from bob.ip.binseg.modeling.backbones.resnet import resnet50
 class ResUNet(nn.Module):
     """
     UNet head module for ResNet backbones
-    Attributes
+    
+    Parameters
     ----------
-        in_channels_list (list[int]): number of channels for each feature map that is returned from backbone
+    in_channels_list : list
+                        number of channels for each feature map that is returned from backbone
     """
     def __init__(self, in_channels_list=None, pixel_shuffle=False):
         super(ResUNet, self).__init__()
@@ -36,8 +38,10 @@ class ResUNet(nn.Module):
 
     def forward(self,x):
         """
-        Arguments:
-            x (list[Tensor]): tensor as returned from the backbone network.
+        Parameters
+        ----------
+        x : list
+                list of tensors as returned from the backbone network.
                 First element: height and width of input image. 
                 Remaining elements: feature maps for each feature level.
         """
@@ -51,6 +55,13 @@ class ResUNet(nn.Module):
         return out
 
 def build_res50unet():
+    """ 
+    Adds backbone and head together
+
+    Returns
+    -------
+    model : :py:class:torch.nn.Module
+    """
     backbone = resnet50(pretrained=False, return_features = [2, 4, 5, 6, 7])
     unet_head  = ResUNet([64, 256, 512, 1024, 2048],pixel_shuffle=False)
     model = nn.Sequential(OrderedDict([("backbone", backbone), ("head", unet_head)]))

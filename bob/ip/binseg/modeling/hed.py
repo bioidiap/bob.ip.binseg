@@ -8,6 +8,10 @@ from bob.ip.binseg.modeling.backbones.vgg import vgg16
 from bob.ip.binseg.modeling.make_layers import conv_with_kaiming_uniform, convtrans_with_kaiming_uniform, UpsampleCropBlock
 
 class ConcatFuseBlock(nn.Module):
+    """ 
+    Takes in five feature maps with one channel each, concatenates thems 
+    and applies a 1x1 convolution with 1 output channel. 
+    """
     def __init__(self):
         super().__init__()
         self.conv = conv_with_kaiming_uniform(5,1,1,1,0)
@@ -20,11 +24,11 @@ class ConcatFuseBlock(nn.Module):
 class HED(nn.Module):
     """
     HED head module
-    Attributes
+    
+    Parameters
     ----------
-        in_channels_list (list[int]): number of channels for each feature map that
-        will be fed
-        
+    in_channels_list : list
+                        number of channels for each feature map that is returned from backbone
     """
     def __init__(self, in_channels_list=None):
         super(HED, self).__init__()
@@ -41,8 +45,12 @@ class HED(nn.Module):
 
     def forward(self,x):
         """
-        Arguments:
-            x (list[Tensor]): feature maps for each feature level.
+        Parameters
+        ----------
+        x : list
+                list of tensors as returned from the backbone network.
+                First element: height and width of input image. 
+                Remaining elements: feature maps for each feature level.
         """
         hw = x[0]
         conv1_2_16 = self.conv1_2_16(x[1])  
@@ -56,6 +64,13 @@ class HED(nn.Module):
         return out
 
 def build_hed():
+    """ 
+    Adds backbone and head together
+
+    Returns
+    -------
+    model : :py:class:torch.nn.Module
+    """
     backbone = vgg16(pretrained=False, return_features = [3, 8, 14, 22, 29])
     hed_head = HED([64, 128, 256, 512, 512])
 

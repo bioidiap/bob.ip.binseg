@@ -170,8 +170,8 @@ class ColorJitter(object):
     """ 
     Randomly change the brightness, contrast and saturation of an image.
     
-    Attributes
-    -----------
+    Parameters
+    ----------
 
         brightness : float
                         How much to jitter brightness. brightness_factor
@@ -196,12 +196,6 @@ class ColorJitter(object):
 
     @staticmethod
     def get_params(brightness, contrast, saturation, hue):
-        """Get a randomized transform to be applied on image.
-        Arguments are same as that of __init__.
-        Returns:
-            Transform which randomly adjusts brightness, contrast and
-            saturation in a random order.
-        """
         transforms = []
         if brightness > 0:
             brightness_factor = random.uniform(max(0, 1 - brightness), 1 + brightness)

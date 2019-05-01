@@ -12,9 +12,11 @@ from bob.ip.binseg.modeling.backbones.vgg import vgg16
 class UNet(nn.Module):
     """
     UNet head module
-    Attributes
+    
+    Parameters
     ----------
-        in_channels_list (list[int]): number of channels for each feature map that is returned from backbone
+    in_channels_list : list
+                        number of channels for each feature map that is returned from backbone
     """
     def __init__(self, in_channels_list=None, pixel_shuffle=False):
         super(UNet, self).__init__()
@@ -30,8 +32,10 @@ class UNet(nn.Module):
 
     def forward(self,x):
         """
-        Arguments:
-            x (list[Tensor]): tensor as returned from the backbone network.
+        Parameters
+        ----------
+        x : list
+                list of tensors as returned from the backbone network.
                 First element: height and width of input image. 
                 Remaining elements: feature maps for each feature level.
         """
@@ -44,6 +48,13 @@ class UNet(nn.Module):
         return out
 
 def build_unet():
+    """ 
+    Adds backbone and head together
+
+    Returns
+    -------
+    model : :py:class:torch.nn.Module
+    """
     backbone = vgg16(pretrained=False, return_features = [3, 8, 14, 22, 29])
     unet_head = UNet([64, 128, 256, 512, 512], pixel_shuffle=False)
 

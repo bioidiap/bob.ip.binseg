@@ -40,9 +40,11 @@ class LastDecoderBlock(nn.Module):
 class M2U(nn.Module):
     """
     M2U-Net head module
-    Attributes
+    
+    Parameters
     ----------
-        in_channels_list (list[int]): number of channels for each feature map that is returned from backbone
+    in_channels_list : list
+                        number of channels for each feature map that is returned from backbone
     """
     def __init__(self, in_channels_list=None,upsamplemode='bilinear',expand_ratio=0.15):
         super(M2U, self).__init__()
@@ -67,6 +69,14 @@ class M2U(nn.Module):
                 m.bias.data.zero_()
     
     def forward(self,x):
+        """
+        Parameters
+        ----------
+        x : list
+                list of tensors as returned from the backbone network.
+                First element: height and width of input image. 
+                Remaining elements: feature maps for each feature level.
+        """
         decode4 = self.decode4(x[5],x[4])    # 96, 32
         decode3 = self.decode3(decode4,x[3]) # 64, 24
         decode2 = self.decode2(decode3,x[2]) # 44, 16
@@ -75,6 +85,13 @@ class M2U(nn.Module):
         return decode1
 
 def build_m2unet():
+    """ 
+    Adds backbone and head together
+
+    Returns
+    -------
+    model : :py:class:torch.nn.Module
+    """
     backbone = MobileNetV2(return_features = [1,3,6,13], m2u=True)
     m2u_head = M2U(in_channels_list=[16, 24, 32, 96])
 

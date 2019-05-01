@@ -1,16 +1,17 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import os 
 import logging
 import time
 import datetime
-from tqdm import tqdm
 import torch
-import os 
 import pandas as pd
+from tqdm import tqdm
 
 from bob.ip.binseg.utils.metric import SmoothedValue
 from bob.ip.binseg.utils.plot import loss_curve
+
 
 def do_train(
     model,
@@ -24,7 +25,24 @@ def do_train(
     arguments,
     output_folder
 ):
-    """ Trains the model """
+    """ 
+    Trains the model
+    
+    Parameters
+    ----------
+    model : :py:class:torch.nn.Module
+    data_loader : py:class:torch.torch.utils.data.DataLoader
+    optimizer : py:class.torch.torch.optim.Optimizer
+    criterion : py:class.torch.nn.modules.loss._Loss
+    scheduler : py:class.torch.torch.optim._LRScheduler
+    checkpointer : bob.ip.binseg.utils.checkpointer.DetectronCheckpointer
+    checkpoint_period : int
+    device : str
+                'cpu' or 'cuda'
+    arguments : dict
+    output_folder : str
+
+    """
     logger = logging.getLogger("bob.ip.binseg.engine.trainer")
     logger.info("Start training")
     start_epoch = arguments["epoch"]
@@ -42,15 +60,17 @@ def do_train(
             losses = SmoothedValue(len(data_loader))
             epoch = epoch + 1
             arguments["epoch"] = epoch
+            
+            # Epoch time
             start_epoch_time = time.time()
 
             for images, ground_truths, masks, _ in tqdm(data_loader):
 
                 images = images.to(device)
                 ground_truths = ground_truths.to(device)
-                #masks = masks.to(device) 
 
                 outputs = model(images)
+
                 loss = criterion(outputs, ground_truths)
                 optimizer.zero_grad()
                 loss.backward()

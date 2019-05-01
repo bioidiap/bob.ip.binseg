@@ -8,6 +8,10 @@ from bob.ip.binseg.modeling.backbones.vgg import vgg16
 from bob.ip.binseg.modeling.make_layers import conv_with_kaiming_uniform,convtrans_with_kaiming_uniform, UpsampleCropBlock
 
 class ConcatFuseBlock(nn.Module):
+    """ 
+    Takes in four feature maps with 16 channels each, concatenates them 
+    and applies a 1x1 convolution with 1 output channel. 
+    """
     def __init__(self):
         super().__init__()
         self.conv = conv_with_kaiming_uniform(4*16,1,1,1,0)
@@ -20,16 +24,18 @@ class ConcatFuseBlock(nn.Module):
 class DRIU(nn.Module):
     """
     DRIU head module
-    Attributes
+    
+    Parameters
     ----------
-        in_channels_list (list[int]): number of channels for each feature map that is returned from backbone
+    in_channels_list : list
+                        number of channels for each feature map that is returned from backbone
     """
     def __init__(self, in_channels_list=None):
         super(DRIU, self).__init__()
         in_conv_1_2_16, in_upsample2, in_upsample_4, in_upsample_8 = in_channels_list
 
         self.conv1_2_16 = nn.Conv2d(in_conv_1_2_16, 16, 3, 1, 1)
-        # Upsample
+        # Upsample layers
         self.upsample2 = UpsampleCropBlock(in_upsample2, 16, 4, 2, 0)
         self.upsample4 = UpsampleCropBlock(in_upsample_4, 16, 8, 4, 0)
         self.upsample8 = UpsampleCropBlock(in_upsample_8, 16, 16, 8, 0)
@@ -39,8 +45,10 @@ class DRIU(nn.Module):
 
     def forward(self,x):
         """
-        Arguments:
-            x (list[Tensor]): tensor as returned from the backbone network.
+        Parameters
+        ----------
+        x : list
+                list of tensors as returned from the backbone network.
                 First element: height and width of input image. 
                 Remaining elements: feature maps for each feature level.
         """
@@ -53,6 +61,13 @@ class DRIU(nn.Module):
         return out
 
 def build_driu():
+    """ 
+    Adds backbone and head together
+
+    Returns
+    -------
+    model : :py:class:torch.nn.Module
+    """
     backbone = vgg16(pretrained=False, return_features = [3, 8, 14, 22])
     driu_head = DRIU([64, 128, 256, 512])
 

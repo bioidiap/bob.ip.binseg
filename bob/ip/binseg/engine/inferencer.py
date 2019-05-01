@@ -5,20 +5,20 @@ import os
 import logging
 import time
 import datetime
-from tqdm import tqdm
-import torch
 import numpy as np
-import pickle
+import torch
 import pandas as pd
+import torchvision.transforms.functional as VF
+from tqdm import tqdm
 
 from bob.ip.binseg.utils.metric import SmoothedValue, base_metrics
 from bob.ip.binseg.utils.plot import precision_recall_f1iso
 
-import torchvision.transforms.functional as VF
+
 
 def batch_metrics(predictions, ground_truths, masks, names, output_folder, logger):
     """
-    calculates metrics on the batch and saves it to disc
+    Calculates metrics on the batch and saves it to disc
 
     Parameters
     ----------
@@ -27,7 +27,7 @@ def batch_metrics(predictions, ground_truths, masks, names, output_folder, logge
     mask : :py:class:torch.Tensor
     names : list
     output_folder : str
-    logger : logger
+    logger : :py:class:logging
 
     Returns
     -------
@@ -86,16 +86,24 @@ def batch_metrics(predictions, ground_truths, masks, names, output_folder, logge
     return batch_metrics
 
 
-
 def save_probability_images(predictions, names, output_folder, logger):
+    """
+    Saves probability maps as tif image
+
+    Parameters
+    ----------
+    predictions : :py:class:torch.Tensor
+    names : list
+    output_folder : str
+    logger :  :py:class:logging
+    """
     images_subfolder = os.path.join(output_folder,'images') 
     if not os.path.exists(images_subfolder): os.makedirs(images_subfolder)
     for j in range(predictions.size()[0]):
         img = VF.to_pil_image(predictions.cpu().data[j])
-        filename = '{}_prob.gif'.format(names[j])
+        filename = '{}.tif'.format(names[j])
         logger.info("saving {}".format(filename))
         img.save(os.path.join(images_subfolder, filename))
-
 
 
 def do_inference(
@@ -104,6 +112,18 @@ def do_inference(
     device,
     output_folder = None
 ):
+
+    """
+    Run inference and calculate metrics
+    
+    Paramters
+    ---------
+    model : :py:class:torch.nn.Module
+    data_loader : py:class:torch.torch.utils.data.DataLoader
+    device : str
+                'cpu' or 'cuda'
+    output_folder : str
+    """
     logger = logging.getLogger("bob.ip.binseg.engine.inference")
     logger.info("Start evaluation")
     logger.info("Split: {}, Output folder: {}, Device: {}".format(data_loader.dataset.split, output_folder, device))
@@ -128,10 +148,12 @@ def do_inference(
             start_time = time.perf_counter()
 
             outputs = model(images)
+            
             # necessary check for hed architecture that uses several outputs 
             # for loss calculation instead of just the last concatfuse block
             if isinstance(outputs,list):
                 outputs = outputs[-1]
+            
             probabilities = sigmoid(outputs)
             
             batch_time = time.perf_counter() - start_time
@@ -140,10 +162,11 @@ def do_inference(
             
             b_metrics = batch_metrics(probabilities, ground_truths, masks, names,results_subfolder, logger)
             metrics.extend(b_metrics)
+            
             # Create probability images
             save_probability_images(probabilities, names, output_folder, logger)
 
-
+    # DataFrame 
     df_metrics = pd.DataFrame(metrics,columns= \
                            ["name",
                             "threshold",
@@ -187,7 +210,7 @@ def do_inference(
 
     times_file = "Times.txt".format(model.name)
     logger.info("saving {}".format(times_file))
-        
+ 
     with open (os.path.join(results_subfolder,times_file), "w+") as outfile:
         date = datetime.datetime.now()
         outfile.write("Date: {} \n".format(date.strftime("%Y-%m-%d %H:%M:%S")))

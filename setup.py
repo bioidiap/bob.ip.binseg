@@ -59,6 +59,7 @@ setup(
           'M2UNet = bob.ip.binseg.configs.models.m2unet',
           'UNet = bob.ip.binseg.configs.models.unet',
           'ResUNet = bob.ip.binseg.configs.models.resunet',
+          'ShapeResUNet = bob.ip.binseg.configs.models.shaperesunet',
           'DRIUADABOUND = bob.ip.binseg.configs.models.driuadabound',
           'DRIVETRAIN = bob.ip.binseg.configs.datasets.drivetrain',
           'DRIVECROPTRAIN = bob.ip.binseg.configs.datasets.drivecroptrain',

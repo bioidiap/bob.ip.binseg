@@ -75,6 +75,7 @@ def binseg():
     )
 @click.option(
     '--pretrained-backbone',
+    '-t',
     required=True,
     cls=ResourceOption
     )
@@ -122,6 +123,8 @@ def train(model
         ,checkpoint_period
         ,device
         ,**kwargs):
+    """ Train a model """
+    
     if not os.path.exists(output_path): os.makedirs(output_path)
     
     # PyTorch dataloader
@@ -198,7 +201,7 @@ def test(model
         ,batch_size
         ,dataset
         , **kwargs):
-
+    """ Run inference and evalaute the model performance """
 
     # PyTorch dataloader
     data_loader = DataLoader(
@@ -257,7 +260,7 @@ def testcheckpoints(model
         ,dataset
         , **kwargs):
 
-
+    """ Run inference and evaluate all checkpoints saved for a model"""
     # PyTorch dataloader
     data_loader = DataLoader(
         dataset = dataset
