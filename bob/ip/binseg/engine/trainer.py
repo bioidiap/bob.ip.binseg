@@ -30,18 +30,24 @@ def do_train(
     
     Parameters
     ----------
-    model : :py:class:torch.nn.Module
-    data_loader : py:class:torch.torch.utils.data.DataLoader
-    optimizer : py:class.torch.torch.optim.Optimizer
-    criterion : py:class.torch.nn.modules.loss._Loss
-    scheduler : py:class.torch.torch.optim._LRScheduler
-    checkpointer : bob.ip.binseg.utils.checkpointer.DetectronCheckpointer
+    model : :py:class:`torch.nn.Module` 
+        Network (e.g. DRIU, HED, UNet)
+    data_loader : :py:class:`torch.torch.utils.data.DataLoader`
+    optimizer : :py:class.`torch.torch.optim.Optimizer`
+    criterion : :py:class.`torch.nn.modules.loss._Loss`
+        loss function
+    scheduler : :py:class.`torch.torch.optim._LRScheduler`
+        learning rate scheduler
+    checkpointer : :py:class.`bob.ip.binseg.utils.checkpointer.DetectronCheckpointer`
+        checkpointer
     checkpoint_period : int
-    device : str
-                'cpu' or 'cuda'
+        save a checkpoint every n epochs
+    device : str  
+        device to use. 'cpu' or 'cuda'.
     arguments : dict
-    output_folder : str
-
+        start end end epochs
+    output_folder : str 
+        output path
     """
     logger = logging.getLogger("bob.ip.binseg.engine.trainer")
     logger.info("Start training")
@@ -68,10 +74,12 @@ def do_train(
 
                 images = images.to(device)
                 ground_truths = ground_truths.to(device)
-
+                if hasattr(masks,'dtype'):
+                    masks = masks.to(device)
+                
                 outputs = model(images)
-
-                loss = criterion(outputs, ground_truths)
+                
+                loss = criterion(outputs, ground_truths, masks)
                 optimizer.zero_grad()
                 loss.backward()
                 optimizer.step()

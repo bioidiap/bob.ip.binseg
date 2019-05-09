@@ -124,7 +124,7 @@ def read_metricscsv(file):
     """
     Read precision and recall from csv file
     
-    Arguments
+    Parameters
     ---------
     file: str
            path to file

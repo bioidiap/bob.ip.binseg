@@ -44,7 +44,7 @@ class M2U(nn.Module):
     Parameters
     ----------
     in_channels_list : list
-                        number of channels for each feature map that is returned from backbone
+        number of channels for each feature map that is returned from backbone
     """
     def __init__(self, in_channels_list=None,upsamplemode='bilinear',expand_ratio=0.15):
         super(M2U, self).__init__()
@@ -73,9 +73,12 @@ class M2U(nn.Module):
         Parameters
         ----------
         x : list
-                list of tensors as returned from the backbone network.
-                First element: height and width of input image. 
-                Remaining elements: feature maps for each feature level.
+            list of tensors as returned from the backbone network.
+            First element: height and width of input image. 
+            Remaining elements: feature maps for each feature level.
+        Returns
+        -------
+        :py:class:`torch.Tensor`
         """
         decode4 = self.decode4(x[5],x[4])    # 96, 32
         decode3 = self.decode3(decode4,x[3]) # 64, 24
@@ -90,9 +93,9 @@ def build_m2unet():
 
     Returns
     -------
-    model : :py:class:torch.nn.Module
+    :py:class:torch.nn.Module
     """
-    backbone = MobileNetV2(return_features = [1,3,6,13], m2u=True)
+    backbone = MobileNetV2(return_features = [1, 3, 6, 13], m2u=True)
     m2u_head = M2U(in_channels_list=[16, 24, 32, 96])
 
     model = nn.Sequential(OrderedDict([("backbone", backbone), ("head", m2u_head)]))

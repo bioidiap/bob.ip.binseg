@@ -234,6 +234,7 @@ else:
     intersphinx_mapping = link_documentation()
 
 intersphinx_mapping['torch'] = ('https://pytorch.org/docs/stable/', None)
+intersphinx_mapping['PIL'] = ('http://pillow.readthedocs.io/en/stable', None)
 # We want to remove all private (i.e. _. or __.__) members
 # that are not in the list of accepted functions
 accepted_private_functions = ['__array__']
@@ -255,3 +256,4 @@ def member_function_test(app, what, name, obj, skip, options):
 
 def setup(app):
     app.connect('autodoc-skip-member', member_function_test)
+    

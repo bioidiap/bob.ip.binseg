@@ -6,19 +6,18 @@
  Binary Segmentation Benchmark Package for Bob
 ===============================================
 
-.. todo ::
-   Write here a small (1 paragraph) introduction explaining this project. See
-   other projects for examples.
-
-Datasets
-========
-
-.. toctree::
-   :maxdepth: 2
-
-   datasets
+Package to benchmark and evaluate a range of neural network architectures for binary segmentation tasks on 2D Eye Fundus Images (2DFI). 
 
 Users Guide
 ===========
+
+.. toctree::
+   :maxdepth: 2
+ 
+   datasets
+   api
+   references
+
+.. todolist::
 
 .. include:: links.rst

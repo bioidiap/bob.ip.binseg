@@ -1,4 +1,5 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+# https://github.com/facebookresearch/maskrcnn-benchmark
 from collections import OrderedDict
 import logging
 

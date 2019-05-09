@@ -55,12 +55,16 @@ setup(
          #bob hed train configurations
         'bob.ip.binseg.config': [
           'DRIU = bob.ip.binseg.configs.models.driu',
+          'DRIUJ01 = bob.ip.binseg.configs.models.driuj01',
+          'DRIUPAPER = bob.ip.binseg.configs.models.driupaper',
           'HED = bob.ip.binseg.configs.models.hed',
           'M2UNet = bob.ip.binseg.configs.models.m2unet',
+          'M2UNetJ01 = bob.ip.binseg.configs.models.m2unetj01',
           'UNet = bob.ip.binseg.configs.models.unet',
+          'UNetJ01 = bob.ip.binseg.configs.models.unetj01',
           'ResUNet = bob.ip.binseg.configs.models.resunet',
+          'ResUNetJ01 = bob.ip.binseg.configs.models.resunetj01',
           'ShapeResUNet = bob.ip.binseg.configs.models.shaperesunet',
-          'DRIUADABOUND = bob.ip.binseg.configs.models.driuadabound',
           'DRIVETRAIN = bob.ip.binseg.configs.datasets.drivetrain',
           'DRIVECROPTRAIN = bob.ip.binseg.configs.datasets.drivecroptrain',
           'DRIVECROPTEST = bob.ip.binseg.configs.datasets.drivecroptest',

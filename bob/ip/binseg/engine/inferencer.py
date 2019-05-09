@@ -22,18 +22,23 @@ def batch_metrics(predictions, ground_truths, masks, names, output_folder, logge
 
     Parameters
     ----------
-    predictions: :py:class:torch.Tensor
-    ground_truths : :py:class:torch.Tensor
-    mask : :py:class:torch.Tensor
+    predictions : :py:class:`torch.Tensor`
+        tensor with pixel-wise probabilities
+    ground_truths : :py:class:`torch.Tensor`
+        tensor with binary ground-truth
+    mask : :py:class:`torch.Tensor`
+        tensor with mask
     names : list
+        list of file names 
     output_folder : str
+        output path
     logger : :py:class:logging
+        python logger
 
     Returns
     -------
-
-    batch_metrics : list
-
+    list 
+        list containing batch metrics (name, threshold, precision, recall, specificity, accuracy, jaccard, f1_score)
     """
     step_size = 0.01
     batch_metrics = []
@@ -88,20 +93,24 @@ def batch_metrics(predictions, ground_truths, masks, names, output_folder, logge
 
 def save_probability_images(predictions, names, output_folder, logger):
     """
-    Saves probability maps as tif image
+    Saves probability maps as image in the same format as the test image
 
     Parameters
     ----------
-    predictions : :py:class:torch.Tensor
+    predictions : :py:class:`torch.Tensor`
+        tensor with pixel-wise probabilities
     names : list
+        list of file names 
     output_folder : str
-    logger :  :py:class:logging
+        output path
+    logger : :py:class:logging
+        python logger
     """
     images_subfolder = os.path.join(output_folder,'images') 
     if not os.path.exists(images_subfolder): os.makedirs(images_subfolder)
     for j in range(predictions.size()[0]):
         img = VF.to_pil_image(predictions.cpu().data[j])
-        filename = '{}.tif'.format(names[j])
+        filename = '{}'.format(names[j])
         logger.info("saving {}".format(filename))
         img.save(os.path.join(images_subfolder, filename))
 
@@ -116,12 +125,14 @@ def do_inference(
     """
     Run inference and calculate metrics
     
-    Paramters
+    Parameters
     ---------
     model : :py:class:torch.nn.Module
+        neural network model (e.g. DRIU, HED, UNet)
     data_loader : py:class:torch.torch.utils.data.DataLoader
+        PyTorch DataLoader
     device : str
-                'cpu' or 'cuda'
+        device to use ('cpu' or 'cuda')
     output_folder : str
     """
     logger = logging.getLogger("bob.ip.binseg.engine.inference")
@@ -155,6 +166,9 @@ def do_inference(
                 outputs = outputs[-1]
             
             probabilities = sigmoid(outputs)
+            if hasattr(masks,'dtype'):
+                masks = masks.to(device)
+                probabilities = probabilities * masks
             
             batch_time = time.perf_counter() - start_time
             times.append(batch_time)

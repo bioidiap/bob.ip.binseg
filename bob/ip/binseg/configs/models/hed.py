@@ -19,7 +19,7 @@ gamma = 1e-3
 eps = 1e-8
 amsbound = False
 
-scheduler_milestones = [150]
+scheduler_milestones = [200]
 scheduler_gamma = 0.1
 
 

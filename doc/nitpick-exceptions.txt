@@ -1,0 +1,5 @@
+py:class torch.nn.modules.module.Module
+py:class torch.nn.modules.loss._Loss
+py:class torch.utils.data.dataset.Dataset
+py:mod bob.db.base
+py:obj list

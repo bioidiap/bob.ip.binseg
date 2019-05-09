@@ -41,7 +41,7 @@ def convtrans_with_kaiming_uniform(in_channels, out_channels, kernel_size, strid
 
 
 class UpsampleCropBlock(nn.Module):
-    def __init__(self, in_channels, out_channels, up_kernel_size, up_stride, up_padding):
+    def __init__(self, in_channels, out_channels, up_kernel_size, up_stride, up_padding, pixelshuffle=False):
         """
         Combines Conv2d, ConvTransposed2d and Cropping. Simulates the caffe2 crop layer in the forward function.
         Used for DRIU and HED. 
@@ -57,7 +57,10 @@ class UpsampleCropBlock(nn.Module):
         super().__init__()
         # NOTE: Kaiming init, replace with nn.Conv2d and nn.ConvTranspose2d to get original DRIU impl.
         self.conv = conv_with_kaiming_uniform(in_channels, out_channels, 3, 1, 1)
-        self.upconv = convtrans_with_kaiming_uniform(out_channels, out_channels, up_kernel_size, up_stride, up_padding)        
+        if pixelshuffle:
+            self.upconv = PixelShuffle_ICNR( out_channels, out_channels, scale = up_stride)
+        else:
+            self.upconv = convtrans_with_kaiming_uniform(out_channels, out_channels, up_kernel_size, up_stride, up_padding)        
         
         
     def forward(self, x, input_res):

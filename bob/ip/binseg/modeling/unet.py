@@ -35,9 +35,9 @@ class UNet(nn.Module):
         Parameters
         ----------
         x : list
-                list of tensors as returned from the backbone network.
-                First element: height and width of input image. 
-                Remaining elements: feature maps for each feature level.
+            list of tensors as returned from the backbone network.
+            First element: height and width of input image. 
+            Remaining elements: feature maps for each feature level.
         """
         # NOTE: x[0]: height and width of input image not needed in U-Net architecture
         decode4 = self.decode4(x[5], x[4])  

@@ -28,7 +28,7 @@ class DRIU(nn.Module):
     Parameters
     ----------
     in_channels_list : list
-                        number of channels for each feature map that is returned from backbone
+        number of channels for each feature map that is returned from backbone
     """
     def __init__(self, in_channels_list=None):
         super(DRIU, self).__init__()
@@ -48,9 +48,13 @@ class DRIU(nn.Module):
         Parameters
         ----------
         x : list
-                list of tensors as returned from the backbone network.
-                First element: height and width of input image. 
-                Remaining elements: feature maps for each feature level.
+            list of tensors as returned from the backbone network.
+            First element: height and width of input image. 
+            Remaining elements: feature maps for each feature level.
+
+        Returns
+        -------
+        :py:class:`torch.Tensor`
         """
         hw = x[0]
         conv1_2_16 = self.conv1_2_16(x[1])  # conv1_2_16   
@@ -66,7 +70,7 @@ def build_driu():
 
     Returns
     -------
-    model : :py:class:torch.nn.Module
+    :py:class:torch.nn.Module
     """
     backbone = vgg16(pretrained=False, return_features = [3, 8, 14, 22])
     driu_head = DRIU([64, 128, 256, 512])

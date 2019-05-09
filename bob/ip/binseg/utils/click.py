@@ -1,11 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# https://stackoverflow.com/questions/48391777/nargs-equivalent-for-options-in-click 
+
 
 import click
 
 class OptionEatAll(click.Option):
+    """
+    Allows for *args and **kwargs to be passed to click 
+    https://stackoverflow.com/questions/48391777/nargs-equivalent-for-options-in-click 
+    """
 
     def __init__(self, *args, **kwargs):
         self.save_other_options = kwargs.pop('save_other_options', True)
