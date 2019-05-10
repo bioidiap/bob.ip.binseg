@@ -26,24 +26,24 @@ def do_train(
     output_folder
 ):
     """ 
-    Trains the model
+    Train model and save to disk.
     
     Parameters
     ----------
     model : :py:class:`torch.nn.Module` 
         Network (e.g. DRIU, HED, UNet)
-    data_loader : :py:class:`torch.torch.utils.data.DataLoader`
-    optimizer : :py:class.`torch.torch.optim.Optimizer`
+    data_loader : :py:class:`torch.utils.data.DataLoader`
+    optimizer : :py:class.`torch.optim.Optimizer`
     criterion : :py:class.`torch.nn.modules.loss._Loss`
         loss function
-    scheduler : :py:class.`torch.torch.optim._LRScheduler`
+    scheduler : :py:class.`torch.optim._LRScheduler`
         learning rate scheduler
     checkpointer : :py:class.`bob.ip.binseg.utils.checkpointer.DetectronCheckpointer`
         checkpointer
     checkpoint_period : int
         save a checkpoint every n epochs
     device : str  
-        device to use. 'cpu' or 'cuda'.
+        device to use ``'cpu'`` or ``'cuda'``
     arguments : dict
         start end end epochs
     output_folder : str 

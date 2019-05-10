@@ -132,7 +132,7 @@ def do_inference(
     data_loader : py:class:torch.torch.utils.data.DataLoader
         PyTorch DataLoader
     device : str
-        device to use ('cpu' or 'cuda')
+        device to use ``'cpu'`` or ``'cuda'``
     output_folder : str
     """
     logger = logging.getLogger("bob.ip.binseg.engine.inference")

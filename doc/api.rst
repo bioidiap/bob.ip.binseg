@@ -6,7 +6,7 @@
 ============
 
 This section lists all the functionality available in this library allowing to
-run HED-based experiments.
+run binary-segmentation benchmarks.
 
 
 PyTorch Dataset
@@ -19,6 +19,10 @@ Transforms
     All transforms work with PIL.Image.Image objects.
 
 .. automodule:: bob.ip.binseg.data.transforms
+
+Losses
+------
+.. automodule:: bob.ip.binseg.modeling.losses
 
 
 .. include:: links.rst

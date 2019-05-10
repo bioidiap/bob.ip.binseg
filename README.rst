@@ -20,11 +20,6 @@
 
 This package is part of the signal-processing and machine learning toolbox Bob_.
 
-.. todo::
-
-   **Complete the sentence above to include one phrase about your
-   package!  Once this is done, delete this to-do!**
-
 
 Installation
 ------------
