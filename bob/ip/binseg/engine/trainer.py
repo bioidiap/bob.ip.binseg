@@ -70,12 +70,13 @@ def do_train(
             # Epoch time
             start_epoch_time = time.time()
 
-            for images, ground_truths, masks, _ in tqdm(data_loader):
+            for samples in tqdm(data_loader):
 
-                images = images.to(device)
-                ground_truths = ground_truths.to(device)
-                if hasattr(masks,'dtype'):
-                    masks = masks.to(device)
+                images = samples[1].to(device)
+                ground_truths = samples[2].to(device)
+                masks = None
+                if len(samples) == 4:
+                    masks = samples[-1].to(device)
                 
                 outputs = model(images)
                 

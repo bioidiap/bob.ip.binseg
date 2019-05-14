@@ -5,6 +5,7 @@ import torch
 import unittest
 import numpy as np
 from bob.ip.binseg.modeling.driu import build_driu
+from bob.ip.binseg.modeling.driuod import build_driuod
 from bob.ip.binseg.modeling.hed import build_hed
 from bob.ip.binseg.modeling.unet import build_unet
 from bob.ip.binseg.modeling.resunet import build_res50unet
@@ -23,6 +24,12 @@ class Tester(unittest.TestCase):
         out_hw = np.array(out.shape)[[2,3]]
         self.assertEqual(self.hw.all(), out_hw.all())
 
+
+    def test_driuod(self):
+        model = build_driuod()
+        out = model(self.x)
+        out_hw = np.array(out.shape)[[2,3]]
+        self.assertEqual(self.hw.all(), out_hw.all())
 
     def test_hed(self):
         model = build_hed()

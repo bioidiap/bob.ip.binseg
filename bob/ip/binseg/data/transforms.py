@@ -10,7 +10,7 @@ from torchvision.transforms.transforms import Compose as TorchVisionCompose
 import math
 from math import floor
 import warnings
-
+import collections
 
 _pil_interpolation_to_str = {
     Image.NEAREST: 'PIL.Image.NEAREST',
@@ -20,6 +20,7 @@ _pil_interpolation_to_str = {
     Image.HAMMING: 'PIL.Image.HAMMING',
     Image.BOX: 'PIL.Image.BOX',
 }
+Iterable = collections.abc.Iterable
 
 # Compose 
 
@@ -441,3 +442,31 @@ class Distortion:
             return imgs
         else:
             return args
+
+
+class Resize:
+    """Resize to given size.
+    
+    Attributes
+    ----------
+    size : tuple or int
+        Desired output size. If size is a sequence like
+        (h, w), output size will be matched to this. If size is an int,
+        smaller edge of the image will be matched to this number.
+        i.e, if height > width, then image will be rescaled to
+        (size * height / width, size)
+    interpolation : int
+        Desired interpolation. Default is``PIL.Image.BILINEAR``
+    """
+
+    def __init__(self, size, interpolation=Image.BILINEAR):
+        assert isinstance(size, int) or (isinstance(size, Iterable) and len(size) == 2)
+        self.size = size
+        self.interpolation = interpolation
+
+    def __call__(self, *args):
+        return [VF.resize(img, self.size, self.interpolation) for img in args]
+
+    def __repr__(self):
+        interpolate_str = _pil_interpolation_to_str[self.interpolation]
+        return self.__class__.__name__ + '(size={0}, interpolation={1})'.format(self.size, interpolate_str)

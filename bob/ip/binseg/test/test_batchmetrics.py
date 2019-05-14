@@ -20,7 +20,6 @@ class Tester(unittest.TestCase):
         self.fn = random.randint(1, 100)
         self.predictions = torch.rand(size=(2,1,420,420))
         self.ground_truths = torch.randint(low=0, high=2, size=(2,1,420,420))
-        self.masks = None
         self.names = ['Bob','Tim'] 
         self.output_folder = tempfile.mkdtemp()
         self.logger = logging.getLogger(__name__)
@@ -30,7 +29,7 @@ class Tester(unittest.TestCase):
         shutil.rmtree(self.output_folder)
     
     def test_batch_metrics(self):
-        bm = batch_metrics(self.predictions, self.ground_truths, self.masks, self.names, self.output_folder, self.logger)
+        bm = batch_metrics(self.predictions, self.ground_truths, self.names, self.output_folder, self.logger)
         self.assertEqual(len(bm),2*100)
         for metric in bm:
             # check whether f1 score agree

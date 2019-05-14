@@ -13,10 +13,11 @@ from tqdm import tqdm
 
 from bob.ip.binseg.utils.metric import SmoothedValue, base_metrics
 from bob.ip.binseg.utils.plot import precision_recall_f1iso
+from bob.ip.binseg.utils.summary import summary
 
 
 
-def batch_metrics(predictions, ground_truths, masks, names, output_folder, logger):
+def batch_metrics(predictions, ground_truths, names, output_folder, logger):
     """
     Calculates metrics on the batch and saves it to disc
 
@@ -26,8 +27,6 @@ def batch_metrics(predictions, ground_truths, masks, names, output_folder, logge
         tensor with pixel-wise probabilities
     ground_truths : :py:class:`torch.Tensor`
         tensor with binary ground-truth
-    mask : :py:class:`torch.Tensor`
-        tensor with mask
     names : list
         list of file names 
     output_folder : str
@@ -73,7 +72,6 @@ def batch_metrics(predictions, ground_truths, masks, names, output_folder, logge
                 # true negatives
                 tn_tensor = equals - tp_tensor
                 tn_count = torch.sum(tn_tensor).item()
-                # TODO: Substract masks from True negatives?
 
                 # false negatives
                 fn_tensor = notequals - fp_tensor
@@ -152,9 +150,10 @@ def do_inference(
     # Collect overall metrics 
     metrics = []
 
-    for images, ground_truths, masks, names in tqdm(data_loader):
-        images = images.to(device)
-        ground_truths = ground_truths.to(device)
+    for samples in tqdm(data_loader):
+        names = samples[0]
+        images = samples[1].to(device)
+        ground_truths = samples[2].to(device)
         with torch.no_grad():
             start_time = time.perf_counter()
 
@@ -166,15 +165,12 @@ def do_inference(
                 outputs = outputs[-1]
             
             probabilities = sigmoid(outputs)
-            if hasattr(masks,'dtype'):
-                masks = masks.to(device)
-                probabilities = probabilities * masks
             
             batch_time = time.perf_counter() - start_time
             times.append(batch_time)
             logger.info("Batch time: {:.5f} s".format(batch_time))
             
-            b_metrics = batch_metrics(probabilities, ground_truths, masks, names,results_subfolder, logger)
+            b_metrics = batch_metrics(probabilities, ground_truths, names,results_subfolder, logger)
             metrics.extend(b_metrics)
             
             # Create probability images
@@ -209,7 +205,7 @@ def do_inference(
     
     # Plotting
     np_avg_metrics = avg_metrics.to_numpy().T
-    fig_name = "precision_recall.pdf".format(model.name)
+    fig_name = "precision_recall.pdf"
     logger.info("saving {}".format(fig_name))
     fig = precision_recall_f1iso([np_avg_metrics[0]],[np_avg_metrics[1]], [model.name,None])
     fig_filename = os.path.join(results_subfolder, fig_name)
@@ -222,7 +218,7 @@ def do_inference(
 
     logger.info("Average batch inference time: {:.5f}s".format(average_batch_inference_time))
 
-    times_file = "Times.txt".format(model.name)
+    times_file = "Times.txt"
     logger.info("saving {}".format(times_file))
  
     with open (os.path.join(results_subfolder,times_file), "w+") as outfile:
@@ -231,5 +227,13 @@ def do_inference(
         outfile.write("Total evaluation run-time: {} \n".format(total_evalution_time))
         outfile.write("Average batch inference time: {} \n".format(average_batch_inference_time))
         outfile.write("Total inference time: {} \n".format(total_inference_time))
+
+    # Save model summary 
+    summary_file = 'ModelSummary.txt'
+    logger.info("saving {}".format(summary_file))
+
+    with open (os.path.join(results_subfolder,summary_file), "w+") as outfile:
+        summary(model,outfile)
+
 
 

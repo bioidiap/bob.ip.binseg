@@ -21,6 +21,11 @@ class BinSegDataset(Dataset):
         self.transform = transform
         self.split = split
     
+    @property
+    def mask(self):
+        # check if first sample contains a mask
+        return hasattr(self.database[0], 'mask')
+
     def __len__(self):
         """
         Returns
@@ -39,16 +44,19 @@ class BinSegDataset(Dataset):
         Returns
         -------
         list
-            dataitem [img, gt, mask, img_name]
+            dataitem [img_name, img, gt, mask]
         """
         img = self.database[index].img.pil_image()
         gt = self.database[index].gt.pil_image()
-        mask = self.database[index].mask.pil_image() if hasattr(self.database[index], 'mask') else None
         img_name = self.database[index].img.basename
+        sample = [img, gt]
+        if self.mask:
+            mask = self.database[index].mask.pil_image()
+            sample.append(mask)
         
-        if self.transform and mask:
-            img, gt, mask = self.transform(img, gt, mask)
-        else:
-            img, gt  = self.transform(img, gt)
-            
-        return img, gt, mask, img_name
+        if self.transform :
+            sample = self.transform(*sample)
+        
+        sample.insert(0,img_name)
+        
+        return sample

@@ -51,7 +51,7 @@ class SoftJaccardBCELogitsLoss(_Loss):
     alpha : float
         determines the weighting of SoftJaccard and BCE. Default: ``0.3``
     """
-    def __init__(self, alpha=0.1, size_average=None, reduce=None, reduction='mean', pos_weight=None):
+    def __init__(self, alpha=0.3, size_average=None, reduce=None, reduction='mean', pos_weight=None):
         super(SoftJaccardBCELogitsLoss, self).__init__(size_average, reduce, reduction) 
         self.alpha = alpha   
 
@@ -119,3 +119,45 @@ class HEDWeightedBCELogitsLoss(_Loss):
             loss_over_all_inputs.append(loss.unsqueeze(0))
         final_loss = torch.cat(loss_over_all_inputs).mean()
         return final_loss 
+
+
+class HEDSoftJaccardBCELogitsLoss(_Loss):
+    """ 
+    Implements Equation 6 in [SAT17]_ for the hed network. Based on torch.nn.modules.loss.BCEWithLogitsLoss. 
+
+    Attributes
+    ----------
+    alpha : float
+        determines the weighting of SoftJaccard and BCE. Default: ``0.3``
+    """
+    def __init__(self, alpha=0.3, size_average=None, reduce=None, reduction='mean', pos_weight=None):
+        super(HEDSoftJaccardBCELogitsLoss, self).__init__(size_average, reduce, reduction) 
+        self.alpha = alpha   
+
+    @weak_script_method
+    def forward(self, inputlist, target, masks=None):
+        """
+        Parameters
+        ----------
+        input : :py:class:`torch.Tensor`
+        target : :py:class:`torch.Tensor`
+        masks : :py:class:`torch.Tensor`, optional
+        
+        Returns
+        -------
+        :py:class:`torch.Tensor`
+        """
+        eps = 1e-8
+        loss_over_all_inputs = []
+        for input in inputlist:
+            probabilities = torch.sigmoid(input)
+            intersection = (probabilities * target).sum()
+            sums = probabilities.sum() + target.sum()
+            
+            softjaccard = intersection/(sums - intersection + eps)
+    
+            bceloss = torch.nn.functional.binary_cross_entropy_with_logits(input, target, weight=None, reduction=self.reduction)
+            loss = self.alpha * bceloss + (1 - self.alpha) * (1-softjaccard)
+            loss_over_all_inputs.append(loss.unsqueeze(0))
+        final_loss = torch.cat(loss_over_all_inputs).mean()
+        return loss

@@ -7,8 +7,9 @@ from bob.ip.binseg.data.binsegdataset import BinSegDataset
 
 #### Config ####
 
-transforms = Compose([
-                        ToTensor()
+transforms = Compose([  
+                        CenterCrop((544,544))
+                        ,ToTensor()
                     ])
 
 # bob.db.dataset init

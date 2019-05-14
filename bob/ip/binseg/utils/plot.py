@@ -24,7 +24,7 @@ def precision_recall_f1iso(precision, recall, names, title=None, human_perf_bsds
         of the system's recall coordinates. 
       names : :py:class:`list`
         An iterable over the names of each of the systems along the rows of
-        ``precision`` and ``recall``    
+        ``precision`` and ``recall``      
       title : :py:class:`str`, optional
         A title for the plot. If not set, omits the title   
       human_perf_bsds500 : :py:class:`bool`, optional
@@ -38,7 +38,10 @@ def precision_recall_f1iso(precision, recall, names, title=None, human_perf_bsds
     import matplotlib
     matplotlib.use('agg')
     import matplotlib.pyplot as plt 
+    from itertools import cycle
     fig, ax1 = plt.subplots(1)  
+    lines = ["-","--","-.",":"]
+    linecycler = cycle(lines)
     for p, r, n in zip(precision, recall, names):   
         # Plots only from the point where recall reaches its maximum, otherwise, we
         # don't see a curve...
@@ -47,8 +50,13 @@ def precision_recall_f1iso(precision, recall, names, title=None, human_perf_bsds
         ri = r[i:]    
         valid = (pi+ri) > 0
         f1 = 2 * (pi[valid]*ri[valid]) / (pi[valid]+ri[valid])    
+        # optimal point along the curve
+        argmax = f1.argmax()
+        opi = pi[argmax]
+        ori = ri[argmax]
         # Plot Recall/Precision as threshold changes
-        ax1.plot(ri[pi>0], pi[pi>0], label='[F={:.3f}] {}'.format(f1.max(), n)) 
+        ax1.plot(ri[pi>0], pi[pi>0], next(linecycler), label='[F={:.3f}] {}'.format(f1.max(), n),) 
+        ax1.plot(ori,opi, marker='o', linestyle=None, markersize=3, color='black')
     ax1.grid(linestyle='--', linewidth=1, color='gray', alpha=0.2)  
     if len(names) > 1:
         plt.legend(loc='lower left', framealpha=0.5)  
@@ -152,8 +160,7 @@ def plot_overview(outputfolders):
     Arguments
     ---------
     outputfolder : list
-                    list containing output paths of all evaluated models (e.g. ['output/model1', 'output/model2'])
-    
+                    list containing output paths of all evaluated models (e.g. ['DRIVE/model1', 'DRIVE/model2'])
     Returns
     -------
     fig : matplotlib.figure.Figure
@@ -161,11 +168,24 @@ def plot_overview(outputfolders):
     precisions = []
     recalls = []
     names = []
+    params = []
     for folder in outputfolders:
+        # metrics 
         metrics_path = os.path.join(folder,'results/Metrics.csv')
         pr, re = read_metricscsv(metrics_path)
         precisions.append(pr)
         recalls.append(re)
-        names.append(folder)
-    fig = precision_recall_f1iso(precisions,recalls,names)
+        modelname = folder.split('/')[-1]
+        # parameters
+        summary_path = os.path.join(folder,'results/ModelSummary.txt')
+        with open (summary_path, "r") as outfile:
+          rows = outfile.readlines()
+          lastrow = rows[-1]
+          parameter = int(lastrow.split()[1].replace(',',''))
+        name = '[P={:.2f}M] {}'.format(parameter/100**3, modelname)
+        names.append(name)
+    title = folder.split('/')[-2]
+    fig = precision_recall_f1iso(precisions,recalls,names,title)
     return fig
+
+  
