@@ -193,11 +193,11 @@ def do_inference(
     logger.info("Saving average over all input images: {}".format(metrics_file))
     
     avg_metrics = df_metrics.groupby('threshold').mean()
-    avg_metrics.to_csv(metrics_path)
 
-    avg_metrics["f1_score"] =  2* avg_metrics["precision"]*avg_metrics["recall"]/ \
+    avg_metrics["f1_score"] =  (2* avg_metrics["precision"]*avg_metrics["recall"])/ \
         (avg_metrics["precision"]+avg_metrics["recall"])
     
+    avg_metrics.to_csv(metrics_path)
     maxf1 = avg_metrics['f1_score'].max()
     optimal_f1_threshold = avg_metrics['f1_score'].idxmax()
     
@@ -207,7 +207,7 @@ def do_inference(
     np_avg_metrics = avg_metrics.to_numpy().T
     fig_name = "precision_recall.pdf"
     logger.info("saving {}".format(fig_name))
-    fig = precision_recall_f1iso([np_avg_metrics[0]],[np_avg_metrics[1]], [model.name,None])
+    fig = precision_recall_f1iso([np_avg_metrics[0]],[np_avg_metrics[1]], [model.name,None], title=output_folder)
     fig_filename = os.path.join(results_subfolder, fig_name)
     fig.savefig(fig_filename)
     

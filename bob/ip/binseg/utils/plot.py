@@ -102,7 +102,7 @@ def precision_recall_f1iso(precision, recall, names, title=None, human_perf_bsds
 
 
 
-def loss_curve(df):
+def loss_curve(df, title):
     ''' Creates a loss curve
     Dataframe with column names:
     ["avg. loss", "median loss","lr","max memory"]
@@ -118,6 +118,7 @@ def loss_curve(df):
     matplotlib.use('agg')
     import matplotlib.pyplot as plt 
     ax1 = df.plot(y="median loss", grid=True)
+    ax1.set_title(title)
     ax1.set_ylabel('median loss')
     ax1.grid(linestyle='--', linewidth=1, color='gray', alpha=0.2)
     ax2 = df['lr'].plot(secondary_y=True,legend=True,grid=True,)

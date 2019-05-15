@@ -27,6 +27,8 @@ from bob.ip.binseg.engine.trainer import do_train
 from bob.ip.binseg.engine.inferencer import do_inference
 from bob.ip.binseg.utils.plot import plot_overview
 from bob.ip.binseg.utils.click import OptionEatAll
+from bob.ip.binseg.utils.pdfcreator import create_pdf, get_paths
+from bob.ip.binseg.utils.rsttable import create_overview_grid
 
 logger = logging.getLogger(__name__)
 
@@ -306,3 +308,40 @@ def compare(output_path_list, output_path, **kwargs):
     fig_filename = os.path.join(output_path, 'precision_recall_comparison.pdf')
     logger.info('saving {}'.format(fig_filename))
     fig.savefig(fig_filename)
+
+
+# Plot overviews
+@binseg.command(entry_point_group='bob.ip.binseg.config', cls=ConfigCommand)
+@click.option(
+    '--output-path',
+    '-o',
+    required=True,
+    )
+@verbosity_option(cls=ResourceOption)
+def pdfoverview(output_path, **kwargs):
+    """ Creates an overview pdf with all precision vs recall curves present in the output directory.
+    Requires pdflatex to be available on the host."""
+    # PR curves
+    pr_filename = "precision_recall_comparison.pdf"
+    pr_filenames = get_paths(output_path,pr_filename)
+    create_pdf(output_path, pr_filenames, title='Precision vs Recall', tex_filename='pr_overview.tex')
+    
+    # Training curves
+    trainlog_filename = "*trainlog.pdf"
+    tl_file_names = get_paths(output_path,trainlog_filename)
+    create_pdf(output_path, tl_file_names, title='Training', tex_filename='training_overview.tex')
+
+
+# Create grid table with results
+@binseg.command(entry_point_group='bob.ip.binseg.config', cls=ConfigCommand)
+@click.option(
+    '--output-path',
+    '-o',
+    required=True,
+    )
+@verbosity_option(cls=ResourceOption)
+def gridtable(output_path, **kwargs):
+    """ Creates an overview table in grid rst format for all Metrics.csv in the output_path
+    tree structure: ``outputpath/DATABASE/MODEL`` """
+    create_overview_grid(output_path)
+    

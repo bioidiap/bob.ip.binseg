@@ -141,6 +141,6 @@ def do_train(
         
     log_plot_file = os.path.join(output_folder,"{}_trainlog.pdf".format(model.name))
     logdf = pd.read_csv(os.path.join(output_folder,"{}_trainlog.csv".format(model.name)),header=None, names=["avg. loss", "median loss","lr","max memory"])
-    fig = loss_curve(logdf)
+    fig = loss_curve(logdf,output_folder)
     logger.info("saving {}".format(log_plot_file))
     fig.savefig(log_plot_file)
