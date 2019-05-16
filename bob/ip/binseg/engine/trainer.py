@@ -33,12 +33,12 @@ def do_train(
     model : :py:class:`torch.nn.Module` 
         Network (e.g. DRIU, HED, UNet)
     data_loader : :py:class:`torch.utils.data.DataLoader`
-    optimizer : :py:class.`torch.optim.Optimizer`
-    criterion : :py:class.`torch.nn.modules.loss._Loss`
+    optimizer : :py:mod:`torch.optim`
+    criterion : :py:class:`torch.nn.modules.loss._Loss`
         loss function
-    scheduler : :py:class.`torch.optim._LRScheduler`
+    scheduler : :py:mod:`torch.optim`
         learning rate scheduler
-    checkpointer : :py:class.`bob.ip.binseg.utils.checkpointer.DetectronCheckpointer`
+    checkpointer : :py:class:`bob.ip.binseg.utils.checkpointer.DetectronCheckpointer`
         checkpointer
     checkpoint_period : int
         save a checkpoint every n epochs

@@ -52,6 +52,7 @@ setup(
           'testcheckpoints = bob.ip.binseg.script.binseg:testcheckpoints',
           'pdfoverview = bob.ip.binseg.script.binseg:testcheckpoints',
           'gridtable = bob.ip.binseg.script.binseg:testcheckpoints',
+          'visualize = bob.ip.binseg.script.binseg:visualize',
         ],
 
          #bob hed train configurations

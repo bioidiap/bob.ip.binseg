@@ -31,13 +31,13 @@ def batch_metrics(predictions, ground_truths, names, output_folder, logger):
         list of file names 
     output_folder : str
         output path
-    logger : :py:class:logging
+    logger : :py:class:`logging.Logger`
         python logger
 
     Returns
     -------
     list 
-        list containing batch metrics (name, threshold, precision, recall, specificity, accuracy, jaccard, f1_score)
+        list containing batch metrics: ``[name, threshold, precision, recall, specificity, accuracy, jaccard, f1_score]``
     """
     step_size = 0.01
     batch_metrics = []
@@ -101,7 +101,7 @@ def save_probability_images(predictions, names, output_folder, logger):
         list of file names 
     output_folder : str
         output path
-    logger : :py:class:logging
+    logger : :py:class:`logging.Logger`
         python logger
     """
     images_subfolder = os.path.join(output_folder,'images') 
@@ -125,10 +125,9 @@ def do_inference(
     
     Parameters
     ---------
-    model : :py:class:torch.nn.Module
+    model : :py:class:`torch.nn.Module`
         neural network model (e.g. DRIU, HED, UNet)
-    data_loader : py:class:torch.torch.utils.data.DataLoader
-        PyTorch DataLoader
+    data_loader : py:class:`torch.torch.utils.data.DataLoader`
     device : str
         device to use ``'cpu'`` or ``'cuda'``
     output_folder : str

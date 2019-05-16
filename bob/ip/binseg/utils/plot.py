@@ -1,40 +1,44 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# author='Andre Anjos',
-# author_email='andre.anjos@idiap.ch',
-
 import numpy as np
 import os
 import csv 
+import pandas as pd
+import PIL
+from PIL import Image
+import torchvision.transforms.functional as VF
+import torch
 
-def precision_recall_f1iso(precision, recall, names, title=None, human_perf_bsds500=False):
-    '''Creates a precision-recall plot of the given data.   
+def precision_recall_f1iso(precision, recall, names, title=None):
+    """
+    Author: Andre Anjos (andre.anjos@idiap.ch).
+    
+    Creates a precision-recall plot of the given data.   
     The plot will be annotated with F1-score iso-lines (in which the F1-score
     maintains the same value)   
+    
     Parameters
     ----------  
-      precision : :py:class:`np.ndarray` or :py:class:`list`
+    precision : :py:class:`numpy.ndarray` or :py:class:`list`
         A list of 1D np arrays containing the Y coordinates of the plot, or
         the precision, or a 2D np array in which the rows correspond to each
         of the system's precision coordinates.  
-      recall : :py:class:`np.ndarray` or :py:class:`list`
+    recall : :py:class:`numpy.ndarray` or :py:class:`list`
         A list of 1D np arrays containing the X coordinates of the plot, or
         the recall, or a 2D np array in which the rows correspond to each
         of the system's recall coordinates. 
-      names : :py:class:`list`
+    names : :py:class:`list`
         An iterable over the names of each of the systems along the rows of
         ``precision`` and ``recall``      
-      title : :py:class:`str`, optional
+    title : :py:class:`str`, optional
         A title for the plot. If not set, omits the title   
-      human_perf_bsds500 : :py:class:`bool`, optional
-        Whether to display the human performance on the BSDS-500 dataset - it is
-        a fixed point on precision=0.897659 and recall=0.700762.    
+
     Returns
     ------- 
-      figure : matplotlib.figure.Figure
+    matplotlib.figure.Figure
         A matplotlib figure you can save or display 
-    ''' 
+    """ 
     import matplotlib
     matplotlib.use('agg')
     import matplotlib.pyplot as plt 
@@ -74,8 +78,6 @@ def precision_recall_f1iso(precision, recall, names, title=None, human_perf_bsds
         x = np.linspace(0.01, 1)
         y = f_score * x / (2 * x - f_score)
         l, = plt.plot(x[y >= 0], y[y >= 0], color='green', alpha=0.1)
-        if human_perf_bsds500:
-            plt.plot(0.700762, 0.897659, 'go', markersize=5, label='[F=0.800] Human')
         tick_locs.append(y[-1])
         tick_labels.append('%.1f' % f_score)  
     ax2.tick_params(axis='y', which='both', pad=0, right=False, left=False)
@@ -103,17 +105,18 @@ def precision_recall_f1iso(precision, recall, names, title=None, human_perf_bsds
 
 
 def loss_curve(df, title):
-    ''' Creates a loss curve
-    Dataframe with column names:
-    ["avg. loss", "median loss","lr","max memory"]
-    Arguments
-    ---------
-    df : :py:class.`pandas.DataFrame`
+    """ Creates a loss curve given a Dataframe with column names:
+
+    ``['avg. loss', 'median loss','lr','max memory']``
+    
+    Parameters
+    ----------
+    df : :py:class:`pandas.DataFrame`
     
     Returns
     -------
-    fig : matplotlib.figure.Figure
-    ''' 
+    matplotlib.figure.Figure
+    """   
     import matplotlib
     matplotlib.use('agg')
     import matplotlib.pyplot as plt 
@@ -134,14 +137,14 @@ def read_metricscsv(file):
     Read precision and recall from csv file
     
     Parameters
-    ---------
-    file: str
-           path to file
+    ----------
+    file : str
+        path to file
     
     Returns
     -------
-        precision : :py:class:`np.ndarray`
-        recall : :py:class:`np.ndarray`
+    :py:class:`numpy.ndarray`
+    :py:class:`numpy.ndarray`
     """
     with open (file, "r") as infile:
         metricsreader = csv.reader(infile)
@@ -158,13 +161,14 @@ def read_metricscsv(file):
 def plot_overview(outputfolders):
     """
     Plots comparison chart of all trained models
-    Arguments
-    ---------
+    
+    Parameters
+    ----------
     outputfolder : list
-                    list containing output paths of all evaluated models (e.g. ['DRIVE/model1', 'DRIVE/model2'])
+        list containing output paths of all evaluated models (e.g. ``['DRIVE/model1', 'DRIVE/model2']``)
     Returns
     -------
-    fig : matplotlib.figure.Figure
+    matplotlib.figure.Figure
     """
     precisions = []
     recalls = []
@@ -189,4 +193,97 @@ def plot_overview(outputfolders):
     fig = precision_recall_f1iso(precisions,recalls,names,title)
     return fig
 
-  
+def metricsviz(dataset
+                ,output_path
+                ,tp_color= (128,128,128)
+                ,fp_color = (70, 240, 240)
+                ,fn_color = (245, 130, 48)
+                ):
+    """ Visualizes true positives, false positives and false negatives
+    Default colors TP: Gray, FP: Cyan, FN: Orange
+    
+    Parameters
+    ----------
+    dataset : :py:class:`torch.utils.data.Dataset`
+    output_path : str
+        path where results and probability output images are stored. E.g. ``'DRIVE/MODEL'``
+    tp_color : tuple
+        RGB values, by default (128,128,128)
+    fp_color : tuple
+        RGB values, by default (70, 240, 240)
+    fn_color : tuple
+        RGB values, by default (245, 130, 48)
+    """
+
+    for sample in dataset:
+        # get sample
+        name  = sample[0]
+        img = VF.to_pil_image(sample[1]) # PIL Image
+        gt = sample[2].byte() # byte tensor
+        
+        # read metrics 
+        metrics = pd.read_csv(os.path.join(output_path,'results','Metrics.csv'))
+        optimal_threshold = metrics['threshold'][metrics['f1_score'].idxmax()]
+        
+        # read probability output 
+        pred = Image.open(os.path.join(output_path,'images',name))
+        pred = VF.to_tensor(pred)
+        binary_pred = torch.gt(pred, optimal_threshold).byte()
+        
+        # calc metrics
+        # equals and not-equals
+        equals = torch.eq(binary_pred, gt) # tensor
+        notequals = torch.ne(binary_pred, gt) # tensor      
+        # true positives 
+        tp_tensor = (gt * binary_pred ) # tensor
+        tp_pil = VF.to_pil_image(tp_tensor.float())
+        tp_pil_colored = PIL.ImageOps.colorize(tp_pil, (0,0,0), tp_color)
+        # false positives 
+        fp_tensor = torch.eq((binary_pred + tp_tensor), 1) 
+        fp_pil = VF.to_pil_image(fp_tensor.float())
+        fp_pil_colored = PIL.ImageOps.colorize(fp_pil, (0,0,0), fp_color)
+        # false negatives
+        fn_tensor = notequals - fp_tensor
+        fn_pil = VF.to_pil_image(fn_tensor.float())
+        fn_pil_colored = PIL.ImageOps.colorize(fn_pil, (0,0,0), fn_color)
+
+        # paste together
+        tp_pil_colored.paste(fp_pil_colored,mask=fp_pil)
+        tp_pil_colored.paste(fn_pil_colored,mask=fn_pil)
+
+        # save to disk 
+        overlayed_path = os.path.join(output_path,'tpfnfpviz')
+        if not os.path.exists(overlayed_path): os.makedirs(overlayed_path)
+        tp_pil_colored.save(os.path.join(overlayed_path,name))
+
+
+def overlay(dataset, output_path):
+    """Overlays prediction probabilities vessel tree with original test image.
+    
+    Parameters
+    ----------
+    dataset : :py:class:`torch.utils.data.Dataset`
+    output_path : str
+        path where results and probability output images are stored. E.g. ``'DRIVE/MODEL'``
+    """
+
+    for sample in dataset:
+        # get sample
+        name  = sample[0]
+        img = VF.to_pil_image(sample[1]) # PIL Image
+        gt = sample[2].byte() # byte tensor
+        
+        # read metrics 
+        metrics = pd.read_csv(os.path.join(output_path,'results','Metrics.csv'))
+        optimal_threshold = metrics['threshold'][metrics['f1_score'].idxmax()]
+        
+        # read probability output 
+        pred = Image.open(os.path.join(output_path,'images',name))
+        # color and overlay
+        pred_green = PIL.ImageOps.colorize(pred, (0,0,0), (0,255,0))
+        overlayed = PIL.Image.blend(img, pred_green, 0.4)
+
+        # save to disk
+        overlayed_path = os.path.join(output_path,'overlayed')
+        if not os.path.exists(overlayed_path): os.makedirs(overlayed_path)
+        overlayed.save(os.path.join(overlayed_path,name))

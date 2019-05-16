@@ -114,7 +114,7 @@ class Pad:
         return [VF.pad(img, self.padding, self.fill, padding_mode='constant') for img in args]
     
 class ToTensor:
-    """Converts PIL.Image to torch.tensor """
+    """Converts :py:class:`PIL.Image.Image` to :py:class:`torch.Tensor` """
     def __call__(self, *args):
         return [VF.to_tensor(img) for img in args]
 
@@ -191,16 +191,16 @@ class ColorJitter(object):
     ----------
     brightness : float 
         how much to jitter brightness. brightness_factor
-        is chosen uniformly from [max(0, 1 - brightness), 1 + brightness].
+        is chosen uniformly from ``[max(0, 1 - brightness), 1 + brightness]``.
     contrast : float
         how much to jitter contrast. contrast_factor
-        is chosen uniformly from [max(0, 1 - contrast), 1 + contrast].
+        is chosen uniformly from ``[max(0, 1 - contrast), 1 + contrast]``.
     saturation : float 
         how much to jitter saturation. saturation_factor
-        is chosen uniformly from [max(0, 1 - saturation), 1 + saturation].
+        is chosen uniformly from ``[max(0, 1 - saturation), 1 + saturation]``.
     hue : float 
         how much to jitter hue. hue_factor is chosen uniformly from
-        [-hue, hue]. Should be >=0 and <= 0.5
+        ``[-hue, hue]``. Should be >=0 and <= 0.5
     prob : float
         probability at which the operation is applied
     """
@@ -247,10 +247,9 @@ class ColorJitter(object):
 
 class RandomResizedCrop:
     """Crop to random size and aspect ratio.
-    A crop of random size (default: of 0.08 to 1.0) of the original size and a random
-    aspect ratio (default: of 3/4 to 4/3) of the original aspect ratio is made. This crop
-    is finally resized to given size.
-    This is popularly used to train the Inception networks.
+    A crop of random size of the original size and a random aspect ratio of 
+    the original aspect ratio is made. This crop is finally resized to 
+    given size. This is popularly used to train the Inception networks.
     
     Attributes
     ----------

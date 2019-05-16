@@ -29,6 +29,7 @@ from bob.ip.binseg.utils.plot import plot_overview
 from bob.ip.binseg.utils.click import OptionEatAll
 from bob.ip.binseg.utils.pdfcreator import create_pdf, get_paths
 from bob.ip.binseg.utils.rsttable import create_overview_grid
+from bob.ip.binseg.utils.plot import metricsviz, overlay
 
 logger = logging.getLogger(__name__)
 
@@ -342,6 +343,42 @@ def pdfoverview(output_path, **kwargs):
 @verbosity_option(cls=ResourceOption)
 def gridtable(output_path, **kwargs):
     """ Creates an overview table in grid rst format for all Metrics.csv in the output_path
-    tree structure: ``outputpath/DATABASE/MODEL`` """
+    tree structure: 
+        ├── DATABASE
+        ├── MODEL
+            ├── images
+            └── results
+    """
+    logger.info('Creating grid for all results in {}'.format(output_path))
     create_overview_grid(output_path)
-    
+
+
+# Create metrics viz
+@binseg.command(entry_point_group='bob.ip.binseg.config', cls=ConfigCommand)
+@click.option(
+    '--dataset',
+    '-d',
+    required=True,
+    cls=ResourceOption
+    )
+@click.option(
+    '--output-path',
+    '-o',
+    required=True,
+    )
+@verbosity_option(cls=ResourceOption)
+def visualize(dataset, output_path, **kwargs):
+    """ Creates the following visualizations of the probabilties output maps:
+    overlayed: test images overlayed with prediction probabilities vessel tree
+    tpfnfpviz: highlights true positives, false negatives and false positives
+
+    Required tree structure: 
+    ├── DATABASE
+        ├── MODEL
+            ├── images
+            └── results
+    """
+    logger.info('Creating TP, FP, FN visualizations for {}'.format(output_path))
+    metricsviz(dataset=dataset, output_path=output_path)
+    logger.info('Creating overlay visualizations for {}'.format(output_path))
+    overlay(dataset=dataset, output_path=output_path)

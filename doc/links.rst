@@ -6,3 +6,4 @@
 .. _bob: http://www.idiap.ch/software/bob
 .. _installation: https://www.idiap.ch/software/bob/install
 .. _mailing list: https://www.idiap.ch/software/bob/discuss
+.. _torchvision package: https://github.com/pytorch/vision
