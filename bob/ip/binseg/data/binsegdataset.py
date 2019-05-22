@@ -7,7 +7,7 @@ class BinSegDataset(Dataset):
     A transform object can be passed that will be applied to the image, ground truth and mask (if present). 
     It supports indexing such that dataset[i] can be used to get ith sample.
     
-    Attributes
+    Parameters
     ---------- 
     bobdb : :py:mod:`bob.db.base`
         Binary segmentation bob database (e.g. bob.db.drive) 
@@ -15,6 +15,8 @@ class BinSegDataset(Dataset):
         ``'train'`` or ``'test'``. Defaults to ``'train'``
     transform : :py:mod:`bob.ip.binseg.data.transforms`, optional
         A transform or composition of transfroms. Defaults to ``None``.
+    mask : bool
+        whether dataset contains masks or not
     """
     def __init__(self, bobdb, split = 'train', transform = None):
         self.database = bobdb.samples(split)

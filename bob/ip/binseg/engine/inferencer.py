@@ -134,9 +134,9 @@ def do_inference(
     """
     logger = logging.getLogger("bob.ip.binseg.engine.inference")
     logger.info("Start evaluation")
-    logger.info("Split: {}, Output folder: {}, Device: {}".format(data_loader.dataset.split, output_folder, device))
+    logger.info("Output folder: {}, Device: {}".format(output_folder, device))
     results_subfolder = os.path.join(output_folder,'results') 
-    if not os.path.exists(results_subfolder): os.makedirs(results_subfolder)
+    os.makedirs(results_subfolder,exist_ok=True)
     
     model.eval().to(device)
     # Sigmoid for probabilities 
@@ -206,7 +206,7 @@ def do_inference(
     np_avg_metrics = avg_metrics.to_numpy().T
     fig_name = "precision_recall.pdf"
     logger.info("saving {}".format(fig_name))
-    fig = precision_recall_f1iso([np_avg_metrics[0]],[np_avg_metrics[1]], [model.name,None], title=output_folder)
+    fig = precision_recall_f1iso([np_avg_metrics[0]],[np_avg_metrics[1]], [model.name,None], title=output_folder.split('/')[-2:])
     fig_filename = os.path.join(results_subfolder, fig_name)
     fig.savefig(fig_filename)
     

@@ -197,12 +197,21 @@ def train(model
     required=True,
     default='cpu',
     cls=ResourceOption)
+@click.option(
+    '--weight',
+    '-w',
+    help='Path or URL to pretrained model',
+    required=False,
+    default=None,
+    cls=ResourceOption
+    )
 @verbosity_option(cls=ResourceOption)
 def test(model
         ,output_path
         ,device
         ,batch_size
         ,dataset
+        ,weight
         , **kwargs):
     """ Run inference and evalaute the model performance """
 
@@ -216,7 +225,7 @@ def test(model
     
     # checkpointer, load last model in dir
     checkpointer = DetectronCheckpointer(model, save_dir = output_path, save_to_disk=False)
-    checkpointer.load()
+    checkpointer.load(weight)
     do_inference(model, data_loader, device, output_path)
 
 

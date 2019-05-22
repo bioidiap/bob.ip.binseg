@@ -22,6 +22,7 @@ record.txt
 core
 output_temp
 output
+*.DS_Store
 
 
 ### JupyterNotebook ###

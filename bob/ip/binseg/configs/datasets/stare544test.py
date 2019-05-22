@@ -1,19 +1,20 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from bob.db.drive import Database as DRIVE
+from bob.db.stare import Database as STARE
 from bob.ip.binseg.data.transforms import *
 from bob.ip.binseg.data.binsegdataset import BinSegDataset
 
 #### Config ####
 
 transforms = Compose([  
-                        CenterCrop((544,544))
+                        Resize(471)
+                        ,Pad((0,37,0,36))
                         ,ToTensor()
                     ])
 
 # bob.db.dataset init
-bobdb = DRIVE(protocol = 'default')
+bobdb = STARE(protocol = 'default')
 
 # PyTorch dataset
 dataset = BinSegDataset(bobdb, split='test', transform=transforms)
