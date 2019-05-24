@@ -24,6 +24,7 @@ from bob.extension.scripts.click_helper import (verbosity_option,
 from bob.ip.binseg.utils.checkpointer import DetectronCheckpointer
 from torch.utils.data import DataLoader
 from bob.ip.binseg.engine.trainer import do_train
+from bob.ip.binseg.engine.ssltrainer import do_ssltrain
 from bob.ip.binseg.engine.inferencer import do_inference
 from bob.ip.binseg.utils.plot import plot_overview
 from bob.ip.binseg.utils.click import OptionEatAll
@@ -391,3 +392,125 @@ def visualize(dataset, output_path, **kwargs):
     metricsviz(dataset=dataset, output_path=output_path)
     logger.info('Creating overlay visualizations for {}'.format(output_path))
     overlay(dataset=dataset, output_path=output_path)
+
+
+# SSLTrain
+@binseg.command(entry_point_group='bob.ip.binseg.config', cls=ConfigCommand)
+@click.option(
+    '--output-path',
+    '-o',
+    required=True,
+    default="output",
+    cls=ResourceOption
+    )
+@click.option(
+    '--model',
+    '-m',
+    required=True,
+    cls=ResourceOption
+    )
+@click.option(
+    '--dataset',
+    '-d',
+    required=True,
+    cls=ResourceOption
+    )
+@click.option(
+    '--optimizer',
+    required=True,
+    cls=ResourceOption
+    )
+@click.option(
+    '--criterion',
+    required=True,
+    cls=ResourceOption
+    )
+@click.option(
+    '--scheduler',
+    required=True,
+    cls=ResourceOption
+    )
+@click.option(
+    '--pretrained-backbone',
+    '-t',
+    required=True,
+    cls=ResourceOption
+    )
+@click.option(
+    '--batch-size',
+    '-b',
+    required=True,
+    default=2,
+    cls=ResourceOption)
+@click.option(
+    '--epochs',
+    '-e',
+    help='Number of epochs used for training',
+    show_default=True,
+    required=True,
+    default=6,
+    cls=ResourceOption)
+@click.option(
+    '--checkpoint-period',
+    '-p',
+    help='Number of epochs after which a checkpoint is saved',
+    show_default=True,
+    required=True,
+    default=2,
+    cls=ResourceOption)
+@click.option(
+    '--device',
+    '-d',
+    help='A string indicating the device to use (e.g. "cpu" or "cuda:0"',
+    show_default=True,
+    required=True,
+    default='cpu',
+    cls=ResourceOption)
+
+@verbosity_option(cls=ResourceOption)
+def ssltrain(model
+        ,optimizer
+        ,scheduler
+        ,output_path
+        ,epochs
+        ,pretrained_backbone
+        ,batch_size
+        ,criterion
+        ,dataset
+        ,checkpoint_period
+        ,device
+        ,**kwargs):
+    """ Train a model """
+    
+    if not os.path.exists(output_path): os.makedirs(output_path)
+    
+    # PyTorch dataloader
+    data_loader = DataLoader(
+        dataset = dataset
+        ,batch_size = batch_size
+        ,shuffle= True
+        ,pin_memory = torch.cuda.is_available()
+        )
+
+    # Checkpointer
+    checkpointer = DetectronCheckpointer(model, optimizer, scheduler,save_dir = output_path, save_to_disk=True)
+    arguments = {}
+    arguments["epoch"] = 0 
+    extra_checkpoint_data = checkpointer.load(pretrained_backbone)
+    arguments.update(extra_checkpoint_data)
+    arguments["max_epoch"] = epochs
+    
+    # Train
+    logger.info("Training for {} epochs".format(arguments["max_epoch"]))
+    logger.info("Continuing from epoch {}".format(arguments["epoch"]))
+    do_ssltrain(model
+            , data_loader
+            , optimizer
+            , criterion
+            , scheduler
+            , checkpointer
+            , checkpoint_period
+            , device
+            , arguments
+            , output_path
+            )

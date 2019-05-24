@@ -49,9 +49,9 @@ class SoftJaccardBCELogitsLoss(_Loss):
     Attributes
     ----------
     alpha : float
-        determines the weighting of SoftJaccard and BCE. Default: ``0.3``
+        determines the weighting of SoftJaccard and BCE. Default: ``0.7``
     """
-    def __init__(self, alpha=0.3, size_average=None, reduce=None, reduction='mean', pos_weight=None):
+    def __init__(self, alpha=0.7, size_average=None, reduce=None, reduction='mean', pos_weight=None):
         super(SoftJaccardBCELogitsLoss, self).__init__(size_average, reduce, reduction) 
         self.alpha = alpha   
 
@@ -161,3 +161,40 @@ class HEDSoftJaccardBCELogitsLoss(_Loss):
             loss_over_all_inputs.append(loss.unsqueeze(0))
         final_loss = torch.cat(loss_over_all_inputs).mean()
         return loss
+
+
+
+class MixJacLoss(_Loss):
+    """ 
+    Attributes
+    ----------
+    lambda_u : int
+        determines the weighting of SoftJaccard and BCE.
+    """
+    def __init__(self, lambda_u=0.3, jacalpha=0.7, unlabeledjacalpha=0.7, size_average=None, reduce=None, reduction='mean', pos_weight=None):
+        super(MixJacLoss, self).__init__(size_average, reduce, reduction)
+        self.lambda_u = lambda_u
+        self.labeled_loss = SoftJaccardBCELogitsLoss(alpha=jacalpha)
+        self.unlabeled_loss = SoftJaccardBCELogitsLoss(alpha=unlabeledjacalpha)
+
+
+    @weak_script_method
+    def forward(self, input, target, unlabeled_input, unlabeled_traget, ramp_up_factor):
+        """
+        Parameters
+        ----------
+        input : :py:class:`torch.Tensor`
+        target : :py:class:`torch.Tensor`
+        unlabeled_input : :py:class:`torch.Tensor`
+        unlabeled_traget : :py:class:`torch.Tensor`
+        ramp_up_factor : float
+        
+        Returns
+        -------
+        list
+        """
+        ll = self.labeled_loss(input,target)
+        ul = self.unlabeled_loss(unlabeled_input, unlabeled_traget)
+        
+        loss = ll + self.lambda_u * ramp_up_factor * ul
+        return loss, ll, ul
