@@ -136,7 +136,11 @@ def do_ssltrain(
 
     # Logg to file
     with open (os.path.join(output_folder,"{}_trainlog.csv".format(model.name)), "a+") as outfile:
-        
+        for state in optimizer.state.values():
+            for k, v in state.items():
+                if isinstance(v, torch.Tensor):
+                    state[k] = v.to(device)
+
         model.train().to(device)
         # Total training timer
         start_training_time = time.time()
