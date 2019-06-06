@@ -13,6 +13,10 @@ import numpy as np
 from bob.ip.binseg.utils.metric import SmoothedValue
 from bob.ip.binseg.utils.plot import loss_curve
 
+def sharpen(x, T):
+    temp = x**(1/T)
+    return temp / temp.sum(dim=1, keepdim=True)
+
 def mix_up(alpha, input, target, unlabeled_input, unlabled_target):
     """Applies mix up as described in [MIXMATCH_19].
     
@@ -28,21 +32,23 @@ def mix_up(alpha, input, target, unlabeled_input, unlabled_target):
     -------
     list
     """
-    l = np.random.beta(alpha, alpha) # Eq (8)
-    l = max(l, 1 - l) # Eq (9)
-    # Shuffle and concat. Alg. 1 Line: 12
-    w_inputs = torch.cat([input,unlabeled_input],0)
-    w_targets = torch.cat([target,unlabled_target],0)
-    idx = torch.randperm(w_inputs.size(0)) # get random index 
-     
-    # Apply MixUp to labeled data and entries from W. Alg. 1 Line: 13
-    input_mixedup = l * input + (1 - l) * w_inputs[idx[len(input):]] 
-    target_mixedup = l * target + (1 - l) * w_targets[idx[len(target):]]
-    
-    # Apply MixUp to unlabeled data and entries from W. Alg. 1 Line: 14
-    unlabeled_input_mixedup = l * unlabeled_input + (1 - l) * w_inputs[idx[:len(unlabeled_input)]]
-    unlabled_target_mixedup =  l * unlabled_target + (1 - l) * w_targets[idx[:len(unlabled_target)]]
-    return input_mixedup, target_mixedup, unlabeled_input_mixedup, unlabled_target_mixedup
+    # TODO: 
+    with torch.no_grad():
+        l = np.random.beta(alpha, alpha) # Eq (8)
+        l = max(l, 1 - l) # Eq (9)
+        # Shuffle and concat. Alg. 1 Line: 12
+        w_inputs = torch.cat([input,unlabeled_input],0)
+        w_targets = torch.cat([target,unlabled_target],0)
+        idx = torch.randperm(w_inputs.size(0)) # get random index 
+        
+        # Apply MixUp to labeled data and entries from W. Alg. 1 Line: 13
+        input_mixedup = l * input + (1 - l) * w_inputs[idx[len(input):]] 
+        target_mixedup = l * target + (1 - l) * w_targets[idx[len(target):]]
+        
+        # Apply MixUp to unlabeled data and entries from W. Alg. 1 Line: 14
+        unlabeled_input_mixedup = l * unlabeled_input + (1 - l) * w_inputs[idx[:len(unlabeled_input)]]
+        unlabled_target_mixedup =  l * unlabled_target + (1 - l) * w_targets[idx[:len(unlabled_target)]]
+        return input_mixedup, target_mixedup, unlabeled_input_mixedup, unlabled_target_mixedup
 
 
 def linear_rampup(current, rampup_length=16):
@@ -135,7 +141,7 @@ def do_ssltrain(
     max_epoch = arguments["max_epoch"]
 
     # Logg to file
-    with open (os.path.join(output_folder,"{}_trainlog.csv".format(model.name)), "a+") as outfile:
+    with open (os.path.join(output_folder,"{}_trainlog.csv".format(model.name)), "a+",1) as outfile:
         for state in optimizer.state.values():
             for k, v in state.items():
                 if isinstance(v, torch.Tensor):
@@ -165,9 +171,10 @@ def do_ssltrain(
                 unlabeled_outputs = model(unlabeled_images)
                 # guessed unlabeled outputs
                 unlabeled_ground_truths = guess_labels(unlabeled_images, model)
-                ramp_up_factor = linear_rampup(epoch,rampup_length=16)
+                #unlabeled_ground_truths = sharpen(unlabeled_ground_truths,0.5)
+                #images, ground_truths, unlabeled_images, unlabeled_ground_truths = mix_up(0.75, images, ground_truths, unlabeled_images, unlabeled_ground_truths)
+                ramp_up_factor = linear_rampup(epoch,rampup_length=500)
 
-                
                 loss, ll, ul = criterion(outputs, ground_truths, unlabeled_outputs, unlabeled_ground_truths, ramp_up_factor)
                 optimizer.zero_grad()
                 loss.backward()
@@ -212,8 +219,8 @@ def do_ssltrain(
                         "epoch: {epoch}, "
                         "avg. loss: {avg_loss:.6f}, "
                         "median loss: {median_loss:.6f}, "
-                        "{median_labeled_loss}, "
-                        "{median_unlabeled_loss}, "
+                        "labeled loss: {median_labeled_loss}, "
+                        "unlabeled loss: {median_unlabeled_loss}, "
                         "lr: {lr:.6f}, "
                         "max mem: {memory:.0f}"
                         ).format(
@@ -241,3 +248,4 @@ def do_ssltrain(
     fig = loss_curve(logdf,output_folder)
     logger.info("saving {}".format(log_plot_file))
     fig.savefig(log_plot_file)
+  
