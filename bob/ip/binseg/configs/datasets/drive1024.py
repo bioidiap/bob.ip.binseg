@@ -8,11 +8,11 @@ from bob.ip.binseg.data.binsegdataset import BinSegDataset
 #### Config ####
 
 transforms = Compose([  
-                        CenterCrop((540,540))
+                        RandomRotation()
+                        ,CenterCrop((540,540))
                         ,Resize(1024)
                         ,RandomHFlip()
                         ,RandomVFlip()
-                        ,RandomRotation()
                         ,ColorJitter()
                         ,ToTensor()
                     ])

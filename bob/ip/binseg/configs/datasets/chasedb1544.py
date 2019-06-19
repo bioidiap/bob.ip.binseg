@@ -7,9 +7,13 @@ from bob.ip.binseg.data.binsegdataset import BinSegDataset
 
 #### Config ####
 
-transforms = Compose([      
-                        Resize(544)
+transforms = Compose([  
+                        RandomRotation()
+                        ,Resize(544)
                         ,Crop(0,12,544,544)
+                        ,RandomHFlip()
+                        ,RandomVFlip()
+                        ,ColorJitter()
                         ,ToTensor()
                     ])
 
@@ -17,4 +21,4 @@ transforms = Compose([
 bobdb = CHASEDB1(protocol = 'default')
 
 # PyTorch dataset
-dataset = BinSegDataset(bobdb, split='test', transform=transforms)
+dataset = BinSegDataset(bobdb, split='train', transform=transforms)

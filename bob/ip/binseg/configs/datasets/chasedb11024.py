@@ -1,25 +1,24 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from bob.db.drive import Database as DRIVE
+from bob.db.chasedb1 import Database as CHASEDB1
 from bob.ip.binseg.data.transforms import *
 from bob.ip.binseg.data.binsegdataset import BinSegDataset
 
 #### Config ####
 
 transforms = Compose([  
-                        Crop(75,10,416,544)
-                        ,Pad((21,0,22,0))
-                        ,Resize(2336)
+                        RandomRotation()
+                        ,Crop(0,18,960,960)
+                        ,Resize(1024)
                         ,RandomHFlip()
                         ,RandomVFlip()
-                        ,RandomRotation()
                         ,ColorJitter()
                         ,ToTensor()
                     ])
 
 # bob.db.dataset init
-bobdb = DRIVE(protocol = 'default')
+bobdb = CHASEDB1(protocol = 'default')
 
 # PyTorch dataset
 dataset = BinSegDataset(bobdb, split='train', transform=transforms)

@@ -55,7 +55,7 @@ def do_train(
     max_epoch = arguments["max_epoch"]
 
     # Logg to file
-    with open (os.path.join(output_folder,"{}_trainlog.csv".format(model.name)), "a+") as outfile:
+    with open (os.path.join(output_folder,"{}_trainlog.csv".format(model.name)), "a+", 1) as outfile:
         
         model.train().to(device)
         # Total training timer
