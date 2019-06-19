@@ -466,6 +466,14 @@ def visualize(dataset, output_path, **kwargs):
     required=True,
     default='cpu',
     cls=ResourceOption)
+@click.option(
+    '--rampup',
+    '-r',
+    help='Ramp-up length in epochs',
+    show_default=True,
+    required=True,
+    default='900',
+    cls=ResourceOption)
 
 @verbosity_option(cls=ResourceOption)
 def ssltrain(model
@@ -479,6 +487,7 @@ def ssltrain(model
         ,dataset
         ,checkpoint_period
         ,device
+        ,rampup
         ,**kwargs):
     """ Train a model """
     
@@ -513,4 +522,5 @@ def ssltrain(model
             , device
             , arguments
             , output_path
+            , rampup
             )

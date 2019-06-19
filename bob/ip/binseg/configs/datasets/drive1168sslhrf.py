@@ -11,6 +11,7 @@ from bob.ip.binseg.data.binsegdataset import BinSegDataset, SSLBinSegDataset, Un
 #### Unlabeled HRF TRAIN ####
 unlabeled_transforms = Compose([  
                         Crop(0,108,2336,3296)
+                        ,Resize(1168)
                         ,RandomHFlip()
                         ,RandomVFlip()
                         ,RandomRotation()
@@ -29,7 +30,7 @@ unlabeled_dataset = UnLabeledBinSegDataset(hrfbobdb, split='train', transform=un
 labeled_transforms = Compose([  
                         Crop(75,10,416,544)
                         ,Pad((21,0,22,0))
-                        ,Resize(2336)
+                        ,Resize(1168)
                         ,RandomHFlip()
                         ,RandomVFlip()
                         ,RandomRotation()

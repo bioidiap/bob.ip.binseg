@@ -51,6 +51,27 @@ def mix_up(alpha, input, target, unlabeled_input, unlabled_target):
         return input_mixedup, target_mixedup, unlabeled_input_mixedup, unlabled_target_mixedup
 
 
+def square_rampup(current, rampup_length=16):
+    """slowly ramp-up ``lambda_u``
+    
+    Parameters
+    ----------
+    current : int
+        current epoch
+    rampup_length : int, optional
+        how long to ramp up, by default 16
+    
+    Returns
+    -------
+    float
+        ramp up factor
+    """
+    if rampup_length == 0:
+        return 1.0
+    else:
+        current = np.clip((current/ float(rampup_length))**2, 0.0, 1.0)
+    return float(current)
+
 def linear_rampup(current, rampup_length=16):
     """slowly ramp-up ``lambda_u``
     
@@ -109,7 +130,8 @@ def do_ssltrain(
     checkpoint_period,
     device,
     arguments,
-    output_folder
+    output_folder,
+    rampup_length
 ):
     """ 
     Train model and save to disk.
@@ -134,6 +156,8 @@ def do_ssltrain(
         start end end epochs
     output_folder : str 
         output path
+    rampup_Length : int
+        rampup epochs
     """
     logger = logging.getLogger("bob.ip.binseg.engine.trainer")
     logger.info("Start training")
@@ -173,7 +197,7 @@ def do_ssltrain(
                 unlabeled_ground_truths = guess_labels(unlabeled_images, model)
                 #unlabeled_ground_truths = sharpen(unlabeled_ground_truths,0.5)
                 #images, ground_truths, unlabeled_images, unlabeled_ground_truths = mix_up(0.75, images, ground_truths, unlabeled_images, unlabeled_ground_truths)
-                ramp_up_factor = linear_rampup(epoch,rampup_length=500)
+                ramp_up_factor = square_rampup(epoch,rampup_length=rampup_length)
 
                 loss, ll, ul = criterion(outputs, ground_truths, unlabeled_outputs, unlabeled_ground_truths, ramp_up_factor)
                 optimizer.zero_grad()
@@ -244,7 +268,7 @@ def do_ssltrain(
             ))
         
     log_plot_file = os.path.join(output_folder,"{}_trainlog.pdf".format(model.name))
-    logdf = pd.read_csv(os.path.join(output_folder,"{}_trainlog.csv".format(model.name)),header=None, names=["avg. loss", "median loss","lr","max memory"])
+    logdf = pd.read_csv(os.path.join(output_folder,"{}_trainlog.csv".format(model.name)),header=None, names=["avg. loss", "median loss", "labeled loss", "unlabeled loss", "lr","max memory"])
     fig = loss_curve(logdf,output_folder)
     logger.info("saving {}".format(log_plot_file))
     fig.savefig(log_plot_file)
