@@ -24,12 +24,14 @@ from bob.extension.scripts.click_helper import (verbosity_option,
 from bob.ip.binseg.utils.checkpointer import DetectronCheckpointer
 from torch.utils.data import DataLoader
 from bob.ip.binseg.engine.trainer import do_train
+from bob.ip.binseg.engine.valtrainer import do_valtrain
 from bob.ip.binseg.engine.inferencer import do_inference
 from bob.ip.binseg.utils.plot import plot_overview
 from bob.ip.binseg.utils.click import OptionEatAll
 from bob.ip.binseg.utils.pdfcreator import create_pdf, get_paths
 from bob.ip.binseg.utils.rsttable import create_overview_grid
 from bob.ip.binseg.utils.plot import metricsviz, overlay
+from torch.utils.data import SubsetRandomSampler
 
 logger = logging.getLogger(__name__)
 
@@ -308,12 +310,17 @@ def testcheckpoints(model
     '-o',
     required=True,
     )
+@click.option(
+    '--title',
+    '-t',
+    required=False,
+    )
 @verbosity_option(cls=ResourceOption)
-def compare(output_path_list, output_path, **kwargs):
+def compare(output_path_list, output_path, title, **kwargs):
     """ Compares multiple metrics files that are stored in the format mymodel/results/Metrics.csv """
     logger.debug("Output paths: {}".format(output_path_list))
     logger.info('Plotting precision vs recall curves for {}'.format(output_path_list))
-    fig = plot_overview(output_path_list)
+    fig = plot_overview(output_path_list,title)
     if not os.path.exists(output_path): os.makedirs(output_path)
     fig_filename = os.path.join(output_path, 'precision_recall_comparison.pdf')
     logger.info('saving {}'.format(fig_filename))
@@ -391,3 +398,141 @@ def visualize(dataset, output_path, **kwargs):
     metricsviz(dataset=dataset, output_path=output_path)
     logger.info('Creating overlay visualizations for {}'.format(output_path))
     overlay(dataset=dataset, output_path=output_path)
+
+
+# Validation Train
+@binseg.command(entry_point_group='bob.ip.binseg.config', cls=ConfigCommand)
+@click.option(
+    '--output-path',
+    '-o',
+    required=True,
+    default="output",
+    cls=ResourceOption
+    )
+@click.option(
+    '--model',
+    '-m',
+    required=True,
+    cls=ResourceOption
+    )
+@click.option(
+    '--dataset',
+    '-d',
+    required=True,
+    cls=ResourceOption
+    )
+@click.option(
+    '--optimizer',
+    required=True,
+    cls=ResourceOption
+    )
+@click.option(
+    '--criterion',
+    required=True,
+    cls=ResourceOption
+    )
+@click.option(
+    '--scheduler',
+    required=True,
+    cls=ResourceOption
+    )
+@click.option(
+    '--pretrained-backbone',
+    '-t',
+    required=True,
+    cls=ResourceOption
+    )
+@click.option(
+    '--batch-size',
+    '-b',
+    required=True,
+    default=2,
+    cls=ResourceOption)
+@click.option(
+    '--epochs',
+    '-e',
+    help='Number of epochs used for training',
+    show_default=True,
+    required=True,
+    default=6,
+    cls=ResourceOption)
+@click.option(
+    '--checkpoint-period',
+    '-p',
+    help='Number of epochs after which a checkpoint is saved',
+    show_default=True,
+    required=True,
+    default=2,
+    cls=ResourceOption)
+@click.option(
+    '--device',
+    '-d',
+    help='A string indicating the device to use (e.g. "cpu" or "cuda:0"',
+    show_default=True,
+    required=True,
+    default='cpu',
+    cls=ResourceOption)
+@click.option(
+    '--valsize',
+    '-a',
+    help='Size of validation set',
+    show_default=True,
+    required=True,
+    default=5,
+    cls=ResourceOption)
+@verbosity_option(cls=ResourceOption)
+def valtrain(model
+        ,optimizer
+        ,scheduler
+        ,output_path
+        ,epochs
+        ,pretrained_backbone
+        ,batch_size
+        ,criterion
+        ,dataset
+        ,checkpoint_period
+        ,device
+        ,valsize
+        ,**kwargs):
+    """ Train a model """
+    
+    if not os.path.exists(output_path): os.makedirs(output_path)
+    
+
+    # Validation and training set size
+    train_size = len(dataset) - valsize 
+    # PyTorch dataloader
+
+    indices = torch.randperm(len(dataset))
+    train_indices = indices[:len(indices)-valsize][:train_size or None]
+    valid_indices = indices[len(indices)-valsize:] if valsize else None
+
+    train_loader = torch.utils.data.DataLoader(dataset, pin_memory=torch.cuda.is_available(), batch_size=batch_size,
+                                                   sampler=SubsetRandomSampler(train_indices))
+
+    valid_loader = torch.utils.data.DataLoader(dataset, pin_memory=torch.cuda.is_available(), batch_size=batch_size,
+                                                   sampler=SubsetRandomSampler(valid_indices))
+
+    # Checkpointer
+    checkpointer = DetectronCheckpointer(model, optimizer, scheduler,save_dir = output_path, save_to_disk=True)
+    arguments = {}
+    arguments["epoch"] = 0 
+    extra_checkpoint_data = checkpointer.load(pretrained_backbone)
+    arguments.update(extra_checkpoint_data)
+    arguments["max_epoch"] = epochs
+    
+    # Train
+    logger.info("Training for {} epochs".format(arguments["max_epoch"]))
+    logger.info("Continuing from epoch {}".format(arguments["epoch"]))
+    do_valtrain(model
+            , train_loader
+            , optimizer
+            , criterion
+            , scheduler
+            , checkpointer
+            , checkpoint_period
+            , device
+            , arguments
+            , output_path
+            , valid_loader
+            )

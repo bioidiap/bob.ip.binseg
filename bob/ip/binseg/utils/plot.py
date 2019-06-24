@@ -158,7 +158,7 @@ def read_metricscsv(file):
     return np.array(precision), np.array(recall)
 
 
-def plot_overview(outputfolders):
+def plot_overview(outputfolders,title):
     """
     Plots comparison chart of all trained models
     
@@ -166,6 +166,8 @@ def plot_overview(outputfolders):
     ----------
     outputfolder : list
         list containing output paths of all evaluated models (e.g. ``['DRIVE/model1', 'DRIVE/model2']``)
+    title : str
+        title of plot
     Returns
     -------
     matplotlib.figure.Figure
@@ -181,15 +183,16 @@ def plot_overview(outputfolders):
         precisions.append(pr)
         recalls.append(re)
         modelname = folder.split('/')[-1]
+        datasetname =  folder.split('/')[-2]
         # parameters
         summary_path = os.path.join(folder,'results/ModelSummary.txt')
         with open (summary_path, "r") as outfile:
           rows = outfile.readlines()
           lastrow = rows[-1]
           parameter = int(lastrow.split()[1].replace(',',''))
-        name = '[P={:.2f}M] {}'.format(parameter/100**3, modelname)
+        name = '[P={:.2f}M] {} {}'.format(parameter/100**3, modelname, datasetname)
         names.append(name)
-    title = folder.split('/')[-2]
+    #title = folder.split('/')[-4]
     fig = precision_recall_f1iso(precisions,recalls,names,title)
     return fig
 
