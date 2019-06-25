@@ -93,7 +93,7 @@ def do_valtrain(
 
             if epoch % checkpoint_period == 0:
                 checkpointer.save("model_{:03d}".format(epoch), **arguments)
-                val_folder = os.path.join((output_folder,epoch))
+                val_folder = os.path.join(output_folder,epoch)
                 do_inference(model,val_loader, device, val_folder)
 
             if epoch == max_epoch:
