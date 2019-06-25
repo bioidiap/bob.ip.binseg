@@ -309,12 +309,17 @@ def testcheckpoints(model
     '-o',
     required=True,
     )
+@click.option(
+    '--title',
+    '-t',
+    required=False,
+    )
 @verbosity_option(cls=ResourceOption)
-def compare(output_path_list, output_path, **kwargs):
+def compare(output_path_list, output_path, title, **kwargs):
     """ Compares multiple metrics files that are stored in the format mymodel/results/Metrics.csv """
     logger.debug("Output paths: {}".format(output_path_list))
     logger.info('Plotting precision vs recall curves for {}'.format(output_path_list))
-    fig = plot_overview(output_path_list)
+    fig = plot_overview(output_path_list,title)
     if not os.path.exists(output_path): os.makedirs(output_path)
     fig_filename = os.path.join(output_path, 'precision_recall_comparison.pdf')
     logger.info('saving {}'.format(fig_filename))
