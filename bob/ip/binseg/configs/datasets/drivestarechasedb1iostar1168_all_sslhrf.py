@@ -1,7 +1,7 @@
-from bob.ip.binseg.configs.datasets.drive1168 import dataset as drive
-from bob.ip.binseg.configs.datasets.stare1168 import dataset as stare
-from bob.ip.binseg.configs.datasets.chasedb11168 import dataset as chasedb
-from bob.ip.binseg.configs.datasets.iostarvessel1168 import dataset as iostar
+from bob.ip.binseg.configs.datasets.drive1168all import dataset as drive
+from bob.ip.binseg.configs.datasets.stare1168all import dataset as stare
+from bob.ip.binseg.configs.datasets.chasedb11168all import dataset as chasedb
+from bob.ip.binseg.configs.datasets.iostarvessel1168all import dataset as iostar
 from bob.db.hrf import Database as HRF
 from bob.ip.binseg.data.transforms import *
 import torch
