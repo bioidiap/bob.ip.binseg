@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from torch.optim.lr_scheduler import MultiStepLR
-from bob.ip.binseg.modeling.m2u import build_m2unet
+from bob.ip.binseg.modeling.driu import build_driu
 import torch.optim as optim
 from torch.nn import BCEWithLogitsLoss
 from bob.ip.binseg.utils.model_zoo import modelurls
@@ -23,17 +23,17 @@ scheduler_milestones = [900]
 scheduler_gamma = 0.1
 
 # model
-model = build_m2unet()
+model = build_driu()
 
 # pretrained backbone
-pretrained_backbone = modelurls['mobilenetv2']
+pretrained_backbone = modelurls['vgg16']
 
 # optimizer
 optimizer = AdaBound(model.parameters(), lr=lr, betas=betas, final_lr=final_lr, gamma=gamma,
                  eps=eps, weight_decay=weight_decay, amsbound=amsbound) 
-    
+
 # criterion
-criterion = MixJacLoss(lambda_u=0.3, jacalpha=0.7, unlabeledjacalpha=0.3)
+criterion = MixJacLoss(lambda_u=0.05, jacalpha=0.7)
 
 # scheduler
 scheduler = MultiStepLR(optimizer, milestones=scheduler_milestones, gamma=scheduler_gamma)

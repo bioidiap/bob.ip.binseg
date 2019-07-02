@@ -171,7 +171,7 @@ class MixJacLoss(_Loss):
     lambda_u : int
         determines the weighting of SoftJaccard and BCE.
     """
-    def __init__(self, lambda_u=100, jacalpha=0.7, unlabeledjacalpha=0.3, size_average=None, reduce=None, reduction='mean', pos_weight=None):
+    def __init__(self, lambda_u=100, jacalpha=0.7, size_average=None, reduce=None, reduction='mean', pos_weight=None):
         super(MixJacLoss, self).__init__(size_average, reduce, reduction)
         self.lambda_u = lambda_u
         self.labeled_loss = SoftJaccardBCELogitsLoss(alpha=jacalpha)

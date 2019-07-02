@@ -1,25 +1,24 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from bob.db.drive import Database as DRIVE
+from bob.db.hrf import Database as HRF
 from bob.ip.binseg.data.transforms import *
 from bob.ip.binseg.data.binsegdataset import BinSegDataset
 
 #### Config ####
 
 transforms = Compose([  
-                        Crop(75,10,416,544)
-                        ,Pad((21,0,22,0))
-                        ,Resize(2336)
+                        Resize((363))
+                        ,Pad((0,90,0,91))
+                        ,RandomRotation()
                         ,RandomHFlip()
                         ,RandomVFlip()
-                        ,RandomRotation()
                         ,ColorJitter()
                         ,ToTensor()
                     ])
 
 # bob.db.dataset init
-bobdb = DRIVE(protocol = 'default')
+bobdb = HRF(protocol = 'default')
 
 # PyTorch dataset
 dataset = BinSegDataset(bobdb, split='train', transform=transforms)

@@ -14,7 +14,6 @@ transforms = Compose([  RandomRotation()
                         ,RandomVFlip()
                         ,ColorJitter()
                         ,ToTensor()
-                        ,ToTensor()
                     ])
 
 # bob.db.dataset init

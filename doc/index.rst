@@ -15,6 +15,7 @@ Users Guide
    :maxdepth: 2
  
    datasets
+   benchmarkresults
    api
    references
 
