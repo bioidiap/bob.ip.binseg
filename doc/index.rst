@@ -13,8 +13,11 @@ Users Guide
 
 .. toctree::
    :maxdepth: 2
- 
+
+   setup
    datasets
+   training
+   evaluation
    benchmarkresults
    api
    references

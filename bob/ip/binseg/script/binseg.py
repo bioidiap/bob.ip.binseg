@@ -95,7 +95,7 @@ def binseg():
     help='Number of epochs used for training',
     show_default=True,
     required=True,
-    default=6,
+    default=1000,
     cls=ResourceOption)
 @click.option(
     '--checkpoint-period',
@@ -103,7 +103,7 @@ def binseg():
     help='Number of epochs after which a checkpoint is saved',
     show_default=True,
     required=True,
-    default=2,
+    default=100,
     cls=ResourceOption)
 @click.option(
     '--device',
@@ -453,7 +453,7 @@ def visualize(dataset, output_path, **kwargs):
     help='Number of epochs used for training',
     show_default=True,
     required=True,
-    default=6,
+    default=1000,
     cls=ResourceOption)
 @click.option(
     '--checkpoint-period',
@@ -461,7 +461,7 @@ def visualize(dataset, output_path, **kwargs):
     help='Number of epochs after which a checkpoint is saved',
     show_default=True,
     required=True,
-    default=2,
+    default=100,
     cls=ResourceOption)
 @click.option(
     '--device',

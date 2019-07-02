@@ -30,4 +30,12 @@ Supported Datasets
 +-----+---------------+-------------+--------+-------+------+------+--------+-----+-----+----------------------------+
 
 
+Add-on: Folder-based Dataset
+============================
+
+For quick experimentation we also provide a PyTorch class that works with a 
+dataset folder structure:
+
+
+
 .. include:: links.rst
