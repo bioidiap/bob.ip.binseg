@@ -190,10 +190,14 @@ def plot_overview(outputfolders,title):
           rows = outfile.readlines()
           lastrow = rows[-1]
           parameter = int(lastrow.split()[1].replace(',',''))
+<<<<<<< HEAD
         name = '[P={:.2f}M] {}'.format(parameter/100**3, modelname)
         #name = '[P={:.2f}M] {} {}'.format(parameter/100**3, modelname, datasetname)
+=======
+        name = '[P={:.2f}M] {} {}'.format(parameter/100**3, modelname, datasetname)
+>>>>>>> ssl
         names.append(name)
-    title = folder.split('/')[-2]
+    #title = folder.split('/')[-4]
     fig = precision_recall_f1iso(precisions,recalls,names,title)
     #fig = precision_recall_f1iso(precisions,recalls,names,title)
     return fig

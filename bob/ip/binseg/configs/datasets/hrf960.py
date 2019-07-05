@@ -21,4 +21,8 @@ transforms = Compose([
 bobdb = HRF(protocol = 'default')
 
 # PyTorch dataset
+<<<<<<< HEAD
 dataset = BinSegDataset(bobdb, split='train', transform=transforms)
+=======
+dataset = BinSegDataset(bobdb, split='train', transform=transforms)
+>>>>>>> ssl

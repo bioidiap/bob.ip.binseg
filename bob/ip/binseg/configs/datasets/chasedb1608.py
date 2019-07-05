@@ -8,19 +8,11 @@ from bob.ip.binseg.data.binsegdataset import BinSegDataset
 #### Config ####
 
 transforms = Compose([  
-<<<<<<< HEAD:bob/ip/binseg/configs/datasets/chasedb1544.py
                         RandomRotation()
-                        ,Resize(544)
-                        ,Crop(0,12,544,544)
+                        ,CenterCrop((829,960))                    
+                        ,Resize(608)
                         ,RandomHFlip()
                         ,RandomVFlip()
-=======
-                        Resize(544)
-                        ,Crop(0,12,544,544)
-                        ,RandomHFlip()
-                        ,RandomVFlip()
-                        ,RandomRotation()
->>>>>>> ssl:bob/ip/binseg/configs/datasets/chasedb1544.py
                         ,ColorJitter()
                         ,ToTensor()
                     ])

@@ -4,12 +4,13 @@
 from bob.db.hrf import Database as HRF
 from bob.ip.binseg.data.transforms import *
 from bob.ip.binseg.data.binsegdataset import BinSegDataset
+import torch
 
 #### Config ####
 
 transforms = Compose([  
                         Pad((0,584,0,584))                    
-                        ,Resize((1024))
+                        ,Resize((960))
                         ,RandomRotation()
                         ,RandomHFlip()
                         ,RandomVFlip()
@@ -21,8 +22,7 @@ transforms = Compose([
 bobdb = HRF(protocol = 'default')
 
 # PyTorch dataset
-<<<<<<< HEAD
-dataset = BinSegDataset(bobdb, split='train', transform=transforms)
-=======
-dataset = BinSegDataset(bobdb, split='train', transform=transforms)
->>>>>>> ssl
+train = BinSegDataset(bobdb, split='train', transform=transforms)
+test = BinSegDataset(bobdb, split='test', transform=transforms)
+
+dataset = torch.utils.data.ConcatDataset([train,test])

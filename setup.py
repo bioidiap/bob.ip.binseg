@@ -55,18 +55,33 @@ setup(
           'visualize = bob.ip.binseg.script.binseg:visualize',
         ],
 
-         #bob hed train configurations
+         #bob train configurations
         'bob.ip.binseg.config': [
           'DRIU = bob.ip.binseg.configs.models.driu',
+          'DRIUSSL = bob.ip.binseg.configs.models.driussl',
           'DRIUOD = bob.ip.binseg.configs.models.driuod',
           'HED = bob.ip.binseg.configs.models.hed',
           'M2UNet = bob.ip.binseg.configs.models.m2unet',
+          'M2UNetSSL = bob.ip.binseg.configs.models.m2unetssl',
           'UNet = bob.ip.binseg.configs.models.unet',
           'ResUNet = bob.ip.binseg.configs.models.resunet',
           'CHASEDB1 = bob.ip.binseg.configs.datasets.chasedb1',
           'CHASEDB11024 = bob.ip.binseg.configs.datasets.chasedb11024',
           'CHASEDB11168 = bob.ip.binseg.configs.datasets.chasedb11168',
           'CHASEDB1TEST = bob.ip.binseg.configs.datasets.chasedb1test',
+<<<<<<< HEAD
+=======
+          'COVD-DRIVE = bob.ip.binseg.configs.datasets.starechasedb1iostarhrf544',
+          'COVD-DRIVE_SSL = bob.ip.binseg.configs.datasets.starechasedb1iostarhrf544ssldrive',
+          'COVD-STARE = bob.ip.binseg.configs.datasets.drivechasedb1iostarhrf608',
+          'COVD-STARE_SSL = bob.ip.binseg.configs.datasets.drivechasedb1iostarhrf608sslstare',
+          'COVD-IOSTARVESSEL = bob.ip.binseg.configs.datasets.drivestarechasedb1hrf1024',
+          'COVD-IOSTARVESSEL_SSL = bob.ip.binseg.configs.datasets.drivestarechasedb1hrf1024ssliostar',
+          'COVD-HRF = bob.ip.binseg.configs.datasets.drivestarechasedb1iostar1168',
+          'COVD-HRF_SSL = bob.ip.binseg.configs.datasets.drivestarechasedb1iostar1168sslhrf',
+          'COVD-CHASEDB1 = bob.ip.binseg.configs.datasets.drivestareiostarhrf960',
+          'COVD-CHASEDB1_SSL = bob.ip.binseg.configs.datasets.drivestareiostarhrf960sslchase',
+>>>>>>> ssl
           'DRIONSDB = bob.ip.binseg.configs.datasets.drionsdb',
           'DRIONSDBTEST = bob.ip.binseg.configs.datasets.drionsdbtest',
           'DRISHTIGS1OD = bob.ip.binseg.configs.datasets.dristhigs1od',
@@ -78,6 +93,7 @@ setup(
           'DRIVE1024 = bob.ip.binseg.configs.datasets.drive1024',
           'DRIVE1168 = bob.ip.binseg.configs.datasets.drive1168',
           'DRIVETEST = bob.ip.binseg.configs.datasets.drivetest',
+<<<<<<< HEAD
           'DRIVESTARECHASEDB1HRF1024 = bob.ip.binseg.configs.datasets.drivestarechasedb1hrf1024',
           'DRIVESTARECHASEDB1IOSTAR1168 = bob.ip.binseg.configs.datasets.drivestarechasedb1iostar1168',
           'DRIVESTAREIOSTARHRF960 = bob.ip.binseg.configs.datasets.drivestareiostarhrf960',
@@ -85,6 +101,9 @@ setup(
           'HRF960 = bob.ip.binseg.configs.datasets.hrf960',
           'HRF1024 = bob.ip.binseg.configs.datasets.hrf1024',
           'HRF1168 = bob.ip.binseg.configs.datasets.hrf1168',
+=======
+          'HRF = bob.ip.binseg.configs.datasets.hrf1168',
+>>>>>>> ssl
           'HRFTEST = bob.ip.binseg.configs.datasets.hrftest',
           'IOSTAROD = bob.ip.binseg.configs.datasets.iostarod',
           'IOSTARODTEST = bob.ip.binseg.configs.datasets.iostarodtest',

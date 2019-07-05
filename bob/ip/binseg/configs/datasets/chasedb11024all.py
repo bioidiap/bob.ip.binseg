@@ -4,23 +4,16 @@
 from bob.db.chasedb1 import Database as CHASEDB1
 from bob.ip.binseg.data.transforms import *
 from bob.ip.binseg.data.binsegdataset import BinSegDataset
+import torch
 
 #### Config ####
 
 transforms = Compose([  
-<<<<<<< HEAD:bob/ip/binseg/configs/datasets/chasedb1544.py
                         RandomRotation()
-                        ,Resize(544)
-                        ,Crop(0,12,544,544)
+                        ,Crop(0,18,960,960)
+                        ,Resize(1024)
                         ,RandomHFlip()
                         ,RandomVFlip()
-=======
-                        Resize(544)
-                        ,Crop(0,12,544,544)
-                        ,RandomHFlip()
-                        ,RandomVFlip()
-                        ,RandomRotation()
->>>>>>> ssl:bob/ip/binseg/configs/datasets/chasedb1544.py
                         ,ColorJitter()
                         ,ToTensor()
                     ])
@@ -29,4 +22,7 @@ transforms = Compose([
 bobdb = CHASEDB1(protocol = 'default')
 
 # PyTorch dataset
-dataset = BinSegDataset(bobdb, split='train', transform=transforms)
+train = BinSegDataset(bobdb, split='train', transform=transforms)
+test = BinSegDataset(bobdb, split='test', transform=transforms)
+
+dataset = torch.utils.data.ConcatDataset([train,test])

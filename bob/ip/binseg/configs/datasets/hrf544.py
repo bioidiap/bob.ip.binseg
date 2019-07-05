@@ -8,8 +8,8 @@ from bob.ip.binseg.data.binsegdataset import BinSegDataset
 #### Config ####
 
 transforms = Compose([  
-                        Pad((0,584,0,584))                    
-                        ,Resize((1024))
+                        Resize((363))
+                        ,Pad((0,90,0,91))
                         ,RandomRotation()
                         ,RandomHFlip()
                         ,RandomVFlip()
@@ -21,8 +21,4 @@ transforms = Compose([
 bobdb = HRF(protocol = 'default')
 
 # PyTorch dataset
-<<<<<<< HEAD
 dataset = BinSegDataset(bobdb, split='train', transform=transforms)
-=======
-dataset = BinSegDataset(bobdb, split='train', transform=transforms)
->>>>>>> ssl

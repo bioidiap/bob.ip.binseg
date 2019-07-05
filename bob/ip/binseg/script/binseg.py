@@ -24,7 +24,11 @@ from bob.extension.scripts.click_helper import (verbosity_option,
 from bob.ip.binseg.utils.checkpointer import DetectronCheckpointer
 from torch.utils.data import DataLoader
 from bob.ip.binseg.engine.trainer import do_train
+<<<<<<< HEAD
 from bob.ip.binseg.engine.valtrainer import do_valtrain
+=======
+from bob.ip.binseg.engine.ssltrainer import do_ssltrain
+>>>>>>> ssl
 from bob.ip.binseg.engine.inferencer import do_inference
 from bob.ip.binseg.utils.plot import plot_overview
 from bob.ip.binseg.utils.click import OptionEatAll
@@ -96,7 +100,7 @@ def binseg():
     help='Number of epochs used for training',
     show_default=True,
     required=True,
-    default=6,
+    default=1000,
     cls=ResourceOption)
 @click.option(
     '--checkpoint-period',
@@ -104,7 +108,7 @@ def binseg():
     help='Number of epochs after which a checkpoint is saved',
     show_default=True,
     required=True,
-    default=2,
+    default=100,
     cls=ResourceOption)
 @click.option(
     '--device',
@@ -400,7 +404,11 @@ def visualize(dataset, output_path, **kwargs):
     overlay(dataset=dataset, output_path=output_path)
 
 
+<<<<<<< HEAD
 # Validation Train
+=======
+# SSLTrain
+>>>>>>> ssl
 @binseg.command(entry_point_group='bob.ip.binseg.config', cls=ConfigCommand)
 @click.option(
     '--output-path',
@@ -454,7 +462,11 @@ def visualize(dataset, output_path, **kwargs):
     help='Number of epochs used for training',
     show_default=True,
     required=True,
+<<<<<<< HEAD
     default=6,
+=======
+    default=1000,
+>>>>>>> ssl
     cls=ResourceOption)
 @click.option(
     '--checkpoint-period',
@@ -462,7 +474,11 @@ def visualize(dataset, output_path, **kwargs):
     help='Number of epochs after which a checkpoint is saved',
     show_default=True,
     required=True,
+<<<<<<< HEAD
     default=2,
+=======
+    default=100,
+>>>>>>> ssl
     cls=ResourceOption)
 @click.option(
     '--device',
@@ -473,6 +489,7 @@ def visualize(dataset, output_path, **kwargs):
     default='cpu',
     cls=ResourceOption)
 @click.option(
+<<<<<<< HEAD
     '--valsize',
     '-a',
     help='Size of validation set',
@@ -482,6 +499,18 @@ def visualize(dataset, output_path, **kwargs):
     cls=ResourceOption)
 @verbosity_option(cls=ResourceOption)
 def valtrain(model
+=======
+    '--rampup',
+    '-r',
+    help='Ramp-up length in epochs',
+    show_default=True,
+    required=True,
+    default='900',
+    cls=ResourceOption)
+
+@verbosity_option(cls=ResourceOption)
+def ssltrain(model
+>>>>>>> ssl
         ,optimizer
         ,scheduler
         ,output_path
@@ -492,12 +521,17 @@ def valtrain(model
         ,dataset
         ,checkpoint_period
         ,device
+<<<<<<< HEAD
         ,valsize
+=======
+        ,rampup
+>>>>>>> ssl
         ,**kwargs):
     """ Train a model """
     
     if not os.path.exists(output_path): os.makedirs(output_path)
     
+<<<<<<< HEAD
 
     # Validation and training set size
     train_size = len(dataset) - valsize 
@@ -512,6 +546,15 @@ def valtrain(model
 
     valid_loader = torch.utils.data.DataLoader(dataset, pin_memory=torch.cuda.is_available(), batch_size=batch_size,
                                                    sampler=SubsetRandomSampler(valid_indices))
+=======
+    # PyTorch dataloader
+    data_loader = DataLoader(
+        dataset = dataset
+        ,batch_size = batch_size
+        ,shuffle= True
+        ,pin_memory = torch.cuda.is_available()
+        )
+>>>>>>> ssl
 
     # Checkpointer
     checkpointer = DetectronCheckpointer(model, optimizer, scheduler,save_dir = output_path, save_to_disk=True)
@@ -524,8 +567,13 @@ def valtrain(model
     # Train
     logger.info("Training for {} epochs".format(arguments["max_epoch"]))
     logger.info("Continuing from epoch {}".format(arguments["epoch"]))
+<<<<<<< HEAD
     do_valtrain(model
             , train_loader
+=======
+    do_ssltrain(model
+            , data_loader
+>>>>>>> ssl
             , optimizer
             , criterion
             , scheduler
@@ -534,5 +582,9 @@ def valtrain(model
             , device
             , arguments
             , output_path
+<<<<<<< HEAD
             , valid_loader
+=======
+            , rampup
+>>>>>>> ssl
             )

@@ -4,6 +4,50 @@
 
 .. _idiap: http://www.idiap.ch
 .. _bob: http://www.idiap.ch/software/bob
-.. _installation: https://www.idiap.ch/software/bob/install
+.. _installation: https://www.idiap.ch/software/bob/docs/bob/docs/stable/bob/bob/doc/install.html
 .. _mailing list: https://www.idiap.ch/software/bob/discuss
 .. _torchvision package: https://github.com/pytorch/vision
+
+.. DRIVE
+
+.. _drive: https://doi.org/10.1109/TMI.2004.825627
+.. _staal et al. (2004): https://doi.org/10.1109/TMI.2004.825627
+
+.. STARE
+
+.. _stare: https://doi.org/10.1109/42.845178
+.. _maninis et al. (2016): https://doi.org/10.1007/978-3-319-46723-8_17
+
+.. HRF
+
+.. _hrf: http://dx.doi.org/10.1155/2013/154860
+.. _orlando et al. (2016): https://doi.org/10.1109/TBME.2016.2535311
+
+.. IOSTAR
+
+.. _iostar: https://doi.org/10.1109/TMI.2016.2587062
+.. _meyer et al. (2017): https://doi.org/10.1007/978-3-319-59876-5_56
+
+.. CHASEDB1
+
+.. _chasedb1: https://doi.org/10.1109/TBME.2012.2205687
+.. _fraz et al. (2012): https://doi.org/10.1109/TBME.2012.2205687
+
+.. DRIONSDB
+
+.. _drions-db: http://dx.doi.org/10.1016/j.artmed.2008.04.005
+.. _maninis et al. (2016): https://doi.org/10.1007/978-3-319-46723-8_17
+
+.. RIM-ONE r3
+
+.. _rim-oner3: https://dspace5.zcu.cz/bitstream/11025/29670/1/Fumero.pdf
+.. _maninis et al. (2016): https://doi.org/10.1007/978-3-319-46723-8_17
+
+.. Drishti-GS1
+
+.. _drishti-gs1: https://doi.org/10.1109/ISBI.2014.6867807
+.. _sivaswamy et al. (2014): https://doi.org/10.1109/ISBI.2014.6867807
+
+.. REFUGE
+
+.. _refuge: http://ai.baidu.com/broad/download?dataset=gon

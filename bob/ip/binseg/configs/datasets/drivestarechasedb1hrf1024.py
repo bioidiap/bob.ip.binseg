@@ -7,4 +7,8 @@ import torch
 #### Config ####
 
 # PyTorch dataset
+<<<<<<< HEAD
 dataset = torch.utils.data.ConcatDataset([drive,stare,hrf,chase])
+=======
+dataset = torch.utils.data.ConcatDataset([drive,stare,hrf,chase])
+>>>>>>> ssl
