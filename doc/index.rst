@@ -19,6 +19,7 @@ Users Guide
    training
    evaluation
    benchmarkresults
+   covdresults
    api
    references
 
