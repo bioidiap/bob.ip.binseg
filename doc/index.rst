@@ -6,7 +6,9 @@
  Binary Segmentation Benchmark Package for Bob
 ===============================================
 
-Package to benchmark and evaluate a range of neural network architectures for binary segmentation tasks on 2D Eye Fundus Images (2DFI). 
+Package to benchmark and evaluate a range of neural network architectures for
+binary segmentation tasks on 2D Eye Fundus Images (2DFI). It is build using PyTorch.
+
 
 Users Guide
 ===========

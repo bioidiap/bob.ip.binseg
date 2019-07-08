@@ -312,7 +312,8 @@ Using your own configs
 ======================
 
 Instead of the default configs you can pass the full path of your
-customized dataset and model config.
+customized dataset and model config (both in PyTorch format).
+The default configs are stored under ``bob.ip.binseg/bob/ip/binseg/configs/``.
 
 .. code-block:: bash
 
