@@ -51,3 +51,12 @@
 .. REFUGE
 
 .. _refuge: http://ai.baidu.com/broad/download?dataset=gon
+
+.. OtherPapers
+
+.. _Iglovikov  et al. (2018): http://openaccess.thecvf.com/content_cvpr_2018_workshops/w4/html/Iglovikov_TernausNetV2_Fully_Convolutional_CVPR_2018_paper.html
+.. _He et al. (2015): https://doi.org/10.1109/ICCV.2015.164
+
+.. Software Tools
+
+.. _maskrcnn-benchmark: https://github.com/facebookresearch/maskrcnn-benchmark

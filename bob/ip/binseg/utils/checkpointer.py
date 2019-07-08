@@ -11,9 +11,7 @@ from bob.ip.binseg.utils.model_serialization import load_state_dict
 from bob.ip.binseg.utils.model_zoo import cache_url
 
 class Checkpointer:
-    """Adapted from [MASKRCNNBENCHMARK_18]_
-    
-    Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+    """Adapted from `maskrcnn-benchmark`_ under MIT license
     
     Returns
     -------

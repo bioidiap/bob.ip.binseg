@@ -21,7 +21,6 @@ Users Guide
    benchmarkresults
    covdresults
    api
-   references
 
 .. todolist::
 

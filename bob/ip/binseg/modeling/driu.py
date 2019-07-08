@@ -24,7 +24,7 @@ class ConcatFuseBlock(nn.Module):
 class DRIU(nn.Module):
     """
     DRIU head module
-    
+    Based on paper by `Maninis et al. (2016)`_ 
     Parameters
     ----------
     in_channels_list : list

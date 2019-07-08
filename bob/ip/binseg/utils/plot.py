@@ -290,3 +290,25 @@ def overlay(dataset, output_path):
         overlayed_path = os.path.join(output_path,'overlayed')
         if not os.path.exists(overlayed_path): os.makedirs(overlayed_path)
         overlayed.save(os.path.join(overlayed_path,name))
+
+
+def savetransformedtest(dataset, output_path):
+    """Save the test images as they are fed into the neural network. 
+    Makes it easier to create overlay animations (e.g. slide)
+    
+    Parameters
+    ----------
+    dataset : :py:class:`torch.utils.data.Dataset`
+    output_path : str
+        path where results and probability output images are stored. E.g. ``'DRIVE/MODEL'``
+    """
+
+    for sample in dataset:
+        # get sample
+        name  = sample[0]
+        img = VF.to_pil_image(sample[1]) # PIL Image
+        
+        # save to disk
+        testimg_path = os.path.join(output_path,'transformedtestimages')
+        if not os.path.exists(testimg_path): os.makedirs(testimg_path)
+        img.save(os.path.join(testimg_path,name))

@@ -30,7 +30,7 @@ from bob.ip.binseg.utils.plot import plot_overview
 from bob.ip.binseg.utils.click import OptionEatAll
 from bob.ip.binseg.utils.pdfcreator import create_pdf, get_paths
 from bob.ip.binseg.utils.rsttable import create_overview_grid
-from bob.ip.binseg.utils.plot import metricsviz, overlay
+from bob.ip.binseg.utils.plot import metricsviz, overlay,savetransformedtest
 
 logger = logging.getLogger(__name__)
 
@@ -397,6 +397,8 @@ def visualize(dataset, output_path, **kwargs):
     metricsviz(dataset=dataset, output_path=output_path)
     logger.info('Creating overlay visualizations for {}'.format(output_path))
     overlay(dataset=dataset, output_path=output_path)
+    logger.info('Saving transformed test images {}'.format(output_path))
+    savetransformedtest(dataset=dataset, output_path=output_path)
 
 
 # SSLTrain

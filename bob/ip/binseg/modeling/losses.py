@@ -7,7 +7,7 @@ from torch._jit_internal import weak_script_method
 
 class WeightedBCELogitsLoss(_Loss):
     """ 
-    Implements Equation 1 in [DRIU16]_. Based on ``torch.nn.modules.loss.BCEWithLogitsLoss``. 
+    Implements Equation 1 in `Maninis et al. (2016)`_. Based on ``torch.nn.modules.loss.BCEWithLogitsLoss``. 
     Calculate sum of weighted cross entropy loss.
     """
     def __init__(self, weight=None, size_average=None, reduce=None, reduction='mean', pos_weight=None):
@@ -44,7 +44,7 @@ class WeightedBCELogitsLoss(_Loss):
 
 class SoftJaccardBCELogitsLoss(_Loss):
     """ 
-    Implements Equation 6 in [SAT17]_. Based on ``torch.nn.modules.loss.BCEWithLogitsLoss``. 
+    Implements Equation 3 in `Iglovikov  et al. (2018)`_. Based on ``torch.nn.modules.loss.BCEWithLogitsLoss``. 
 
     Attributes
     ----------
@@ -82,7 +82,7 @@ class SoftJaccardBCELogitsLoss(_Loss):
 
 class HEDWeightedBCELogitsLoss(_Loss):
     """ 
-    Implements Equation 2 in [HED15]_. Based on ``torch.nn.modules.loss.BCEWithLogitsLoss``. 
+    Implements Equation 2 in `He et al. (2015)`_. Based on ``torch.nn.modules.loss.BCEWithLogitsLoss``. 
     Calculate sum of weighted cross entropy loss.
     """
     def __init__(self, weight=None, size_average=None, reduce=None, reduction='mean', pos_weight=None):
@@ -123,7 +123,7 @@ class HEDWeightedBCELogitsLoss(_Loss):
 
 class HEDSoftJaccardBCELogitsLoss(_Loss):
     """ 
-    Implements Equation 6 in [SAT17]_ for the hed network. Based on ``torch.nn.modules.loss.BCEWithLogitsLoss``. 
+    Implements  Equation 3 in `Iglovikov  et al. (2018)`_ for the hed network. Based on ``torch.nn.modules.loss.BCEWithLogitsLoss``. 
 
     Attributes
     ----------
