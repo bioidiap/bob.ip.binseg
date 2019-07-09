@@ -22,6 +22,7 @@ Users Guide
    evaluation
    benchmarkresults
    covdresults
+   configs
    api
 
 .. todolist::

@@ -60,3 +60,29 @@
 .. Software Tools
 
 .. _maskrcnn-benchmark: https://github.com/facebookresearch/maskrcnn-benchmark
+
+
+.. Pretrained models
+
+.. _driu_chasedb1.pth: https://dl.dropboxusercontent.com/s/15gxvhdtq0gw074/DRIU_CHASEDB1.pth
+.. _driu_drive.pth: https://dl.dropboxusercontent.com/s/rggn9ebj38c06uf/DRIU_DRIVE.pth
+.. _driu_hrf.pth: https://dl.dropboxusercontent.com/s/c02m2zyby1zndqx/DRIU_HRF1168.pth
+.. _driu_stare.pth: https://dl.dropboxusercontent.com/s/sw5ivfzgz5djirc/DRIU_STARE.pth
+.. _driu_iostar.pth: https://dl.dropboxusercontent.com/s/dx1dp8g4nct5r2z/DRIU_IOSTARVESSEL.pth
+
+.. _m2unet_chasedb1.pth: https://dl.dropboxusercontent.com/s/jqq0z9boi17nhqf/M2UNet_CHASEDB1.pth
+.. _m2unet_drive.pth: https://dl.dropboxusercontent.com/s/55xply8jm0g2skp/M2UNet_DRIVE.pth
+.. _m2unet_hrf.pth: https://dl.dropboxusercontent.com/s/g34g6nai1rsgbsc/M2UNet_HRF1168.pth
+.. _m2unet_stare.pth: https://dl.dropboxusercontent.com/s/pc9wb8r7tjvg06p/M2UNet_STARE.pth
+.. _m2unet_iostar.pth: https://dl.dropboxusercontent.com/s/g9jyvar9x8vvihr/M2UNet_IOSTARVESSEL.pth
+.. _m2unet_covd-drive.pth: https://dl.dropboxusercontent.com/s/x5wb84uao8nlx44/M2UNet_COVD-DRIVE.pth
+.. _m2unet_covd-drive_ssl.pth: https://dl.dropboxusercontent.com/s/hp7fg6bct0i3awr/M2UNet_COVD-DRIVE_SSL.pth
+.. _m2unet_covd-stare.pth: https://dl.dropboxusercontent.com/s/vh1trws2nxqt65y/M2UNet_COVD-STARE.pth
+.. _m2unet_covd-stare_ssl.pth: https://dl.dropboxusercontent.com/s/slcvfgf1saf7t19/M2UNet_COVD-STARE_SSL.pth
+.. _m2unet_covd-chaesdb1.pth: https://dl.dropboxusercontent.com/s/pvbp0qky13q5o11/M2UNet_COVD-CHASEDB1.pth
+.. _m2unet_covd-chaesdb1_ssl.pth: https://dl.dropboxusercontent.com/s/qx7mm5h8ywm98fi/M2UNet_COVD-CHASEDB1_SSL.pth
+.. _m2unet_covd-hrf.pth: https://dl.dropboxusercontent.com/s/o3edhljeidl6fvi/M2UNet_COVD-HRF.pth
+.. _m2unet_covd-hrf_ssl.pth: https://dl.dropboxusercontent.com/s/2e0aq8a5vbop2yx/M2UNet_COVD-HRF_SSL.pth
+.. _m2unet_covd-iostar.pth: https://dl.dropboxusercontent.com/s/t5b2qomq6ey8i9t/M2UNet_COVD-IOSTAR.pth
+.. _m2unet_covd-iostar_ssl.pth: https://dl.dropboxusercontent.com/s/70ynm2k3bpkj4mq/M2UNet_COVD-IOSTAR_SSL.pth
+
