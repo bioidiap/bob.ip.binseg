@@ -58,7 +58,9 @@ setup(
          #bob train configurations
         'bob.ip.binseg.config': [
           'DRIU = bob.ip.binseg.configs.models.driu',
+          'DRIUBN = bob.ip.binseg.configs.models.driubn',
           'DRIUSSL = bob.ip.binseg.configs.models.driussl',
+          'DRIUBNSSL = bob.ip.binseg.configs.models.driubnssl',
           'DRIUOD = bob.ip.binseg.configs.models.driuod',
           'HED = bob.ip.binseg.configs.models.hed',
           'M2UNet = bob.ip.binseg.configs.models.m2unet',

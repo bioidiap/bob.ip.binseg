@@ -113,6 +113,14 @@ def binseg():
     required=True,
     default='cpu',
     cls=ResourceOption)
+@click.option(
+    '--seed',
+    '-s',
+    help='torch random seed',
+    show_default=True,
+    required=False,
+    default=42,
+    cls=ResourceOption)
 
 @verbosity_option(cls=ResourceOption)
 def train(model
@@ -126,11 +134,12 @@ def train(model
         ,dataset
         ,checkpoint_period
         ,device
+        ,seed
         ,**kwargs):
     """ Train a model """
     
     if not os.path.exists(output_path): os.makedirs(output_path)
-    
+    torch.manual_seed(seed)
     # PyTorch dataloader
     data_loader = DataLoader(
         dataset = dataset
@@ -481,6 +490,14 @@ def visualize(dataset, output_path, **kwargs):
     required=True,
     default='900',
     cls=ResourceOption)
+@click.option(
+    '--seed',
+    '-s',
+    help='torch random seed',
+    show_default=True,
+    required=False,
+    default=42,
+    cls=ResourceOption)
 
 @verbosity_option(cls=ResourceOption)
 def ssltrain(model
@@ -495,11 +512,12 @@ def ssltrain(model
         ,checkpoint_period
         ,device
         ,rampup
+        ,seed
         ,**kwargs):
     """ Train a model """
     
     if not os.path.exists(output_path): os.makedirs(output_path)
-    
+    torch.manual_seed(seed)
     # PyTorch dataloader
     data_loader = DataLoader(
         dataset = dataset

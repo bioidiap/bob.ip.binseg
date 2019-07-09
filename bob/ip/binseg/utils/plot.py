@@ -190,7 +190,7 @@ def plot_overview(outputfolders,title):
           rows = outfile.readlines()
           lastrow = rows[-1]
           parameter = int(lastrow.split()[1].replace(',',''))
-        name = '[P={:.2f}M] {} {}'.format(parameter/100**3, modelname, datasetname)
+        name = '[P={:.2f}M] {} {}'.format(parameter/100**3, modelname, "")
         names.append(name)
     #title = folder.split('/')[-4]
     fig = precision_recall_f1iso(precisions,recalls,names,title)

@@ -192,9 +192,12 @@ def do_inference(
     logger.info("Saving average over all input images: {}".format(metrics_file))
     
     avg_metrics = df_metrics.groupby('threshold').mean()
+    std_metrics = df_metrics.groupby('threshold').std()
 
     avg_metrics["f1_score"] =  (2* avg_metrics["precision"]*avg_metrics["recall"])/ \
         (avg_metrics["precision"]+avg_metrics["recall"])
+    
+    avg_metrics["std_f1"] = std_metrics["f1_score"]
     
     avg_metrics.to_csv(metrics_path)
     maxf1 = avg_metrics['f1_score'].max()
