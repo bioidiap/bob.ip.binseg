@@ -6,7 +6,7 @@ import os
 import csv 
 import pandas as pd
 import PIL
-from PIL import Image
+from PIL import Image,ImageFont, ImageDraw
 import torchvision.transforms.functional as VF
 import torch
 
@@ -198,10 +198,10 @@ def plot_overview(outputfolders,title):
 
 def metricsviz(dataset
                 ,output_path
-                ,tp_color= (128,128,128)
-                ,fp_color = (70, 240, 240)
-                ,fn_color = (245, 130, 48)
-                ):
+                ,tp_color= (0,255,0) # (128,128,128) Gray
+                ,fp_color = (0, 0, 255) # (70, 240, 240) Cyan
+                ,fn_color = (255, 0, 0) # (245, 130, 48) Orange
+                ,overlayed=True):
     """ Visualizes true positives, false positives and false negatives
     Default colors TP: Gray, FP: Cyan, FN: Orange
     
@@ -253,6 +253,16 @@ def metricsviz(dataset
         # paste together
         tp_pil_colored.paste(fp_pil_colored,mask=fp_pil)
         tp_pil_colored.paste(fn_pil_colored,mask=fn_pil)
+        
+        if overlayed:
+            tp_pil_colored = PIL.Image.blend(img, tp_pil_colored, 0.4)
+            img_metrics = pd.read_csv(os.path.join(output_path,'results',name+'.csv'))
+            f1 = img_metrics[' f1_score'].max()
+            # add f1-score
+            fnt_size = tp_pil_colored.size[1]//25
+            draw = ImageDraw.Draw(tp_pil_colored)
+            fnt = ImageFont.truetype('FreeMono.ttf', fnt_size)
+            draw.text((0, 0),"F1: {:.4f}".format(f1),(255,255,255),font=fnt)
 
         # save to disk 
         overlayed_path = os.path.join(output_path,'tpfnfpviz')
@@ -277,8 +287,8 @@ def overlay(dataset, output_path):
         gt = sample[2].byte() # byte tensor
         
         # read metrics 
-        metrics = pd.read_csv(os.path.join(output_path,'results','Metrics.csv'))
-        optimal_threshold = metrics['threshold'][metrics['f1_score'].idxmax()]
+        #metrics = pd.read_csv(os.path.join(output_path,'results',name+'.csv'))
+        #f1 = metrics[' f1_score'].max()
         
         # read probability output 
         pred = Image.open(os.path.join(output_path,'images',name))
@@ -286,6 +296,11 @@ def overlay(dataset, output_path):
         pred_green = PIL.ImageOps.colorize(pred, (0,0,0), (0,255,0))
         overlayed = PIL.Image.blend(img, pred_green, 0.4)
 
+        # add f1-score
+        #fnt_size = overlayed.size[1]//25
+        #draw = ImageDraw.Draw(overlayed)
+        #fnt = ImageFont.truetype('FreeMono.ttf', fnt_size)
+        #draw.text((0, 0),"F1: {:.4f}".format(f1),(255,255,255),font=fnt)
         # save to disk
         overlayed_path = os.path.join(output_path,'overlayed')
         if not os.path.exists(overlayed_path): os.makedirs(overlayed_path)
