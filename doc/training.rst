@@ -63,7 +63,9 @@ Default Model configs
 =====================
 
 * DRIU
+* DRIUBN
 * DRIUSSL
+* DRIUBNSSL
 * DRIUOD
 * HED
 * M2UNet
@@ -205,7 +207,7 @@ COVD-:
     # model configs
     driu=DRIU
     m2u=M2UNet
-    b_driu=4
+    b_driu=2
     b_m2u=4
     # Train
     bob binseg train $driu $dataset -b $b_driu -d cuda -o $output"/"$driu -vv
@@ -218,7 +220,7 @@ COVD-:
     # model configs
     driu=DRIU
     m2u=M2UNet
-    b_driu=4
+    b_driu=2
     b_m2u=4
     # Train
     bob binseg train $driu $dataset -b $b_driu -d cuda -o $output"/"$driu -vv
@@ -288,7 +290,7 @@ COVD-SSL:
     # model configs
     driu=DRIUSSL
     m2u=M2UNetSSL
-    b_driu=1
+    b_driu=2
     b_m2u=2
     # Train
     bob binseg ssltrain $driu $dataset -b $b_driu -d cuda -o $output"/"$driu -vv

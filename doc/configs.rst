@@ -175,6 +175,12 @@ DRIUSSL
 --------
 .. literalinclude:: ../bob/ip/binseg/configs/models/driussl.py
 
+.. _bob.ip.binseg.configs.models.driubnssl:
+
+DRIUBNSSL
+---------
+.. literalinclude:: ../bob/ip/binseg/configs/models/driubnssl.py
+
 
 .. _bob.ip.binseg.configs.models.m2unetssl:
 

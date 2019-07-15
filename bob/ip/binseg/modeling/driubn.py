@@ -74,7 +74,7 @@ def build_driu():
     -------
     :py:class:torch.nn.Module
     """
-    backbone = vgg16_bn(pretrained=False, return_features = [3, 8, 14, 22])
+    backbone = vgg16_bn(pretrained=False, return_features = [5, 12, 19, 29])
     driu_head = DRIU([64, 128, 256, 512])
 
     model = nn.Sequential(OrderedDict([("backbone", backbone), ("head", driu_head)]))
