@@ -70,13 +70,13 @@ COVD-HRF_SSL
 .. literalinclude:: ../bob/ip/binseg/configs/datasets/drivestarechasedb1iostar1168sslhrf.py
 
 
-.. _bob.ip.binseg.configs.datasets.covdchasedb1:
+.. _bob.ip.binseg.configs.datasets.covd-chasedb1:
 
 COVD-CHASEDB1
 ----------------------
 .. literalinclude:: ../bob/ip/binseg/configs/datasets/drivestareiostarhrf960.py
 
-.. _bob.ip.binseg.configs.datasets.covdchasedb1_ssl:
+.. _bob.ip.binseg.configs.datasets.covd-chasedb1_ssl:
 
 COVD-CHASEDB1_SSL
 ----------------------
