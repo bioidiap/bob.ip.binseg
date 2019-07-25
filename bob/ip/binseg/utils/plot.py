@@ -59,7 +59,7 @@ def precision_recall_f1iso(precision, recall, names, title=None):
         opi = pi[argmax]
         ori = ri[argmax]
         # Plot Recall/Precision as threshold changes
-        ax1.plot(ri[pi>0], pi[pi>0], next(linecycler), label='[F={:.3f}] {}'.format(f1.max(), n),) 
+        ax1.plot(ri[pi>0], pi[pi>0], next(linecycler), label='[F={:.4f}] {}'.format(f1.max(), n),) 
         ax1.plot(ori,opi, marker='o', linestyle=None, markersize=3, color='black')
     ax1.grid(linestyle='--', linewidth=1, color='gray', alpha=0.2)  
     if len(names) > 1:
