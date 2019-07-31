@@ -230,6 +230,7 @@ def metricsviz(dataset
         
         # read probability output 
         pred = Image.open(os.path.join(output_path,'images',name))
+        pred = pred.convert(mode='L')
         pred = VF.to_tensor(pred)
         binary_pred = torch.gt(pred, optimal_threshold).byte()
         
@@ -291,7 +292,7 @@ def overlay(dataset, output_path):
         #f1 = metrics[' f1_score'].max()
         
         # read probability output 
-        pred = Image.open(os.path.join(output_path,'images',name))
+        pred = Image.open(os.path.join(output_path,'images',name)).convert(mode='L')
         # color and overlay
         pred_green = PIL.ImageOps.colorize(pred, (0,0,0), (0,255,0))
         overlayed = PIL.Image.blend(img, pred_green, 0.4)

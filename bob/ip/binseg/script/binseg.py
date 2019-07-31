@@ -31,6 +31,8 @@ from bob.ip.binseg.utils.click import OptionEatAll
 from bob.ip.binseg.utils.pdfcreator import create_pdf, get_paths
 from bob.ip.binseg.utils.rsttable import create_overview_grid
 from bob.ip.binseg.utils.plot import metricsviz, overlay,savetransformedtest
+from bob.ip.binseg.utils.transformfolder import transformfolder as transfld
+from bob.ip.binseg.utils.evaluate import do_eval
 
 logger = logging.getLogger(__name__)
 
@@ -549,3 +551,71 @@ def ssltrain(model
             , output_path
             , rampup
             )
+
+# Apple image transforms to a fodler
+@binseg.command(entry_point_group='bob.ip.binseg.config', cls=ConfigCommand)
+@click.option(
+    '--source-path',
+    '-s',
+    required=True,
+    cls=ResourceOption
+    )
+@click.option(
+    '--target-path',
+    '-t',
+    required=True,
+    cls=ResourceOption
+    )
+@click.option(
+    '--transforms',
+    '-a',
+    required=True,
+    cls=ResourceOption
+    )
+
+@verbosity_option(cls=ResourceOption)
+def transformfolder(source_path ,target_path,transforms,**kwargs):
+    logger.info('Applying transforms to images in {} and saving them to {}'.format(source_path, target_path))
+    transfld(source_path,target_path,transforms)
+
+
+# Eval only 
+@binseg.command(entry_point_group='bob.ip.binseg.config', cls=ConfigCommand)
+@click.option(
+    '--output-path',
+    '-o',
+    required=True,
+    default="output",
+    cls=ResourceOption
+    )
+@click.option(
+    '--prediction-folder',
+    '-p',
+    required=True,
+    cls=ResourceOption
+    )
+@click.option(
+    '--dataset',
+    '-d',
+    required=True,
+    cls=ResourceOption
+    )
+
+@verbosity_option(cls=ResourceOption)
+def evalpred(
+        output_path
+        ,prediction_folder
+        ,dataset
+        , **kwargs):
+    """ Run inference and evalaute the model performance """
+
+    # PyTorch dataloader
+    data_loader = DataLoader(
+        dataset = dataset
+        ,batch_size = 1
+        ,shuffle= False
+        ,pin_memory = torch.cuda.is_available()
+        )
+    
+    # checkpointer, load last model in dir
+    do_eval(prediction_folder, data_loader, output_folder = output_path)

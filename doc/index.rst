@@ -23,6 +23,7 @@ Users Guide
    benchmarkresults
    covdresults
    configs
+   visualization
    api
 
 .. todolist::
