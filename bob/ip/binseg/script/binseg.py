@@ -28,7 +28,6 @@ from bob.ip.binseg.engine.ssltrainer import do_ssltrain
 from bob.ip.binseg.engine.inferencer import do_inference
 from bob.ip.binseg.utils.plot import plot_overview
 from bob.ip.binseg.utils.click import OptionEatAll
-from bob.ip.binseg.utils.pdfcreator import create_pdf, get_paths
 from bob.ip.binseg.utils.rsttable import create_overview_grid
 from bob.ip.binseg.utils.plot import metricsviz, overlay,savetransformedtest
 from bob.ip.binseg.utils.transformfolder import transformfolder as transfld

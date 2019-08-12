@@ -1,7 +1,25 @@
-from bob.ip.binseg.utils.pdfcreator import get_paths
 import pandas as pd
 from tabulate import tabulate
 import os
+
+def get_paths(output_path, filename):
+    """
+    Parameters
+    ----------
+    output_path : str
+        path in which to look for files
+    filename : str
+
+    Returns
+    -------
+    list 
+        list of file paths
+    """
+    datadir = Path(output_path)
+    file_paths = sorted(list(datadir.glob('**/{}'.format(filename))))
+    file_paths = [f.as_posix() for f in file_paths]
+    return file_paths
+
 
 def create_overview_grid(output_path):
     """ Reads all Metrics.csv in a certain output path and pivots them to a rst grid table"""
