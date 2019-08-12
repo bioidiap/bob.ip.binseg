@@ -337,28 +337,6 @@ def compare(output_path_list, output_path, title, **kwargs):
     fig.savefig(fig_filename)
 
 
-# Plot overviews
-@binseg.command(entry_point_group='bob.ip.binseg.config', cls=ConfigCommand)
-@click.option(
-    '--output-path',
-    '-o',
-    required=True,
-    )
-@verbosity_option(cls=ResourceOption)
-def pdfoverview(output_path, **kwargs):
-    """ Creates an overview pdf with all precision vs recall curves present in the output directory.
-    Requires pdflatex to be available on the host."""
-    # PR curves
-    pr_filename = "precision_recall_comparison.pdf"
-    pr_filenames = get_paths(output_path,pr_filename)
-    create_pdf(output_path, pr_filenames, title='Precision vs Recall', tex_filename='pr_overview.tex')
-    
-    # Training curves
-    trainlog_filename = "*trainlog.pdf"
-    tl_file_names = get_paths(output_path,trainlog_filename)
-    create_pdf(output_path, tl_file_names, title='Training', tex_filename='training_overview.tex')
-
-
 # Create grid table with results
 @binseg.command(entry_point_group='bob.ip.binseg.config', cls=ConfigCommand)
 @click.option(
@@ -552,7 +530,7 @@ def ssltrain(model
             , rampup
             )
 
-# Apple image transforms to a fodler
+# Apply image transforms to a folder containing images
 @binseg.command(entry_point_group='bob.ip.binseg.config', cls=ConfigCommand)
 @click.option(
     '--source-path',
@@ -579,7 +557,7 @@ def transformfolder(source_path ,target_path,transforms,**kwargs):
     transfld(source_path,target_path,transforms)
 
 
-# Eval only 
+# Evaluate only. Runs evaluation on predicted probability maps (--prediction-folder)
 @binseg.command(entry_point_group='bob.ip.binseg.config', cls=ConfigCommand)
 @click.option(
     '--output-path',
@@ -591,6 +569,7 @@ def transformfolder(source_path ,target_path,transforms,**kwargs):
 @click.option(
     '--prediction-folder',
     '-p',
+    help = 'Path containing output probability maps',
     required=True,
     cls=ResourceOption
     )
@@ -600,12 +579,23 @@ def transformfolder(source_path ,target_path,transforms,**kwargs):
     required=True,
     cls=ResourceOption
     )
+@click.option(
+    '--title',
+    required=False,
+    cls=ResourceOption
+    )
+@click.option(
+    '--legend',
+    cls=ResourceOption
+    )
 
 @verbosity_option(cls=ResourceOption)
 def evalpred(
         output_path
         ,prediction_folder
         ,dataset
+        ,title
+        ,legend
         , **kwargs):
     """ Run inference and evalaute the model performance """
 
@@ -617,5 +607,5 @@ def evalpred(
         ,pin_memory = torch.cuda.is_available()
         )
     
-    # checkpointer, load last model in dir
-    do_eval(prediction_folder, data_loader, output_folder = output_path)
+    # Run eval
+    do_eval(prediction_folder, data_loader, output_folder = output_path, title= title, legend=legend)

@@ -13,7 +13,7 @@ import torchvision.transforms.functional as VF
 from tqdm import tqdm
 
 from bob.ip.binseg.utils.metric import SmoothedValue, base_metrics
-from bob.ip.binseg.utils.plot import precision_recall_f1iso
+from bob.ip.binseg.utils.plot import precision_recall_f1iso, precision_recall_f1iso_confintval
 from bob.ip.binseg.utils.summary import summary
 from PIL import Image
 from torchvision.transforms.functional import to_tensor
@@ -95,7 +95,9 @@ def batch_metrics(predictions, ground_truths, names, output_folder, logger):
 def do_eval(
     prediction_folder,
     data_loader,
-    output_folder = None
+    output_folder = None,
+    title = '2nd human',
+    legend = '2nd human'
 ):
 
     """
@@ -119,7 +121,7 @@ def do_eval(
     
     # Collect overall metrics 
     metrics = []
-
+    num_images = len(data_loader)
     for samples in tqdm(data_loader):
         names = samples[0]
         images = samples[1]
@@ -156,9 +158,18 @@ def do_eval(
     avg_metrics = df_metrics.groupby('threshold').mean()
     std_metrics = df_metrics.groupby('threshold').std()
 
-    avg_metrics["f1_score"] =  (2* avg_metrics["precision"]*avg_metrics["recall"])/ \
-        (avg_metrics["precision"]+avg_metrics["recall"])
+    # Uncomment below for F1-score calculation based on average precision and metrics instead of 
+    # F1-scores of individual images. This method is in line with Maninis et. al. (2016)
+    #avg_metrics["f1_score"] =  (2* avg_metrics["precision"]*avg_metrics["recall"])/ \
+    #    (avg_metrics["precision"]+avg_metrics["recall"])
     
+    
+    avg_metrics["std_pr"] = std_metrics["precision"]
+    avg_metrics["pr_upper"] = avg_metrics['precision'] + avg_metrics["std_pr"]
+    avg_metrics["pr_lower"] = avg_metrics['precision'] - avg_metrics["std_pr"]
+    avg_metrics["std_re"] = std_metrics["recall"]
+    avg_metrics["re_upper"] = avg_metrics['recall'] + avg_metrics["std_re"]
+    avg_metrics["re_lower"] = avg_metrics['recall'] - avg_metrics["std_re"]
     avg_metrics["std_f1"] = std_metrics["f1_score"]
     
     avg_metrics.to_csv(metrics_path)
@@ -168,10 +179,11 @@ def do_eval(
     logger.info("Highest F1-score of {:.5f}, achieved at threshold {}".format(maxf1, optimal_f1_threshold))
     
     # Plotting
+    #print(avg_metrics)
     np_avg_metrics = avg_metrics.to_numpy().T
     fig_name = "precision_recall.pdf"
     logger.info("saving {}".format(fig_name))
-    fig = precision_recall_f1iso([np_avg_metrics[0]],[np_avg_metrics[1]], ['2nd Human',None], title='2nd Human')
+    fig = precision_recall_f1iso_confintval([np_avg_metrics[0]],[np_avg_metrics[1]],[np_avg_metrics[7]],[np_avg_metrics[8]],[np_avg_metrics[10]],[np_avg_metrics[11]], [legend ,None], title=title)
     fig_filename = os.path.join(results_subfolder, fig_name)
     fig.savefig(fig_filename)
 

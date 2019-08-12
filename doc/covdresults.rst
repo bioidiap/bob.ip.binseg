@@ -12,26 +12,66 @@ F1 Scores
 F1 score together with standard deviation across test images.
 
 +---------------------------------------------------------+---------------------------------------------+-----------------------------------------------+---------------------------------------------------+
-| F1 score                                                | :ref:`bob.ip.binseg.configs.models.driussl` | :ref:`bob.ip.binseg.configs.models.driubnssl` | :ref:`bob.ip.binseg.configs.models.m2unetssl`     |
+| F1 score                                                | :ref:`bob.ip.binseg.configs.models.driu`    | :ref:`bob.ip.binseg.configs.models.driubn`    | :ref:`bob.ip.binseg.configs.models.m2unet`        |
 +---------------------------------------------------------+---------------------------------------------+-----------------------------------------------+---------------------------------------------------+
-| :ref:`bob.ip.binseg.configs.datasets.covd-drive`        | 0.7896 (0.0178)                             | 0.8000 (0.0182)                               | `0.7906 (0.0179) <m2unet_covd-drive.pth>`_        |
+| :ref:`bob.ip.binseg.configs.datasets.covd-drive`        | 0.788 (0.018)                               | 0.797 (0.019)                                 | `0.789 (0.018) <m2unet_covd-drive.pth>`_          |
 +---------------------------------------------------------+---------------------------------------------+-----------------------------------------------+---------------------------------------------------+
-| :ref:`bob.ip.binseg.configs.datasets.covd-drive_ssl`    | 0.7870 (0.0176)                             | 0.8020 (0.0179)                               | `0.7938 (0.0142) <m2unet_covd-drive_ssl.pth>`_    |
+| :ref:`bob.ip.binseg.configs.datasets.covd-drive_ssl`    | 0.785 (0.018)                               | 0.783 (0.019)                                 | `0.791 (0.014) <m2unet_covd-drive_ssl.pth>`_      |
 +---------------------------------------------------------+---------------------------------------------+-----------------------------------------------+---------------------------------------------------+
-| :ref:`bob.ip.binseg.configs.datasets.covd-stare`        | 0.7979 (0.1254)                             | 0.8129 (0.0986)                               | `0.8120 (0.0457) <m2unet_covd-stare.pth>`_        |
+| :ref:`bob.ip.binseg.configs.datasets.covd-stare`        | 0.778 (0.117)                               | 0.778 (0.122)                                 | `0.812 (0.046) <m2unet_covd-stare.pth>`_          |
 +---------------------------------------------------------+---------------------------------------------+-----------------------------------------------+---------------------------------------------------+
-| :ref:`bob.ip.binseg.configs.datasets.covd-stare_ssl`    | 0.8062 (0.1033)                             | 0.8221 (0.0784)                               | `0.8222 (0.0441) <m2unet_covd-stare_ssl.pth>`_    |
+| :ref:`bob.ip.binseg.configs.datasets.covd-stare_ssl`    | 0.788 (0.102)                               | 0.811 (0.074)                                 | `0.820 (0.044) <m2unet_covd-stare_ssl.pth>`_      |
 +---------------------------------------------------------+---------------------------------------------+-----------------------------------------------+---------------------------------------------------+
-| :ref:`bob.ip.binseg.configs.datasets.covd-chasedb1`     | 0.7979 (0.0284)                             | 0.7923 (0.0240)                               | `0.7898 (0.0236) <m2unet_covd-chasedb1.pth>`_     |
+| :ref:`bob.ip.binseg.configs.datasets.covd-chasedb1`     | 0.796 (0.027)                               | 0.791 (0.025)                                 | `0.788 (0.024) <m2unet_covd-chasedb1.pth>`_       |
 +---------------------------------------------------------+---------------------------------------------+-----------------------------------------------+---------------------------------------------------+
-| :ref:`bob.ip.binseg.configs.datasets.covd-chasedb1_ssl` | 0.7976 (0.0242)                             | 0.7992 (0.0235)                               | `0.8000 (0.0268) <m2unet_covd-chasedb1_ssl.pth>`_ |
+| :ref:`bob.ip.binseg.configs.datasets.covd-chasedb1_ssl` | 0.796 (0.024)                               | 0.798 (0.025)                                 | `0.799 (0.026) <m2unet_covd-chasedb1_ssl.pth>`_   |
 +---------------------------------------------------------+---------------------------------------------+-----------------------------------------------+---------------------------------------------------+
-| :ref:`bob.ip.binseg.configs.datasets.covd-hrf`          | 0.8013 (0.0436)                             | 0.8027 (0.0452)                               | `0.8036 (0.0442) <m2unet_covd-hrf.pth>`_          |
+| :ref:`bob.ip.binseg.configs.datasets.covd-hrf`          | 0.799 (0.044)                               | 0.800 (0.045)                                 | `0.802 (0.045) <m2unet_covd-hrf.pth>`_            |
 +---------------------------------------------------------+---------------------------------------------+-----------------------------------------------+---------------------------------------------------+
-| :ref:`bob.ip.binseg.configs.datasets.covd-hrf_ssl`      | 0.8002 (0.0421)                             | 0.7916 (0.0468)                               | `0.7987 (0.0436) <m2unet_covd-hrf_ssl.pth>`_      |
+| :ref:`bob.ip.binseg.configs.datasets.covd-hrf_ssl`      | 0.799 (0.044)                               | 0.784 (0.048)                                 | `0.797 (0.044) <m2unet_covd-hrf_ssl.pth>`_        |
 +---------------------------------------------------------+---------------------------------------------+-----------------------------------------------+---------------------------------------------------+
-| :ref:`bob.ip.binseg.configs.datasets.covd-iostar`       | 0.7934 (0.0206)                             | 0.7763 (0.0311)                               | `0.7953 (0.0152) <m2unet_covd-iostar.pth>`_       |
+| :ref:`bob.ip.binseg.configs.datasets.covd-iostar`       | 0.791 (0.021)                               | 0.777 (0.032)                                 | `0.793 (0.015) <m2unet_covd-iostar.pth>`_         |
 +---------------------------------------------------------+---------------------------------------------+-----------------------------------------------+---------------------------------------------------+
-| :ref:`bob.ip.binseg.configs.datasets.covd-iostar_ssl`   | 0.7995 (0.0174)                             | 0.7904 (0.0215)                               | `0.7868 (0.0182) <m2unet_covd-iostar_ssl.pth>`_   |
+| :ref:`bob.ip.binseg.configs.datasets.covd-iostar_ssl`   | 0.797 (0.017)                               | 0.811 (0.074)                                 | `0.785 (0.018) <m2unet_covd-iostar_ssl.pth>`_     |
 +---------------------------------------------------------+---------------------------------------------+-----------------------------------------------+---------------------------------------------------+
+
+M2U-Net Precision vs. Recall Curves
+===================================
+
+Note that here the F1-score is calculated on a macro level (see paper for more details).
+
+.. figure:: img/pr_CHASEDB1.png
+   :scale: 50 %
+   :align: center
+   :alt: model comparisons
+
+   CHASE_DB1: Precision vs Recall curve and F1 scores
+
+.. figure:: img/pr_DRIVE.png
+   :scale: 50 %
+   :align: center
+   :alt: model comparisons
+
+   DRIVE: Precision vs Recall curve and F1 scores
+
+.. figure:: img/pr_HRF.png
+   :scale: 50 %
+   :align: center
+   :alt: model comparisons
+
+   HRF: Precision vs Recall curve and F1 scores
+
+.. figure:: img/pr_IOSTARVESSEL.png
+   :scale: 50 %
+   :align: center
+   :alt: model comparisons
+
+   IOSTAR: Precision vs Recall curve and F1 scores
+
+.. figure:: img/pr_STARE.png
+   :scale: 50 %
+   :align: center
+   :alt: model comparisons
+
+   STARE: Precision vs Recall curve and F1 scores
 

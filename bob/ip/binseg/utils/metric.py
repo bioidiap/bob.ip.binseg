@@ -60,5 +60,5 @@ def base_metrics(tp, fp, tn, fn):
     accuracy = (tp + tn) / (tp+fp+fn+tn)
     jaccard = tp / (tp+fp+fn + ( (tp+fp+fn) == 0) )
     f1_score = (2.0 * tp ) / (2.0 * tp + fp + fn + ( (2.0 * tp + fp + fn) == 0) )
-
+    #f1_score = (2.0 * precision * recall) / (precision + recall)
     return [precision, recall, specificity, accuracy, jaccard, f1_score]

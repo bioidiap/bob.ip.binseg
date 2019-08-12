@@ -194,8 +194,10 @@ def do_inference(
     avg_metrics = df_metrics.groupby('threshold').mean()
     std_metrics = df_metrics.groupby('threshold').std()
 
-    avg_metrics["f1_score"] =  (2* avg_metrics["precision"]*avg_metrics["recall"])/ \
-        (avg_metrics["precision"]+avg_metrics["recall"])
+    # Uncomment below for F1-score calculation based on average precision and metrics instead of 
+    # F1-scores of individual images. This method is in line with Maninis et. al. (2016)
+    #avg_metrics["f1_score"] =  (2* avg_metrics["precision"]*avg_metrics["recall"])/ \
+    #    (avg_metrics["precision"]+avg_metrics["recall"])
     
     avg_metrics["std_f1"] = std_metrics["f1_score"]
     

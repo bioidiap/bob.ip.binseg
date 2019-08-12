@@ -23,6 +23,7 @@ Users Guide
    benchmarkresults
    covdresults
    configs
+   plotting
    visualization
    api
 
