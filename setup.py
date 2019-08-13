@@ -49,8 +49,6 @@ setup(
           'train = bob.ip.binseg.script.binseg:train',
           'test = bob.ip.binseg.script.binseg:test',
           'compare =  bob.bin.binseg.script.binseg:compare',
-          'testcheckpoints = bob.ip.binseg.script.binseg:testcheckpoints',
-          'pdfoverview = bob.ip.binseg.script.binseg:testcheckpoints',
           'gridtable = bob.ip.binseg.script.binseg:testcheckpoints',
           'visualize = bob.ip.binseg.script.binseg:visualize',
         ],
