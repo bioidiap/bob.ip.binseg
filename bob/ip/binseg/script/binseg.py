@@ -544,3 +544,4 @@ def evalpred(
     
     # Run eval
     do_eval(prediction_folder, data_loader, output_folder = output_path, title= title, legend=legend)
+    
