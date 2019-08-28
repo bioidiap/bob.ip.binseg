@@ -35,39 +35,39 @@ of all evaluated models:
 
 
 
-+--------------------+--------------------+--------------------------------------------------------------------------------------------------------------------+
-|                    | DRIU               | M2UNet                                                                                                             |
-+--------------------+--------------------+--------------------------------------------------------------------------------------------------------------------+
-| DRIVE              | `DRIU_DRIVE.pth`_  | `M2UNet_DRIVE.pth <m2unet_drive.pth_>`_                                                                            |
-+--------------------+--------------------+--------------------------------------------------------------------------------------------------------------------+
-| COVD-DRIVE         |                    | `M2UNet_COVD-DRIVE.pth <https://dl.dropboxusercontent.com/s/x5wb84uao8nlx44/M2UNet_COVD-DRIVE.pth>`_               |
-+--------------------+--------------------+--------------------------------------------------------------------------------------------------------------------+
-| COVD-DRIVE SSL     |                    | `M2UNet_COVD-DRIVE_SSL.pth <https://dl.dropboxusercontent.com/s/hp7fg6bct0i3awr/M2UNet_COVD-DRIVE_SSL.pth>`_       |
-+--------------------+--------------------+--------------------------------------------------------------------------------------------------------------------+
-| STARE              | DRIU_STARE.pth_    | `M2UNet_STARE.pth <https://dl.dropboxusercontent.com/s/pc9wb8r7tjvg06p/M2UNet_STARE.pth>`_                         |
-+--------------------+--------------------+--------------------------------------------------------------------------------------------------------------------+
-| COVD-STARE         |                    | `M2UNet_COVD-STARE.pth <https://dl.dropboxusercontent.com/s/vh1trws2nxqt65y/M2UNet_COVD-STARE.pth>`_               |
-+--------------------+--------------------+--------------------------------------------------------------------------------------------------------------------+
-| COVD-STARE SSL     |                    | `M2UNet_COVD-STARE_SSL.pth <https://dl.dropboxusercontent.com/s/slcvfgf1saf7t19/M2UNet_COVD-STARE_SSL.pth>`_       |
-+--------------------+--------------------+--------------------------------------------------------------------------------------------------------------------+
-| CHASE_DB1          | DRIU_CHASEDB1.pth_ | `M2UNet_CHASEDB1.pth <https://dl.dropboxusercontent.com/s/jqq0z9boi17nhqf/M2UNet_CHASEDB1.pth>`_                   |
-+--------------------+--------------------+--------------------------------------------------------------------------------------------------------------------+
-| COVD-CHASE_DB1     |                    | `M2UNet_COVD-CHASEDB1.pth <https://dl.dropboxusercontent.com/s/pvbp0qky13q5o11/M2UNet_COVD-CHASEDB1.pth>`_         |
-+--------------------+--------------------+--------------------------------------------------------------------------------------------------------------------+
-| COVD-CHASE_DB1 SSL |                    | `M2UNet_COVD-CHASEDB1_SSL.pth <https://dl.dropboxusercontent.com/s/qx7mm5h8ywm98fi/M2UNet_COVD-CHASEDB1_SSL.pth>`_ |
-+--------------------+--------------------+--------------------------------------------------------------------------------------------------------------------+
-| IOSTARVESSEL       | DRIU_IOSTAR.pth_   | `M2UNet_IOSTARVESSEL.pth <https://dl.dropboxusercontent.com/s/g9jyvar9x8vvihr/M2UNet_IOSTARVESSEL.pth>`_           |
-+--------------------+--------------------+--------------------------------------------------------------------------------------------------------------------+
-| COVD-IOSTAR        |                    | `M2UNet_COVD-IOSTAR.pth <https://dl.dropboxusercontent.com/s/t5b2qomq6ey8i9t/M2UNet_COVD-IOSTAR.pth>`_             |
-+--------------------+--------------------+--------------------------------------------------------------------------------------------------------------------+
-| COVD-IOSTAR SSL    |                    | `M2UNet_COVD-IOSTAR_SSL.pth <https://dl.dropboxusercontent.com/s/70ynm2k3bpkj4mq/M2UNet_COVD-IOSTAR_SSL.pth>`_     |
-+--------------------+--------------------+--------------------------------------------------------------------------------------------------------------------+
-| HRF                | DRIU_HRF.pth_      | `M2UNet_HRF1168.pth <https://dl.dropboxusercontent.com/s/g34g6nai1rsgbsc/M2UNet_HRF1168.pth>`_                     |
-+--------------------+--------------------+--------------------------------------------------------------------------------------------------------------------+
-| COVD-HRF           |                    | `M2UNet_COVD-HRF.pth <https://dl.dropboxusercontent.com/s/o3edhljeidl6fvi/M2UNet_COVD-HRF.pth>`_                   |
-+--------------------+--------------------+--------------------------------------------------------------------------------------------------------------------+
-| COVD-HRF SSL       |                    | `M2UNet_COVD-HRF_SSL.pth <https://dl.dropboxusercontent.com/s/2e0aq8a5vbop2yx/M2UNet_COVD-HRF_SSL.pth>`_           |
-+--------------------+--------------------+--------------------------------------------------------------------------------------------------------------------+
++--------------------+--------------------+--------------------------------------------------------------------------------------------------------------------------------+
+|                    | DRIU               | M2UNet                                                                                                                         |
++--------------------+--------------------+--------------------------------------------------------------------------------------------------------------------------------+
+| DRIVE              | `DRIU_DRIVE.pth`_  | `M2UNet_DRIVE.pth <m2unet_drive.pth_>`_                                                                                        |
++--------------------+--------------------+--------------------------------------------------------------------------------------------------------------------------------+
+| COVD-DRIVE         |                    | `M2UNet_COVD-DRIVE.pth <https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/M2UNet_COVD-DRIVE.pth>`_               |
++--------------------+--------------------+--------------------------------------------------------------------------------------------------------------------------------+
+| COVD-DRIVE SSL     |                    | `M2UNet_COVD-DRIVE_SSL.pth <https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/M2UNet_COVD-DRIVE_SSL.pth>`_       |
++--------------------+--------------------+--------------------------------------------------------------------------------------------------------------------------------+
+| STARE              | DRIU_STARE.pth_    | `M2UNet_STARE.pth <https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/M2UNet_STARE.pth>`_                         |
++--------------------+--------------------+--------------------------------------------------------------------------------------------------------------------------------+
+| COVD-STARE         |                    | `M2UNet_COVD-STARE.pth <https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/M2UNet_COVD-STARE.pth>`_               |
++--------------------+--------------------+--------------------------------------------------------------------------------------------------------------------------------+
+| COVD-STARE SSL     |                    | `M2UNet_COVD-STARE_SSL.pth <https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/M2UNet_COVD-STARE_SSL.pth>`_       |
++--------------------+--------------------+--------------------------------------------------------------------------------------------------------------------------------+
+| CHASE_DB1          | DRIU_CHASEDB1.pth_ | `M2UNet_CHASEDB1.pth <https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/M2UNet_CHASEDB1.pth>`_                   |
++--------------------+--------------------+--------------------------------------------------------------------------------------------------------------------------------+
+| COVD-CHASE_DB1     |                    | `M2UNet_COVD-CHASEDB1.pth <https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/M2UNet_COVD-CHASEDB1.pth>`_         |
++--------------------+--------------------+--------------------------------------------------------------------------------------------------------------------------------+
+| COVD-CHASE_DB1 SSL |                    | `M2UNet_COVD-CHASEDB1_SSL.pth <https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/M2UNet_COVD-CHASEDB1_SSL.pth>`_ |
++--------------------+--------------------+--------------------------------------------------------------------------------------------------------------------------------+
+| IOSTARVESSEL       | DRIU_IOSTAR.pth_   | `M2UNet_IOSTARVESSEL.pth <https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/M2UNet_IOSTARVESSEL.pth>`_           |
++--------------------+--------------------+--------------------------------------------------------------------------------------------------------------------------------+
+| COVD-IOSTAR        |                    | `M2UNet_COVD-IOSTAR.pth <https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/M2UNet_COVD-IOSTAR.pth>`_             |
++--------------------+--------------------+--------------------------------------------------------------------------------------------------------------------------------+
+| COVD-IOSTAR SSL    |                    | `M2UNet_COVD-IOSTAR_SSL.pth <https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/M2UNet_COVD-IOSTAR_SSL.pth>`_     |
++--------------------+--------------------+--------------------------------------------------------------------------------------------------------------------------------+
+| HRF                | DRIU_HRF.pth_      | `M2UNet_HRF1168.pth <https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/M2UNet_HRF1168.pth>`_                     |
++--------------------+--------------------+--------------------------------------------------------------------------------------------------------------------------------+
+| COVD-HRF           |                    | `M2UNet_COVD-HRF.pth <https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/M2UNet_COVD-HRF.pth>`_                   |
++--------------------+--------------------+--------------------------------------------------------------------------------------------------------------------------------+
+| COVD-HRF SSL       |                    | `M2UNet_COVD-HRF_SSL.pth <https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/M2UNet_COVD-HRF_SSL.pth>`_           |
++--------------------+--------------------+--------------------------------------------------------------------------------------------------------------------------------+
 
 
 
@@ -75,8 +75,8 @@ To run evaluation of pretrained models pass url as ``-w`` argument. E.g.:
 
 .. code-block:: bash
 
-    bob binseg test DRIU DRIVETEST -o Evaluation_DRIU_DRIVE -w https://dl.dropboxusercontent.com/s/rggn9ebj38c06uf/DRIU_DRIVE.pth
-    bob binseg test M2UNet DRIVETEST -o Evaluation_M2UNet_DRIVE -w https://dl.dropboxusercontent.com/s/55xply8jm0g2skp/M2UNet_DRIVE.pth
+    bob binseg test DRIU DRIVETEST -o Evaluation_DRIU_DRIVE -w https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/DRIU_DRIVE.pth
+    bob binseg test M2UNet DRIVETEST -o Evaluation_M2UNet_DRIVE -w https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/M2UNet_DRIVE.pth
 
 
 
