@@ -26,6 +26,7 @@ Users Guide
    plotting
    visualization
    api
+   acknowledgements
 
 .. todolist::
 
