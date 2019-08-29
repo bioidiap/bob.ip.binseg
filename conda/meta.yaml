@@ -22,7 +22,6 @@ build:
     - cp -R README.rst requirements.txt doc "${PREFIX}/share/doc/{{ name }}/"
 
 requirements:
-  # place your build dependencies before the 'host' section
   host:
     - python {{ python }}
     - setuptools {{ setuptools }}
@@ -30,7 +29,6 @@ requirements:
     - pytorch {{ pytorch }} # [linux]
     - numpy {{ numpy }}
     - bob.extension
-    # place your other host dependencies here
   run:
     - python
     - setuptools
@@ -40,17 +38,7 @@ requirements:
     - pandas
     - matplotlib
     - tqdm
-    - bob.db.drive
-    - bob.db.stare
-    - bob.db.chasedb1
-    - bob.db.hrf
-    - bob.db.drionsdb
-    - bob.db.rimoner3
-    - bob.db.drishtigs1
-    - bob.db.refuge
-    - bob.db.iostar
     - tabulate
-    # place other runtime dependencies here (same as requirements.txt)
 
 test:
   imports:
@@ -72,7 +60,15 @@ test:
     - coverage
     - sphinx
     - sphinx_rtd_theme
-    # extend this list with further test-time-only dependencies
+    - bob.db.drive
+    - bob.db.stare
+    - bob.db.chasedb1
+    - bob.db.hrf
+    - bob.db.drionsdb
+    - bob.db.rimoner3
+    - bob.db.drishtigs1
+    - bob.db.refuge
+    - bob.db.iostar
 
 about:
   summary: Binary Segmentation Benchmark Package for Bob
