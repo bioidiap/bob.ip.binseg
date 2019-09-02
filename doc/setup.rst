@@ -15,33 +15,45 @@ package
 
     conda install bob.ip.binseg
 
-Dataset Links
-=============
+Datasets
+========
 
-+------------+----------------------------------------------------------------------+
-| Dataset    | Website                                                              |
-+------------+----------------------------------------------------------------------+
-| STARE      | http://cecas.clemson.edu/~ahoover/stare/                             |
-+------------+----------------------------------------------------------------------+
-| DRIVE      | https://www.isi.uu.nl/Research/Databases/DRIVE/                      |
-+------------+----------------------------------------------------------------------+
-| DRIONS     | http://www.ia.uned.es/~ejcarmona/DRIONS-DB.html                      |
-+------------+----------------------------------------------------------------------+
-| RIM-ONE    | http://medimrg.webs.ull.es/research/downloads/                       |
-+------------+----------------------------------------------------------------------+
-| CHASE-DB1  | https://blogs.kingston.ac.uk/retinal/chasedb1/                       |
-+------------+----------------------------------------------------------------------+
-| HRF        | https://www5.cs.fau.de/research/data/fundus-images/                  |
-+------------+----------------------------------------------------------------------+
-| Drishti-GS | http://cvit.iiit.ac.in/projects/mip/drishti-gs/mip-dataset2/Home.php |
-+------------+----------------------------------------------------------------------+
-| IOSTAR     | http://www.retinacheck.org/datasets                                  |
-+------------+----------------------------------------------------------------------+
-| REFUGE     | https://refuge.grand-challenge.org/Details/                          |
-+------------+----------------------------------------------------------------------+
+The package supports a range of retina fundus datasets but does not install the `bob.db`
+APIs by default, nor does it include the datasets. 
 
-Setting up dataset paths
-========================
+To setup a datasets:
+
+1. Download the dataset from the authors website
+2. Install the corresponding bob.db package via ``conda install bob.db.<database>``.  E.g. to install the DRIVE API run ``conda install bob.db.drive``
+3. :ref:`datasetpathsetup`
+4. :ref:`dsconsistency`
+
++------------+----------------------------------------------------------------------+---------------------+
+| Dataset    | Website                                                              | `bob.db` package    |
++------------+----------------------------------------------------------------------+---------------------+
+| STARE      | http://cecas.clemson.edu/~ahoover/stare/                             | `bob.db.stare`      |
++------------+----------------------------------------------------------------------+---------------------+
+| DRIVE      | https://www.isi.uu.nl/Research/Databases/DRIVE/                      | `bob.db.drive`      |
++------------+----------------------------------------------------------------------+---------------------+
+| DRIONS     | http://www.ia.uned.es/~ejcarmona/DRIONS-DB.html                      | `bob.db.drionsdb`   |
++------------+----------------------------------------------------------------------+---------------------+
+| RIM-ONE    | http://medimrg.webs.ull.es/research/downloads/                       | `bob.db.rimoner3`   |
++------------+----------------------------------------------------------------------+---------------------+
+| CHASE-DB1  | https://blogs.kingston.ac.uk/retinal/chasedb1/                       | `bob.db.chasedb`    |
++------------+----------------------------------------------------------------------+---------------------+
+| HRF        | https://www5.cs.fau.de/research/data/fundus-images/                  | `bob.db.hrf`        |
++------------+----------------------------------------------------------------------+---------------------+
+| Drishti-GS | http://cvit.iiit.ac.in/projects/mip/drishti-gs/mip-dataset2/Home.php | `bob.db.drishtigs1` |
++------------+----------------------------------------------------------------------+---------------------+
+| IOSTAR     | http://www.retinacheck.org/datasets                                  | `bob.db.iostar`     |
++------------+----------------------------------------------------------------------+---------------------+
+| REFUGE     | https://refuge.grand-challenge.org/Details/                          | `bob.db.refuge`     |
++------------+----------------------------------------------------------------------+---------------------+
+
+.. _datasetpathsetup:
+
+Set up dataset paths
+=====================
 
 For each dataset that you are planning to use, set the datadir to
 the path where it is stored. E.g.:
@@ -73,9 +85,10 @@ This should result in an output similar to the following:
     }
 
 
+.. _dsconsistency:
 
-Testing dataset consitency
-==========================
+Test dataset consitency
+========================
 
 To check whether the downloaded version is consistent with
 the structure that is expected by our ``bob.db`` packages
