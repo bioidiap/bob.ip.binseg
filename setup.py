@@ -20,8 +20,8 @@ setup(
     author="Tim Laibacher",
     author_email="tim.laibacher@idiap.ch",
     # there may be a maintainer apart from the author - you decide
-    # maintainer='?'
-    # maintainer_email='email@example.com'
+    maintainer="Andre Anjos",
+    maintainer_email="andre.anjos@idiap.ch",
     # you may add more keywords separating those by commas (a, b, c, ...)
     keywords="bob",
     long_description=open("README.rst").read(),
