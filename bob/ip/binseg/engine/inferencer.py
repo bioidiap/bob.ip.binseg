@@ -11,8 +11,10 @@ import pandas as pd
 import torchvision.transforms.functional as VF
 from tqdm import tqdm
 
+import bob.io.base
+
 from bob.ip.binseg.utils.metric import SmoothedValue, base_metrics
-from bob.ip.binseg.utils.plot import precision_recall_f1iso
+from bob.ip.binseg.utils.plot import precision_recall_f1iso_confintval
 from bob.ip.binseg.utils.summary import summary
 
 
@@ -108,10 +110,32 @@ def save_probability_images(predictions, names, output_folder, logger):
     if not os.path.exists(images_subfolder): os.makedirs(images_subfolder)
     for j in range(predictions.size()[0]):
         img = VF.to_pil_image(predictions.cpu().data[j])
-        filename = '{}'.format(names[j])
+        filename = '{}.png'.format(names[j].split(".")[0])
         logger.info("saving {}".format(filename))
         img.save(os.path.join(images_subfolder, filename))
 
+def save_hdf(predictions, names, output_folder, logger):
+    """
+    Saves probability maps as image in the same format as the test image
+
+    Parameters
+    ----------
+    predictions : :py:class:`torch.Tensor`
+        tensor with pixel-wise probabilities
+    names : list
+        list of file names 
+    output_folder : str
+        output path
+    logger : :py:class:`logging.Logger`
+        python logger
+    """
+    hdf5_subfolder = os.path.join(output_folder,'hdf5') 
+    if not os.path.exists(hdf5_subfolder): os.makedirs(hdf5_subfolder)
+    for j in range(predictions.size()[0]):
+        img = predictions.cpu().data[j].squeeze(0).numpy()
+        filename = '{}.hdf5'.format(names[j].split(".")[0])
+        logger.info("saving {}".format(filename))
+        bob.io.base.save(img, os.path.join(hdf5_subfolder, filename))
 
 def do_inference(
     model,
@@ -174,6 +198,8 @@ def do_inference(
             
             # Create probability images
             save_probability_images(probabilities, names, output_folder, logger)
+            # save hdf5
+            save_hdf(probabilities, names, output_folder, logger)
 
     # DataFrame 
     df_metrics = pd.DataFrame(metrics,columns= \
@@ -199,6 +225,12 @@ def do_inference(
     #avg_metrics["f1_score"] =  (2* avg_metrics["precision"]*avg_metrics["recall"])/ \
     #    (avg_metrics["precision"]+avg_metrics["recall"])
     
+    avg_metrics["std_pr"] = std_metrics["precision"]
+    avg_metrics["pr_upper"] = avg_metrics['precision'] + avg_metrics["std_pr"]
+    avg_metrics["pr_lower"] = avg_metrics['precision'] - avg_metrics["std_pr"]
+    avg_metrics["std_re"] = std_metrics["recall"]
+    avg_metrics["re_upper"] = avg_metrics['recall'] + avg_metrics["std_re"]
+    avg_metrics["re_lower"] = avg_metrics['recall'] - avg_metrics["std_re"]
     avg_metrics["std_f1"] = std_metrics["f1_score"]
     
     avg_metrics.to_csv(metrics_path)
@@ -211,7 +243,7 @@ def do_inference(
     np_avg_metrics = avg_metrics.to_numpy().T
     fig_name = "precision_recall.pdf"
     logger.info("saving {}".format(fig_name))
-    fig = precision_recall_f1iso([np_avg_metrics[0]],[np_avg_metrics[1]], [model.name,None], title=output_folder.split('/')[-2:])
+    fig = precision_recall_f1iso_confintval([np_avg_metrics[0]],[np_avg_metrics[1]],[np_avg_metrics[7]],[np_avg_metrics[8]],[np_avg_metrics[10]],[np_avg_metrics[11]], [model.name,None], title=output_folder)
     fig_filename = os.path.join(results_subfolder, fig_name)
     fig.savefig(fig_filename)
     

@@ -10,21 +10,12 @@ import bob.io.base
 
 def get_file_lists(data_path):
     data_path = Path(data_path)
-    
-    image_path = data_path.joinpath('images')
-    image_file_names = np.array(sorted(list(image_path.glob('*'))))
+    image_file_names = np.array(sorted(list(data_path.glob('*'))))
+    return image_file_names
 
-    gt_path = data_path.joinpath('gt')
-    gt_file_names = np.array(sorted(list(gt_path.glob('*'))))
-    return image_file_names, gt_file_names
-
-class ImageFolder(Dataset):
+class ImageFolderInference(Dataset):
     """
-    Generic ImageFolder dataset, that contains two folders:
-
-    * ``images`` (vessel images)
-    * ``gt`` (ground-truth labels)
-    
+    Generic ImageFolder containing images for inference
     
     Parameters
     ----------
@@ -34,7 +25,7 @@ class ImageFolder(Dataset):
     """
     def __init__(self, path, transform = None):
         self.transform = transform
-        self.img_file_list, self.gt_file_list = get_file_lists(path)
+        self.img_file_list = get_file_lists(path)
 
     def __len__(self):
         """
@@ -54,22 +45,13 @@ class ImageFolder(Dataset):
         Returns
         -------
         list
-            dataitem [img_name, img, gt, mask]
+            dataitem [img_name, img]
         """
         img_path = self.img_file_list[index]
         img_name = img_path.name
         img = Image.open(img_path).convert(mode='RGB')
     
-        gt_path = self.gt_file_list[index]
-        if gt_path.suffix == '.hdf5':
-            gt = bob.io.base.load(str(gt_path)).astype('float32')
-            # not elegant but since transforms require PIL images we do this hacky workaround here
-            gt = torch.from_numpy(gt)
-            gt = VF.to_pil_image(gt).convert(mode='1', dither=None)
-        else:
-            gt = Image.open(gt_path).convert(mode='1', dither=None)
-        
-        sample = [img, gt]
+        sample = [img]
         
         if self.transform :
             sample = self.transform(*sample)

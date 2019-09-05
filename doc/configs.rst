@@ -14,6 +14,17 @@ ImageFolder
 ----------------
 .. literalinclude:: ../bob/ip/binseg/configs/datasets/imagefolder.py
 
+.. _bob.ip.binseg.configs.datasets.imagefoldertest:
+
+ImageFolderTest
+----------------
+.. literalinclude:: ../bob/ip/binseg/configs/datasets/imagefoldertest.py
+
+.. _bob.ip.binseg.configs.datasets.imagefolderinference:
+
+ImageFolderInference
+---------------------
+.. literalinclude:: ../bob/ip/binseg/configs/datasets/imagefolderinference.py
 
 .. _bob.ip.binseg.configs.datasets.chasedb1:
 
