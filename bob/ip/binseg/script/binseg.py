@@ -32,6 +32,7 @@ from bob.ip.binseg.utils.rsttable import create_overview_grid
 from bob.ip.binseg.utils.plot import metricsviz, overlay,savetransformedtest
 from bob.ip.binseg.utils.transformfolder import transformfolder as transfld
 from bob.ip.binseg.utils.evaluate import do_eval
+from bob.ip.binseg.engine.predicter import do_predict
 
 logger = logging.getLogger(__name__)
 
@@ -492,6 +493,77 @@ def transformfolder(source_path ,target_path,transforms,**kwargs):
     transfld(source_path,target_path,transforms)
 
 
+# Run inference and create predictions only (no ground truth available)
+@binseg.command(entry_point_group='bob.ip.binseg.config', cls=ConfigCommand)
+@click.option(
+    '--output-path',
+    '-o',
+    required=True,
+    default="output",
+    cls=ResourceOption
+    )
+@click.option(
+    '--model',
+    '-m',
+    required=True,
+    cls=ResourceOption
+    )
+@click.option(
+    '--dataset',
+    '-d',
+    required=True,
+    cls=ResourceOption
+    )
+@click.option(
+    '--batch-size',
+    '-b',
+    required=True,
+    default=2,
+    cls=ResourceOption)
+@click.option(
+    '--device',
+    '-d',
+    help='A string indicating the device to use (e.g. "cpu" or "cuda:0"',
+    show_default=True,
+    required=True,
+    default='cpu',
+    cls=ResourceOption)
+@click.option(
+    '--weight',
+    '-w',
+    help='Path or URL to pretrained model',
+    required=False,
+    default=None,
+    cls=ResourceOption
+    )
+@verbosity_option(cls=ResourceOption)
+def predict(model
+        ,output_path
+        ,device
+        ,batch_size
+        ,dataset
+        ,weight
+        , **kwargs):
+    """ Run inference and evalaute the model performance """
+
+    # PyTorch dataloader
+    data_loader = DataLoader(
+        dataset = dataset
+        ,batch_size = batch_size
+        ,shuffle= False
+        ,pin_memory = torch.cuda.is_available()
+        )
+    
+    # checkpointer, load last model in dir
+    checkpointer = DetectronCheckpointer(model, save_dir = output_path, save_to_disk=False)
+    checkpointer.load(weight)
+    do_predict(model, data_loader, device, output_path)
+
+    # Overlayed images
+    overlay(dataset=dataset, output_path=output_path)
+
+
+
 # Evaluate only. Runs evaluation on predicted probability maps (--prediction-folder)
 @binseg.command(entry_point_group='bob.ip.binseg.config', cls=ConfigCommand)
 @click.option(
@@ -544,4 +616,6 @@ def evalpred(
     
     # Run eval
     do_eval(prediction_folder, data_loader, output_folder = output_path, title= title, legend=legend)
+
+
     

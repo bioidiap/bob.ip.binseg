@@ -26,6 +26,34 @@ E.g. run inference on model M2U-Net on the DRIVE test set:
     # The evaluation results will be stored in the same folder
     bob binseg test M2UNet DRIVETEST -o /DRIVE/M2UNet/output
 
+Outputs
+========
+The inference run generates the following output files:
+
+.. code-block:: bash
+
+    .
+    ├── images  # the predicted probabilities as grayscale images in .png format 
+    ├── hdf5    # the predicted probabilties in hdf5 format
+    ├── last_checkpoint  # text file that keeps track of the last checkpoint 
+    ├── M2UNet_trainlog.csv # training log 
+    ├── M2UNet_trainlog.pdf # training log plot
+    ├── model_*.pth # model checkpoints
+    └── results
+        ├── image*.jpg.csv # evaluation metrics for each image
+        ├── Metrics.csv # average evaluation metrics
+        ├── ModelSummary.txt # model summary and parameter count
+        ├── precision_recall.pdf # precision vs recall plot
+        └── Times.txt # inference times
+
+Inference Only Mode
+====================
+
+If you wish to run inference only on a folder containing images, use the ``predict`` function in combination with a :ref:`bob.ip.binseg.configs.datasets.imagefolderinference` config. E.g.:
+
+.. code-block:: bash
+
+    bob binseg predict M2UNet /path/to/myinferencedatasetconfig.py -b 1 -d cpu -o /my/output/path -w /path/to/pretrained/weight/model_final.pth -vv
 
 Pretrained Models
 =================

@@ -416,11 +416,6 @@ def overlay(dataset, output_path):
         # get sample
         name  = sample[0]
         img = VF.to_pil_image(sample[1]) # PIL Image
-        gt = sample[2].byte() # byte tensor
-        
-        # read metrics 
-        #metrics = pd.read_csv(os.path.join(output_path,'results',name+'.csv'))
-        #f1 = metrics[' f1_score'].max()
         
         # read probability output 
         pred = Image.open(os.path.join(output_path,'images',name)).convert(mode='L')
