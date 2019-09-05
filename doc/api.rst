@@ -9,9 +9,13 @@ This section lists all the functionality available in this library allowing to
 run binary-segmentation benchmarks.
 
 
-PyTorch Dataset
-===============
+PyTorch bob.db Dataset
+======================
 .. automodule:: bob.ip.binseg.data.binsegdataset
+
+PyTorch ImageFolder Dataset
+===========================
+.. automodule:: bob.ip.binseg.data.imagefolder
 
 Transforms
 ==========

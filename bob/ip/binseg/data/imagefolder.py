@@ -19,10 +19,10 @@ def get_file_lists(data_path):
 
 class ImageFolder(Dataset):
     """
-    Required directory tree structure for images and ground-truth (gt):
-    root
-       |- images
-       |- gt 
+    Generic ImageFolder dataset, that contains two folders:
+
+    * ``images`` (vessel images)
+    * ``gt`` (ground-truth labels)
     
     
     Parameters
@@ -30,10 +30,6 @@ class ImageFolder(Dataset):
     path : str
         full path to root of dataset
     
-    Returns
-    -------
-    [type]
-        [description]
     """
     def __init__(self, path, transform = None):
         self.transform = transform
