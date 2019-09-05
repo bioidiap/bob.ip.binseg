@@ -8,6 +8,13 @@ Configs
 Dataset Configs
 ===============
 
+.. _bob.ip.binseg.configs.datasets.imagefolder:
+
+ImageFolder
+----------------
+.. literalinclude:: ../bob/ip/binseg/configs/datasets/imagefolder.py
+
+
 .. _bob.ip.binseg.configs.datasets.chasedb1:
 
 CHASEDB1

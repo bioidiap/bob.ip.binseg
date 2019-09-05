@@ -33,9 +33,16 @@ Supported Datasets
 Add-on: Folder-based Dataset
 ============================
 
-For quick experimentation we also provide a PyTorch class that works with a 
-dataset folder structure:
+For quick experimentation we also provide a PyTorch class that works with the following 
+dataset folder structure for images and ground-truth (gt):
 
+.. code-block:: bash
 
+    root
+       |- images
+       |- gt 
+
+In the dataset config :ref:`bob.ip.binseg.configs.datasets.imagefolder` the full path of the dataset has to be amended. Training can then for example be started with
+``bob binseg train M2UNet IMAGEFOLDER -b 4 -d cuda -o /my/output/path -vv``
 
 .. include:: links.rst

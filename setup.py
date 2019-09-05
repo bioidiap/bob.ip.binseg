@@ -65,6 +65,7 @@ setup(
           'M2UNetSSL = bob.ip.binseg.configs.models.m2unetssl',
           'UNet = bob.ip.binseg.configs.models.unet',
           'ResUNet = bob.ip.binseg.configs.models.resunet',
+          'IMAGEFOLDER = bob.ip.binseg.configs.datasets.imagefolder',
           'CHASEDB1 = bob.ip.binseg.configs.datasets.chasedb1',
           'CHASEDB1TEST = bob.ip.binseg.configs.datasets.chasedb1test',
           'COVD-DRIVE = bob.ip.binseg.configs.datasets.starechasedb1iostarhrf544',
