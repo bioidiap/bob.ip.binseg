@@ -18,7 +18,8 @@
  Binary Segmentation Benchmark Package for Bob
 ===============================================
 
-This package is part of the signal-processing and machine learning toolbox Bob_.
+This package is part of the signal-processing and machine learning toolbox
+Bob_.  It implements training and inference for binary segmentation tasks.
 
 
 Installation
