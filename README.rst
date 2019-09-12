@@ -1,13 +1,13 @@
 .. -*- coding: utf-8 -*-
 
-.. image:: https://img.shields.io/badge/docs-stable-yellow.svg
-   :target: https://www.idiap.ch/software/bob/docs/bob/bob.ip.binseg/stable/index.html
+.. image:: https://img.shields.io/badge/docs-v0.0.1-yellow.svg
+   :target: https://www.idiap.ch/software/bob/docs/bob/bob.ip.binseg/v0.0.1/index.html
 .. image:: https://img.shields.io/badge/docs-latest-orange.svg
    :target: https://www.idiap.ch/software/bob/docs/bob/bob.ip.binseg/master/index.html
-.. image:: https://gitlab.idiap.ch/bob/bob.ip.binseg/badges/master/build.svg
-   :target: https://gitlab.idiap.ch/bob/bob.ip.binseg/commits/master
-.. image:: https://gitlab.idiap.ch/bob/bob.ip.binseg/badges/master/coverage.svg
-   :target: https://gitlab.idiap.ch/bob/bob.ip.binseg/commits/master
+.. image:: https://gitlab.idiap.ch/bob/bob.ip.binseg/badges/v0.0.1/build.svg
+   :target: https://gitlab.idiap.ch/bob/bob.ip.binseg/commits/v0.0.1
+.. image:: https://gitlab.idiap.ch/bob/bob.ip.binseg/badges/v0.0.1/coverage.svg
+   :target: https://gitlab.idiap.ch/bob/bob.ip.binseg/commits/v0.0.1
 .. image:: https://img.shields.io/badge/gitlab-project-0000c0.svg
    :target: https://gitlab.idiap.ch/bob/bob.ip.binseg
 .. image:: https://img.shields.io/pypi/v/bob.ip.binseg.svg
