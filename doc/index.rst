@@ -27,7 +27,7 @@ Please use the below BibTeX reference to cite this work::
 Additional Material
 ===================
 
-The additional material referred to in the paper can be found under :ref:`bob.ip.binseg.covdresults`
+The additional material referred to in the paper can be found under :ref:`bob.ip.binseg.covdresults` and :download:`here </additionalresults.pdf>`
 
 Users Guide
 ===========
