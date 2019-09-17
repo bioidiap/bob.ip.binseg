@@ -30,9 +30,12 @@ package, run::
 
   $ conda install bob.ip.binseg
 
+
 Citation
 --------
-Please use the below BibTeX reference to cite this work::
+
+If you use this software package in a publication, we would appreciate if you
+could cite our work:
 
   @ARTICLE{laibacher_anjos_2019,
         author = {{Laibacher}, Tim and {Anjos}, Andr{\'e}},
@@ -46,7 +49,6 @@ Please use the below BibTeX reference to cite this work::
         pages = {arXiv:1909.03856},
         archivePrefix = {arXiv},
         eprint = {1909.03856}}
-
 
 
 Contact
