@@ -35,10 +35,10 @@ Citation
 --------
 
 If you use this software package in a publication, we would appreciate if you
-could cite our work:
+could cite our work::
 
-  @ARTICLE{laibacher_anjos_2019,
-        author = {{Laibacher}, Tim and {Anjos}, Andr{\'e}},
+  @article{laibacher_anjos_2019,
+        author = {Laibacher, Tim and {Anjos}, Andr\'e},
         title = "{On the Evaluation and Real-World Usage Scenarios of Deep Vessel Segmentation for Funduscopy}",
         journal = {arXiv e-prints},
         keywords = {Computer Science - Computer Vision and Pattern Recognition},
