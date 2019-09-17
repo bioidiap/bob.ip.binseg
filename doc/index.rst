@@ -14,18 +14,14 @@ Please use the BibTeX reference below to cite this work:
 
 .. code:: bibtex
 
-   @article{laibacher_anjos_2019,
-         author = {Laibacher, Tim and Anjos, Andr\'e},
-         title = "{On the Evaluation and Real-World Usage Scenarios of Deep Vessel Segmentation for Funduscopy}",
-         journal = {arXiv e-prints},
-         keywords = {Computer Science - Computer Vision and Pattern Recognition},
-         year = {2019},
-         month = {Sep},
-         url = {https://arxiv.org/abs/1909.03856},
-         eid = {arXiv:1909.03856},
-         pages = {arXiv:1909.03856},
-         archivePrefix = {arXiv},
-         eprint = {1909.03856},
+   @misc{laibacher_anjos_2019,
+       title={On the Evaluation and Real-World Usage Scenarios of Deep Vessel Segmentation for Funduscopy},
+       author={Tim Laibacher and Andr\'e Anjos},
+       year={2019},
+       eprint={1909.03856},
+       archivePrefix={arXiv},
+       primaryClass={cs.CV},
+       url = {https://arxiv.org/abs/1909.03856},
    }
 
 
