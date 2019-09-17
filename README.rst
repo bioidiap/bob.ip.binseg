@@ -48,7 +48,8 @@ could cite our work::
         eid = {arXiv:1909.03856},
         pages = {arXiv:1909.03856},
         archivePrefix = {arXiv},
-        eprint = {1909.03856}}
+        eprint = {1909.03856},
+  }
 
 
 Contact
