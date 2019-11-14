@@ -11,6 +11,7 @@ import math
 from math import floor
 import warnings
 import collections
+import bob.core
 
 _pil_interpolation_to_str = {
     Image.NEAREST: 'PIL.Image.NEAREST',
@@ -22,7 +23,7 @@ _pil_interpolation_to_str = {
 }
 Iterable = collections.abc.Iterable
 
-# Compose 
+# Compose
 
 class Compose:
     """Composes several transforms.
@@ -62,7 +63,7 @@ class CenterCrop:
     """
     def __init__(self, size):
         self.size = size
-        
+
     def __call__(self, *args):
         return [VF.center_crop(img, self.size) for img in args]
 
@@ -70,24 +71,24 @@ class CenterCrop:
 class Crop:
     """
     Crop at the given coordinates.
-    
+
     Attributes
     ----------
-    i : int 
+    i : int
         upper pixel coordinate.
-    j : int 
+    j : int
         left pixel coordinate.
-    h : int 
+    h : int
         height of the cropped image.
-    w : int 
+    w : int
         width of the cropped image.
     """
     def __init__(self, i, j, h, w):
         self.i = i
         self.j = j
-        self.h = h 
-        self.w = w 
-    
+        self.h = h
+        self.w = w
+
     def __call__(self, *args):
         return [img.crop((self.j, self.i, self.j + self.w, self.i + self.h)) for img in args]
 
@@ -97,34 +98,61 @@ class Pad:
 
     Attributes
     ----------
-    padding : int or tuple 
-        padding on each border. If a single int is provided this is used to pad all borders. 
+    padding : int or tuple
+        padding on each border. If a single int is provided this is used to pad all borders.
         If tuple of length 2 is provided this is the padding on left/right and top/bottom respectively.
         If a tuple of length 4 is provided this is the padding for the left, top, right and bottom borders respectively.
-    
+
     fill : int
-        pixel fill value for constant fill. Default is 0. If a tuple of length 3, it is used to fill R, G, B channels respectively. 
-        This value is only used when the padding_mode is constant   
+        pixel fill value for constant fill. Default is 0. If a tuple of length 3, it is used to fill R, G, B channels respectively.
+        This value is only used when the padding_mode is constant
     """
     def __init__(self, padding, fill=0):
         self.padding = padding
         self.fill = fill
-        
+
     def __call__(self, *args):
         return [VF.pad(img, self.padding, self.fill, padding_mode='constant') for img in args]
-    
+
+class AutoLevel16to8:
+    """Converts a 16-bit image to 8-bit representation using "auto-level"
+
+    This transform assumes that the input images are gray-scaled.
+
+    To auto-level, we calculate the maximum and the minimum of the image, and
+    consider such a range should be mapped to the [0,255] range of the
+    destination image.
+    """
+    def _process_one(self, img):
+        return Image.fromarray(bob.core.convert(img, 'uint8', (0,255),
+            img.getextrema()))
+
+    def __call__(self, *args):
+        return [self._process_one(img) for img in args]
+
+class ToRGB:
+    """Converts from any input format to RGB, using an ADAPTIVE conversion.
+
+    This transform takes the input image and converts it to RGB using
+    py:method:`Image.Image.convert`, with `mode='RGB'` and using all other
+    defaults.  This may be aggressive if applied to 16-bit images without
+    further considerations.
+    """
+    def __call__(self, *args):
+        return [img.convert(mode="RGB") for img in args]
+
 class ToTensor:
     """Converts :py:class:`PIL.Image.Image` to :py:class:`torch.Tensor` """
     def __call__(self, *args):
         return [VF.to_tensor(img) for img in args]
 
-        
+
 # Augmentations
 
 class RandomHFlip:
     """
     Flips horizontally
-    
+
     Attributes
     ----------
     prob : float
@@ -132,50 +160,50 @@ class RandomHFlip:
     """
     def __init__(self, prob = 0.5):
         self.prob = prob
-        
+
     def __call__(self, *args):
         if random.random() < self.prob:
             return [VF.hflip(img) for img in args]
-            
+
         else:
             return args
-    
-    
+
+
 class RandomVFlip:
     """
     Flips vertically
-    
+
     Attributes
     ----------
-    prob : float 
+    prob : float
         probability at which imgage is flipped. Defaults to ``0.5``
     """
     def __init__(self, prob = 0.5):
         self.prob = prob
-        
+
     def __call__(self, *args):
         if random.random() < self.prob:
             return [VF.vflip(img) for img in args]
-            
+
         else:
             return args
-    
+
 
 class RandomRotation:
     """
     Rotates by degree
-    
+
     Attributes
     ----------
     degree_range : tuple
         range of degrees in which image and ground truth are rotated. Defaults to ``(-15, +15)``
-    prob : float 
+    prob : float
         probability at which imgage is rotated. Defaults to ``0.5``
     """
     def __init__(self, degree_range = (-15, +15), prob = 0.5):
         self.prob = prob
         self.degree_range = degree_range
-        
+
     def __call__(self, *args):
         if random.random() < self.prob:
             degree = random.randint(*self.degree_range)
@@ -184,21 +212,21 @@ class RandomRotation:
             return args
 
 class ColorJitter(object):
-    """ 
+    """
     Randomly change the brightness, contrast, saturation and hue
-    
+
     Attributes
     ----------
-    brightness : float 
+    brightness : float
         how much to jitter brightness. brightness_factor
         is chosen uniformly from ``[max(0, 1 - brightness), 1 + brightness]``.
     contrast : float
         how much to jitter contrast. contrast_factor
         is chosen uniformly from ``[max(0, 1 - contrast), 1 + contrast]``.
-    saturation : float 
+    saturation : float
         how much to jitter saturation. saturation_factor
         is chosen uniformly from ``[max(0, 1 - saturation), 1 + saturation]``.
-    hue : float 
+    hue : float
         how much to jitter hue. hue_factor is chosen uniformly from
         ``[-hue, hue]``. Should be >=0 and <= 0.5
     prob : float
@@ -247,21 +275,21 @@ class ColorJitter(object):
 
 class RandomResizedCrop:
     """Crop to random size and aspect ratio.
-    A crop of random size of the original size and a random aspect ratio of 
-    the original aspect ratio is made. This crop is finally resized to 
+    A crop of random size of the original size and a random aspect ratio of
+    the original aspect ratio is made. This crop is finally resized to
     given size. This is popularly used to train the Inception networks.
-    
+
     Attributes
     ----------
-    size : int 
+    size : int
         expected output size of each edge
-    scale : tuple 
+    scale : tuple
         range of size of the origin size cropped. Defaults to ``(0.08, 1.0)``
     ratio : tuple
         range of aspect ratio of the origin aspect ratio cropped. Defaults to ``(3. / 4., 4. / 3.)``
     interpolation :
         Defaults to ``PIL.Image.BILINEAR``
-    prob : float 
+    prob : float
         probability at which the operation is applied. Defaults to ``0.5``
     """
 
@@ -332,7 +360,7 @@ class RandomResizedCrop:
 
 class Resize:
     """Resize to given size.
-    
+
     Attributes
     ----------
     size : tuple or int
