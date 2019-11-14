@@ -7,7 +7,8 @@ from bob.ip.binseg.data.imagefolderinference import ImageFolderInference
 #### Config ####
 
 # add your transforms below
-transforms = Compose([  
+transforms = Compose([
+                        ToRGB(),
                         CenterCrop((544,544))
                         ,ToTensor()
                     ])
