@@ -12,7 +12,7 @@ def get_file_lists(data_path, glob):
     """
     Recursively retrieves file lists from a given path, matching a given glob
 
-    This function will use :py:method:`pathlib.Path.rglob`, together with the
+    This function will use :py:meth:`pathlib.Path.rglob`, together with the
     provided glob pattern to search for anything the desired filename.
     """
 
