@@ -25,9 +25,10 @@ class ImageFolderInference(Dataset):
     Generic ImageFolder containing images for inference
 
     Notice that this implementation, contrary to its sister
-    :py:class:`ImageFolder`, does not *automatically* convert the input image
-    to RGB, before passing it to the transforms, so it is possible to
-    accomodate a wider range of input types (e.g. 16-bit PNG images).
+    :py:class:`bob.ip.binseg.data.ImageFolder`, does not *automatically*
+    convert the input image to RGB, before passing it to the transforms, so it
+    is possible to accomodate a wider range of input types (e.g. 16-bit PNG
+    images).
 
     Parameters
     ----------
