@@ -17,9 +17,11 @@ PyTorch ImageFolder Dataset
 ===========================
 .. automodule:: bob.ip.binseg.data.imagefolder
 
+.. automodule:: bob.ip.binseg.data.imagefolderinference
+
 Transforms
 ==========
-.. note:: 
+.. note::
     All transforms work with :py:class:`PIL.Image.Image` objects. We make heavy use of the
     `torchvision package`_
 
