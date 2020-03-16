@@ -139,7 +139,7 @@ def train(model
         ,seed
         ,**kwargs):
     """ Train a model """
-    
+
     if not os.path.exists(output_path): os.makedirs(output_path)
     torch.manual_seed(seed)
     # PyTorch dataloader
@@ -153,11 +153,11 @@ def train(model
     # Checkpointer
     checkpointer = DetectronCheckpointer(model, optimizer, scheduler,save_dir = output_path, save_to_disk=True)
     arguments = {}
-    arguments["epoch"] = 0 
+    arguments["epoch"] = 0
     extra_checkpoint_data = checkpointer.load(pretrained_backbone)
     arguments.update(extra_checkpoint_data)
     arguments["max_epoch"] = epochs
-    
+
     # Train
     logger.info("Training for {} epochs".format(arguments["max_epoch"]))
     logger.info("Continuing from epoch {}".format(arguments["epoch"]))
@@ -234,7 +234,7 @@ def test(model
         ,shuffle= False
         ,pin_memory = torch.cuda.is_available()
         )
-    
+
     # checkpointer, load last model in dir
     checkpointer = DetectronCheckpointer(model, save_dir = output_path, save_to_disk=False)
     checkpointer.load(weight)
@@ -283,7 +283,7 @@ def compare(output_path_list, output_path, title, **kwargs):
 @verbosity_option(cls=ResourceOption)
 def gridtable(output_path, **kwargs):
     """ Creates an overview table in grid rst format for all Metrics.csv in the output_path
-    tree structure: 
+    tree structure:
         ├── DATABASE
         ├── MODEL
             ├── images
@@ -312,7 +312,7 @@ def visualize(dataset, output_path, **kwargs):
     overlayed: test images overlayed with prediction probabilities vessel tree
     tpfnfpviz: highlights true positives, false negatives and false positives
 
-    Required tree structure: 
+    Required tree structure:
     ├── DATABASE
         ├── MODEL
             ├── images
@@ -431,7 +431,7 @@ def ssltrain(model
         ,seed
         ,**kwargs):
     """ Train a model """
-    
+
     if not os.path.exists(output_path): os.makedirs(output_path)
     torch.manual_seed(seed)
     # PyTorch dataloader
@@ -445,11 +445,11 @@ def ssltrain(model
     # Checkpointer
     checkpointer = DetectronCheckpointer(model, optimizer, scheduler,save_dir = output_path, save_to_disk=True)
     arguments = {}
-    arguments["epoch"] = 0 
+    arguments["epoch"] = 0
     extra_checkpoint_data = checkpointer.load(pretrained_backbone)
     arguments.update(extra_checkpoint_data)
     arguments["max_epoch"] = epochs
-    
+
     # Train
     logger.info("Training for {} epochs".format(arguments["max_epoch"]))
     logger.info("Continuing from epoch {}".format(arguments["epoch"]))
@@ -553,7 +553,7 @@ def predict(model
         ,shuffle= False
         ,pin_memory = torch.cuda.is_available()
         )
-    
+
     # checkpointer, load last model in dir
     checkpointer = DetectronCheckpointer(model, save_dir = output_path, save_to_disk=False)
     checkpointer.load(weight)
@@ -581,6 +581,14 @@ def predict(model
     cls=ResourceOption
     )
 @click.option(
+    '--prediction-extension',
+    '-x',
+    help = 'Extension (e.g. ".png") for the prediction files',
+    default=".png",
+    required=False,
+    cls=ResourceOption
+    )
+@click.option(
     '--dataset',
     '-d',
     required=True,
@@ -600,6 +608,7 @@ def predict(model
 def evalpred(
         output_path
         ,prediction_folder
+        ,prediction_extension
         ,dataset
         ,title
         ,legend
@@ -613,9 +622,9 @@ def evalpred(
         ,shuffle= False
         ,pin_memory = torch.cuda.is_available()
         )
-    
+
     # Run eval
-    do_eval(prediction_folder, data_loader, output_folder = output_path, title= title, legend=legend)
+    do_eval(prediction_folder, data_loader, output_folder = output_path, title=title, legend=legend, prediction_extension=prediction_extension)
 
 
-    
+
