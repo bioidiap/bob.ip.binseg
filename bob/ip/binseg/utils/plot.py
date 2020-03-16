@@ -313,14 +313,6 @@ def plot_overview(outputfolders,title):
         re_ups.append(re_upper)
         re_lows.append(re_lower)
         modelname = folder.split('/')[-1]
-        datasetname =  folder.split('/')[-2]
-        # parameters
-        summary_path = os.path.join(folder,'results/ModelSummary.txt')
-        with open (summary_path, "r") as outfile:
-          rows = outfile.readlines()
-          lastrow = rows[-1]
-          parameter = int(lastrow.split()[1].replace(',',''))
-        #name = '[P={:.2f}M] {} {}'.format(parameter/100**3, modelname, "")
         name = '{} '.format(modelname)
         names.append(name)
     #title = folder.split('/')[-4]
