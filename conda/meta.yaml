@@ -47,9 +47,15 @@ test:
   commands:
     # test commands ("script" entry-points) from your package here
     - bob binseg --help
-    - bob binseg train --help
-    - bob binseg test --help
     - bob binseg compare --help
+    - bob binseg evalpred --help
+    - bob binseg gridtable --help
+    - bob binseg predict --help
+    - bob binseg ssltrain --help
+    - bob binseg test --help
+    - bob binseg train --help
+    - bob binseg transformfolder --help
+    - bob binseg visualize --help
     - nosetests --with-coverage --cover-package={{ name }} -sv {{ name }}
     - sphinx-build -aEW {{ project_dir }}/doc {{ project_dir }}/sphinx
     - sphinx-build -aEb doctest {{ project_dir }}/doc sphinx
