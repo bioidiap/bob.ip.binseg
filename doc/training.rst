@@ -6,13 +6,15 @@
 Training
 ========
 
-To replicate our results use ``bob binseg train`` followed by the model config
-and the dataset config. Use ``bob binseg train --help`` for more information.
+To replicate our results use our main application ``bob binseg train`` followed
+by the model configuration and dataset configuration files.  Use ``bob binseg
+train --help`` for more information.
 
 .. note::
 
-   We strongly advice training with a GPU (using ``-d cuda``). Depending on the available GPU
-   memory you might have to adjust your batch size (``-b``).
+   We strongly advice training with a GPU (using ``-d cuda``). Depending on the
+   available GPU memory you might have to adjust your batch size (``-b``).
+
 
 Default Dataset configs
 =======================

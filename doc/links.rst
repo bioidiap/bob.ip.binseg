@@ -6,6 +6,7 @@
 .. _bob: http://www.idiap.ch/software/bob
 .. _installation: https://www.idiap.ch/software/bob/docs/bob/docs/stable/bob/bob/doc/install.html
 .. _mailing list: https://www.idiap.ch/software/bob/discuss
+.. _pytorch: https://pytorch.org
 .. _torchvision package: https://github.com/pytorch/vision
 
 .. DRIVE

@@ -1,30 +1,38 @@
 .. -*- coding: utf-8 -*-
 .. _bob.ip.binseg.setup:
 
-=========
-Setup
-=========
+=======
+ Setup
+=======
 
-Bob.ip.binseg
-=============
+Complete Bob's `installation`_ instructions. Then, to install this package, do
+this:
 
-Complete bob's `installation`_ instructions. Then, to install this
-package
+.. code-block:: sh
 
-.. code-block:: bash
+   $ conda activate <myenv>
+   (<myenv>) $ conda install bob.ip.binseg
 
-    conda install bob.ip.binseg
+.. note::
+
+   The value ``<myenv>`` should correspond to the name of the environment where
+   you initially installed your Bob packages.
+
 
 Datasets
-========
+--------
 
-The package supports a range of retina fundus datasets but does not install the `bob.db`
-APIs by default, nor does it include the datasets. 
+The package supports a range of retina fundus datasets, but does not install the
+`bob.db` iterator APIs by default, or includes the raw data itself, which you
+must procure.
 
-To setup a datasets:
+To setup a dataset, do the following:
 
-1. Download the dataset from the authors website
-2. Install the corresponding bob.db package via ``conda install bob.db.<database>``.  E.g. to install the DRIVE API run ``conda install bob.db.drive``
+1. Download the dataset from the authors website (see below for all download
+   links)
+2. Install the corresponding bob.db package via ``conda install
+   bob.db.<database>``.  E.g. to install the DRIVE API run ``conda install
+   bob.db.drive``
 3. :ref:`datasetpathsetup`
 4. :ref:`dsconsistency`
 
@@ -50,55 +58,59 @@ To setup a datasets:
 | REFUGE     | https://refuge.grand-challenge.org/Details/                          | `bob.db.refuge`     |
 +------------+----------------------------------------------------------------------+---------------------+
 
+
 .. _datasetpathsetup:
 
 Set up dataset paths
-=====================
+====================
 
-For each dataset that you are planning to use, set the datadir to
-the path where it is stored. E.g.:
+.. warning::
 
-.. code-block:: bash
+   Our dataset connectors expect you provide "root" paths of raw datasets as
+   you unpack them in their **pristine** state.  Changing the location of files
+   within a dataset distribution will likely cause execution errors.
 
-    bob config set bob.db.drive.datadir "/path/to/drivedataset/"
+For each dataset that you are planning to use, set the ``datadir`` to the root
+path where it is stored.  E.g.:
 
-To check your current setup
+.. code-block:: sh
 
-.. code-block:: bash
+   (<myenv>) $ bob config set bob.db.drive.datadir "/path/to/drivedataset/"
 
-    bob config show
+To check your current setup, do the following:
 
-This should result in an output similar to the following:
+.. code-block:: sh
 
-.. code-block:: bash
-
-    {
-        "bob.db.chasedb1.datadir": "/idiap/resource/database/CHASE-DB11/",
-        "bob.db.drionsdb.datadir": "/idiap/resource/database/DRIONS",
-        "bob.db.drishtigs1.datadir": "/idiap/resource/database/Drishti-GS1/",
-        "bob.db.drive.datadir": "/idiap/resource/database/DRIVE",
-        "bob.db.hrf.datadir": "/idiap/resource/database/HRF",
-        "bob.db.iostar.datadir": "/idiap/resource/database/IOSTAR/IOSTAR Vessel Segmentation Dataset/",
-        "bob.db.refuge.datadir": "/idiap/resource/database/REFUGE",
-        "bob.db.rimoner3.datadir": "/idiap/resource/database/RIM-ONE/RIM-ONE r3",
-        "bob.db.stare.datadir": "/idiap/resource/database/STARE"
-    }
+   (<myenv>) $ bob config show
+   {
+       "bob.db.chasedb1.datadir": "/idiap/resource/database/CHASE-DB11/",
+       "bob.db.drionsdb.datadir": "/idiap/resource/database/DRIONS",
+       "bob.db.drishtigs1.datadir": "/idiap/resource/database/Drishti-GS1/",
+       "bob.db.drive.datadir": "/idiap/resource/database/DRIVE",
+       "bob.db.hrf.datadir": "/idiap/resource/database/HRF",
+       "bob.db.iostar.datadir": "/idiap/resource/database/IOSTAR/IOSTAR Vessel Segmentation Dataset/",
+       "bob.db.refuge.datadir": "/idiap/resource/database/REFUGE",
+       "bob.db.rimoner3.datadir": "/idiap/resource/database/RIM-ONE/RIM-ONE r3",
+       "bob.db.stare.datadir": "/idiap/resource/database/STARE"
+   }
 
 
 .. _dsconsistency:
 
 Test dataset consitency
-========================
+=======================
 
-To check whether the downloaded version is consistent with
-the structure that is expected by our ``bob.db`` packages
-run ``bob_dbmanage.py datasettocheck checkfiles``
-E.g.:
+To check whether the downloaded version is consistent with the structure that
+is expected by our ``bob.db`` packages, run ``bob_dbmanage.py datasettocheck
+checkfiles`` E.g.:
 
 .. code-block:: sh
 
-    conda activate your-conda-env-with-bob.ip.binseg
-    bob_dbmanage.py drive checkfiles
-    > checkfiles completed sucessfully
+   (<myenv>) $ bob_dbmanage.py drive checkfiles
+   > checkfiles completed sucessfully
+
+If there are problems on the current file organisation, this procedure should
+detect and highlight which files are missing.
+
 
 .. include:: links.rst

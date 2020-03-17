@@ -1,19 +1,20 @@
 .. -*- coding: utf-8 -*-
+
 .. _bob.ip.binseg.covdresults:
 
+============================
+ COVD- and COVD-SLL Results
+============================
 
-==========================
-COVD- and COVD-SLL Results
-==========================
-
-In addition to the M2U-Net architecture, we also evaluated the larger DRIU network and a variation of it
-that contains batch normalization (DRIU BN) on COVD- and COVD-SSL. Perhaps surprisingly, for the
-majority of combinations, the performance of the DRIU variants are roughly equal or worse than the M2U-Net.
-We anticipate that one reason for this could be overparameterization of large VGG16 models
-that are pretrained on ImageNet.
+In addition to the M2U-Net architecture, we also evaluated the larger DRIU
+network and a variation of it that contains batch normalization (DRIU BN) on
+COVD- and COVD-SSL. Perhaps surprisingly, for the majority of combinations, the
+performance of the DRIU variants are roughly equal or worse than the M2U-Net.
+We anticipate that one reason for this could be overparameterization of large
+VGG16 models that are pretrained on ImageNet.
 
 F1 Scores
-===========
+=========
 
 Comparison of F1-micro-scores (std) of DRIU and M2U-Net on COVD- and COVD-SSL.
 Standard deviation across test-images in brackets.
@@ -44,8 +45,9 @@ Standard deviation across test-images in brackets.
 
 M2U-Net Precision vs. Recall Curves
 ===================================
-Precision vs. recall curves for each evaluated dataset.
-Note that here the F1-score is calculated on a macro level (see paper for more details).
+
+Precision vs. recall curves for each evaluated dataset.  Note that here the
+F1-score is calculated on a macro level (see paper for more details).
 
 .. figure:: img/pr_CHASEDB1.png
    :scale: 50 %
