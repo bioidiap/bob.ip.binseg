@@ -7,7 +7,7 @@ from bob.ip.binseg.data.imagefolder import ImageFolder
 #### Config ####
 
 # add your transforms below
-transforms = Compose([  
+transforms = Compose([
                         CenterCrop((544,544))
                         ,RandomHFlip()
                         ,RandomVFlip()
