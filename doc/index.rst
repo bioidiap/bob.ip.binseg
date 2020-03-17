@@ -15,7 +15,7 @@ Please use the BibTeX reference below to cite this work:
 .. code:: bibtex
 
    @misc{laibacher_anjos_2019,
-      title         = {On the Evaluation and Real-World Usage Scenarios of Deep Vessel Segmentation for Funduscopy},
+      title         = {On the Evaluation and Real-World Usage Scenarios of Deep Vessel Segmentation for Retinography},
       author        = {Tim Laibacher and Andr\'e Anjos},
       year          = {2019},
       eprint        = {1909.03856},
