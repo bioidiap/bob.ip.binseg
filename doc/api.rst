@@ -107,8 +107,8 @@ Models
 
 .. autosummary::
    :toctree: api/configs/models
+   :template: config.rst
 
-   bob.ip.binseg.configs.models
    bob.ip.binseg.configs.models.driu
    bob.ip.binseg.configs.models.driubn
    bob.ip.binseg.configs.models.driubnssl
@@ -127,7 +127,6 @@ Datasets
 .. autosummary::
    :toctree: api/configs/datasets
 
-   bob.ip.binseg.configs.datasets
    bob.ip.binseg.configs.datasets.amdrive
    bob.ip.binseg.configs.datasets.amdrivetest
    bob.ip.binseg.configs.datasets.chasedb1
