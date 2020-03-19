@@ -1,46 +1,61 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-""" 
-https://github.com/Luolc/AdaBound/blob/master/adabound/adabound.py
-
-@inproceedings{Luo2019AdaBound,
-  author = {Luo, Liangchen and Xiong, Yuanhao and Liu, Yan and Sun, Xu},
-  title = {Adaptive Gradient Methods with Dynamic Bound of Learning Rate},
-  booktitle = {Proceedings of the 7th International Conference on Learning Representations},
-  month = {May},
-  year = {2019},
-  address = {New Orleans, Louisiana}
-}
 """
+Implementation of the `AdaBound optimizer
+<https://github.com/Luolc/AdaBound/blob/master/adabound/adabound.py>`::
+
+    @inproceedings{Luo2019AdaBound,
+      author = {Luo, Liangchen and Xiong, Yuanhao and Liu, Yan and Sun, Xu},
+      title = {Adaptive Gradient Methods with Dynamic Bound of Learning Rate},
+      booktitle = {Proceedings of the 7th International Conference on Learning Representations},
+      month = {May},
+      year = {2019},
+      address = {New Orleans, Louisiana}
+    }
+
+"""
+
 import math
 import torch
-from torch.optim import Optimizer
+import torch.optim
 
 
-class AdaBound(Optimizer):
-    """Implements AdaBound algorithm.
-    It has been proposed in `Adaptive Gradient Methods with Dynamic Bound of Learning Rate`_.
-    
+class AdaBound(torch.optim.Optimizer):
+    """Implements the AdaBound algorithm.
+
     Parameters
     ----------
-    params (iterable): iterable of parameters to optimize or dicts defining
-        parameter groups
-    lr (float, optional): Adam learning rate (default: 1e-3)
-    betas (Tuple[float, float], optional): coefficients used for computing
-        running averages of gradient and its square (default: (0.9, 0.999))
-    final_lr (float, optional): final (SGD) learning rate (default: 0.1)
-    gamma (float, optional): convergence speed of the bound functions (default: 1e-3)
-    eps (float, optional): term added to the denominator to improve
-        numerical stability (default: 1e-8)
-    weight_decay (float, optional): weight decay (L2 penalty) (default: 0)
-    amsbound (boolean, optional): whether to use the AMSBound variant of this algorithm
-    .. Adaptive Gradient Methods with Dynamic Bound of Learning Rate:
-        https://openreview.net/forum?id=Bkg3g2R9FX
+
+    params : list
+        Iterable of parameters to optimize or dicts defining parameter groups
+
+    lr : :obj:`float`, optional
+        Adam learning rate
+
+    betas : :obj:`tuple`, optional
+        Coefficients (as a 2-tuple of floats) used for computing running
+        averages of gradient and its square
+
+    final_lr : :obj:`float`, optional
+        Final (SGD) learning rate
+
+    gamma : :obj:`float`, optional
+        Convergence speed of the bound functions
+
+    eps : :obj:`float`, optional
+        Term added to the denominator to improve numerical stability
+
+    weight_decay : :obj:`float`, optional
+        Weight decay (L2 penalty)
+
+    amsbound : :obj:`bool`, optional
+        Whether to use the AMSBound variant of this algorithm
+
     """
 
-    def __init__(self, params, lr=1e-3, betas=(0.9, 0.999), final_lr=0.1, gamma=1e-3,
-                 eps=1e-8, weight_decay=0, amsbound=False):
+    def __init__(self, params, lr=1e-3, betas=(0.9, 0.999), final_lr=0.1,
+            gamma=1e-3, eps=1e-8, weight_decay=0, amsbound=False):
         if not 0.0 <= lr:
             raise ValueError("Invalid learning rate: {}".format(lr))
         if not 0.0 <= eps:
@@ -66,10 +81,13 @@ class AdaBound(Optimizer):
 
     def step(self, closure=None):
         """Performs a single optimization step.
-        
+
         Parameters
         ----------
-        closure (callable, optional): A closure that reevaluates the model and returns the loss.
+
+        closure : :obj:`callable`, optional
+            A closure that reevaluates the model and returns the loss.
+
         """
         loss = None
         if closure is not None:
@@ -135,29 +153,43 @@ class AdaBound(Optimizer):
 
         return loss
 
-class AdaBoundW(Optimizer):
-    """Implements AdaBound algorithm with Decoupled Weight Decay (arxiv.org/abs/1711.05101)
-    It has been proposed in `Adaptive Gradient Methods with Dynamic Bound of Learning Rate`_.
-    
+class AdaBoundW(torch.optim.Optimizer):
+    """Implements AdaBound algorithm with Decoupled Weight Decay
+    (See https://arxiv.org/abs/1711.05101)
+
     Parameters
     ----------
-    params (iterable): iterable of parameters to optimize or dicts defining
-        parameter groups
-    lr (float, optional): Adam learning rate (default: 1e-3)
-    betas (Tuple[float, float], optional): coefficients used for computing
-        running averages of gradient and its square (default: (0.9, 0.999))
-    final_lr (float, optional): final (SGD) learning rate (default: 0.1)
-    gamma (float, optional): convergence speed of the bound functions (default: 1e-3)
-    eps (float, optional): term added to the denominator to improve
-        numerical stability (default: 1e-8)
-    weight_decay (float, optional): weight decay (L2 penalty) (default: 0)
-    amsbound (boolean, optional): whether to use the AMSBound variant of this algorithm
-    .. Adaptive Gradient Methods with Dynamic Bound of Learning Rate:
-        https://openreview.net/forum?id=Bkg3g2R9FX
+
+    params : list
+        Iterable of parameters to optimize or dicts defining parameter groups
+
+    lr : :obj:`float`, optional
+        Adam learning rate
+
+    betas : :obj:`tuple`, optional
+        Coefficients (as a 2-tuple of floats) used for computing running
+        averages of gradient and its square
+
+    final_lr : :obj:`float`, optional
+        Final (SGD) learning rate
+
+    gamma : :obj:`float`, optional
+        Convergence speed of the bound functions
+
+    eps : :obj:`float`, optional
+        Term added to the denominator to improve numerical stability
+
+    weight_decay : :obj:`float`, optional
+        Weight decay (L2 penalty)
+
+    amsbound : :obj:`bool`, optional
+        Whether to use the AMSBound variant of this algorithm
+
     """
 
-    def __init__(self, params, lr=1e-3, betas=(0.9, 0.999), final_lr=0.1, gamma=1e-3,
-                 eps=1e-8, weight_decay=0, amsbound=False):
+    def __init__(self, params, lr=1e-3, betas=(0.9, 0.999), final_lr=0.1,
+            gamma=1e-3, eps=1e-8, weight_decay=0, amsbound=False):
+
         if not 0.0 <= lr:
             raise ValueError("Invalid learning rate: {}".format(lr))
         if not 0.0 <= eps:
@@ -170,8 +202,8 @@ class AdaBoundW(Optimizer):
             raise ValueError("Invalid final learning rate: {}".format(final_lr))
         if not 0.0 <= gamma < 1.0:
             raise ValueError("Invalid gamma parameter: {}".format(gamma))
-        defaults = dict(lr=lr, betas=betas, final_lr=final_lr, gamma=gamma, eps=eps,
-                        weight_decay=weight_decay, amsbound=amsbound)
+        defaults = dict(lr=lr, betas=betas, final_lr=final_lr, gamma=gamma,
+                eps=eps, weight_decay=weight_decay, amsbound=amsbound)
         super(AdaBoundW, self).__init__(params, defaults)
 
         self.base_lrs = list(map(lambda group: group['lr'], self.param_groups))
@@ -183,11 +215,15 @@ class AdaBoundW(Optimizer):
 
     def step(self, closure=None):
         """Performs a single optimization step.
-        
+
         Parameters
         ----------
-        closure (callable, optional): A closure that reevaluates the model and returns the loss.
+
+        closure : :obj:`callable`, optional
+            A closure that reevaluates the model and returns the loss.
+
         """
+
         loss = None
         if closure is not None:
             loss = closure()
@@ -238,7 +274,8 @@ class AdaBoundW(Optimizer):
                 step_size = group['lr'] * math.sqrt(bias_correction2) / bias_correction1
 
                 # Applies bounds on actual learning rate
-                # lr_scheduler cannot affect final_lr, this is a workaround to apply lr decay
+                # lr_scheduler cannot affect final_lr, this is a workaround to
+                # apply lr decay
                 final_lr = group['final_lr'] * group['lr'] / base_lr
                 lower_bound = final_lr * (1 - 1 / (group['gamma'] * state['step'] + 1))
                 upper_bound = final_lr * (1 + 1 / (group['gamma'] * state['step']))

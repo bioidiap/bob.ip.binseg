@@ -1,14 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-
-
 import click
 
 class OptionEatAll(click.Option):
     """
-    Allows for *args and **kwargs to be passed to click 
-    https://stackoverflow.com/questions/48391777/nargs-equivalent-for-options-in-click 
+    Allows for ``*args`` and ``**kwargs`` to be passed to click
+
+    https://stackoverflow.com/questions/48391777/nargs-equivalent-for-options-in-click
     """
 
     def __init__(self, *args, **kwargs):

@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
+# coding=utf-8
 
 from torch.optim.lr_scheduler import MultiStepLR
 from bob.ip.binseg.modeling.driu import build_driu
@@ -22,17 +22,22 @@ amsbound = False
 scheduler_milestones = [900]
 scheduler_gamma = 0.1
 
-# model
 model = build_driu()
 
-# pretrained backbone
-pretrained_backbone = modelurls['vgg16']
+pretrained_backbone = modelurls["vgg16"]
 
-# optimizer
-optimizer = AdaBound(model.parameters(), lr=lr, betas=betas, final_lr=final_lr, gamma=gamma,
-                 eps=eps, weight_decay=weight_decay, amsbound=amsbound) 
-# criterion
+optimizer = AdaBound(
+    model.parameters(),
+    lr=lr,
+    betas=betas,
+    final_lr=final_lr,
+    gamma=gamma,
+    eps=eps,
+    weight_decay=weight_decay,
+    amsbound=amsbound,
+)
 criterion = SoftJaccardBCELogitsLoss(alpha=0.7)
 
-# scheduler
-scheduler = MultiStepLR(optimizer, milestones=scheduler_milestones, gamma=scheduler_gamma)
+scheduler = MultiStepLR(
+    optimizer, milestones=scheduler_milestones, gamma=scheduler_gamma
+)

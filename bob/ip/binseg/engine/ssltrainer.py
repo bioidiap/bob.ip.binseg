@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import os 
+import os
 import logging
 import time
 import datetime
@@ -19,32 +19,39 @@ def sharpen(x, T):
 
 def mix_up(alpha, input, target, unlabeled_input, unlabled_target):
     """Applies mix up as described in [MIXMATCH_19].
-    
+
     Parameters
     ----------
     alpha : float
+
     input : :py:class:`torch.Tensor`
+
     target : :py:class:`torch.Tensor`
+
     unlabeled_input : :py:class:`torch.Tensor`
+
     unlabled_target : :py:class:`torch.Tensor`
-    
+
+
     Returns
     -------
+
     list
+
     """
-    # TODO: 
+    # TODO:
     with torch.no_grad():
         l = np.random.beta(alpha, alpha) # Eq (8)
         l = max(l, 1 - l) # Eq (9)
         # Shuffle and concat. Alg. 1 Line: 12
         w_inputs = torch.cat([input,unlabeled_input],0)
         w_targets = torch.cat([target,unlabled_target],0)
-        idx = torch.randperm(w_inputs.size(0)) # get random index 
-        
+        idx = torch.randperm(w_inputs.size(0)) # get random index
+
         # Apply MixUp to labeled data and entries from W. Alg. 1 Line: 13
-        input_mixedup = l * input + (1 - l) * w_inputs[idx[len(input):]] 
+        input_mixedup = l * input + (1 - l) * w_inputs[idx[len(input):]]
         target_mixedup = l * target + (1 - l) * w_targets[idx[len(target):]]
-        
+
         # Apply MixUp to unlabeled data and entries from W. Alg. 1 Line: 14
         unlabeled_input_mixedup = l * unlabeled_input + (1 - l) * w_inputs[idx[:len(unlabeled_input)]]
         unlabled_target_mixedup =  l * unlabled_target + (1 - l) * w_targets[idx[:len(unlabled_target)]]
@@ -53,19 +60,23 @@ def mix_up(alpha, input, target, unlabeled_input, unlabled_target):
 
 def square_rampup(current, rampup_length=16):
     """slowly ramp-up ``lambda_u``
-    
+
     Parameters
     ----------
+
     current : int
         current epoch
-    rampup_length : int, optional
+
+    rampup_length : :obj:`int`, optional
         how long to ramp up, by default 16
-    
+
     Returns
     -------
-    float
+
+    factor : float
         ramp up factor
     """
+
     if rampup_length == 0:
         return 1.0
     else:
@@ -74,18 +85,21 @@ def square_rampup(current, rampup_length=16):
 
 def linear_rampup(current, rampup_length=16):
     """slowly ramp-up ``lambda_u``
-    
+
     Parameters
     ----------
     current : int
         current epoch
-    rampup_length : int, optional
+
+    rampup_length : :obj:`int`, optional
         how long to ramp up, by default 16
-    
+
     Returns
     -------
-    float
+
+    factor: float
         ramp up factor
+
     """
     if rampup_length == 0:
         return 1.0
@@ -96,16 +110,21 @@ def linear_rampup(current, rampup_length=16):
 def guess_labels(unlabeled_images, model):
     """
     Calculate the average predictions by 2 augmentations: horizontal and vertical flips
+
     Parameters
     ----------
+
     unlabeled_images : :py:class:`torch.Tensor`
-        shape: ``[n,c,h,w]``
+        ``[n,c,h,w]``
+
     target : :py:class:`torch.Tensor`
-    
+
     Returns
     -------
-    :py:class:`torch.Tensor`
-        shape: ``[n,c,h,w]``.
+
+    shape : :py:class:`torch.Tensor`
+        ``[n,c,h,w]``
+
     """
     with torch.no_grad():
         guess1 = torch.sigmoid(model(unlabeled_images)).unsqueeze(0)
@@ -133,31 +152,43 @@ def do_ssltrain(
     output_folder,
     rampup_length
 ):
-    """ 
+    """
     Train model and save to disk.
-    
+
     Parameters
     ----------
-    model : :py:class:`torch.nn.Module` 
+
+    model : :py:class:`torch.nn.Module`
         Network (e.g. DRIU, HED, UNet)
+
     data_loader : :py:class:`torch.utils.data.DataLoader`
+
     optimizer : :py:mod:`torch.optim`
+
     criterion : :py:class:`torch.nn.modules.loss._Loss`
         loss function
+
     scheduler : :py:mod:`torch.optim`
         learning rate scheduler
+
     checkpointer : :py:class:`bob.ip.binseg.utils.checkpointer.DetectronCheckpointer`
         checkpointer
+
     checkpoint_period : int
         save a checkpoint every n epochs
-    device : str  
+
+    device : str
         device to use ``'cpu'`` or ``'cuda'``
+
     arguments : dict
         start end end epochs
-    output_folder : str 
+
+    output_folder : str
         output path
-    rampup_Length : int
+
+    rampup_length : int
         rampup epochs
+
     """
     logger = logging.getLogger("bob.ip.binseg.engine.trainer")
     logger.info("Start training")
@@ -181,7 +212,7 @@ def do_ssltrain(
             unlabeled_loss = SmoothedValue(len(data_loader))
             epoch = epoch + 1
             arguments["epoch"] = epoch
-            
+
             # Epoch time
             start_epoch_time = time.time()
 
@@ -238,8 +269,8 @@ def do_ssltrain(
                     lr=optimizer.param_groups[0]["lr"],
                     memory = (torch.cuda.max_memory_allocated() / 1024.0 / 1024.0) if torch.cuda.is_available() else .0,
                     )
-                )  
-            logger.info(("eta: {eta}, " 
+                )
+            logger.info(("eta: {eta}, "
                         "epoch: {epoch}, "
                         "avg. loss: {avg_loss:.6f}, "
                         "median loss: {median_loss:.6f}, "
@@ -266,10 +297,10 @@ def do_ssltrain(
             "Total training time: {} ({:.4f} s / epoch)".format(
                 total_time_str, total_training_time / (max_epoch)
             ))
-        
+
     log_plot_file = os.path.join(output_folder,"{}_trainlog.pdf".format(model.name))
     logdf = pd.read_csv(os.path.join(output_folder,"{}_trainlog.csv".format(model.name)),header=None, names=["avg. loss", "median loss", "labeled loss", "unlabeled loss", "lr","max memory"])
     fig = loss_curve(logdf,output_folder)
     logger.info("saving {}".format(log_plot_file))
     fig.savefig(log_plot_file)
-  
+

@@ -1,4 +1,3 @@
-### Bob defaults ###
 *~
 *.swp
 *.pyc
@@ -18,26 +17,12 @@ dist
 build
 *.egg
 src/
+doc/api
 record.txt
 core
 output_temp
 output
 *.DS_Store
-
-
-### JupyterNotebook ###
 *.ipynb
 .ipynb_checkpoints
 */.ipynb_checkpoints/*
-
-
-### VisualStudioCode ###
-.vscode/*
-.vscode/settings.json
-.vscode/tasks.json
-.vscode/launch.json
-.vscode/extensions.json
-
-### VisualStudioCode Patch ###
-# Ignore all local history of files
-.history

@@ -17,7 +17,7 @@ import warnings
 import zipfile
 from urllib.request import urlopen
 from urllib.parse import urlparse
-from tqdm import tqdm 
+from tqdm import tqdm
 
 modelurls = {
     "vgg11": "https://download.pytorch.org/models/vgg11-bbd30ac9.pth",
@@ -99,7 +99,7 @@ def cache_url(url, model_dir=None, progress=True):
         os.makedirs(model_dir)
     parts = urlparse(url)
     filename = os.path.basename(parts.path)
-    
+
     cached_file = os.path.join(model_dir, filename)
     if not os.path.exists(cached_file):
         sys.stderr.write('Downloading: "{}" to {}\n'.format(url, cached_file))
@@ -107,5 +107,5 @@ def cache_url(url, model_dir=None, progress=True):
         if hash_prefix is not None:
             hash_prefix = hash_prefix.group(1)
         _download_url_to_file(url, cached_file, hash_prefix, progress=progress)
-    
+
     return cached_file

@@ -28,89 +28,68 @@ must procure.
 
 To setup a dataset, do the following:
 
-1. Download the dataset from the authors website (see below for all download
-   links)
-2. Install the corresponding bob.db package via ``conda install
-   bob.db.<database>``.  E.g. to install the DRIVE API run ``conda install
-   bob.db.drive``
-3. :ref:`datasetpathsetup`
-4. :ref:`dsconsistency`
+1. Download the dataset from the authors website (see
+   :ref:`bob.ip.binseg.datasets` for download links and details), unpack it and
+   store the directory leading to the uncompressed directory structure.
 
-+------------+----------------------------------------------------------------------+---------------------+
-| Dataset    | Website                                                              | `bob.db` package    |
-+------------+----------------------------------------------------------------------+---------------------+
-| STARE      | http://cecas.clemson.edu/~ahoover/stare/                             | `bob.db.stare`      |
-+------------+----------------------------------------------------------------------+---------------------+
-| DRIVE      | https://www.isi.uu.nl/Research/Databases/DRIVE/                      | `bob.db.drive`      |
-+------------+----------------------------------------------------------------------+---------------------+
-| DRIONS     | http://www.ia.uned.es/~ejcarmona/DRIONS-DB.html                      | `bob.db.drionsdb`   |
-+------------+----------------------------------------------------------------------+---------------------+
-| RIM-ONE    | http://medimrg.webs.ull.es/research/downloads/                       | `bob.db.rimoner3`   |
-+------------+----------------------------------------------------------------------+---------------------+
-| CHASE-DB1  | https://blogs.kingston.ac.uk/retinal/chasedb1/                       | `bob.db.chasedb`    |
-+------------+----------------------------------------------------------------------+---------------------+
-| HRF        | https://www5.cs.fau.de/research/data/fundus-images/                  | `bob.db.hrf`        |
-+------------+----------------------------------------------------------------------+---------------------+
-| Drishti-GS | http://cvit.iiit.ac.in/projects/mip/drishti-gs/mip-dataset2/Home.php | `bob.db.drishtigs1` |
-+------------+----------------------------------------------------------------------+---------------------+
-| IOSTAR     | http://www.retinacheck.org/datasets                                  | `bob.db.iostar`     |
-+------------+----------------------------------------------------------------------+---------------------+
-| REFUGE     | https://refuge.grand-challenge.org/Details/                          | `bob.db.refuge`     |
-+------------+----------------------------------------------------------------------+---------------------+
+   .. warning::
 
+      Our dataset connectors expect you provide "root" paths of raw datasets as
+      you unpack them in their **pristine** state.  Changing the location of
+      files within a dataset distribution will likely cause execution errors.
 
-.. _datasetpathsetup:
+2. Install the corresponding ``bob.db`` package (package names are marked on
+   :ref:`bob.ip.binseg.datasets`) with the following command:
 
-Set up dataset paths
-====================
+   .. code-block:: sh
 
-.. warning::
+      # replace "<package>" by the corresponding package name
+      (<myenv>) $ conda install <package>
+      # example:
+      (<myenv>) $ conda install bob.db.drive #to install DRIVE iterators
 
-   Our dataset connectors expect you provide "root" paths of raw datasets as
-   you unpack them in their **pristine** state.  Changing the location of files
-   within a dataset distribution will likely cause execution errors.
+3.  For each dataset that you are planning to use, set the ``datadir`` to the
+    root path where it is stored.  E.g.:
 
-For each dataset that you are planning to use, set the ``datadir`` to the root
-path where it is stored.  E.g.:
+    .. code-block:: sh
 
-.. code-block:: sh
+       (<myenv>) $ bob config set bob.db.drive.datadir "/path/to/drivedataset/"
 
-   (<myenv>) $ bob config set bob.db.drive.datadir "/path/to/drivedataset/"
+    To check your current setup, do the following:
 
-To check your current setup, do the following:
+    .. code-block:: sh
 
-.. code-block:: sh
+       (<myenv>) $ bob config show
+       {
+           "bob.db.chasedb1.datadir": "/path/to/chasedb1/",
+           "bob.db.drionsdb.datadir": "/path/to/drionsdb",
+           "bob.db.drive.datadir": "/path/to/drive",
+           "bob.db.hrf.datadir": "/path/to/hrf",
+       }
 
-   (<myenv>) $ bob config show
-   {
-       "bob.db.chasedb1.datadir": "/idiap/resource/database/CHASE-DB11/",
-       "bob.db.drionsdb.datadir": "/idiap/resource/database/DRIONS",
-       "bob.db.drishtigs1.datadir": "/idiap/resource/database/Drishti-GS1/",
-       "bob.db.drive.datadir": "/idiap/resource/database/DRIVE",
-       "bob.db.hrf.datadir": "/idiap/resource/database/HRF",
-       "bob.db.iostar.datadir": "/idiap/resource/database/IOSTAR/IOSTAR Vessel Segmentation Dataset/",
-       "bob.db.refuge.datadir": "/idiap/resource/database/REFUGE",
-       "bob.db.rimoner3.datadir": "/idiap/resource/database/RIM-ONE/RIM-ONE r3",
-       "bob.db.stare.datadir": "/idiap/resource/database/STARE"
-   }
+    This command will show the set location for each configured dataset.  These
+    paths are automatically used by the dataset iterators provided by the
+    ``bob.db`` packages to find the raw datafiles.
 
+4. To check whether the downloaded version is consistent with the structure
+   that is expected by our ``bob.db`` packages, run ``bob_dbmanage.py
+   <dataset> checkfiles``, where ``<dataset>`` should be replaced by the
+   dataset programmatic name. E.g., to check DRIVE files, use:
 
-.. _dsconsistency:
+   .. code-block:: sh
 
-Test dataset consitency
-=======================
+      (<myenv>) $ bob_dbmanage.py drive checkfiles
+      > checkfiles completed sucessfully
 
-To check whether the downloaded version is consistent with the structure that
-is expected by our ``bob.db`` packages, run ``bob_dbmanage.py datasettocheck
-checkfiles`` E.g.:
+   If there are problems on the current file organisation, this procedure
+   should detect and highlight which files are missing.
 
-.. code-block:: sh
+   .. tip::
 
-   (<myenv>) $ bob_dbmanage.py drive checkfiles
-   > checkfiles completed sucessfully
-
-If there are problems on the current file organisation, this procedure should
-detect and highlight which files are missing.
+      The programmatic name of datasets follow the ``bob.db.<dataset>``
+      nomenclature.  For example, the programmatic name of CHASE-DB1 is
+      ``chasedb1``, because the package name implementing iterators to its
+      files is ``bob.db.chasedb1``.
 
 
 .. include:: links.rst

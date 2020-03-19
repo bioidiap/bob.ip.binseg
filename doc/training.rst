@@ -2,13 +2,13 @@
 .. _bob.ip.binseg.training:
 
 
-========
-Training
-========
+==========
+ Training
+==========
 
-To replicate our results use our main application ``bob binseg train`` followed
-by the model configuration and dataset configuration files.  Use ``bob binseg
-train --help`` for more information.
+To replicate our results, use our main application ``bob binseg train``
+followed by the model configuration, and dataset configuration files.  Use ``bob
+binseg train --help`` for more information.
 
 .. note::
 

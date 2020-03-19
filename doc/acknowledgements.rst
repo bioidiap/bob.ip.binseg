@@ -26,7 +26,7 @@ This packages utilizes code from the following packages:
      month = {May},
      year = {2019},
      address = {New Orleans, Louisiana}
-    }   
+    }
 
 * The MobileNetV2 backbone is based on an implementation by::
 

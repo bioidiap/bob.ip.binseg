@@ -12,7 +12,7 @@ from bob.ip.binseg.modeling.backbones.resnet import resnet50
 class ResUNet(nn.Module):
     """
     UNet head module for ResNet backbones
-    
+
     Parameters
     ----------
     in_channels_list : list
@@ -42,25 +42,25 @@ class ResUNet(nn.Module):
         ----------
         x : list
                 list of tensors as returned from the backbone network.
-                First element: height and width of input image. 
+                First element: height and width of input image.
                 Remaining elements: feature maps for each feature level.
         """
         # NOTE: x[0]: height and width of input image not needed in U-Net architecture
-        decode4 = self.decode4(x[5], x[4])  
-        decode3 = self.decode3(decode4, x[3]) 
-        decode2 = self.decode2(decode3, x[2]) 
-        decode1 = self.decode1(decode2, x[1]) 
+        decode4 = self.decode4(x[5], x[4])
+        decode3 = self.decode3(decode4, x[3])
+        decode2 = self.decode2(decode3, x[2])
+        decode1 = self.decode1(decode2, x[1])
         decode0 = self.decode0(decode1)
         out = self.final(decode0)
         return out
 
 def build_res50unet():
-    """ 
+    """
     Adds backbone and head together
 
     Returns
     -------
-    model : :py:class:torch.nn.Module
+    model : :py:class:`torch.nn.Module`
     """
     backbone = resnet50(pretrained=False, return_features = [2, 4, 5, 6, 7])
     unet_head  = ResUNet([64, 256, 512, 1024, 2048],pixel_shuffle=False)

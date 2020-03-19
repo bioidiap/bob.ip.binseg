@@ -1,6 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+"""
+Image transformations for our pipelines.
+
+All transforms work with :py:class:`PIL.Image.Image` objects. We make heavy use
+of `torchvision <https://github.com/pytorch/vision>`_.
+"""
+
+
 import torchvision.transforms.functional as VF
 import random
 import PIL

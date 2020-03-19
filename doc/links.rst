@@ -4,62 +4,22 @@
 
 .. _idiap: http://www.idiap.ch
 .. _bob: http://www.idiap.ch/software/bob
-.. _installation: https://www.idiap.ch/software/bob/docs/bob/docs/stable/bob/bob/doc/install.html
+.. _installation: https://www.idiap.ch/software/bob/install
 .. _mailing list: https://www.idiap.ch/software/bob/discuss
 .. _pytorch: https://pytorch.org
-.. _torchvision package: https://github.com/pytorch/vision
 
-.. DRIVE
-
-.. _drive: https://doi.org/10.1109/TMI.2004.825627
-.. _staal et al. (2004): https://doi.org/10.1109/TMI.2004.825627
-
-.. STARE
-
-.. _stare: https://doi.org/10.1109/42.845178
-.. _maninis et al. (2016): https://doi.org/10.1007/978-3-319-46723-8_17
-
-.. HRF
-
-.. _hrf: http://dx.doi.org/10.1155/2013/154860
-.. _orlando et al. (2016): https://doi.org/10.1109/TBME.2016.2535311
-
-.. IOSTAR
-
-.. _iostar: https://doi.org/10.1109/TMI.2016.2587062
-.. _meyer et al. (2017): https://doi.org/10.1007/978-3-319-59876-5_56
-
-.. CHASEDB1
-
-.. _chasedb1: https://doi.org/10.1109/TBME.2012.2205687
-.. _fraz et al. (2012): https://doi.org/10.1109/TBME.2012.2205687
-
-.. DRIONSDB
-
-.. _drions-db: http://dx.doi.org/10.1016/j.artmed.2008.04.005
-.. _maninis et al. (2016): https://doi.org/10.1007/978-3-319-46723-8_17
-
-.. RIM-ONE r3
-
-.. _rim-oner3: https://dspace5.zcu.cz/bitstream/11025/29670/1/Fumero.pdf
-.. _maninis et al. (2016): https://doi.org/10.1007/978-3-319-46723-8_17
-
-.. Drishti-GS1
-
-.. _drishti-gs1: https://doi.org/10.1109/ISBI.2014.6867807
-.. _sivaswamy et al. (2014): https://doi.org/10.1109/ISBI.2014.6867807
-
-.. REFUGE
-
-.. _refuge: http://ai.baidu.com/broad/download?dataset=gon
-
-.. OtherPapers
-
-.. _Iglovikov  et al. (2018): http://openaccess.thecvf.com/content_cvpr_2018_workshops/w4/html/Iglovikov_TernausNetV2_Fully_Convolutional_CVPR_2018_paper.html
-.. _He et al. (2015): https://doi.org/10.1109/ICCV.2015.164
+.. Raw data websites
+.. _drive: https://www.isi.uu.nl/Research/Databases/DRIVE/
+.. _stare: http://cecas.clemson.edu/~ahoover/stare/
+.. _hrf: https://www5.cs.fau.de/research/data/fundus-images/
+.. _iostar: http://www.retinacheck.org/datasets
+.. _chase-db1: https://blogs.kingston.ac.uk/retinal/chasedb1/
+.. _drions-db: http://www.ia.uned.es/~ejcarmona/DRIONS-DB.html
+.. _rim-one r3: http://medimrg.webs.ull.es/research/downloads/
+.. _drishti-gs1: http://cvit.iiit.ac.in/projects/mip/drishti-gs/mip-dataset2/Home.php
+.. _refuge: https://refuge.grand-challenge.org/Details/
 
 .. Software Tools
-
 .. _maskrcnn-benchmark: https://github.com/facebookresearch/maskrcnn-benchmark
 
 

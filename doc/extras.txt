@@ -1,0 +1,10 @@
+# Sphinx inventory version 2
+# Project: extras
+# Version: stable
+# The remainder of this file is compressed using zlib.
+torch.optim.optimizer.Optimizer py:class 1 https://pytorch.org/docs/stable/optim.html#torch.optim.Optimizer -
+torch.nn.Module py:class 1 https://pytorch.org/docs/stable/nn.html?highlight=module#torch.nn.Module -
+torch.nn.modules.module.Module py:class 1 https://pytorch.org/docs/stable/nn.html?highlight=module#torch.nn.Module -
+torch.utils.data.dataset.Dataset py:class 1 https://pytorch.org/docs/stable/data.html?highlight=dataset#torch.utils.data.Dataset -
+unittest.case.TestCase py:class 1 https://docs.python.org/3/library/unittest.html?highlight=testcase#unittest.TestCase -
+click.core.Option py:class 1 https://click.palletsprojects.com/en/7.x/api/#click.Option
