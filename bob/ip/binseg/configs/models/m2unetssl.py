@@ -26,14 +26,24 @@ scheduler_gamma = 0.1
 model = build_m2unet()
 
 # pretrained backbone
-pretrained_backbone = modelurls['mobilenetv2']
+pretrained_backbone = modelurls["mobilenetv2"]
 
 # optimizer
-optimizer = AdaBound(model.parameters(), lr=lr, betas=betas, final_lr=final_lr, gamma=gamma,
-                 eps=eps, weight_decay=weight_decay, amsbound=amsbound) 
-    
+optimizer = AdaBound(
+    model.parameters(),
+    lr=lr,
+    betas=betas,
+    final_lr=final_lr,
+    gamma=gamma,
+    eps=eps,
+    weight_decay=weight_decay,
+    amsbound=amsbound,
+)
+
 # criterion
 criterion = MixJacLoss(lambda_u=0.05, jacalpha=0.7)
 
 # scheduler
-scheduler = MultiStepLR(optimizer, milestones=scheduler_milestones, gamma=scheduler_gamma)
+scheduler = MultiStepLR(
+    optimizer, milestones=scheduler_milestones, gamma=scheduler_gamma
+)

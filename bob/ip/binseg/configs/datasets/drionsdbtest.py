@@ -7,13 +7,10 @@ from bob.ip.binseg.data.binsegdataset import BinSegDataset
 
 #### Config ####
 
-transforms = Compose([  
-                        Pad((4,8,4,8))
-                        ,ToTensor()
-                    ])
+transforms = Compose([Pad((4, 8, 4, 8)), ToTensor()])
 
 # bob.db.dataset init
-bobdb = DRIONS(protocol = 'default')
+bobdb = DRIONS(protocol="default")
 
 # PyTorch dataset
-dataset = BinSegDataset(bobdb, split='test', transform=transforms)
+dataset = BinSegDataset(bobdb, split="test", transform=transforms)

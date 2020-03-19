@@ -7,4 +7,4 @@ import torch
 #### Config ####
 
 # PyTorch dataset
-dataset = torch.utils.data.ConcatDataset([drive,stare,hrf,chase])
+dataset = torch.utils.data.ConcatDataset([drive, stare, hrf, chase])

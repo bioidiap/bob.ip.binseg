@@ -27,13 +27,23 @@ scheduler_gamma = 0.1
 model = build_hed()
 
 # pretrained backbone
-pretrained_backbone = modelurls['vgg16']
+pretrained_backbone = modelurls["vgg16"]
 
 # optimizer
-optimizer = AdaBound(model.parameters(), lr=lr, betas=betas, final_lr=final_lr, gamma=gamma,
-                 eps=eps, weight_decay=weight_decay, amsbound=amsbound) 
+optimizer = AdaBound(
+    model.parameters(),
+    lr=lr,
+    betas=betas,
+    final_lr=final_lr,
+    gamma=gamma,
+    eps=eps,
+    weight_decay=weight_decay,
+    amsbound=amsbound,
+)
 # criterion
 criterion = HEDSoftJaccardBCELogitsLoss(alpha=0.7)
 
 # scheduler
-scheduler = MultiStepLR(optimizer, milestones=scheduler_milestones, gamma=scheduler_gamma)
+scheduler = MultiStepLR(
+    optimizer, milestones=scheduler_milestones, gamma=scheduler_gamma
+)

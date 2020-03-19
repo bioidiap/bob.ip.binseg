@@ -7,17 +7,19 @@ from bob.ip.binseg.data.binsegdataset import BinSegDataset
 
 #### Config ####
 
-transforms = Compose([  
-                        Pad((8,8,8,8))
-                        ,RandomHFlip()
-                        ,RandomVFlip()
-                        ,RandomRotation()
-                        ,ColorJitter()
-                        ,ToTensor()
-                    ])
+transforms = Compose(
+    [
+        Pad((8, 8, 8, 8)),
+        RandomHFlip(),
+        RandomVFlip(),
+        RandomRotation(),
+        ColorJitter(),
+        ToTensor(),
+    ]
+)
 
 # bob.db.dataset init
-bobdb = RIMONER3(protocol = 'default_cup')
+bobdb = RIMONER3(protocol="default_cup")
 
 # PyTorch dataset
-dataset = BinSegDataset(bobdb, split='train', transform=transforms)
+dataset = BinSegDataset(bobdb, split="train", transform=transforms)

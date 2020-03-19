@@ -8,19 +8,18 @@ import torch.utils.model_zoo as model_zoo
 
 
 model_urls = {
-    'vgg11': 'https://download.pytorch.org/models/vgg11-bbd30ac9.pth',
-    'vgg13': 'https://download.pytorch.org/models/vgg13-c768596a.pth',
-    'vgg16': 'https://download.pytorch.org/models/vgg16-397923af.pth',
-    'vgg19': 'https://download.pytorch.org/models/vgg19-dcbb9e9d.pth',
-    'vgg11_bn': 'https://download.pytorch.org/models/vgg11_bn-6002323d.pth',
-    'vgg13_bn': 'https://download.pytorch.org/models/vgg13_bn-abd245e5.pth',
-    'vgg16_bn': 'https://download.pytorch.org/models/vgg16_bn-6c64b313.pth',
-    'vgg19_bn': 'https://download.pytorch.org/models/vgg19_bn-c79401a0.pth',
+    "vgg11": "https://download.pytorch.org/models/vgg11-bbd30ac9.pth",
+    "vgg13": "https://download.pytorch.org/models/vgg13-c768596a.pth",
+    "vgg16": "https://download.pytorch.org/models/vgg16-397923af.pth",
+    "vgg19": "https://download.pytorch.org/models/vgg19-dcbb9e9d.pth",
+    "vgg11_bn": "https://download.pytorch.org/models/vgg11_bn-6002323d.pth",
+    "vgg13_bn": "https://download.pytorch.org/models/vgg13_bn-abd245e5.pth",
+    "vgg16_bn": "https://download.pytorch.org/models/vgg16_bn-6c64b313.pth",
+    "vgg19_bn": "https://download.pytorch.org/models/vgg19_bn-c79401a0.pth",
 }
 
 
 class VGG(nn.Module):
-
     def __init__(self, features, return_features, init_weights=True):
         super(VGG, self).__init__()
         self.features = features
@@ -32,7 +31,7 @@ class VGG(nn.Module):
         outputs = []
         # hw of input, needed for DRIU and HED
         outputs.append(x.shape[2:4])
-        for index,m in enumerate(self.features):
+        for index, m in enumerate(self.features):
             x = m(x)
             # extract layers
             if index in self.return_features:
@@ -42,7 +41,7 @@ class VGG(nn.Module):
     def _initialize_weights(self):
         for m in self.modules():
             if isinstance(m, nn.Conv2d):
-                nn.init.kaiming_normal_(m.weight, mode='fan_out', nonlinearity='relu')
+                nn.init.kaiming_normal_(m.weight, mode="fan_out", nonlinearity="relu")
                 if m.bias is not None:
                     nn.init.constant_(m.bias, 0)
             elif isinstance(m, nn.BatchNorm2d):
@@ -57,7 +56,7 @@ def _make_layers(cfg, batch_norm=False):
     layers = []
     in_channels = 3
     for v in cfg:
-        if v == 'M':
+        if v == "M":
             layers.append(nn.MaxPool2d(kernel_size=2, stride=2))
         else:
             conv2d = nn.Conv2d(in_channels, v, kernel_size=3, padding=1)
@@ -70,10 +69,51 @@ def _make_layers(cfg, batch_norm=False):
 
 
 _cfg = {
-    'A': [64, 'M', 128, 'M', 256, 256, 'M', 512, 512, 'M', 512, 512, 'M'],
-    'B': [64, 64, 'M', 128, 128, 'M', 256, 256, 'M', 512, 512, 'M', 512, 512, 'M'],
-    'D': [64, 64, 'M', 128, 128, 'M', 256, 256, 256, 'M', 512, 512, 512, 'M', 512, 512, 512, 'M'],
-    'E': [64, 64, 'M', 128, 128, 'M', 256, 256, 256, 256, 'M', 512, 512, 512, 512, 'M', 512, 512, 512, 512, 'M'],
+    "A": [64, "M", 128, "M", 256, 256, "M", 512, 512, "M", 512, 512, "M"],
+    "B": [64, 64, "M", 128, 128, "M", 256, 256, "M", 512, 512, "M", 512, 512, "M"],
+    "D": [
+        64,
+        64,
+        "M",
+        128,
+        128,
+        "M",
+        256,
+        256,
+        256,
+        "M",
+        512,
+        512,
+        512,
+        "M",
+        512,
+        512,
+        512,
+        "M",
+    ],
+    "E": [
+        64,
+        64,
+        "M",
+        128,
+        128,
+        "M",
+        256,
+        256,
+        256,
+        256,
+        "M",
+        512,
+        512,
+        512,
+        512,
+        "M",
+        512,
+        512,
+        512,
+        512,
+        "M",
+    ],
 }
 
 
@@ -83,10 +123,10 @@ def vgg11(pretrained=False, **kwargs):
         pretrained (bool): If True, returns a model pre-trained on ImageNet
     """
     if pretrained:
-        kwargs['init_weights'] = False
-    model = VGG(_make_layers(_cfg['A']), **kwargs)
+        kwargs["init_weights"] = False
+    model = VGG(_make_layers(_cfg["A"]), **kwargs)
     if pretrained:
-        model.load_state_dict(model_zoo.load_url(model_urls['vgg11']))
+        model.load_state_dict(model_zoo.load_url(model_urls["vgg11"]))
     return model
 
 
@@ -96,10 +136,10 @@ def vgg11_bn(pretrained=False, **kwargs):
         pretrained (bool): If True, returns a model pre-trained on ImageNet
     """
     if pretrained:
-        kwargs['init_weights'] = False
-    model = VGG(_make_layers(_cfg['A'], batch_norm=True), **kwargs)
+        kwargs["init_weights"] = False
+    model = VGG(_make_layers(_cfg["A"], batch_norm=True), **kwargs)
     if pretrained:
-        model.load_state_dict(model_zoo.load_url(model_urls['vgg11_bn']))
+        model.load_state_dict(model_zoo.load_url(model_urls["vgg11_bn"]))
     return model
 
 
@@ -109,10 +149,10 @@ def vgg13(pretrained=False, **kwargs):
         pretrained (bool): If True, returns a model pre-trained on ImageNet
     """
     if pretrained:
-        kwargs['init_weights'] = False
-    model = VGG(_make_layers(_cfg['B']), **kwargs)
+        kwargs["init_weights"] = False
+    model = VGG(_make_layers(_cfg["B"]), **kwargs)
     if pretrained:
-        model.load_state_dict(model_zoo.load_url(model_urls['vgg13']))
+        model.load_state_dict(model_zoo.load_url(model_urls["vgg13"]))
     return model
 
 
@@ -122,10 +162,10 @@ def vgg13_bn(pretrained=False, **kwargs):
         pretrained (bool): If True, returns a model pre-trained on ImageNet
     """
     if pretrained:
-        kwargs['init_weights'] = False
-    model = VGG(_make_layers(_cfg['B'], batch_norm=True), **kwargs)
+        kwargs["init_weights"] = False
+    model = VGG(_make_layers(_cfg["B"], batch_norm=True), **kwargs)
     if pretrained:
-        model.load_state_dict(model_zoo.load_url(model_urls['vgg13_bn']))
+        model.load_state_dict(model_zoo.load_url(model_urls["vgg13_bn"]))
     return model
 
 
@@ -135,10 +175,10 @@ def vgg16(pretrained=False, **kwargs):
         pretrained (bool): If True, returns a model pre-trained on ImageNet
     """
     if pretrained:
-        kwargs['init_weights'] = False
-    model = VGG(_make_layers(_cfg['D']), **kwargs)
+        kwargs["init_weights"] = False
+    model = VGG(_make_layers(_cfg["D"]), **kwargs)
     if pretrained:
-        model.load_state_dict(model_zoo.load_url(model_urls['vgg16']),strict=False)
+        model.load_state_dict(model_zoo.load_url(model_urls["vgg16"]), strict=False)
     return model
 
 
@@ -148,10 +188,10 @@ def vgg16_bn(pretrained=False, **kwargs):
         pretrained (bool): If True, returns a model pre-trained on ImageNet
     """
     if pretrained:
-        kwargs['init_weights'] = False
-    model = VGG(_make_layers(_cfg['D'], batch_norm=True), **kwargs)
+        kwargs["init_weights"] = False
+    model = VGG(_make_layers(_cfg["D"], batch_norm=True), **kwargs)
     if pretrained:
-        model.load_state_dict(model_zoo.load_url(model_urls['vgg16_bn']))
+        model.load_state_dict(model_zoo.load_url(model_urls["vgg16_bn"]))
     return model
 
 
@@ -161,10 +201,10 @@ def vgg19(pretrained=False, **kwargs):
         pretrained (bool): If True, returns a model pre-trained on ImageNet
     """
     if pretrained:
-        kwargs['init_weights'] = False
-    model = VGG(_make_layers(_cfg['E']), **kwargs)
+        kwargs["init_weights"] = False
+    model = VGG(_make_layers(_cfg["E"]), **kwargs)
     if pretrained:
-        model.load_state_dict(model_zoo.load_url(model_urls['vgg19']))
+        model.load_state_dict(model_zoo.load_url(model_urls["vgg19"]))
     return model
 
 
@@ -174,8 +214,8 @@ def vgg19_bn(pretrained=False, **kwargs):
         pretrained (bool): If True, returns a model pre-trained on ImageNet
     """
     if pretrained:
-        kwargs['init_weights'] = False
-    model = VGG(_make_layers(_cfg['E'], batch_norm=True), **kwargs)
+        kwargs["init_weights"] = False
+    model = VGG(_make_layers(_cfg["E"], batch_norm=True), **kwargs)
     if pretrained:
-        model.load_state_dict(model_zoo.load_url(model_urls['vgg19_bn']))
+        model.load_state_dict(model_zoo.load_url(model_urls["vgg19_bn"]))
     return model

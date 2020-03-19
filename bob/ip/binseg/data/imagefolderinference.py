@@ -8,6 +8,7 @@ import torch
 import torchvision.transforms.functional as VF
 import bob.io.base
 
+
 def get_file_lists(data_path, glob):
     """
     Recursively retrieves file lists from a given path, matching a given glob
@@ -19,6 +20,7 @@ def get_file_lists(data_path, glob):
     data_path = Path(data_path)
     image_file_names = np.array(sorted(list(data_path.rglob(glob))))
     return image_file_names
+
 
 class ImageFolderInference(Dataset):
     """
@@ -43,7 +45,8 @@ class ImageFolderInference(Dataset):
         List of transformations to apply to every input sample
 
     """
-    def __init__(self, path, glob='*', transform = None):
+
+    def __init__(self, path, glob="*", transform=None):
         self.transform = transform
         self.path = path
         self.img_file_list = get_file_lists(path, glob)
@@ -57,7 +60,7 @@ class ImageFolderInference(Dataset):
         """
         return len(self.img_file_list)
 
-    def __getitem__(self,index):
+    def __getitem__(self, index):
         """
         Parameters
         ----------
@@ -74,9 +77,9 @@ class ImageFolderInference(Dataset):
 
         sample = [img]
 
-        if self.transform :
+        if self.transform:
             sample = self.transform(*sample)
 
-        sample.insert(0,img_name)
+        sample.insert(0, img_name)
 
         return sample

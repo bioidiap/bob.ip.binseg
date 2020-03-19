@@ -3,6 +3,7 @@
 from torch.utils.data import Dataset
 import random
 
+
 class BinSegDataset(Dataset):
     """PyTorch dataset wrapper around bob.db binary segmentation datasets. 
     A transform object can be passed that will be applied to the image, ground truth and mask (if present). 
@@ -19,18 +20,19 @@ class BinSegDataset(Dataset):
     mask : bool
         whether dataset contains masks or not
     """
-    def __init__(self, bobdb, split = 'train', transform = None,index_to = None):
+
+    def __init__(self, bobdb, split="train", transform=None, index_to=None):
         if index_to:
             self.database = bobdb.samples(split)[:index_to]
         else:
             self.database = bobdb.samples(split)
         self.transform = transform
         self.split = split
-    
+
     @property
     def mask(self):
         # check if first sample contains a mask
-        return hasattr(self.database[0], 'mask')
+        return hasattr(self.database[0], "mask")
 
     def __len__(self):
         """
@@ -40,8 +42,8 @@ class BinSegDataset(Dataset):
             size of the dataset
         """
         return len(self.database)
-    
-    def __getitem__(self,index):
+
+    def __getitem__(self, index):
         """
         Parameters
         ----------
@@ -56,12 +58,12 @@ class BinSegDataset(Dataset):
         gt = self.database[index].gt.pil_image()
         img_name = self.database[index].img.basename
         sample = [img, gt]
-        
-        if self.transform :
+
+        if self.transform:
             sample = self.transform(*sample)
-        
-        sample.insert(0,img_name)
-        
+
+        sample.insert(0, img_name)
+
         return sample
 
 
@@ -77,10 +79,10 @@ class SSLBinSegDataset(Dataset):
     unlabeled_dataset : :py:class:`torch.utils.data.Dataset`
         UnLabeledBinSegDataset with unlabeled data
     """
+
     def __init__(self, labeled_dataset, unlabeled_dataset):
         self.labeled_dataset = labeled_dataset
         self.unlabeled_dataset = unlabeled_dataset
-    
 
     def __len__(self):
         """
@@ -90,8 +92,8 @@ class SSLBinSegDataset(Dataset):
             size of the dataset
         """
         return len(self.labeled_dataset)
-    
-    def __getitem__(self,index):
+
+    def __getitem__(self, index):
         """
         Parameters
         ----------
@@ -123,13 +125,14 @@ class UnLabeledBinSegDataset(Dataset):
     transform : :py:mod:`bob.ip.binseg.data.transforms`, optional
         A transform or composition of transfroms. Defaults to ``None``.
     """
-    def __init__(self, db, split = 'train', transform = None,index_from= None):
+
+    def __init__(self, db, split="train", transform=None, index_from=None):
         if index_from:
             self.database = db.samples(split)[index_from:]
         else:
             self.database = db.samples(split)
         self.transform = transform
-        self.split = split   
+        self.split = split
 
     def __len__(self):
         """
@@ -139,8 +142,8 @@ class UnLabeledBinSegDataset(Dataset):
             size of the dataset
         """
         return len(self.database)
-    
-    def __getitem__(self,index):
+
+    def __getitem__(self, index):
         """
         Parameters
         ----------
@@ -155,9 +158,9 @@ class UnLabeledBinSegDataset(Dataset):
         img = self.database[index].img.pil_image()
         img_name = self.database[index].img.basename
         sample = [img]
-        if self.transform :
+        if self.transform:
             sample = self.transform(img)
-        
-        sample.insert(0,img_name)
-        
+
+        sample.insert(0, img_name)
+
         return sample

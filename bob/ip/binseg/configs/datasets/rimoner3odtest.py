@@ -7,13 +7,10 @@ from bob.ip.binseg.data.binsegdataset import BinSegDataset
 
 #### Config ####
 
-transforms = Compose([  
-                        Pad((8,8,8,8))
-                        ,ToTensor()
-                    ])
+transforms = Compose([Pad((8, 8, 8, 8)), ToTensor()])
 
 # bob.db.dataset init
-bobdb = RIMONER3(protocol = 'default_od')
+bobdb = RIMONER3(protocol="default_od")
 
 # PyTorch dataset
-dataset = BinSegDataset(bobdb, split='test', transform=transforms)
+dataset = BinSegDataset(bobdb, split="test", transform=transforms)

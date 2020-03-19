@@ -7,13 +7,10 @@ from bob.ip.binseg.data.binsegdataset import BinSegDataset
 
 #### Config ####
 
-transforms = Compose([  
-                        CenterCrop((1760,2048))
-                        ,ToTensor()
-                    ])
+transforms = Compose([CenterCrop((1760, 2048)), ToTensor()])
 
 # bob.db.dataset init
-bobdb = DRISHTI(protocol = 'default_od')
+bobdb = DRISHTI(protocol="default_od")
 
 # PyTorch dataset
-dataset = BinSegDataset(bobdb, split='test', transform=transforms)
+dataset = BinSegDataset(bobdb, split="test", transform=transforms)

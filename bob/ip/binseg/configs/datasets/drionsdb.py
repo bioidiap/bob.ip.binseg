@@ -7,17 +7,19 @@ from bob.ip.binseg.data.binsegdataset import BinSegDataset
 
 #### Config ####
 
-transforms = Compose([  
-                        Pad((4,8,4,8))
-                        ,RandomHFlip()
-                        ,RandomVFlip()
-                        ,RandomRotation()
-                        ,ColorJitter()
-                        ,ToTensor()
-                    ])
+transforms = Compose(
+    [
+        Pad((4, 8, 4, 8)),
+        RandomHFlip(),
+        RandomVFlip(),
+        RandomRotation(),
+        ColorJitter(),
+        ToTensor(),
+    ]
+)
 
 # bob.db.dataset init
-bobdb = DRIONS(protocol = 'default')
+bobdb = DRIONS(protocol="default")
 
 # PyTorch dataset
-dataset = BinSegDataset(bobdb, split='train', transform=transforms)
+dataset = BinSegDataset(bobdb, split="train", transform=transforms)

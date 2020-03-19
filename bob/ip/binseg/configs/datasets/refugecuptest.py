@@ -7,13 +7,10 @@ from bob.ip.binseg.data.binsegdataset import BinSegDataset
 
 #### Config ####
 
-transforms = Compose([  
-                        CenterCrop(1632)
-                        ,ToTensor()
-                    ])
+transforms = Compose([CenterCrop(1632), ToTensor()])
 
 # bob.db.dataset init
-bobdb = REFUGE(protocol = 'default_cup')
+bobdb = REFUGE(protocol="default_cup")
 
 # PyTorch dataset
-dataset = BinSegDataset(bobdb, split='test', transform=transforms)
+dataset = BinSegDataset(bobdb, split="test", transform=transforms)

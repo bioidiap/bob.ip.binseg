@@ -59,9 +59,7 @@ class Checkpointer:
             f = self.get_checkpoint_file()
         if not f:
             # no checkpoint could be found
-            self.logger.warn(
-                "No checkpoint found. Initializing model from scratch"
-            )
+            self.logger.warn("No checkpoint found. Initializing model from scratch")
             return {}
         self.logger.info("Loading checkpoint from {}".format(f))
         checkpoint = self._load_file(f)

@@ -35,13 +35,14 @@ modelurls = {
     "resnet152": "https://download.pytorch.org/models/resnet152-b121ed2d.pth",
     "resnet50_SIN_IN": "https://bitbucket.org/robert_geirhos/texture-vs-shape-pretrained-models/raw/60b770e128fffcbd8562a3ab3546c1a735432d03/resnet50_finetune_60_epochs_lr_decay_after_30_start_resnet50_train_45_epochs_combined_IN_SF-ca06340c.pth.tar",
     "mobilenetv2": "https://dl.dropboxusercontent.com/s/4nie4ygivq04p8y/mobilenet_v2.pth.tar",
-    }
+}
+
 
 def _download_url_to_file(url, dst, hash_prefix, progress):
     file_size = None
     u = urlopen(url)
     meta = u.info()
-    if hasattr(meta, 'getheaders'):
+    if hasattr(meta, "getheaders"):
         content_length = meta.getheaders("Content-Length")
     else:
         content_length = meta.get_all("Content-Length")
@@ -65,16 +66,21 @@ def _download_url_to_file(url, dst, hash_prefix, progress):
         f.close()
         if hash_prefix is not None:
             digest = sha256.hexdigest()
-            if digest[:len(hash_prefix)] != hash_prefix:
-                raise RuntimeError('invalid hash value (expected "{}", got "{}")'
-                                   .format(hash_prefix, digest))
+            if digest[: len(hash_prefix)] != hash_prefix:
+                raise RuntimeError(
+                    'invalid hash value (expected "{}", got "{}")'.format(
+                        hash_prefix, digest
+                    )
+                )
         shutil.move(f.name, dst)
     finally:
         f.close()
         if os.path.exists(f.name):
             os.remove(f.name)
 
-HASH_REGEX = re.compile(r'-([a-f0-9]*)\.')
+
+HASH_REGEX = re.compile(r"-([a-f0-9]*)\.")
+
 
 def cache_url(url, model_dir=None, progress=True):
     r"""Loads the Torch serialized object at the given URL.

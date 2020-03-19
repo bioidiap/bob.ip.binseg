@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import os 
+import os
 import logging
 import time
 import datetime
@@ -23,7 +23,7 @@ def do_train(
     checkpoint_period,
     device,
     arguments,
-    output_folder
+    output_folder,
 ):
     """ 
     Train model and save to disk.
@@ -55,8 +55,10 @@ def do_train(
     max_epoch = arguments["max_epoch"]
 
     # Logg to file
-    with open (os.path.join(output_folder,"{}_trainlog.csv".format(model.name)), "a+") as outfile:
-        
+    with open(
+        os.path.join(output_folder, "{}_trainlog.csv".format(model.name)), "a+"
+    ) as outfile:
+
         model.train().to(device)
         for state in optimizer.state.values():
             for k, v in state.items():
@@ -70,7 +72,7 @@ def do_train(
             losses = SmoothedValue(len(data_loader))
             epoch = epoch + 1
             arguments["epoch"] = epoch
-            
+
             # Epoch time
             start_epoch_time = time.time()
 
@@ -81,9 +83,9 @@ def do_train(
                 masks = None
                 if len(samples) == 4:
                     masks = samples[-1].to(device)
-                
+
                 outputs = model(images)
-                
+
                 loss = criterion(outputs, ground_truths, masks)
                 optimizer.zero_grad()
                 loss.backward()
@@ -100,51 +102,62 @@ def do_train(
 
             epoch_time = time.time() - start_epoch_time
 
-
             eta_seconds = epoch_time * (max_epoch - epoch)
             eta_string = str(datetime.timedelta(seconds=int(eta_seconds)))
 
-            outfile.write(("{epoch}, "
-                        "{avg_loss:.6f}, "
-                        "{median_loss:.6f}, "
-                        "{lr:.6f}, "
-                        "{memory:.0f}"
-                        "\n"
-                        ).format(
+            outfile.write(
+                (
+                    "{epoch}, "
+                    "{avg_loss:.6f}, "
+                    "{median_loss:.6f}, "
+                    "{lr:.6f}, "
+                    "{memory:.0f}"
+                    "\n"
+                ).format(
                     eta=eta_string,
                     epoch=epoch,
                     avg_loss=losses.avg,
                     median_loss=losses.median,
                     lr=optimizer.param_groups[0]["lr"],
-                    memory = (torch.cuda.max_memory_allocated() / 1024.0 / 1024.0) if torch.cuda.is_available() else .0,
-                    )
-                )  
-            logger.info(("eta: {eta}, " 
-                        "epoch: {epoch}, "
-                        "avg. loss: {avg_loss:.6f}, "
-                        "median loss: {median_loss:.6f}, "
-                        "lr: {lr:.6f}, "
-                        "max mem: {memory:.0f}"
-                        ).format(
-                    eta=eta_string,
-                    epoch=epoch,
-                    avg_loss=losses.avg,
-                    median_loss=losses.median,
-                    lr=optimizer.param_groups[0]["lr"],
-                    memory = (torch.cuda.max_memory_allocated() / 1024.0 / 1024.0) if torch.cuda.is_available() else .0
-                    )
+                    memory=(torch.cuda.max_memory_allocated() / 1024.0 / 1024.0)
+                    if torch.cuda.is_available()
+                    else 0.0,
                 )
-
+            )
+            logger.info(
+                (
+                    "eta: {eta}, "
+                    "epoch: {epoch}, "
+                    "avg. loss: {avg_loss:.6f}, "
+                    "median loss: {median_loss:.6f}, "
+                    "lr: {lr:.6f}, "
+                    "max mem: {memory:.0f}"
+                ).format(
+                    eta=eta_string,
+                    epoch=epoch,
+                    avg_loss=losses.avg,
+                    median_loss=losses.median,
+                    lr=optimizer.param_groups[0]["lr"],
+                    memory=(torch.cuda.max_memory_allocated() / 1024.0 / 1024.0)
+                    if torch.cuda.is_available()
+                    else 0.0,
+                )
+            )
 
         total_training_time = time.time() - start_training_time
         total_time_str = str(datetime.timedelta(seconds=total_training_time))
         logger.info(
             "Total training time: {} ({:.4f} s / epoch)".format(
                 total_time_str, total_training_time / (max_epoch)
-            ))
-        
-    log_plot_file = os.path.join(output_folder,"{}_trainlog.pdf".format(model.name))
-    logdf = pd.read_csv(os.path.join(output_folder,"{}_trainlog.csv".format(model.name)),header=None, names=["avg. loss", "median loss","lr","max memory"])
-    fig = loss_curve(logdf,output_folder)
+            )
+        )
+
+    log_plot_file = os.path.join(output_folder, "{}_trainlog.pdf".format(model.name))
+    logdf = pd.read_csv(
+        os.path.join(output_folder, "{}_trainlog.csv".format(model.name)),
+        header=None,
+        names=["avg. loss", "median loss", "lr", "max memory"],
+    )
+    fig = loss_curve(logdf, output_folder)
     logger.info("saving {}".format(log_plot_file))
     fig.savefig(log_plot_file)

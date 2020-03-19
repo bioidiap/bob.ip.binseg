@@ -4,9 +4,13 @@
 import torch.nn as nn
 import torch
 from collections import OrderedDict
-from bob.ip.binseg.modeling.make_layers  import conv_with_kaiming_uniform, convtrans_with_kaiming_uniform, PixelShuffle_ICNR, UnetBlock
+from bob.ip.binseg.modeling.make_layers import (
+    conv_with_kaiming_uniform,
+    convtrans_with_kaiming_uniform,
+    PixelShuffle_ICNR,
+    UnetBlock,
+)
 from bob.ip.binseg.modeling.backbones.vgg import vgg16
-
 
 
 class UNet(nn.Module):
@@ -18,6 +22,7 @@ class UNet(nn.Module):
     in_channels_list : list
                         number of channels for each feature map that is returned from backbone
     """
+
     def __init__(self, in_channels_list=None, pixel_shuffle=False):
         super(UNet, self).__init__()
         # number of channels
@@ -30,7 +35,7 @@ class UNet(nn.Module):
         self.decode1 = UnetBlock(c_decode2, c_decode1, pixel_shuffle)
         self.final = conv_with_kaiming_uniform(c_decode1, 1, 1)
 
-    def forward(self,x):
+    def forward(self, x):
         """
         Parameters
         ----------
@@ -47,6 +52,7 @@ class UNet(nn.Module):
         out = self.final(decode1)
         return out
 
+
 def build_unet():
     """
     Adds backbone and head together
@@ -56,7 +62,7 @@ def build_unet():
     module : :py:class:`torch.nn.Module`
     """
 
-    backbone = vgg16(pretrained=False, return_features = [3, 8, 14, 22, 29])
+    backbone = vgg16(pretrained=False, return_features=[3, 8, 14, 22, 29])
     unet_head = UNet([64, 128, 256, 512, 512], pixel_shuffle=False)
 
     model = nn.Sequential(OrderedDict([("backbone", backbone), ("head", unet_head)]))

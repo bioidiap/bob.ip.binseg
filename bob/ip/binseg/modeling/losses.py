@@ -32,9 +32,7 @@ class WeightedBCELogitsLoss(_Loss):
         reduction="mean",
         pos_weight=None,
     ):
-        super(WeightedBCELogitsLoss, self).__init__(
-            size_average, reduce, reduction
-        )
+        super(WeightedBCELogitsLoss, self).__init__(size_average, reduce, reduction)
         self.register_buffer("weight", weight)
         self.register_buffer("pos_weight", pos_weight)
 
@@ -56,9 +54,7 @@ class WeightedBCELogitsLoss(_Loss):
             torch.sum(target, dim=[1, 2, 3]).float().reshape(n, 1)
         )  # torch.Size([n, 1])
         if hasattr(masks, "dtype"):
-            num_mask_neg = c * h * w - torch.sum(
-                masks, dim=[1, 2, 3]
-            ).float().reshape(
+            num_mask_neg = c * h * w - torch.sum(masks, dim=[1, 2, 3]).float().reshape(
                 n, 1
             )  # torch.Size([n, 1])
             num_neg = c * h * w - num_pos - num_mask_neg
@@ -97,9 +93,7 @@ class SoftJaccardBCELogitsLoss(_Loss):
         reduction="mean",
         pos_weight=None,
     ):
-        super(SoftJaccardBCELogitsLoss, self).__init__(
-            size_average, reduce, reduction
-        )
+        super(SoftJaccardBCELogitsLoss, self).__init__(size_average, reduce, reduction)
         self.alpha = alpha
 
     @weak_script_method
@@ -145,9 +139,7 @@ class HEDWeightedBCELogitsLoss(_Loss):
         reduction="mean",
         pos_weight=None,
     ):
-        super(HEDWeightedBCELogitsLoss, self).__init__(
-            size_average, reduce, reduction
-        )
+        super(HEDWeightedBCELogitsLoss, self).__init__(size_average, reduce, reduction)
         self.register_buffer("weight", weight)
         self.register_buffer("pos_weight", pos_weight)
 
@@ -185,9 +177,7 @@ class HEDWeightedBCELogitsLoss(_Loss):
             numnegnumtotal = torch.ones_like(target) * (
                 num_neg / (num_pos + num_neg)
             ).unsqueeze(1).unsqueeze(2)
-            weight = torch.where(
-                (target <= 0.5), numposnumtotal, numnegnumtotal
-            )
+            weight = torch.where((target <= 0.5), numposnumtotal, numnegnumtotal)
             loss = torch.nn.functional.binary_cross_entropy_with_logits(
                 input, target, weight=weight, reduction=self.reduction
             )
@@ -278,9 +268,7 @@ class MixJacLoss(_Loss):
         self.unlabeled_loss = torch.nn.BCEWithLogitsLoss()
 
     @weak_script_method
-    def forward(
-        self, input, target, unlabeled_input, unlabeled_traget, ramp_up_factor
-    ):
+    def forward(self, input, target, unlabeled_input, unlabeled_traget, ramp_up_factor):
         """
         Parameters
         ----------

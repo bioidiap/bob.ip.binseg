@@ -7,12 +7,8 @@ from bob.ip.binseg.data.imagefolderinference import ImageFolderInference
 #### Config ####
 
 # add your transforms below
-transforms = Compose([
-                        ToRGB(),
-                        CenterCrop((544,544))
-                        ,ToTensor()
-                    ])
+transforms = Compose([ToRGB(), CenterCrop((544, 544)), ToTensor()])
 
 # PyTorch dataset
-path = '/path/to/folder/containing/images'
-dataset = ImageFolderInference(path,transform=transforms)
+path = "/path/to/folder/containing/images"
+dataset = ImageFolderInference(path, transform=transforms)

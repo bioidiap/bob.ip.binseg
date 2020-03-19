@@ -15,12 +15,7 @@ from bob.ip.binseg.engine.inferencer import save_probability_images
 from bob.ip.binseg.engine.inferencer import save_hdf
 
 
-def do_predict(
-    model,
-    data_loader,
-    device,
-    output_folder = None
-):
+def do_predict(model, data_loader, device, output_folder=None):
 
     """
     Run inference and calculate metrics
@@ -37,8 +32,8 @@ def do_predict(
     logger = logging.getLogger("bob.ip.binseg.engine.inference")
     logger.info("Start evaluation")
     logger.info("Output folder: {}, Device: {}".format(output_folder, device))
-    results_subfolder = os.path.join(output_folder,'results')
-    os.makedirs(results_subfolder,exist_ok=True)
+    results_subfolder = os.path.join(output_folder, "results")
+    os.makedirs(results_subfolder, exist_ok=True)
 
     model.eval().to(device)
     # Sigmoid for probabilities
@@ -58,7 +53,7 @@ def do_predict(
 
             # necessary check for hed architecture that uses several outputs
             # for loss calculation instead of just the last concatfuse block
-            if isinstance(outputs,list):
+            if isinstance(outputs, list):
                 outputs = outputs[-1]
 
             probabilities = sigmoid(outputs)
@@ -72,22 +67,25 @@ def do_predict(
             # Save hdf5
             save_hdf(probabilities, names, output_folder, logger)
 
-
     # Report times
     total_inference_time = str(datetime.timedelta(seconds=int(sum(times))))
     average_batch_inference_time = np.mean(times)
-    total_evalution_time = str(datetime.timedelta(seconds=int(time.time() - start_total_time )))
+    total_evalution_time = str(
+        datetime.timedelta(seconds=int(time.time() - start_total_time))
+    )
 
-    logger.info("Average batch inference time: {:.5f}s".format(average_batch_inference_time))
+    logger.info(
+        "Average batch inference time: {:.5f}s".format(average_batch_inference_time)
+    )
 
     times_file = "Times.txt"
     logger.info("saving {}".format(times_file))
 
-    with open (os.path.join(results_subfolder,times_file), "w+") as outfile:
+    with open(os.path.join(results_subfolder, times_file), "w+") as outfile:
         date = datetime.datetime.now()
         outfile.write("Date: {} \n".format(date.strftime("%Y-%m-%d %H:%M:%S")))
         outfile.write("Total evaluation run-time: {} \n".format(total_evalution_time))
-        outfile.write("Average batch inference time: {} \n".format(average_batch_inference_time))
+        outfile.write(
+            "Average batch inference time: {} \n".format(average_batch_inference_time)
+        )
         outfile.write("Total inference time: {} \n".format(total_inference_time))
-
-

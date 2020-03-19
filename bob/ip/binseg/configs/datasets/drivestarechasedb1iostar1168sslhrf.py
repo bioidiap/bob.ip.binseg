@@ -5,30 +5,38 @@ from bob.ip.binseg.configs.datasets.iostarvessel1168 import dataset as iostar
 from bob.db.hrf import Database as HRF
 from bob.ip.binseg.data.transforms import *
 import torch
-from bob.ip.binseg.data.binsegdataset import BinSegDataset, SSLBinSegDataset, UnLabeledBinSegDataset
+from bob.ip.binseg.data.binsegdataset import (
+    BinSegDataset,
+    SSLBinSegDataset,
+    UnLabeledBinSegDataset,
+)
 
 
 #### Config ####
 
 # PyTorch dataset
-labeled_dataset = torch.utils.data.ConcatDataset([drive,stare,iostar,chasedb])
+labeled_dataset = torch.utils.data.ConcatDataset([drive, stare, iostar, chasedb])
 
 #### Unlabeled HRF TRAIN ####
-unlabeled_transforms = Compose([  
-                        RandomRotation()
-                        ,Crop(0,108,2336,3296)
-                        ,Resize((1168))
-                        ,RandomHFlip()
-                        ,RandomVFlip()
-                        ,ColorJitter()
-                        ,ToTensor()
-                    ])
+unlabeled_transforms = Compose(
+    [
+        RandomRotation(),
+        Crop(0, 108, 2336, 3296),
+        Resize((1168)),
+        RandomHFlip(),
+        RandomVFlip(),
+        ColorJitter(),
+        ToTensor(),
+    ]
+)
 
 # bob.db.dataset init
-hrfbobdb = HRF(protocol='default')
+hrfbobdb = HRF(protocol="default")
 
 # PyTorch dataset
-unlabeled_dataset = UnLabeledBinSegDataset(hrfbobdb, split='train', transform=unlabeled_transforms)
+unlabeled_dataset = UnLabeledBinSegDataset(
+    hrfbobdb, split="train", transform=unlabeled_transforms
+)
 
 # SSL Dataset
 

@@ -27,6 +27,7 @@ class SmoothedValue:
         d = torch.tensor(list(self.deque))
         return d.mean().item()
 
+
 def base_metrics(tp, fp, tn, fn):
     """
     Calculates Precision, Recall (=Sensitivity), Specificity, Accuracy, Jaccard and F1-score (Dice)
@@ -54,11 +55,11 @@ def base_metrics(tp, fp, tn, fn):
     metrics : list
     
     """
-    precision = tp / (tp + fp + ( (tp+fp) == 0) )
-    recall = tp / (tp + fn + ( (tp+fn) == 0) )
-    specificity = tn / (fp + tn + ( (fp+tn) == 0) )
-    accuracy = (tp + tn) / (tp+fp+fn+tn)
-    jaccard = tp / (tp+fp+fn + ( (tp+fp+fn) == 0) )
-    f1_score = (2.0 * tp ) / (2.0 * tp + fp + fn + ( (2.0 * tp + fp + fn) == 0) )
-    #f1_score = (2.0 * precision * recall) / (precision + recall)
+    precision = tp / (tp + fp + ((tp + fp) == 0))
+    recall = tp / (tp + fn + ((tp + fn) == 0))
+    specificity = tn / (fp + tn + ((fp + tn) == 0))
+    accuracy = (tp + tn) / (tp + fp + fn + tn)
+    jaccard = tp / (tp + fp + fn + ((tp + fp + fn) == 0))
+    f1_score = (2.0 * tp) / (2.0 * tp + fp + fn + ((2.0 * tp + fp + fn) == 0))
+    # f1_score = (2.0 * precision * recall) / (precision + recall)
     return [precision, recall, specificity, accuracy, jaccard, f1_score]

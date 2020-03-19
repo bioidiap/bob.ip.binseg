@@ -18,20 +18,13 @@ model_urls = {
 def _conv3x3(in_planes, out_planes, stride=1):
     """3x3 convolution with padding"""
     return nn.Conv2d(
-        in_planes,
-        out_planes,
-        kernel_size=3,
-        stride=stride,
-        padding=1,
-        bias=False,
+        in_planes, out_planes, kernel_size=3, stride=stride, padding=1, bias=False,
     )
 
 
 def _conv1x1(in_planes, out_planes, stride=1):
     """1x1 convolution"""
-    return nn.Conv2d(
-        in_planes, out_planes, kernel_size=1, stride=stride, bias=False
-    )
+    return nn.Conv2d(in_planes, out_planes, kernel_size=1, stride=stride, bias=False)
 
 
 class _BasicBlock(nn.Module):
@@ -105,9 +98,7 @@ class _Bottleneck(nn.Module):
 
 
 class ResNet(nn.Module):
-    def __init__(
-        self, block, layers, return_features, zero_init_residual=False
-    ):
+    def __init__(self, block, layers, return_features, zero_init_residual=False):
         """
         Generic ResNet network with layer return.
         Attributes
@@ -118,9 +109,7 @@ class ResNet(nn.Module):
         super(ResNet, self).__init__()
         self.inplanes = 64
         self.return_features = return_features
-        self.conv1 = nn.Conv2d(
-            3, 64, kernel_size=7, stride=2, padding=3, bias=False
-        )
+        self.conv1 = nn.Conv2d(3, 64, kernel_size=7, stride=2, padding=3, bias=False)
         self.bn1 = nn.BatchNorm2d(64)
         self.relu = nn.ReLU(inplace=True)
         self.maxpool = nn.MaxPool2d(kernel_size=3, stride=2, padding=1)
@@ -142,9 +131,7 @@ class ResNet(nn.Module):
 
         for m in self.modules():
             if isinstance(m, nn.Conv2d):
-                nn.init.kaiming_normal_(
-                    m.weight, mode="fan_out", nonlinearity="relu"
-                )
+                nn.init.kaiming_normal_(m.weight, mode="fan_out", nonlinearity="relu")
             elif isinstance(m, nn.BatchNorm2d):
                 nn.init.constant_(m.weight, 1)
                 nn.init.constant_(m.bias, 0)
@@ -229,9 +216,7 @@ def shaperesnet50(pretrained=False, **kwargs):
     if pretrained:
         model.load_state_dict(
             model_zoo.load_url(
-                model_urls[
-                    "resnet50_trained_on_SIN_and_IN_then_finetuned_on_IN"
-                ]
+                model_urls["resnet50_trained_on_SIN_and_IN_then_finetuned_on_IN"]
             )
         )
     return model

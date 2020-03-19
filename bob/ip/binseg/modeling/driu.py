@@ -43,12 +43,7 @@ class DRIU(torch.nn.Module):
 
     def __init__(self, in_channels_list=None):
         super(DRIU, self).__init__()
-        (
-            in_conv_1_2_16,
-            in_upsample2,
-            in_upsample_4,
-            in_upsample_8,
-        ) = in_channels_list
+        (in_conv_1_2_16, in_upsample2, in_upsample_4, in_upsample_8,) = in_channels_list
 
         self.conv1_2_16 = torch.nn.Conv2d(in_conv_1_2_16, 16, 3, 1, 1)
         # Upsample layers

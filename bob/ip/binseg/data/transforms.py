@@ -22,16 +22,17 @@ import collections
 import bob.core
 
 _pil_interpolation_to_str = {
-    Image.NEAREST: 'PIL.Image.NEAREST',
-    Image.BILINEAR: 'PIL.Image.BILINEAR',
-    Image.BICUBIC: 'PIL.Image.BICUBIC',
-    Image.LANCZOS: 'PIL.Image.LANCZOS',
-    Image.HAMMING: 'PIL.Image.HAMMING',
-    Image.BOX: 'PIL.Image.BOX',
+    Image.NEAREST: "PIL.Image.NEAREST",
+    Image.BILINEAR: "PIL.Image.BILINEAR",
+    Image.BICUBIC: "PIL.Image.BICUBIC",
+    Image.LANCZOS: "PIL.Image.LANCZOS",
+    Image.HAMMING: "PIL.Image.HAMMING",
+    Image.BOX: "PIL.Image.BOX",
 }
 Iterable = collections.abc.Iterable
 
 # Compose
+
 
 class Compose:
     """Composes several transforms.
@@ -51,14 +52,16 @@ class Compose:
         return args
 
     def __repr__(self):
-        format_string = self.__class__.__name__ + '('
+        format_string = self.__class__.__name__ + "("
         for t in self.transforms:
-            format_string += '\n'
-            format_string += '    {0}'.format(t)
-        format_string += '\n)'
+            format_string += "\n"
+            format_string += "    {0}".format(t)
+        format_string += "\n)"
         return format_string
 
+
 # Preprocessing
+
 
 class CenterCrop:
     """
@@ -69,6 +72,7 @@ class CenterCrop:
     size : int
         target size
     """
+
     def __init__(self, size):
         self.size = size
 
@@ -91,6 +95,7 @@ class Crop:
     w : int
         width of the cropped image.
     """
+
     def __init__(self, i, j, h, w):
         self.i = i
         self.j = j
@@ -98,7 +103,10 @@ class Crop:
         self.w = w
 
     def __call__(self, *args):
-        return [img.crop((self.j, self.i, self.j + self.w, self.i + self.h)) for img in args]
+        return [
+            img.crop((self.j, self.i, self.j + self.w, self.i + self.h)) for img in args
+        ]
+
 
 class Pad:
     """
@@ -115,12 +123,17 @@ class Pad:
         pixel fill value for constant fill. Default is 0. If a tuple of length 3, it is used to fill R, G, B channels respectively.
         This value is only used when the padding_mode is constant
     """
+
     def __init__(self, padding, fill=0):
         self.padding = padding
         self.fill = fill
 
     def __call__(self, *args):
-        return [VF.pad(img, self.padding, self.fill, padding_mode='constant') for img in args]
+        return [
+            VF.pad(img, self.padding, self.fill, padding_mode="constant")
+            for img in args
+        ]
+
 
 class AutoLevel16to8:
     """Converts a 16-bit image to 8-bit representation using "auto-level"
@@ -131,12 +144,15 @@ class AutoLevel16to8:
     consider such a range should be mapped to the [0,255] range of the
     destination image.
     """
+
     def _process_one(self, img):
-        return Image.fromarray(bob.core.convert(img, 'uint8', (0,255),
-            img.getextrema()))
+        return Image.fromarray(
+            bob.core.convert(img, "uint8", (0, 255), img.getextrema())
+        )
 
     def __call__(self, *args):
         return [self._process_one(img) for img in args]
+
 
 class ToRGB:
     """Converts from any input format to RGB, using an ADAPTIVE conversion.
@@ -146,16 +162,20 @@ class ToRGB:
     defaults.  This may be aggressive if applied to 16-bit images without
     further considerations.
     """
+
     def __call__(self, *args):
         return [img.convert(mode="RGB") for img in args]
 
+
 class ToTensor:
     """Converts :py:class:`PIL.Image.Image` to :py:class:`torch.Tensor` """
+
     def __call__(self, *args):
         return [VF.to_tensor(img) for img in args]
 
 
 # Augmentations
+
 
 class RandomHFlip:
     """
@@ -166,7 +186,8 @@ class RandomHFlip:
     prob : float
         probability at which imgage is flipped. Defaults to ``0.5``
     """
-    def __init__(self, prob = 0.5):
+
+    def __init__(self, prob=0.5):
         self.prob = prob
 
     def __call__(self, *args):
@@ -186,7 +207,8 @@ class RandomVFlip:
     prob : float
         probability at which imgage is flipped. Defaults to ``0.5``
     """
-    def __init__(self, prob = 0.5):
+
+    def __init__(self, prob=0.5):
         self.prob = prob
 
     def __call__(self, *args):
@@ -208,16 +230,18 @@ class RandomRotation:
     prob : float
         probability at which imgage is rotated. Defaults to ``0.5``
     """
-    def __init__(self, degree_range = (-15, +15), prob = 0.5):
+
+    def __init__(self, degree_range=(-15, +15), prob=0.5):
         self.prob = prob
         self.degree_range = degree_range
 
     def __call__(self, *args):
         if random.random() < self.prob:
             degree = random.randint(*self.degree_range)
-            return [VF.rotate(img, degree, resample = Image.BILINEAR) for img in args]
+            return [VF.rotate(img, degree, resample=Image.BILINEAR) for img in args]
         else:
             return args
+
 
 class ColorJitter(object):
     """
@@ -240,7 +264,10 @@ class ColorJitter(object):
     prob : float
         probability at which the operation is applied
     """
-    def __init__(self, brightness=0.3, contrast=0.3, saturation=0.02, hue=0.02, prob=0.5):
+
+    def __init__(
+        self, brightness=0.3, contrast=0.3, saturation=0.02, hue=0.02, prob=0.5
+    ):
         self.brightness = brightness
         self.contrast = contrast
         self.saturation = saturation
@@ -252,15 +279,21 @@ class ColorJitter(object):
         transforms = []
         if brightness > 0:
             brightness_factor = random.uniform(max(0, 1 - brightness), 1 + brightness)
-            transforms.append(Lambda(lambda img: VF.adjust_brightness(img, brightness_factor)))
+            transforms.append(
+                Lambda(lambda img: VF.adjust_brightness(img, brightness_factor))
+            )
 
         if contrast > 0:
             contrast_factor = random.uniform(max(0, 1 - contrast), 1 + contrast)
-            transforms.append(Lambda(lambda img: VF.adjust_contrast(img, contrast_factor)))
+            transforms.append(
+                Lambda(lambda img: VF.adjust_contrast(img, contrast_factor))
+            )
 
         if saturation > 0:
             saturation_factor = random.uniform(max(0, 1 - saturation), 1 + saturation)
-            transforms.append(Lambda(lambda img: VF.adjust_saturation(img, saturation_factor)))
+            transforms.append(
+                Lambda(lambda img: VF.adjust_saturation(img, saturation_factor))
+            )
 
         if hue > 0:
             hue_factor = random.uniform(-hue, hue)
@@ -273,8 +306,9 @@ class ColorJitter(object):
 
     def __call__(self, *args):
         if random.random() < self.prob:
-            transform = self.get_params(self.brightness, self.contrast,
-                                        self.saturation, self.hue)
+            transform = self.get_params(
+                self.brightness, self.contrast, self.saturation, self.hue
+            )
             trans_img = transform(args[0])
             return [trans_img, *args[1:]]
         else:
@@ -301,7 +335,14 @@ class RandomResizedCrop:
         probability at which the operation is applied. Defaults to ``0.5``
     """
 
-    def __init__(self, size, scale=(0.08, 1.0), ratio=(3. / 4., 4. / 3.), interpolation=Image.BILINEAR, prob = 0.5):
+    def __init__(
+        self,
+        size,
+        scale=(0.08, 1.0),
+        ratio=(3.0 / 4.0, 4.0 / 3.0),
+        interpolation=Image.BILINEAR,
+        prob=0.5,
+    ):
         if isinstance(size, tuple):
             self.size = size
         else:
@@ -333,10 +374,10 @@ class RandomResizedCrop:
 
         # Fallback to central crop
         in_ratio = img.size[0] / img.size[1]
-        if (in_ratio < min(ratio)):
+        if in_ratio < min(ratio):
             w = img.size[0]
             h = w / min(ratio)
-        elif (in_ratio > max(ratio)):
+        elif in_ratio > max(ratio):
             h = img.size[1]
             w = h * max(ratio)
         else:  # whole image
@@ -359,10 +400,10 @@ class RandomResizedCrop:
 
     def __repr__(self):
         interpolate_str = _pil_interpolation_to_str[self.interpolation]
-        format_string = self.__class__.__name__ + '(size={0}'.format(self.size)
-        format_string += ', scale={0}'.format(tuple(round(s, 4) for s in self.scale))
-        format_string += ', ratio={0}'.format(tuple(round(r, 4) for r in self.ratio))
-        format_string += ', interpolation={0})'.format(interpolate_str)
+        format_string = self.__class__.__name__ + "(size={0}".format(self.size)
+        format_string += ", scale={0}".format(tuple(round(s, 4) for s in self.scale))
+        format_string += ", ratio={0}".format(tuple(round(r, 4) for r in self.ratio))
+        format_string += ", interpolation={0})".format(interpolate_str)
         return format_string
 
 
@@ -391,4 +432,6 @@ class Resize:
 
     def __repr__(self):
         interpolate_str = _pil_interpolation_to_str[self.interpolation]
-        return self.__class__.__name__ + '(size={0}, interpolation={1})'.format(self.size, interpolate_str)
+        return self.__class__.__name__ + "(size={0}, interpolation={1})".format(
+            self.size, interpolate_str
+        )

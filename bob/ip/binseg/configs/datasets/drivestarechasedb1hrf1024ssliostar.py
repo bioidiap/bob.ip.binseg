@@ -5,28 +5,30 @@ from bob.ip.binseg.configs.datasets.chasedb11024 import dataset as chasedb
 from bob.db.iostar import Database as IOSTAR
 from bob.ip.binseg.data.transforms import *
 import torch
-from bob.ip.binseg.data.binsegdataset import BinSegDataset, SSLBinSegDataset, UnLabeledBinSegDataset
+from bob.ip.binseg.data.binsegdataset import (
+    BinSegDataset,
+    SSLBinSegDataset,
+    UnLabeledBinSegDataset,
+)
 
 
 #### Config ####
 
 # PyTorch dataset
-labeled_dataset = torch.utils.data.ConcatDataset([drive,stare,hrf,chasedb])
+labeled_dataset = torch.utils.data.ConcatDataset([drive, stare, hrf, chasedb])
 
 #### Unlabeled IOSTAR Train ####
-unlabeled_transforms = Compose([  
-                        RandomHFlip()
-                        ,RandomVFlip()
-                        ,RandomRotation()
-                        ,ColorJitter()
-                        ,ToTensor()
-                    ])
+unlabeled_transforms = Compose(
+    [RandomHFlip(), RandomVFlip(), RandomRotation(), ColorJitter(), ToTensor()]
+)
 
 # bob.db.dataset init
-iostarbobdb = IOSTAR(protocol='default_vessel')
+iostarbobdb = IOSTAR(protocol="default_vessel")
 
 # PyTorch dataset
-unlabeled_dataset = UnLabeledBinSegDataset(iostarbobdb, split='train', transform=unlabeled_transforms)
+unlabeled_dataset = UnLabeledBinSegDataset(
+    iostarbobdb, split="train", transform=unlabeled_transforms
+)
 
 # SSL Dataset
 

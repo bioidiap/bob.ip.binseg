@@ -39,9 +39,7 @@ class TestCheckpointer(unittest.TestCase):
         trained_model = self.create_model()
         fresh_model = self.create_model()
         with TemporaryDirectory() as f:
-            checkpointer = Checkpointer(
-                trained_model, save_dir=f, save_to_disk=True
-            )
+            checkpointer = Checkpointer(trained_model, save_dir=f, save_to_disk=True)
             checkpointer.save("checkpoint_file")
 
             # in the same folder
@@ -66,9 +64,7 @@ class TestCheckpointer(unittest.TestCase):
         trained_model = self.create_model()
         fresh_model = self.create_model()
         with TemporaryDirectory() as f:
-            checkpointer = Checkpointer(
-                trained_model, save_dir=f, save_to_disk=True
-            )
+            checkpointer = Checkpointer(trained_model, save_dir=f, save_to_disk=True)
             checkpointer.save("checkpoint_file")
 
             # on different folders
