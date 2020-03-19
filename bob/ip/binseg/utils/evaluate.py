@@ -124,10 +124,8 @@ def do_eval(
 
     # Collect overall metrics
     metrics = []
-    num_images = len(data_loader)
     for samples in tqdm(data_loader):
         names = samples[0]
-        images = samples[1]
         ground_truths = samples[2]
 
         if prediction_extension is None:

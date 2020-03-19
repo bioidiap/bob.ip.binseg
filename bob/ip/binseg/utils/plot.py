@@ -354,7 +354,6 @@ def plot_overview(outputfolders, title):
     re_ups = []
     re_lows = []
     names = []
-    params = []
     for folder in outputfolders:
         # metrics
         metrics_path = os.path.join(folder, "results/Metrics.csv")

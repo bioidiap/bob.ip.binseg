@@ -239,7 +239,7 @@ class HEDSoftJaccardBCELogitsLoss(_Loss):
             loss = self.alpha * bceloss + (1 - self.alpha) * (1 - softjaccard)
             loss_over_all_inputs.append(loss.unsqueeze(0))
         final_loss = torch.cat(loss_over_all_inputs).mean()
-        return loss
+        return final_loss
 
 
 class MixJacLoss(_Loss):
