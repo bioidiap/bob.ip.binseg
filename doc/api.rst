@@ -96,11 +96,6 @@ Scripts
 Preset Configurations
 ---------------------
 
-.. autosummary::
-   :toctree: api/configs
-
-   bob.ip.binseg.configs
-
 
 Models
 ======
@@ -126,6 +121,7 @@ Datasets
 
 .. autosummary::
    :toctree: api/configs/datasets
+   :template: config.rst
 
    bob.ip.binseg.configs.datasets.amdrive
    bob.ip.binseg.configs.datasets.amdrivetest
