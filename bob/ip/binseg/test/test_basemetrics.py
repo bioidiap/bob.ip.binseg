@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 import unittest
-import numpy as np
 from bob.ip.binseg.utils.metric import base_metrics
 import random
 

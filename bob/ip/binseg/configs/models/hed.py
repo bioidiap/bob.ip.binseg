@@ -3,7 +3,6 @@
 
 from torch.optim.lr_scheduler import MultiStepLR
 from bob.ip.binseg.modeling.hed import build_hed
-import torch.optim as optim
 from bob.ip.binseg.modeling.losses import HEDSoftJaccardBCELogitsLoss
 from bob.ip.binseg.utils.model_zoo import modelurls
 from bob.ip.binseg.engine.adabound import AdaBound

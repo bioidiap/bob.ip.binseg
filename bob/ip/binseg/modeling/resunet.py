@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 import torch.nn as nn
-import torch
 from collections import OrderedDict
 from bob.ip.binseg.modeling.make_layers import (
     conv_with_kaiming_uniform,

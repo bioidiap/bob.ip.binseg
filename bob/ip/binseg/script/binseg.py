@@ -5,11 +5,7 @@
 
 
 import os
-import time
-import numpy
-import collections
 import pkg_resources
-import glob
 
 import click
 from click_plugins import with_plugins
@@ -17,7 +13,6 @@ from click_plugins import with_plugins
 import logging
 import torch
 
-import bob.extension
 from bob.extension.scripts.click_helper import (
     verbosity_option,
     ConfigCommand,
@@ -45,7 +40,6 @@ logger = logging.getLogger(__name__)
 @click.group(cls=AliasedGroup)
 def binseg():
     """Binary 2D Fundus Image Segmentation Benchmark commands."""
-    pass
 
 
 # Train

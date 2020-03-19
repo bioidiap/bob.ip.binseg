@@ -11,12 +11,10 @@ of `torchvision <https://github.com/pytorch/vision>`_.
 
 import torchvision.transforms.functional as VF
 import random
-import PIL
 from PIL import Image
 from torchvision.transforms.transforms import Lambda
 from torchvision.transforms.transforms import Compose as TorchVisionCompose
 import math
-from math import floor
 import warnings
 import collections
 import bob.core

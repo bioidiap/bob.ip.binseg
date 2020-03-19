@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 import unittest
-import numpy as np
 from bob.ip.binseg.engine.inferencer import batch_metrics
 import random
 import shutil, tempfile

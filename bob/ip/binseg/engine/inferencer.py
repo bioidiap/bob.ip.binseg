@@ -13,7 +13,7 @@ from tqdm import tqdm
 
 import bob.io.base
 
-from bob.ip.binseg.utils.metric import SmoothedValue, base_metrics
+from bob.ip.binseg.utils.metric import base_metrics
 from bob.ip.binseg.utils.plot import precision_recall_f1iso_confintval
 from bob.ip.binseg.utils.summary import summary
 

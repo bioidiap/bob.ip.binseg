@@ -7,10 +7,8 @@ import time
 import datetime
 import numpy as np
 import torch
-import torchvision.transforms.functional as VF
 from tqdm import tqdm
 
-from bob.ip.binseg.utils.summary import summary
 from bob.ip.binseg.engine.inferencer import save_probability_images
 from bob.ip.binseg.engine.inferencer import save_hdf
 

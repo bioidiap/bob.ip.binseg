@@ -3,7 +3,6 @@ from bob.ip.binseg.configs.datasets.stare960 import dataset as stare
 from bob.ip.binseg.configs.datasets.hrf960 import dataset as hrf
 from bob.ip.binseg.configs.datasets.iostarvessel960 import dataset as iostar
 from bob.db.chasedb1 import Database as CHASE
-from bob.db.hrf import Database as HRF
 from bob.ip.binseg.data.transforms import *
 import torch
 from bob.ip.binseg.data.binsegdataset import (

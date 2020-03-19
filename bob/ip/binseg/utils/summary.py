@@ -3,11 +3,9 @@
 
 # Adapted from https://github.com/pytorch/pytorch/issues/2001#issuecomment-405675488
 import sys
-import logging
 from functools import reduce
 
 from torch.nn.modules.module import _addindent
-from bob.ip.binseg.modeling.driu import build_driu
 
 
 def summary(model, file=sys.stderr):

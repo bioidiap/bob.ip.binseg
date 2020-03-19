@@ -3,8 +3,6 @@
 
 from torch.optim.lr_scheduler import MultiStepLR
 from bob.ip.binseg.modeling.driu import build_driu
-import torch.optim as optim
-from torch.nn import BCEWithLogitsLoss
 from bob.ip.binseg.utils.model_zoo import modelurls
 from bob.ip.binseg.modeling.losses import SoftJaccardBCELogitsLoss
 from bob.ip.binseg.engine.adabound import AdaBound

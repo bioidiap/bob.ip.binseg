@@ -1,9 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import torch
 import unittest
-import numpy as np
 from bob.ip.binseg.modeling.driu import build_driu
 from bob.ip.binseg.modeling.driuod import build_driuod
 from bob.ip.binseg.modeling.hed import build_hed

@@ -4,9 +4,6 @@ from torch.utils.data import Dataset
 from pathlib import Path
 import numpy as np
 from PIL import Image
-import torch
-import torchvision.transforms.functional as VF
-import bob.io.base
 
 
 def get_file_lists(data_path, glob):

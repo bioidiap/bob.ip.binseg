@@ -4,20 +4,16 @@
 #
 import os
 import logging
-import time
-import datetime
 import numpy as np
 import torch
 import pandas as pd
-import torchvision.transforms.functional as VF
 from tqdm import tqdm
 
-from bob.ip.binseg.utils.metric import SmoothedValue, base_metrics
+from bob.ip.binseg.utils.metric import base_metrics
 from bob.ip.binseg.utils.plot import (
     precision_recall_f1iso,
     precision_recall_f1iso_confintval,
 )
-from bob.ip.binseg.utils.summary import summary
 from PIL import Image
 from torchvision.transforms.functional import to_tensor
 

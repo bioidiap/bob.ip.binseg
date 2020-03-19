@@ -5,16 +5,12 @@
 # https://github.com/pytorch/pytorch/blob/master/torch/hub.py
 # https://github.com/facebookresearch/maskrcnn-benchmark/blob/master/maskrcnn_benchmark/utils/checkpoint.py
 
-import errno
 import hashlib
 import os
 import re
 import shutil
 import sys
 import tempfile
-import torch
-import warnings
-import zipfile
 from urllib.request import urlopen
 from urllib.parse import urlparse
 from tqdm import tqdm

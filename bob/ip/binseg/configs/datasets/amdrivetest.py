@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from bob.db.drive import Database as DRIVE
 from bob.db.stare import Database as STARE
 from bob.db.chasedb1 import Database as CHASEDB1
 from bob.db.iostar import Database as IOSTAR
