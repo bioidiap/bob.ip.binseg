@@ -33,10 +33,10 @@ The inference run generates the following output files:
 .. code-block:: bash
 
     .
-    ├── images  # the predicted probabilities as grayscale images in .png format 
+    ├── images  # the predicted probabilities as grayscale images in .png format
     ├── hdf5    # the predicted probabilties in hdf5 format
-    ├── last_checkpoint  # text file that keeps track of the last checkpoint 
-    ├── M2UNet_trainlog.csv # training log 
+    ├── last_checkpoint  # text file that keeps track of the last checkpoint
+    ├── M2UNet_trainlog.csv # training log
     ├── M2UNet_trainlog.pdf # training log plot
     ├── model_*.pth # model checkpoints
     └── results
@@ -49,7 +49,9 @@ The inference run generates the following output files:
 Inference Only Mode
 ====================
 
-If you wish to run inference only on a folder containing images, use the ``predict`` function in combination with a :ref:`bob.ip.binseg.configs.datasets.imagefolderinference` config. E.g.:
+If you wish to run inference only on a folder containing images, use the
+``predict`` function in combination with a
+:py:mod:`bob.ip.binseg.configs.datasets.imagefolderinference` config. E.g.:
 
 .. code-block:: bash
 

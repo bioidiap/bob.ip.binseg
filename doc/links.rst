@@ -7,6 +7,7 @@
 .. _installation: https://www.idiap.ch/software/bob/install
 .. _mailing list: https://www.idiap.ch/software/bob/discuss
 .. _pytorch: https://pytorch.org
+.. _our paper: https://arxiv.org/abs/1909.03856
 
 .. Raw data websites
 .. _drive: https://www.isi.uu.nl/Research/Databases/DRIVE/

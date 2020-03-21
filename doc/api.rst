@@ -116,6 +116,8 @@ Models
    bob.ip.binseg.configs.models.unet
 
 
+.. _bob.ip.binseg.configs.datasets:
+
 Datasets
 ========
 

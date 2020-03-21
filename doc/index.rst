@@ -47,7 +47,6 @@ Users Guide
    evaluation
    benchmarkresults
    covdresults
-   configs
    plotting
    visualization
    acknowledgements

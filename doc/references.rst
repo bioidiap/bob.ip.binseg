@@ -75,3 +75,17 @@
 .. [HE-2015] *S. Xie and Z. Tu*, **Holistically-Nested Edge Detection**, 2015
    IEEE International Conference on Computer Vision (ICCV), Santiago, 2015, pp.
    1395-1403. https://doi.org/10.1109/ICCV.2015.164
+
+.. [LUO-2019] *L. Luo, Y. Xiong, Y. Liu, and X. Sun*, **Adaptive Gradient
+   Methods with Dynamic Bound of Learning Rate**, Proceedings of the 7th
+   International Conference on Learning Representations (ICLR), Feb. 2019.
+   https://arxiv.org/abs/1902.09843v1
+
+.. [MASSA-2018] *F. Massa and R. Girshick*, **maskrcnn-benchmark: Fast, modular
+   reference implementation of Instance Segmentation and Object Detection
+   algorithms in PyTorch**. 2018.  Last accessed: 21.03.2020.
+   https://github.com/facebookresearch/maskrcnn-benchmark
+
+.. [LIN-2018] *J. Lin*, **pytorch-mobilenet-v2: A PyTorch implementation of
+   MobileNetV2**, 2018.  Last accessed: 21.03.2020.
+   https://github.com/tonylins/pytorch-mobilenet-v2
