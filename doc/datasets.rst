@@ -13,7 +13,6 @@ to generate iterators for training and testing.
 
 
 .. list-table::
-   :header-rows: 1
 
    * - Dataset
      - Reference

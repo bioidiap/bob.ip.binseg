@@ -1,6 +1,19 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+"""Residual U-Net for Vessel Segmentation
+
+A semantic segmentation neural network which combines the strengths of residual
+learning and U-Net is proposed for road area extraction.  The network is built
+with residual units and has similar architecture to that of U-Net. The benefits
+of this model is two-fold: first, residual units ease training of deep
+networks. Second, the rich skip connections within the network could facilitate
+information propagation, allowing us to design networks with fewer parameters
+however better performance.
+
+Reference: [ZHANG-2017]_
+"""
+
 from torch.optim.lr_scheduler import MultiStepLR
 from bob.ip.binseg.modeling.resunet import build_res50unet
 from bob.ip.binseg.utils.model_zoo import modelurls

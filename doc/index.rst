@@ -42,15 +42,12 @@ Users Guide
    :maxdepth: 2
 
    setup
-   datasets
-   training
-   evaluation
+   usage
    benchmarkresults
    covdresults
-   plotting
-   visualization
    acknowledgements
    references
+   datasets
    api
 
 

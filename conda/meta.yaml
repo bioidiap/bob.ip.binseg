@@ -47,6 +47,15 @@ test:
   commands:
     # test commands ("script" entry-points) from your package here
     - bob binseg --help
+    - bob binseg config --help
+    - bob binseg config list --help
+    - bob binseg config list
+    - bob binseg config list -v
+    - bob binseg config describe --help
+    - bob binseg config describe drive
+    - bob binseg config describe drive -v
+    - bob binseg config copy --help
+    - bob binseg config copy drive /tmp/test.py
     - bob binseg compare --help
     - bob binseg evalpred --help
     - bob binseg gridtable --help

@@ -1,6 +1,17 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+"""U-Net for Vessel Segmentation
+
+U-Net is a convolutional neural network that was developed for biomedical image
+segmentation at the Computer Science Department of the University of Freiburg,
+Germany.  The network is based on the fully convolutional network (FCN) and its
+architecture was modified and extended to work with fewer training images and
+to yield more precise segmentations.
+
+Reference: [RONNEBERGER-2015]_
+"""
+
 from torch.optim.lr_scheduler import MultiStepLR
 from bob.ip.binseg.modeling.unet import build_unet
 from bob.ip.binseg.utils.model_zoo import modelurls

@@ -89,3 +89,18 @@
 .. [LIN-2018] *J. Lin*, **pytorch-mobilenet-v2: A PyTorch implementation of
    MobileNetV2**, 2018.  Last accessed: 21.03.2020.
    https://github.com/tonylins/pytorch-mobilenet-v2
+
+.. [XIE-2015] *S. Xie and Z. Tu*, **Holistically-Nested Edge Detection**, 2015
+   IEEE International Conference on Computer Vision (ICCV), Santiago, 2015, pp.
+   1395-1403.  https://doi.org/10.1109/ICCV.2015.164
+
+.. [RONNEBERGER-2015] *O. Ronneberger, P. Fischer, T. Brox*, **U-Net:
+   Convolutional Networks for Biomedical Image Segmentation**, 2015.
+   https://arxiv.org/abs/1505.04597
+
+.. [ZHANG-2017] *Z. Zhang, Q. Liu, Y. Wang*, **Road Extraction by Deep Residual
+   U-Net**, 2017. https://arxiv.org/abs/1711.10684
+
+.. [SANDLER-2018] *M. Sandler, A. Howard, M. Zhu, A. Zhmoginov, L.-C.h Chen*,
+   **MobileNetV2: Inverted Residuals and Linear Bottlenecks**, 2018.
+   https://arxiv.org/abs/1801.04381

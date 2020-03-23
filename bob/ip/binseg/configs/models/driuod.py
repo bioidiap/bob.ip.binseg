@@ -1,6 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+"""DRIU Network for Optic Disc Segmentation
+
+Deep Retinal Image Understanding (DRIU), a unified framework of retinal image
+analysis that provides both retinal vessel and optic disc segmentation using
+deep Convolutional Neural Networks (CNNs).
+
+Reference: [MANINIS-2016]_
+"""
+
 from torch.optim.lr_scheduler import MultiStepLR
 from bob.ip.binseg.modeling.driuod import build_driuod
 from bob.ip.binseg.utils.model_zoo import modelurls

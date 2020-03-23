@@ -1,6 +1,17 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+
+"""HED Network for Vessel Segmentation
+
+Holistically-nested edge detection (HED), turns pixel-wise edge classification
+into image-to-image prediction by means of a deep learning model that leverages
+fully convolutional neural networks and deeply-supervised nets.
+
+Reference: [XIE-2015]_
+"""
+
+
 from torch.optim.lr_scheduler import MultiStepLR
 from bob.ip.binseg.modeling.hed import build_hed
 from bob.ip.binseg.modeling.losses import HEDSoftJaccardBCELogitsLoss

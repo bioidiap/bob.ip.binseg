@@ -39,11 +39,31 @@ logger = logging.getLogger(__name__)
 @with_plugins(pkg_resources.iter_entry_points("bob.ip.binseg.cli"))
 @click.group(cls=AliasedGroup)
 def binseg():
-    """Binary 2D Fundus Image Segmentation Benchmark commands."""
+    """Binary 2D Image Segmentation Benchmark commands."""
 
 
 # Train
-@binseg.command(entry_point_group="bob.ip.binseg.config", cls=ConfigCommand)
+@binseg.command(entry_point_group="bob.ip.binseg.config", cls=ConfigCommand,
+    epilog="""
+Examples:
+
+  1. Builds recipe from one of our build dependencies (inside bob.conda):
+
+\b
+     $ cd bob.conda
+     $ bdt build -vv conda/libblitz
+
+
+  2. Builds recipe from one of our packages, for Python 3.6 (if that is not already the default for you):
+
+     $ bdt build --python=3.6 -vv path/to/conda/dir
+
+
+  3. To build multiple recipes, just pass the paths to them:
+
+     $ bdt build --python=3.6 -vv path/to/recipe-dir1 path/to/recipe-dir2
+"""
+        )
 @click.option(
     "--output-path", "-o", required=True, default="output", cls=ResourceOption
 )
@@ -173,7 +193,7 @@ def train(
 )
 @verbosity_option(cls=ResourceOption)
 def test(model, output_path, device, batch_size, dataset, weight, **kwargs):
-    """ Run inference and evalaute the model performance """
+    """ Run inference and evaluate the model performance """
 
     # PyTorch dataloader
     data_loader = DataLoader(
@@ -420,7 +440,7 @@ def transformfolder(source_path, target_path, transforms, **kwargs):
 )
 @verbosity_option(cls=ResourceOption)
 def predict(model, output_path, device, batch_size, dataset, weight, **kwargs):
-    """ Run inference and evalaute the model performance """
+    """ Run inference and evaluate the model performance """
 
     # PyTorch dataloader
     data_loader = DataLoader(

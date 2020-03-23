@@ -93,6 +93,8 @@ Scripts
    bob.ip.binseg.script.binseg
 
 
+.. _bob.ip.binseg.configs:
+
 Preset Configurations
 ---------------------
 

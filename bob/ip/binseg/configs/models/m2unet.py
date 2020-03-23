@@ -1,6 +1,19 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+"""MobileNetV2 U-Net Model for Vessel Segmentation
+
+The MobileNetV2 architecture is based on an inverted residual structure where
+the input and output of the residual block are thin bottleneck layers opposite
+to traditional residual models which use expanded representations in the input
+an MobileNetV2 uses lightweight depthwise convolutions to filter features in
+the intermediate expansion layer.  This model implements a MobileNetV2 U-Net
+model, henceforth named M2U-Net, combining the strenghts of U-Net for medical
+segmentation applications and the speed of MobileNetV2 networks.
+
+References: [SANDLER-2018]_, [RONNEBERGER-2015]_
+"""
+
 from torch.optim.lr_scheduler import MultiStepLR
 from bob.ip.binseg.modeling.m2u import build_m2unet
 from bob.ip.binseg.utils.model_zoo import modelurls
