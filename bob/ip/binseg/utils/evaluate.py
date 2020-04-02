@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# only use to evaluate 2nd human annotator
-#
+
+# only used to evaluate 2nd human annotator
+
 import os
-import logging
 import numpy as np
 import torch
 import pandas as pd
@@ -16,6 +16,9 @@ from bob.ip.binseg.utils.plot import (
 )
 from PIL import Image
 from torchvision.transforms.functional import to_tensor
+
+import logging
+logger = logging.getLogger(__name__)
 
 
 def batch_metrics(predictions, ground_truths, names, output_folder, logger):
@@ -116,7 +119,6 @@ def do_eval(
         device to use ``'cpu'`` or ``'cuda'``
     output_folder : str
     """
-    logger = logging.getLogger("bob.ip.binseg.engine.evaluate")
     logger.info("Start evaluation")
     logger.info("Prediction folder {}".format(prediction_folder))
     results_subfolder = os.path.join(output_folder, "results")
