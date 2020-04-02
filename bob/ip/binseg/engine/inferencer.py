@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 import os
-import logging
 import time
 import datetime
 import numpy as np
@@ -16,6 +15,9 @@ import bob.io.base
 from bob.ip.binseg.utils.metric import base_metrics
 from bob.ip.binseg.utils.plot import precision_recall_f1iso_confintval
 from bob.ip.binseg.utils.summary import summary
+
+import logging
+logger = logging.getLogger(__name__)
 
 
 def batch_metrics(predictions, ground_truths, names, output_folder, logger):
@@ -165,7 +167,7 @@ def do_inference(model, data_loader, device, output_folder=None):
         device to use ``'cpu'`` or ``'cuda'``
     output_folder : str
     """
-    logger = logging.getLogger("bob.ip.binseg.engine.inference")
+
     logger.info("Start evaluation")
     logger.info("Output folder: {}, Device: {}".format(output_folder, device))
     results_subfolder = os.path.join(output_folder, "results")

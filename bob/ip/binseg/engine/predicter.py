@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 import os
-import logging
 import time
 import datetime
 import numpy as np
@@ -11,6 +10,9 @@ from tqdm import tqdm
 
 from bob.ip.binseg.engine.inferencer import save_probability_images
 from bob.ip.binseg.engine.inferencer import save_hdf
+
+import logging
+logger = logging.getLogger(__name__)
 
 
 def do_predict(model, data_loader, device, output_folder=None):
@@ -27,7 +29,6 @@ def do_predict(model, data_loader, device, output_folder=None):
         device to use ``'cpu'`` or ``'cuda'``
     output_folder : str
     """
-    logger = logging.getLogger("bob.ip.binseg.engine.inference")
     logger.info("Start evaluation")
     logger.info("Output folder: {}, Device: {}".format(output_folder, device))
     results_subfolder = os.path.join(output_folder, "results")

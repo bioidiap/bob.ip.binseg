@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 import os
-import logging
 import time
 import datetime
 import torch
@@ -11,6 +10,9 @@ from tqdm import tqdm
 
 from bob.ip.binseg.utils.metric import SmoothedValue
 from bob.ip.binseg.utils.plot import loss_curve
+
+import logging
+logger = logging.getLogger(__name__)
 
 
 def do_train(
@@ -25,12 +27,12 @@ def do_train(
     arguments,
     output_folder,
 ):
-    """ 
+    """
     Train model and save to disk.
-    
+
     Parameters
     ----------
-    model : :py:class:`torch.nn.Module` 
+    model : :py:class:`torch.nn.Module`
         Network (e.g. DRIU, HED, UNet)
     data_loader : :py:class:`torch.utils.data.DataLoader`
     optimizer : :py:mod:`torch.optim`
@@ -42,14 +44,13 @@ def do_train(
         checkpointer
     checkpoint_period : int
         save a checkpoint every n epochs
-    device : str  
+    device : str
         device to use ``'cpu'`` or ``'cuda'``
     arguments : dict
         start end end epochs
-    output_folder : str 
+    output_folder : str
         output path
     """
-    logger = logging.getLogger("bob.ip.binseg.engine.trainer")
     logger.info("Start training")
     start_epoch = arguments["epoch"]
     max_epoch = arguments["max_epoch"]

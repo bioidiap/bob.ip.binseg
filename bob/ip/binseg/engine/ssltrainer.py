@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 import os
-import logging
 import time
 import datetime
 import torch
@@ -12,6 +11,9 @@ import numpy as np
 
 from bob.ip.binseg.utils.metric import SmoothedValue
 from bob.ip.binseg.utils.plot import loss_curve
+
+import logging
+logger = logging.getLogger(__name__)
 
 
 def sharpen(x, T):
@@ -204,7 +206,6 @@ def do_ssltrain(
         rampup epochs
 
     """
-    logger = logging.getLogger("bob.ip.binseg.engine.trainer")
     logger.info("Start training")
     start_epoch = arguments["epoch"]
     max_epoch = arguments["max_epoch"]
