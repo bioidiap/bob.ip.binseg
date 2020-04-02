@@ -35,7 +35,7 @@ modelurls = {
 """URLs of pre-trained models (backbones)"""
 
 
-def _download_url_to_file(url, dst, hash_prefix, progress):
+def download_url_to_file(url, dst, hash_prefix, progress):
     file_size = None
     u = urlopen(url)
     meta = u.info()
@@ -109,6 +109,6 @@ def cache_url(url, model_dir=None, progress=True):
         hash_prefix = HASH_REGEX.search(filename)
         if hash_prefix is not None:
             hash_prefix = hash_prefix.group(1)
-        _download_url_to_file(url, cached_file, hash_prefix, progress=progress)
+        download_url_to_file(url, cached_file, hash_prefix, progress=progress)
 
     return cached_file
