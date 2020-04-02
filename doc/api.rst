@@ -1,17 +1,12 @@
 .. -*- coding: utf-8 -*-
 
-=====
- API
-=====
+=====================================
+ Application Program Interface (API)
+=====================================
 
 .. To update these lists, run the following command on the root of the package:
 .. find bob -name '*.py' | sed -e 's#/#.#g;s#.py$##g;s#.__init__##g' | sort
 .. You may apply further filtering to update only one of the subsections below
-
-.. autosummary::
-   :toctree: api/base
-
-   bob.ip.binseg
 
 
 Data Manipulation
@@ -83,20 +78,15 @@ Toolbox
    bob.ip.binseg.utils.transformfolder
 
 
-Scripts
--------
-
-.. autosummary::
-   :toctree: api/scripts
-
-   bob.ip.binseg.script
-   bob.ip.binseg.script.binseg
-
-
 .. _bob.ip.binseg.configs:
 
 Preset Configurations
 ---------------------
+
+Preset configurations for baseline systems
+
+This module contains preset configurations for baseline FCN architectures and
+datasets.
 
 
 Models

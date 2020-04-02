@@ -35,8 +35,8 @@ The additional material referred to in the paper can be found under
 .. todolist::
 
 
-Users Guide
------------
+User Guide
+----------
 
 .. toctree::
    :maxdepth: 2
@@ -48,6 +48,7 @@ Users Guide
    acknowledgements
    references
    datasets
+   cli
    api
 
 

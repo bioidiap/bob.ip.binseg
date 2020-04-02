@@ -6,7 +6,6 @@ import inspect
 
 import click
 import pkg_resources
-from click_plugins import with_plugins
 
 from bob.extension.scripts.click_helper import (
     verbosity_option,
@@ -14,7 +13,6 @@ from bob.extension.scripts.click_helper import (
 )
 
 import logging
-
 logger = logging.getLogger(__name__)
 
 

@@ -56,13 +56,12 @@ test:
     - bob binseg config describe drive -v
     - bob binseg config copy --help
     - bob binseg config copy drive /tmp/test.py
+    - bob binseg train --help
+    - bob binseg test --help
+    - bob binseg predict --help
     - bob binseg compare --help
     - bob binseg evalpred --help
     - bob binseg gridtable --help
-    - bob binseg predict --help
-    - bob binseg ssltrain --help
-    - bob binseg test --help
-    - bob binseg train --help
     - bob binseg transformfolder --help
     - bob binseg visualize --help
     - nosetests --with-coverage --cover-package={{ name }} -sv {{ name }}
@@ -76,6 +75,7 @@ test:
     - coverage
     - sphinx
     - sphinx_rtd_theme
+    - sphinxcontrib-programoutput
     - bob.db.drive
     - bob.db.stare
     - bob.db.chasedb1

@@ -18,17 +18,29 @@ semantic binary segmentation with support for the following activities:
   test data, generate ROC curves or visualize prediction results overlayed on
   the original raw images.
 
-Each application is implemented as a command-line utility, that is configurable
-using :ref:`Bob's extensible configuration framework
-<bob.extension.framework>`.  In essence, each command-line option may be
-provided as a variable with the same name in a Python file.  Each file may
-combine any number of variables that are pertinent to an application.  We
-provide a number of :ref:`preset configuration files <bob.ip.binseg.configs>`
-that can be used in one or more of the activities described above.  Our
-command-line framework allows you to refer to these preset configuration files
-using special names (a.k.a. "resources"), that procure and load these for you
-automatically.  Aside preset configuration files, you may also create your own
-to extend existing baseline experiments.
+Each application is implemented as a :ref:`command-line utility
+<bob.ip.binseg.cli>`, that is configurable using :ref:`Bob's extensible
+configuration framework <bob.extension.framework>`.  In essence, each
+command-line option may be provided as a variable with the same name in a
+Python file.  Each file may combine any number of variables that are pertinent
+to an application.
+
+.. tip::
+
+   For reproducibility, we recommend you stick to configuration files when
+   parameterizing our CLI.  Notice some of the options in the CLI interface
+   (e.g. ``--dataset``) cannot be passed via the actual command-line as it
+   requires a :py:class:`concrete PyTorch dataset instance
+   <torch.utils.data.dataset.Dataset>`.
+
+We provide a number of :ref:`preset configuration files
+<bob.ip.binseg.cli.config.list.all>` that can be used in one or more of the
+activities described in this section.  Our command-line framework allows you to
+refer to these preset configuration files using special names (a.k.a.
+"resources"), that procure and load these for you automatically.  Aside preset
+configuration files, you may also create your own to extend existing baseline
+experiments by :ref:`locally copying <bob.ip.binseg.cli.config.copy>` and
+modifying one of our configuration resources.
 
 
 .. toctree::

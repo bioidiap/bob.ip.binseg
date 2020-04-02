@@ -18,316 +18,132 @@ command-line options.  Use ``bob binseg train --help`` for more information.
 
 .. note::
 
-   We strongly advice training with a GPU (using ``-d cuda``). Depending on the
-   available GPU memory you might have to adjust your batch size (``-b``).
-
-
-Default Dataset configs
-=======================
-
-1. Vessel:
-
-* CHASEDB1
-* CHASEDB1TEST
-* COVD-DRIVE
-* COVD-DRIVE_SSL
-* COVD-STARE
-* COVD-STARE_SSL
-* COVD-IOSTARVESSEL
-* COVD-IOSTARVESSEL_SSL
-* COVD-HRF
-* COVD-HRF_SSL
-* COVD-CHASEDB1
-* COVD-CHASEDB1_SSL
-* DRIVE
-* DRIVETEST
-* HRF
-* HRFTEST
-* IOSTARVESSEL
-* IOSTARVESSELTEST
-* STARE
-* STARETEST
-
-2. Optic Disc and Cup
-
-* DRIONSDB
-* DRIONSDBTEST
-* DRISHTIGS1OD
-* DRISHTIGS1ODTEST
-* DRISHTIGS1CUP
-* DRISHTIGS1CUPTEST
-* IOSTAROD
-* IOSTARODTEST
-* REFUGECUP
-* REFUGECUPTEST
-* REFUGEOD
-* REFUGEODTEST
-* RIMONER3CUP
-* RIMONER3CUPTEST
-* RIMONER3OD
-* RIMONER3ODTEST
-
-Default Model configs
-=====================
-
-* DRIU
-* DRIUBN
-* DRIUSSL
-* DRIUBNSSL
-* DRIUOD
-* HED
-* M2UNet
-* M2UNetSSL
-* UNet
-
+   We strongly advice training with a GPU (using ``--device="cuda:0"``).
+   Depending on the available GPU memory you might have to adjust your batch
+   size (``--batch``).
 
 Baseline Benchmarks
 ===================
 
-.. code-block:: bash
+The following table describes recommended batch sizes for 24Gb of RAM GPU
+card, for supervised training of baselines.  Use it like this:
 
-    #!/bin/bash
-    # set output directory
-    outputroot=`pwd`"/output"
-    mkdir -p $outputroot
+.. code-block:: sh
 
-    #### Global config ####
-    m2u=M2UNet
-    hed=HED
-    driu=DRIU
-    unet=UNet
-    m2ussl=M2UNetSSL
-    driussl=DRIUSSL
+   # change <model> and <dataset> by one of items bellow
+   $ bob binseg train -vv <model> <dataset> --batch-size=<see-table> --device="cuda:0"
 
-    #### CHASE_DB 1 ####
-    dataset=CHASEDB1
-    output=$outputroot"/"$dataset
-    mkdir -p $output
-    # batch sizes
-    b_m2u=6
-    b_hed=4
-    b_driu=4
-    b_unet=2
-    # Train
-    bob binseg train $m2u $dataset -b $b_m2u -d cuda -o $output"/"$m2u -vv
-    bob binseg train $hed $dataset -b $b_hed -d cuda -o $output"/"$hed -vv
-    bob binseg train $driu $dataset -b $b_driu -d cuda -o $output"/"$driu -vv
-    bob binseg train $unet $dataset -b $b_unet -d cuda -o $output"/"$unet -vv
+.. list-table::
 
-    #### DRIVE ####
-    dataset=DRIVE
-    output=$outputroot"/"$dataset
-    mkdir -p $output
-    # model configs
-    b_m2u=16
-    b_hed=8
-    b_driu=8
-    b_unet=4
-    # Train
-    bob binseg train $m2u $dataset -b $b_m2u -d cuda -o $output"/"$m2u -vv
-    bob binseg train $hed $dataset -b $b_hed -d cuda -o $output"/"$hed -vv
-    bob binseg train $driu $dataset -b $b_driu -d cuda -o $output"/"$driu -vv
-    bob binseg train $unet $dataset -b $b_unet -d cuda -o $output"/"$unet -vv
+  * - **Models / Datasets**
+    - :py:mod:`drive <bob.ip.binseg.configs.datasets.drive>`
+    - :py:mod:`stare <bob.ip.binseg.configs.datasets.stare>`
+    - :py:mod:`chasedb1 <bob.ip.binseg.configs.datasets.chasedb1>`
+    - :py:mod:`iostar-vessel <bob.ip.binseg.configs.datasets.iostarvessel>`
+    - :py:mod:`hrf <bob.ip.binseg.configs.datasets.hrf1168>`
+  * - :py:mod:`unet <bob.ip.binseg.configs.models.unet>`
+    - 4
+    - 2
+    - 2
+    - 2
+    - 1
+  * - :py:mod:`hed <bob.ip.binseg.configs.models.hed>`
+    - 8
+    - 4
+    - 4
+    - 4
+    - 1
+  * - :py:mod:`driu <bob.ip.binseg.configs.models.driu>` / :py:mod:`driu-bn <bob.ip.binseg.configs.models.driubn>`
+    - 8
+    - 5
+    - 4
+    - 4
+    - 1
+  * - :py:mod:`m2unet <bob.ip.binseg.configs.models.m2unet>`
+    - 16
+    - 6
+    - 6
+    - 6
+    - 1
 
-    #### HRF ####
-    dataset=HRF
-    output=$outputroot"/"$dataset
-    mkdir -p $output
-    # model configs
-    b_m2u=1
-    b_hed=1
-    b_driu=1
-    b_unet=1
-    # Train
-    bob binseg train $m2u $dataset -b $b_m2u -d cuda -o $output"/"$m2u -vv
-    bob binseg train $hed $dataset -b $b_hed -d cuda -o $output"/"$hed -vv
-    bob binseg train $driu $dataset -b $b_driu -d cuda -o $output"/"$driu -vv
-    bob binseg train $unet $dataset -b $b_unet -d cuda -o $output"/"$unet -vv
 
-    #### IOSTAR VESSEL ####
-    dataset=IOSTARVESSEL
-    output=$outputroot"/"$dataset
-    mkdir -p $output
-    # model configs
-    b_m2u=6
-    b_hed=4
-    b_driu=4
-    b_unet=2
-    # Train
-    bob binseg train $m2u $dataset -b $b_m2u -d cuda -o $output"/"$m2u -vv
-    bob binseg train $hed $dataset -b $b_hed -d cuda -o $output"/"$hed -vv
-    bob binseg train $driu $dataset -b $b_driu -d cuda -o $output"/"$driu -vv
-    bob binseg train $unet $dataset -b $b_unet -d cuda -o $output"/"$unet -vv
+.. tip::
 
-    #### STARE ####
-    dataset=STARE
-    output=$outputroot"/"$dataset
-    mkdir -p $output
-    # model configs
-    b_m2u=6
-    b_hed=4
-    b_driu=5
-    b_unet=2
-    # Train
-    bob binseg train $m2u $dataset -b $b_m2u -d cuda -o $output"/"$m2u -vv
-    bob binseg train $hed $dataset -b $b_hed -d cuda -o $output"/"$hed -vv
-    bob binseg train $driu $dataset -b $b_driu -d cuda -o $output"/"$driu -vv
-    bob binseg train $unet $dataset -b $b_unet -d cuda -o $output"/"$unet -vv
+   Instead of the default configurations, you can pass the full path of your
+   customized dataset and model files.  You may :ref:`copy any of the existing
+   configuration resources <bob.ip.binseg.cli.config.copy>` and change them
+   locally.  Once you're happy, you may use the newly created files directly on
+   your training command line.  For example, suppose you wanted to slightly
+   change the drive pre-processing pipeline.  You could do the following:
+
+   .. code-block:: bash
+
+      $ bob binseg config copy drive my_drive_remix.py
+      # edit my_drive_remix.py to your needs
+      $ bob binseg train -vv <model> ./my_drive_remix.py --batch-size=<see-table> --device="cuda:0"
+
+
+Combined Vessel Dataset (COVD)
+==============================
+
+The following table describes recommended batch sizes for 24Gb of RAM GPU
+card, for supervised training of COVD- systems.  Use it like this:
+
+.. code-block:: sh
+
+   # change <model> and <dataset> by one of items bellow
+   $ bob binseg train -vv <model> <dataset> --batch-size=<see-table> --device="cuda:0"
+
+.. list-table::
+
+  * - **Models / Datasets**
+    - :py:mod:`covd-drive <bob.ip.binseg.configs.datasets.starechasedb1iostarhrf544>`
+    - :py:mod:`covd-stare <bob.ip.binseg.configs.datasets.drivechasedb1iostarhrf608>`
+    - :py:mod:`covd-chasedb1 <bob.ip.binseg.configs.datasets.drivestareiostarhrf960>`
+    - :py:mod:`covd-iostar-vessel <bob.ip.binseg.configs.datasets.drivestarechasedb1hrf1024>`
+    - :py:mod:`covd-hrf <bob.ip.binseg.configs.datasets.drivestarechasedb1iostar1168>`
+  * - :py:mod:`driu <bob.ip.binseg.configs.models.driu>` / :py:mod:`driu-bn <bob.ip.binseg.configs.models.driubn>`
+    - 4
+    - 4
+    - 2
+    - 2
+    - 2
+  * - :py:mod:`m2unet <bob.ip.binseg.configs.models.m2unet>`
+    - 8
+    - 4
+    - 4
+    - 4
+    - 4
 
 
 Combined Vessel Dataset (COVD) and Semi-Supervised Learning (SSL)
 =================================================================
 
-COVD-:
+The following table describes recommended batch sizes for 24Gb of RAM GPU
+card, for semi-supervised learning of COVD- systems.  Use it like this:
 
-.. code-block:: bash
+.. code-block:: sh
 
-    ### COVD-DRIVE ####
-    dataset=COVD-DRIVE
-    output=$outputroot"/"$dataset
-    mkdir -p $output
-    # model configs
-    driu=DRIU
-    m2u=M2UNet
-    b_driu=4
-    b_m2u=8
-    # Train
-    bob binseg train $driu $dataset -b $b_driu -d cuda -o $output"/"$driu -vv
-    bob binseg train $m2u $dataset -b $b_m2u -d cuda -o $output"/"$m2u -vv
+   # change <model> and <dataset> by one of items bellow
+   $ bob binseg train -vv --ssl <model> <dataset> --batch-size=<see-table> --device="cuda:0"
 
-    ### COVD-STARE ####
-    dataset=COVD-STARE
-    output=$outputroot"/"$dataset
-    mkdir -p $output
-    # model configs
-    driu=DRIU
-    m2u=M2UNet
-    b_driu=4
-    b_m2u=4
-    # Train
-    bob binseg train $driu $dataset -b $b_driu -d cuda -o $output"/"$driu -vv
-    bob binseg train $m2u $dataset -b $b_m2u -d cuda -o $output"/"$m2u -vv
+.. list-table::
 
-    ### COVD-IOSTAR ####
-    dataset=COVD-IOSTARVESSEL
-    output=$outputroot"/"$dataset
-    mkdir -p $output
-    # model configs
-    driu=DRIU
-    m2u=M2UNet
-    b_driu=2
-    b_m2u=4
-    # Train
-    bob binseg train $driu $dataset -b $b_driu -d cuda -o $output"/"$driu -vv
-    bob binseg train $m2u $dataset -b $b_m2u -d cuda -o $output"/"$m2u -vv
-
-    ### COVD-CHASEDB1 ####
-    dataset=COVD-CHASEDB1
-    output=$outputroot"/"$dataset
-    mkdir -p $output
-    # model configs
-    driu=DRIU
-    m2u=M2UNet
-    b_driu=2
-    b_m2u=4
-    # Train
-    bob binseg train $driu $dataset -b $b_driu -d cuda -o $output"/"$driu -vv
-    bob binseg train $m2u $dataset -b $b_m2u -d cuda -o $output"/"$m2u -vv
-
-    ### COVD-HRF ####
-    dataset=COVD-HRF
-    output=$outputroot"/"$dataset
-    mkdir -p $output
-    # model configs
-    driu=DRIU
-    m2u=M2UNet
-    b_driu=2
-    b_m2u=4
-    # Train
-    bob binseg train $driu $dataset -b $b_driu -d cuda -o $output"/"$driu -vv
-    bob binseg train $m2u $dataset -b $b_m2u -d cuda -o $output"/"$m2u -vv
-
-
-COVD-SSL:
-
-.. code-block:: bash
-
-    ### COVD-DRIVE_SSL ####
-    dataset=COVD-DRIVE_SSL
-    output=$outputroot"/"$dataset
-    mkdir -p $output
-    # model configs
-    driu=DRIUSSL
-    m2u=M2UNetSSL
-    b_driu=4
-    b_m2u=4
-    # Train
-    bob binseg ssltrain $driu $dataset -b $b_driu -d cuda -o $output"/"$driu -vv
-    bob binseg ssltrain $m2u $dataset -b $b_m2u -d cuda -o $output"/"$m2u -vv
-
-    ### COVD-STARE_SSL ####
-    dataset=COVD-STARE_SSL
-    output=$outputroot"/"$dataset
-    mkdir -p $output
-    # model configs
-    driu=DRIUSSL
-    m2u=M2UNetSSL
-    b_driu=4
-    b_m2u=4
-    # Train
-    bob binseg ssltrain $driu $dataset -b $b_driu -d cuda -o $output"/"$driu -vv
-    bob binseg ssltrain $m2u $dataset -b $b_m2u -d cuda -o $output"/"$m2u -vv
-
-    ### COVD-IOSTAR_SSL ####
-    dataset=COVD-IOSTARVESSEL_SSL
-    output=$outputroot"/"$dataset
-    mkdir -p $output
-    # model configs
-    driu=DRIUSSL
-    m2u=M2UNetSSL
-    b_driu=1
-    b_m2u=2
-    # Train
-    bob binseg ssltrain $driu $dataset -b $b_driu -d cuda -o $output"/"$driu -vv
-    bob binseg ssltrain $m2u $dataset -b $b_m2u -d cuda -o $output"/"$m2u -vv
-
-    ### COVD-CHASEDB1_SSL ####
-    dataset=COVD-CHASEDB1_SSL
-    output=$outputroot"/"$dataset
-    mkdir -p $output
-    # model configs
-    driu=DRIUSSL
-    m2u=M2UNetSSL
-    b_driu=2
-    b_m2u=2
-    # Train
-    bob binseg ssltrain $driu $dataset -b $b_driu -d cuda -o $output"/"$driu -vv
-    bob binseg ssltrain $m2u $dataset -b $b_m2u -d cuda -o $output"/"$m2u -vv
-
-
-    ### COVD-HRF_SSL ####
-    dataset=COVD-HRF_SSL
-    output=$outputroot"/"$dataset
-    mkdir -p $output
-    # model configs
-    driu=DRIUSSL
-    m2u=M2UNetSSL
-    b_driu=1
-    b_m2u=2
-    # Train
-    bob binseg ssltrain $driu $dataset -b $b_driu -d cuda -o $output"/"$driu -vv
-    bob binseg ssltrain $m2u $dataset -b $b_m2u -d cuda -o $output"/"$m2u -vv
-
-Using your own configs
-======================
-
-Instead of the default configs you can pass the full path of your
-customized dataset and model config (both in PyTorch format).
-The default configs are stored under ``bob.ip.binseg/bob/ip/binseg/configs/``.
-
-.. code-block:: bash
-
-    bob binseg train /path/to/model/config.py /path/to/dataset/config.py
-
-
-
+  * - **Models / Datasets**
+    - :py:mod:`covd-drive <bob.ip.binseg.configs.datasets.starechasedb1iostarhrf544ssldrive>`
+    - :py:mod:`covd-stare <bob.ip.binseg.configs.datasets.drivechasedb1iostarhrf608sslstare>`
+    - :py:mod:`covd-chasedb1 <bob.ip.binseg.configs.datasets.drivestareiostarhrf960sslchase>`
+    - :py:mod:`covd-iostar-vessel <bob.ip.binseg.configs.datasets.drivestarechasedb1hrf1024ssliostar>`
+    - :py:mod:`covd-hrf <bob.ip.binseg.configs.datasets.drivestarechasedb1iostar1168sslhrf>`
+  * - :py:mod:`driu-ssl <bob.ip.binseg.configs.models.driussl>` / :py:mod:`driu-bn <bob.ip.binseg.configs.models.driubnssl>`
+    - 4
+    - 4
+    - 2
+    - 1
+    - 1
+  * - :py:mod:`m2unet <bob.ip.binseg.configs.models.m2unetssl>`
+    - 4
+    - 4
+    - 2
+    - 2
+    - 2

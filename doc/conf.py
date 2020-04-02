@@ -23,8 +23,14 @@ extensions = [
     'sphinx.ext.napoleon',
     'sphinx.ext.viewcode',
     'sphinx.ext.mathjax',
+    'sphinxcontrib.programoutput',
     #'matplotlib.sphinxext.plot_directive'
 ]
+
+# This allows sphinxcontrib-programoutput to work in buildout mode
+candidate_binpath = os.path.join(os.path.dirname(os.path.realpath(os.curdir)), 'bin')
+if os.path.exists(candidate_binpath):
+    os.environ['PATH'] = candidate_binpath + os.pathsep + os.environ.get('PATH', '')
 
 # Be picky about warnings
 nitpicky = True
