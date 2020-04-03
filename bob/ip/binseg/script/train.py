@@ -176,6 +176,7 @@ def train(
     ssl,
     rampup,
     verbose,
+    **kwargs,
 ):
     """Trains an FCN to perform binary segmentation using a supervised approach
 
