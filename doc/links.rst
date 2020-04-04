@@ -26,25 +26,32 @@
 
 .. Pretrained models
 
-.. _driu_chasedb1.pth: https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/DRIU_CHASEDB1.pth
+.. DRIVE
 .. _driu_drive.pth: https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/DRIU_DRIVE.pth
-.. _driu_hrf.pth: https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/DRIU_HRF1168.pth
-.. _driu_stare.pth: https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/DRIU_STARE.pth
-.. _driu_iostar.pth: https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/DRIU_IOSTARVESSEL.pth
-
-.. _m2unet_chasedb1.pth: https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/M2UNet_CHASEDB1.pth
 .. _m2unet_drive.pth: https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/M2UNet_DRIVE.pth
-.. _m2unet_hrf.pth: https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/M2UNet_HRF1168.pth
-.. _m2unet_stare.pth: https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/M2UNet_STARE.pth
-.. _m2unet_iostar.pth: https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/M2UNet_IOSTARVESSEL.pth
 .. _m2unet_covd-drive.pth: https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/M2UNet_COVD-DRIVE.pth
 .. _m2unet_covd-drive_ssl.pth: https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/M2UNet_COVD-DRIVE_SSL.pth
+
+.. STARE
+.. _driu_stare.pth: https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/DRIU_STARE.pth
+.. _m2unet_stare.pth: https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/M2UNet_STARE.pth
 .. _m2unet_covd-stare.pth: https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/M2UNet_COVD-STARE.pth
 .. _m2unet_covd-stare_ssl.pth: https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/M2UNet_COVD-STARE_SSL.pth
-.. _m2unet_covd-chaesdb1.pth: https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/M2UNet_COVD-CHASEDB1.pth
-.. _m2unet_covd-chaesdb1_ssl.pth: https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/M2UNet_COVD-CHASEDB1_SSL.pth
-.. _m2unet_covd-hrf.pth: https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/M2UNet_COVD-HRF.pth
-.. _m2unet_covd-hrf_ssl.pth: https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/M2UNet_COVD-HRF_SSL.pth
+
+.. CHASE-DB1
+.. _driu_chasedb1.pth: https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/DRIU_CHASEDB1.pth
+.. _m2unet_chasedb1.pth: https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/M2UNet_CHASEDB1.pth
+.. _m2unet_covd-chasedb1.pth: https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/M2UNet_COVD-CHASEDB1.pth
+.. _m2unet_covd-chasedb1_ssl.pth: https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/M2UNet_COVD-CHASEDB1_SSL.pth
+
+.. IOSTAR
+.. _driu_iostar.pth: https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/DRIU_IOSTARVESSEL.pth
+.. _m2unet_iostar.pth: https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/M2UNet_IOSTARVESSEL.pth
 .. _m2unet_covd-iostar.pth: https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/M2UNet_COVD-IOSTAR.pth
 .. _m2unet_covd-iostar_ssl.pth: https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/M2UNet_COVD-IOSTAR_SSL.pth
 
+.. HRF
+.. _driu_hrf.pth: https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/DRIU_HRF1168.pth
+.. _m2unet_hrf.pth: https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/M2UNet_HRF1168.pth
+.. _m2unet_covd-hrf.pth: https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/M2UNet_COVD-HRF.pth
+.. _m2unet_covd-hrf_ssl.pth: https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/M2UNet_COVD-HRF_SSL.pth

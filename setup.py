@@ -35,10 +35,10 @@ setup(
             "evalpred = bob.ip.binseg.script.binseg:evalpred",
             "gridtable = bob.ip.binseg.script.binseg:testcheckpoints",
             "predict = bob.ip.binseg.script.binseg:predict",
-            "test = bob.ip.binseg.script.binseg:test",
             "visualize = bob.ip.binseg.script.binseg:visualize",
             "config = bob.ip.binseg.script.config:config",
             "train = bob.ip.binseg.script.train:train",
+            "evaluate = bob.ip.binseg.script.evaluate:evaluate",
         ],
         # bob train configurations
         "bob.ip.binseg.config": [

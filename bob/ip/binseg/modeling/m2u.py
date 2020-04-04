@@ -116,5 +116,5 @@ def build_m2unet():
     model = torch.nn.Sequential(
         OrderedDict([("backbone", backbone), ("head", m2u_head)])
     )
-    model.name = "M2UNet"
+    model.name = "m2unet"
     return model

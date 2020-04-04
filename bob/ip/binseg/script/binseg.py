@@ -22,7 +22,6 @@ from bob.extension.scripts.click_helper import (
 
 from bob.ip.binseg.utils.checkpointer import DetectronCheckpointer
 from torch.utils.data import DataLoader
-from bob.ip.binseg.engine.inferencer import do_inference
 from bob.ip.binseg.utils.plot import plot_overview
 from bob.ip.binseg.utils.click import OptionEatAll
 from bob.ip.binseg.utils.rsttable import create_overview_grid
@@ -38,51 +37,6 @@ logger = logging.getLogger(__name__)
 @click.group(cls=AliasedGroup)
 def binseg():
     """Binary 2D Image Segmentation Benchmark commands."""
-
-
-# Inference
-@binseg.command(entry_point_group="bob.ip.binseg.config", cls=ConfigCommand)
-@click.option(
-    "--output-path", "-o", required=True, default="output", cls=ResourceOption
-)
-@click.option("--model", "-m", required=True, cls=ResourceOption)
-@click.option("--dataset", "-d", required=True, cls=ResourceOption)
-@click.option("--batch-size", "-b", required=True, default=2, cls=ResourceOption)
-@click.option(
-    "--device",
-    "-d",
-    help='A string indicating the device to use (e.g. "cpu" or "cuda:0"',
-    show_default=True,
-    required=True,
-    default="cpu",
-    cls=ResourceOption,
-)
-@click.option(
-    "--weight",
-    "-w",
-    help="Path or URL to pretrained model",
-    required=False,
-    default=None,
-    cls=ResourceOption,
-)
-@verbosity_option(cls=ResourceOption)
-def test(model, output_path, device, batch_size, dataset, weight, **kwargs):
-    """ Run inference and evaluate the model performance """
-
-    # PyTorch dataloader
-    data_loader = DataLoader(
-        dataset=dataset,
-        batch_size=batch_size,
-        shuffle=False,
-        pin_memory=torch.cuda.is_available(),
-    )
-
-    # checkpointer, load last model in dir
-    checkpointer = DetectronCheckpointer(
-        model, save_dir=output_path, save_to_disk=False
-    )
-    checkpointer.load(weight)
-    do_inference(model, data_loader, device, output_path)
 
 
 # Plot comparison

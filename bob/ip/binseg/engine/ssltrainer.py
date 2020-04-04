@@ -206,7 +206,8 @@ def do_ssltrain(
         rampup epochs
 
     """
-    logger.info("Start training")
+    logger.info("Start SSL training")
+
     start_epoch = arguments["epoch"]
     max_epoch = arguments["max_epoch"]
 

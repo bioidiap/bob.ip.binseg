@@ -93,5 +93,5 @@ def build_driu():
     model = torch.nn.Sequential(
         OrderedDict([("backbone", backbone), ("head", driu_head)])
     )
-    model.name = "DRIUBN"
+    model.name = "driu-bn"
     return model

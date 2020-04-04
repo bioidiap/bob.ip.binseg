@@ -92,5 +92,5 @@ def build_driupix():
     model = torch.nn.Sequential(
         OrderedDict([("backbone", backbone), ("head", driu_head)])
     )
-    model.name = "DRIUPIX"
+    model.name = "driu-pix"
     return model

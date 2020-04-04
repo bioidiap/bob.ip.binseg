@@ -47,6 +47,7 @@ modifying one of our configuration resources.
    :maxdepth: 2
 
    training
+   models
    evaluation
    plotting
    visualization

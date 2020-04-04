@@ -70,5 +70,5 @@ def build_res50unet():
     backbone = resnet50(pretrained=False, return_features=[2, 4, 5, 6, 7])
     unet_head = ResUNet([64, 256, 512, 1024, 2048], pixel_shuffle=False)
     model = nn.Sequential(OrderedDict([("backbone", backbone), ("head", unet_head)]))
-    model.name = "ResUNet"
+    model.name = "resunet"
     return model

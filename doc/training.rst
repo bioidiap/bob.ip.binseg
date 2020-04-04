@@ -130,11 +130,11 @@ card, for semi-supervised learning of COVD- systems.  Use it like this:
 .. list-table::
 
   * - **Models / Datasets**
-    - :py:mod:`covd-drive <bob.ip.binseg.configs.datasets.starechasedb1iostarhrf544ssldrive>`
-    - :py:mod:`covd-stare <bob.ip.binseg.configs.datasets.drivechasedb1iostarhrf608sslstare>`
-    - :py:mod:`covd-chasedb1 <bob.ip.binseg.configs.datasets.drivestareiostarhrf960sslchase>`
-    - :py:mod:`covd-iostar-vessel <bob.ip.binseg.configs.datasets.drivestarechasedb1hrf1024ssliostar>`
-    - :py:mod:`covd-hrf <bob.ip.binseg.configs.datasets.drivestarechasedb1iostar1168sslhrf>`
+    - :py:mod:`covd-drive-ssl <bob.ip.binseg.configs.datasets.starechasedb1iostarhrf544ssldrive>`
+    - :py:mod:`covd-stare-ssl <bob.ip.binseg.configs.datasets.drivechasedb1iostarhrf608sslstare>`
+    - :py:mod:`covd-chasedb1-ssl <bob.ip.binseg.configs.datasets.drivestareiostarhrf960sslchase>`
+    - :py:mod:`covd-iostar-vessel-ssl <bob.ip.binseg.configs.datasets.drivestarechasedb1hrf1024ssliostar>`
+    - :py:mod:`covd-hrf-ssl <bob.ip.binseg.configs.datasets.drivestarechasedb1iostar1168sslhrf>`
   * - :py:mod:`driu-ssl <bob.ip.binseg.configs.models.driussl>` / :py:mod:`driu-bn <bob.ip.binseg.configs.models.driubnssl>`
     - 4
     - 4

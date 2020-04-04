@@ -1,14 +1,18 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import numpy as np
 import os
 import csv
+
+import numpy as np
 import pandas as pd
 import PIL
-from PIL import Image, ImageFont, ImageDraw
+
 import torchvision.transforms.functional as VF
 import torch
+
+import matplotlib
+matplotlib.use("agg")
 
 
 def precision_recall_f1iso(precision, recall, names, title=None):
@@ -262,31 +266,35 @@ def precision_recall_f1iso_confintval(
     return fig
 
 
-def loss_curve(df, title):
-    """ Creates a loss curve given a Dataframe with column names:
-
-    ``['avg. loss', 'median loss','lr','max memory']``
+def loss_curve(df, title=None):
+    """Creates a loss curve in a Matplotlib figure.
 
     Parameters
     ----------
+
     df : :py:class:`pandas.DataFrame`
+        A dataframe containing, at least, "epoch", "median-loss" and
+        "learning-rate" columns, that will be plotted.
+
+    title : :py:class:`str`, Optional
+        Optional title, that will be set on the figure if passed
 
     Returns
     -------
-    matplotlib.figure.Figure
-    """
-    import matplotlib
 
-    matplotlib.use("agg")
+    figure : matplotlib.figure.Figure
+        A figure, that may be saved or displayed
+
+    """
     import matplotlib.pyplot as plt
 
-    ax1 = df.plot(y="median loss", grid=True)
-    ax1.set_title(title)
-    ax1.set_ylabel("median loss")
+    ax1 = df.plot(x="epoch", y="median-loss", grid=True)
+    if title is not None: ax1.set_title(title)
+    ax1.set_ylabel("Median Loss")
     ax1.grid(linestyle="--", linewidth=1, color="gray", alpha=0.2)
-    ax2 = df["lr"].plot(secondary_y=True, legend=True, grid=True,)
-    ax2.set_ylabel("lr")
-    ax1.set_xlabel("epoch")
+    ax2 = df["learning-rate"].plot(secondary_y=True, legend=True, grid=True,)
+    ax2.set_ylabel("Learning Rate")
+    ax1.set_xlabel("Epoch")
     plt.tight_layout()
     fig = ax1.get_figure()
     return fig
@@ -443,8 +451,8 @@ def metricsviz(
             f1 = img_metrics[" f1_score"].max()
             # add f1-score
             fnt_size = tp_pil_colored.size[1] // 25
-            draw = ImageDraw.Draw(tp_pil_colored)
-            fnt = ImageFont.truetype("FreeMono.ttf", fnt_size)
+            draw = PIL.ImageDraw.Draw(tp_pil_colored)
+            fnt = PIL.ImageFont.truetype("FreeMono.ttf", fnt_size)
             draw.text((0, 0), "F1: {:.4f}".format(f1), (255, 255, 255), font=fnt)
 
         # save to disk
@@ -472,15 +480,15 @@ def overlay(dataset, output_path):
         img = VF.to_pil_image(sample[1])  # PIL Image
 
         # read probability output
-        pred = Image.open(os.path.join(output_path, "images", name)).convert(mode="L")
+        pred = PIL.Image.open(os.path.join(output_path, "images", name)).convert(mode="L")
         # color and overlay
         pred_green = PIL.ImageOps.colorize(pred, (0, 0, 0), (0, 255, 0))
         overlayed = PIL.Image.blend(img, pred_green, 0.4)
 
         # add f1-score
         # fnt_size = overlayed.size[1]//25
-        # draw = ImageDraw.Draw(overlayed)
-        # fnt = ImageFont.truetype('FreeMono.ttf', fnt_size)
+        # draw = PIL.ImageDraw.Draw(overlayed)
+        # fnt = PIL.ImageFont.truetype('FreeMono.ttf', fnt_size)
         # draw.text((0, 0),"F1: {:.4f}".format(f1),(255,255,255),font=fnt)
         # save to disk
         overlayed_path = os.path.join(output_path, "overlayed")

@@ -71,4 +71,14 @@ evaluation tests or for inference.
 .. command-output:: bob binseg train --help
 
 
+.. _bob.ip.binseg.cli.evaluate:
+
+FCN Performance Evaluation
+--------------------------
+
+Evaluation takes as input a PyTorch_ model and generates analysis information.
+
+.. command-output:: bob binseg evaluate --help
+
+
 .. include:: links.rst

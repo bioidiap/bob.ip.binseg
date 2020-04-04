@@ -98,5 +98,5 @@ def build_hed():
     model = torch.nn.Sequential(
         OrderedDict([("backbone", backbone), ("head", hed_head)])
     )
-    model.name = "HED"
+    model.name = "hed"
     return model

@@ -22,6 +22,7 @@ from ..engine.trainer import do_train
 from ..engine.ssltrainer import do_ssltrain
 
 import logging
+
 logger = logging.getLogger(__name__)
 
 
@@ -68,7 +69,9 @@ logger = logging.getLogger(__name__)
 @click.option(
     "--dataset",
     "-d",
-    help="A torch.utils.data.dataset.Dataset instance implementing a dataset to be used for training the model, possibly including all pre-processing pipelines required.",
+    help="A torch.utils.data.dataset.Dataset instance implementing a dataset "
+    "to be used for training the model, possibly including all pre-processing"
+    " pipelines required",
     required=True,
     cls=ResourceOption,
 )
@@ -80,27 +83,32 @@ logger = logging.getLogger(__name__)
 )
 @click.option(
     "--criterion",
-    help="A loss function to compute the FCN error for every sample respecting the PyTorch API for loss functions (see torch.nn.modules.loss)",
+    help="A loss function to compute the FCN error for every sample "
+    "respecting the PyTorch API for loss functions (see torch.nn.modules.loss)",
     required=True,
     cls=ResourceOption,
 )
 @click.option(
     "--scheduler",
-    help="A learning rate scheduler that drives changes in the learning rate depending on the FCN state (see torch.optim.lr_scheduler)",
+    help="A learning rate scheduler that drives changes in the learning "
+    "rate depending on the FCN state (see torch.optim.lr_scheduler)",
     required=True,
     cls=ResourceOption,
 )
 @click.option(
     "--pretrained-backbone",
     "-t",
-    help="URLs of a pre-trained model file that will be used to preset FCN weights (where relevant) before training starts.  (e.g. vgg-16)",
+    help="URLs of a pre-trained model file that will be used to preset "
+    "FCN weights (where relevant) before training starts "
+    "(e.g. vgg16, mobilenetv2)",
     required=True,
     cls=ResourceOption,
 )
 @click.option(
     "--batch-size",
     "-b",
-    help="Number of samples in every batch (notice that changing this parameter affects memory requirements for the network)",
+    help="Number of samples in every batch (this parameter affects "
+    "memory requirements for the network)",
     required=True,
     show_default=True,
     default=2,
@@ -118,10 +126,14 @@ logger = logging.getLogger(__name__)
 @click.option(
     "--checkpoint-period",
     "-p",
-    help="Number of epochs after which a checkpoint is saved",
+    help="Number of epochs after which a checkpoint is saved.  "
+    "A value of zero will disable check-pointing.  If checkpointing is "
+    "enabled and training stops, it is automatically resumed from the "
+    "last saved checkpoint if training is restarted with the same "
+    "configuration.",
     show_default=True,
     required=True,
-    default=100,
+    default=0,
     cls=ResourceOption,
 )
 @click.option(
@@ -156,7 +168,7 @@ logger = logging.getLogger(__name__)
     help="Ramp-up length in epochs (for SSL training only)",
     show_default=True,
     required=True,
-    default=900,
+    default=1000,
     cls=ResourceOption,
 )
 @verbosity_option(cls=ResourceOption)
@@ -180,7 +192,11 @@ def train(
 ):
     """Trains an FCN to perform binary segmentation using a supervised approach
 
-    Training is performed for a fixed number of steps (not configurable).
+    Training is performed for a configurable number of epochs, and generates at
+    least a final model (.pth file).  It may also generate a number of
+    intermediate checkpoints.  Checkpoints are model files (.pth files) that
+    are stored during the training and useful to resume the procedure in case
+    it stops abruptly.
     """
 
     if not os.path.exists(output_path):
@@ -199,6 +215,7 @@ def train(
     checkpointer = DetectronCheckpointer(
         model, optimizer, scheduler, save_dir=output_path, save_to_disk=True
     )
+
     arguments = {}
     arguments["epoch"] = 0
     extra_checkpoint_data = checkpointer.load(pretrained_backbone)
@@ -209,7 +226,6 @@ def train(
     logger.info("Continuing from epoch {}".format(arguments["epoch"]))
 
     if not ssl:
-        logger.info("Doing SUPERVISED training...")
         do_train(
             model,
             data_loader,
@@ -225,7 +241,6 @@ def train(
 
     else:
 
-        logger.info("Doing SEMI-SUPERVISED training...")
         do_ssltrain(
             model,
             data_loader,
