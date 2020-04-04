@@ -57,7 +57,7 @@ test:
     - bob binseg config copy --help
     - bob binseg config copy drive /tmp/test.py
     - bob binseg train --help
-    - bob binseg test --help
+    - bob binseg evaluate --help
     - bob binseg predict --help
     - bob binseg compare --help
     - bob binseg evalpred --help
