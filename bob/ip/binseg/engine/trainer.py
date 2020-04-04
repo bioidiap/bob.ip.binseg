@@ -158,8 +158,8 @@ def do_train(
         logger.info(f"Total training time: {datetime.timedelta(seconds=total_training_time)} ({(total_training_time/max_epoch):.4f}s in average per epoch)")
 
     # plots a version of the CSV trainlog into a PDF
-    logplot_name = os.path.join(output_folder, "trainlog.pdf")
-    logdf = pd.read_csv(logplot_name, header=0, names=logfile_fields)
+    logdf = pd.read_csv(logfile_name, header=0, names=logfile_fields)
     fig = loss_curve(logdf, title="Loss Evolution")
-    logger.info(f"Saving {log_plot_file}")
-    fig.savefig(logplot_name)
+    figurefile_name = os.path.join(output_folder, "trainlog.pdf")
+    logger.info(f"Saving {figurefile_name}")
+    fig.savefig(figurefile_name)
