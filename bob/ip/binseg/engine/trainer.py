@@ -75,12 +75,18 @@ def do_train(
 
     # Log to file
     logfile_name = os.path.join(output_folder, "trainlog.csv")
-    logfile_fields = ("epoch", "total-time", "eta", "average-loss",
-            "median-loss", "learning-rate", "memory-megabytes")
 
-    with open(logfile_name, "w", newline="") as logfile:
+    if arguments["epoch"] == 0 and os.path.exists(logfile_name):
+        logger.info(f"Truncating {logfile_name} - training is restarting...")
+        os.unlink(logfile_name)
+
+    logfile_fields = ("epoch", "total-time", "eta", "average-loss",
+            "median-loss", "learning-rate", "gpu-memory-megabytes")
+    with open(logfile_name, "a+", newline="") as logfile:
         logwriter = csv.DictWriter(logfile, fieldnames=logfile_fields)
-        logwriter.writeheader()
+
+        if arguments["epoch"] == 0:
+            logwriter.writeheader()
 
         model.train().to(device)
         for state in optimizer.state.values():

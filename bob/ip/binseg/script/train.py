@@ -117,7 +117,7 @@ logger = logging.getLogger(__name__)
 @click.option(
     "--epochs",
     "-e",
-    help="Number of epochs used for training",
+    help="Number of epochs (complete training set passes) to train for",
     show_default=True,
     required=True,
     default=1000,
@@ -126,8 +126,8 @@ logger = logging.getLogger(__name__)
 @click.option(
     "--checkpoint-period",
     "-p",
-    help="Number of epochs after which a checkpoint is saved.  "
-    "A value of zero will disable check-pointing.  If checkpointing is "
+    help="Number of epochs after which a checkpoint is saved. "
+    "A value of zero will disable check-pointing. If checkpointing is "
     "enabled and training stops, it is automatically resumed from the "
     "last saved checkpoint if training is restarted with the same "
     "configuration.",

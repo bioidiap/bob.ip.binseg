@@ -1,7 +1,10 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
 # https://github.com/facebookresearch/maskrcnn-benchmark
+
 from collections import OrderedDict
+
 import logging
+logger = logging.getLogger(__name__)
 
 import torch
 
@@ -39,14 +42,13 @@ def align_and_update_state_dicts(model_state_dict, loaded_state_dict):
     max_size = max([len(key) for key in current_keys]) if current_keys else 1
     max_size_loaded = max([len(key) for key in loaded_keys]) if loaded_keys else 1
     log_str_template = "{: <{}} loaded from {: <{}} of shape {}"
-    logger = logging.getLogger(__name__)
     for idx_new, idx_old in enumerate(idxs.tolist()):
         if idx_old == -1:
             continue
         key = current_keys[idx_new]
         key_old = loaded_keys[idx_old]
         model_state_dict[key] = loaded_state_dict[key_old]
-        logger.info(
+        logger.debug(
             log_str_template.format(
                 key,
                 max_size,
