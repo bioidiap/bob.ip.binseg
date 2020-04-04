@@ -47,7 +47,7 @@ class TestCheckpointer(unittest.TestCase):
             self.assertTrue(fresh_checkpointer.has_checkpoint())
             self.assertEqual(
                 fresh_checkpointer.get_checkpoint_file(),
-                os.path.join(f, "checkpoint_file.pth"),
+                "checkpoint_file.pth",
             )
             _ = fresh_checkpointer.load()
 
