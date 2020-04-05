@@ -13,7 +13,6 @@ from bob.ip.binseg.utils.metric import SmoothedValue
 from bob.ip.binseg.utils.plot import loss_curve
 
 import logging
-
 logger = logging.getLogger(__name__)
 
 
@@ -63,7 +62,7 @@ def do_train(
         device to use ``'cpu'`` or ``cuda:0``
 
     arguments : dict
-        start end end epochs
+        start and end epochs
 
     output_folder : str
         output path
@@ -133,10 +132,10 @@ def do_train(
                 optimizer.step()
 
                 losses.update(loss)
-                logger.debug("batch loss: {}".format(loss.item()))
+                logger.debug(f"batch loss: {loss.item()}")
 
             if checkpoint_period and (epoch % checkpoint_period == 0):
-                checkpointer.save("model_{:03d}".format(epoch), **arguments)
+                checkpointer.save(f"model_{epoch:03d}", **arguments)
 
             if epoch >= max_epoch:
                 checkpointer.save("model_final", **arguments)
