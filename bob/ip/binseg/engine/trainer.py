@@ -114,9 +114,10 @@ def do_train(
 
             # progress bar only on interactive jobs
             for samples in tqdm(
-                data_loader, desc="batches", leave=False, disable=None
+                data_loader, desc="batches", leave=False, disable=None,
             ):
 
+                # data forwarding on the existing network
                 images = samples[1].to(device)
                 ground_truths = samples[2].to(device)
                 masks = None
@@ -125,6 +126,7 @@ def do_train(
 
                 outputs = model(images)
 
+                # loss evaluation and learning (backward step)
                 loss = criterion(outputs, ground_truths, masks)
                 optimizer.zero_grad()
                 loss.backward()
