@@ -156,7 +156,7 @@ def guess_labels(unlabelled_images, model):
         return avg_guess
 
 
-def do_ssltrain(
+def run(
     model,
     data_loader,
     optimizer,
@@ -170,7 +170,7 @@ def do_ssltrain(
     rampup_length,
 ):
     """
-    Trains model using semi-supervised learning and saves it to disk.
+    Fits an FCN model using semi-supervised learning and saves it to disk.
 
     Parameters
     ----------

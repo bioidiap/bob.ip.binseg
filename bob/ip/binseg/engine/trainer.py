@@ -16,7 +16,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-def do_train(
+def run(
     model,
     data_loader,
     optimizer,
@@ -29,7 +29,7 @@ def do_train(
     output_folder,
 ):
     """
-    Train models and save it to disk.
+    Fits an FCN model using supervised learning and save it to disk.
 
     This method supports periodic checkpointing and the output of a
     CSV-formatted log with the evolution of some figures during training.

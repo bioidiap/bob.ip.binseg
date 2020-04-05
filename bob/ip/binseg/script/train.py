@@ -18,8 +18,6 @@ from bob.extension.scripts.click_helper import (
 )
 
 from ..utils.checkpointer import DetectronCheckpointer
-from ..engine.trainer import do_train
-from ..engine.ssltrainer import do_ssltrain
 
 import logging
 
@@ -247,7 +245,8 @@ def train(
     logger.info("Continuing from epoch {}".format(arguments["epoch"]))
 
     if not ssl:
-        do_train(
+        from ..engine.trainer import run
+        run(
             model,
             data_loader,
             optimizer,
@@ -261,8 +260,8 @@ def train(
         )
 
     else:
-
-        do_ssltrain(
+        from ..engine.ssltrainer import run
+        run(
             model,
             data_loader,
             optimizer,
