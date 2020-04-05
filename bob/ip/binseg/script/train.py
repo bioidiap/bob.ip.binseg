@@ -187,7 +187,7 @@ logger = logging.getLogger(__name__)
     help="Ramp-up length in epochs (for SSL training only)",
     show_default=True,
     required=True,
-    default=1000,
+    default=900,
     cls=ResourceOption,
 )
 @verbosity_option(cls=ResourceOption)
