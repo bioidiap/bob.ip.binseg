@@ -12,6 +12,9 @@ import torchvision.transforms.functional as VF
 
 import bob.io.base
 
+import logging
+logger = logging.getLogger(__name__)
+
 
 class CSVDataset(Dataset):
     """
@@ -154,4 +157,9 @@ class CSVDataset(Dataset):
         if self.transform:
             sample = self.transform(*sample)
 
-        return [img_path] + sample
+        stem = img_path
+        if stem.startswith(self.root_path):
+            stem = os.path.relpath(stem, self.root_path)
+        elif stem.startswith(os.pathsep):
+            stem = stem[len(os.pathsep):]
+        return [stem] + sample
