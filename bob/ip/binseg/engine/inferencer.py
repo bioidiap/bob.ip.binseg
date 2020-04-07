@@ -102,7 +102,7 @@ def batch_metrics(predictions, ground_truths, names, output_folder):
     return batch_metrics
 
 
-def save_probability_images(predictions, names, output_folder, logger):
+def save_probability_images(predictions, names, output_folder):
     """
     Saves probability maps as image in the same format as the test image
 
@@ -118,10 +118,6 @@ def save_probability_images(predictions, names, output_folder, logger):
 
     output_folder : str
         output path
-
-    logger : :py:class:`logging.Logger`
-        python logger
-
     """
 
     images_subfolder = os.path.join(output_folder, "images")
@@ -134,6 +130,33 @@ def save_probability_images(predictions, names, output_folder, logger):
         if not os.path.exists(fulldir):
             os.makedirs(fulldir)
         img.save(fullpath)
+
+
+def save_hdf(predictions, names, output_folder):
+    """
+    Saves probability maps as image in the same format as the test image
+
+    Parameters
+    ----------
+    predictions : :py:class:`torch.Tensor`
+        tensor with pixel-wise probabilities
+    names : list
+        list of file names
+    output_folder : str
+        output path
+    """
+    hdf5_subfolder = os.path.join(output_folder, "hdf5")
+    if not os.path.exists(hdf5_subfolder):
+        os.makedirs(hdf5_subfolder)
+    for j in range(predictions.size()[0]):
+        img = predictions.cpu().data[j].squeeze(0).numpy()
+        filename = "{}.hdf5".format(names[j].split(".")[0])
+        fullpath = os.path.join(hdf5_subfolder, filename)
+        logger.info("saving {}".format(filename))
+        fulldir = os.path.dirname(fullpath)
+        if not os.path.exists(fulldir):
+            os.makedirs(fulldir)
+        bob.io.base.save(img, fullpath)
 
 
 def do_inference(model, data_loader, device, output_folder=None):
@@ -187,14 +210,14 @@ def do_inference(model, data_loader, device, output_folder=None):
             logger.info("Batch time: {:.5f} s".format(batch_time))
 
             b_metrics = batch_metrics(
-                probabilities, ground_truths, names, results_subfolder, logger
+                probabilities, ground_truths, names, results_subfolder
             )
             metrics.extend(b_metrics)
 
             # Create probability images
-            save_probability_images(probabilities, names, output_folder, logger)
+            save_probability_images(probabilities, names, output_folder)
             # save hdf5
-            save_hdf(probabilities, names, output_folder, logger)
+            save_hdf(probabilities, names, output_folder)
 
     # DataFrame
     df_metrics = pd.DataFrame(

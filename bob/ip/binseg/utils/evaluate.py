@@ -21,7 +21,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-def batch_metrics(predictions, ground_truths, names, output_folder, logger):
+def batch_metrics(predictions, ground_truths, names, output_folder):
     """
     Calculates metrics on the batch and saves it to disc
 
@@ -35,8 +35,6 @@ def batch_metrics(predictions, ground_truths, names, output_folder, logger):
         list of file names
     output_folder : str
         output path
-    logger : :py:class:`logging.Logger`
-        python logger
 
     Returns
     -------
@@ -141,7 +139,7 @@ def do_eval(
         probabilities = to_tensor(probabilities)
 
         b_metrics = batch_metrics(
-            probabilities, ground_truths, names, results_subfolder, logger
+            probabilities, ground_truths, names, results_subfolder
         )
         metrics.extend(b_metrics)
 

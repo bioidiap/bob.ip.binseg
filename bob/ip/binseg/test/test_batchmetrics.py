@@ -35,7 +35,6 @@ class Tester(unittest.TestCase):
             self.ground_truths,
             self.names,
             self.output_folder,
-            self.logger,
         )
         self.assertEqual(len(bm), 2 * 100)
         for metric in bm:
