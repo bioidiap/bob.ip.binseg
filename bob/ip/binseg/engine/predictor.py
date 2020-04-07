@@ -4,9 +4,12 @@
 import os
 import time
 import datetime
-import numpy as np
+
+import numpy
 import torch
 from tqdm import tqdm
+
+import bob.io.base
 
 import logging
 logger = logging.getLogger(__name__)
@@ -35,9 +38,11 @@ def save_hdf5(predictions, names, output_folder):
         img = predictions.cpu().data[j].squeeze(0).numpy()
         filename = "{}.hdf5".format(names[j].split(".")[0])
         fullpath = os.path.join(output_folder, filename)
-        logger.info(f"saving {filename}")
+        tqdm.write(f"Saving {fullpath}...")
         fulldir = os.path.dirname(fullpath)
         if not os.path.exists(fulldir):
+            tqdm.write(f"Creating directory {fulldir}...")
+            # protect against concurrent access - exist_ok=True
             os.makedirs(fulldir, exist_ok=True)
         bob.io.base.save(img, fullpath)
 
@@ -62,8 +67,13 @@ def run(model, data_loader, device, output_folder):
     """
 
     logger.info("Start prediction")
-    logger.info(f"Output folder: {output_folder}, Device: {device}")
-    os.makedirs(output_folder, exist_ok=True)
+    logger.info(f"Output folder: {output_folder}")
+    logger.info(f"Device: {device}")
+
+    if not os.path.exists(output_folder):
+        logger.debug(f"Creating output directory '{output_folder}'...")
+        # protect against concurrent access - exist_ok=True
+        os.makedirs(output_folder, exist_ok=True)
 
     model.eval().to(device)
     # Sigmoid for probabilities
@@ -105,8 +115,8 @@ def run(model, data_loader, device, output_folder):
     total_time = datetime.timedelta(seconds=int(time.time() - start_total_time))
     logger.info(f"Total time: {total_time}")
 
-    average_batch_time = np.mean(times)
+    average_batch_time = numpy.mean(times)
     logger.info(f"Average batch time: {average_batch_time:g}s\n")
 
-    average_image_time = np.sum(times * len_samples) / float(sum(len_samples))
+    average_image_time = numpy.sum(numpy.array(times) * len_samples) / float(sum(len_samples))
     logger.info(f"Average image time: {average_image_time:g}s\n")

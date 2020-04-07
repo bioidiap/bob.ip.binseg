@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # coding=utf-8
 
+import os
+
 import click
 from click_plugins import with_plugins
 
@@ -15,6 +17,7 @@ from bob.extension.scripts.click_helper import (
 )
 
 from ..engine.predictor import run
+from ..utils.checkpointer import DetectronCheckpointer
 
 import logging
 logger = logging.getLogger(__name__)
@@ -27,7 +30,7 @@ logger = logging.getLogger(__name__)
 
 \b
     1. Runs prediction on an existing dataset configuration:
-
+\b
        $ bob binseg predict -vv m2unet drive-test --weight=path/to/model_final.pth --output-path=path/to/predictions
 \b
     2. To run prediction on a folder with your own images, you must first
@@ -36,10 +39,10 @@ logger = logging.getLogger(__name__)
        performance.  To figure out such specifications, you must consult the
        dataset configuration used for **training** the provided model.  Once
        you figured this out, do the following:
-
-       $ bob binseg config copy image-folder myfolder.py
-       # modify "myfolder.py" to include the base path and required transforms
-       $ bob binseg predict -vv m2unet myfolder.py --weight=path/to/model_final.pth --output-path=path/to/predictions
+\b
+       $ bob binseg config copy folder-dataset-example mydataset.py
+       # modify "mydataset.py" to include the base path and required transforms
+       $ bob binseg predict -vv m2unet mydataset.py --weight=path/to/model_final.pth --output-path=path/to/predictions
 """,
 )
 @click.option(
@@ -102,8 +105,11 @@ def predict(output_path, model, dataset, batch_size, device, weight, **kwargs):
     )
 
     # checkpointer, loads pre-fit model
-    checkpointer = DetectronCheckpointer(model, save_dir=output_path,
+    weight_fullpath = os.path.abspath(weight)
+    weight_path = os.path.dirname(weight_fullpath)
+    weight_name = os.path.basename(weight_fullpath)
+    checkpointer = DetectronCheckpointer(model, save_dir=weight_path,
             save_to_disk=False)
-    checkpointer.load(weight)
+    checkpointer.load(weight_name)
 
     run(model, data_loader, device, output_path)

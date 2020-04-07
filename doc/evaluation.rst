@@ -6,13 +6,22 @@
  Inference and Evaluation
 ==========================
 
+This guides explains how to run inference or a complete evaluation using
+command-line tools.  Inference produces probability maps for input images,
+while evaluation will analyze such output against existing annotations and
+produce performance figures.
+
 
 Inference
 ---------
 
 You may use one of your trained models (or :ref:`one of ours
 <bob.ip.binseg.models>` to run inference on existing datasets or your own
-dataset.
+dataset.  In inference (or prediction) mode, we input data, the trained model,
+and output HDF5 files containing the prediction outputs for every input image.
+Each HDF5 file contains a single object with a 2-dimensional matrix of floating
+point numbers indicating the vessel probability (``[0.0,1.0]``) for each pixel
+in the input image.
 
 
 Inference on an existing datasets
@@ -43,7 +52,6 @@ you need to instantiate one of:
 
 Read the appropriate module documentation for details.
 
-
 .. code-block:: bash
 
    $ bob binseg config copy folder-dataset-example mydataset.py
@@ -53,16 +61,18 @@ Read the appropriate module documentation for details.
    $ bob binseg predict -vv <model> -w <path/to/model.pth> ./mydataset.py
 
 
+Inference typically consumes less resources than training, but you may speed
+things up using ``--device='cuda:0'`` in case you have a GPU.
+
+
 Evaluation
 ----------
 
-To evaluate trained models use our CLI interface. ``bob binseg evaluate``
-followed by the model and the dataset configuration, and the path to the
-pretrained model via the argument ``--weight``.
-
-Alternatively point to the output folder used during training via the
-``--output-path`` argument.   The Checkpointer will load the model as indicated
-in the file: ``last_checkpoint``.
+In evaluation we input an **annotated** dataset and a pre-trained model to
+output a complete set of performance figures that can help analysis of model
+performance.  Evaluation is done using ``bob binseg evaluate`` followed by the
+model and the dataset configuration, and the path to the pretrained model via
+the ``--weight`` argument.
 
 Use ``bob binseg evaluate --help`` for more information.
 
