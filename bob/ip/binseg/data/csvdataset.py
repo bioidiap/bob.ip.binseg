@@ -21,21 +21,36 @@ class CSVDataset(Dataset):
     Generic filelist dataset
 
     To create a new dataset, you only need to provide a CSV formatted filelist
-    using any separator (e.g. comma, space, semi-colon) including, in the first
-    column, a path pointing to the input image, and in the second column, a
-    path pointing to the ground truth.  Relative paths are interpreted with
-    respect to the location where the CSV file is or to an optional
-    ``root_path`` parameter, that must be also provided.
-
-    There are no requirements concerning image or ground-truth homogenity.
-    Anything that can be loaded by our image and data loaders is OK.  Use
-    a non-white character as separator.  Here is a far too complicated example:
+    using any separator (e.g. comma, space, semi-colon) with the following
+    information:
 
     .. code-block:: text
 
-       /path/to/image1.jpg,/path/to/ground-truth1.png
-       /possibly/another/path/to/image 2.PNG,/path/to/that/ground-truth.JPG
-       relative/path/image3.gif,relative/path/gt3.gif
+       image[,label[,mask]]
+
+    Where:
+
+    * ``image``: absolute or relative path leading to original image
+    * ``label``: (optional) absolute or relative path with manual segmentation
+      information
+    * ``mask``: (optional) absolute or relative path with a mask that indicates
+      valid regions in the image where automatic segmentation should occur
+
+    Relative paths are interpreted with respect to the location where the CSV
+    file is or to an optional ``root_path`` parameter, that can be provided.
+
+    There are no requirements concerning image or ground-truth homogenity.
+    Anything that can be loaded by our image and data loaders is OK.  Use
+    a non-white character as separator.  Example
+
+    .. code-block:: text
+
+       image1.jpg,gt1.tif,mask1.png
+       image2.png,gt2.png,mask2.png
+       ...
+
+
+    Notice that all rows must have the same number of entries.
 
     .. important::
 
@@ -46,7 +61,7 @@ class CSVDataset(Dataset):
        float data.
 
     To generate a dataset without ground-truth (e.g. for prediction tasks),
-    then omit the second column.
+    then omit the second and third columns.
 
 
     Parameters
@@ -105,11 +120,6 @@ class CSVDataset(Dataset):
                 f"entries have length=={len(self.data[0])}"
 
 
-    def has_ground_truth(self):
-        """Tells if this dataset has ground-truth or not"""
-        return len(self.data[0]) > 1
-
-
     def __len__(self):
         """
 
@@ -132,34 +142,39 @@ class CSVDataset(Dataset):
         Returns
         -------
         sample : list
-            ``[name, img, gt]`` or ``[name, img]`` depending on whether this
-            dataset has or not ground-truth.
+            ``[name, img, gt, mask]``, ``[name, img, gt]`` or ``[name, img]``
+            depending on whether this dataset has or not ground-truth
+            annotations and masks.  The value of ``name`` is relative to
+            ``root_path``, in cases it starts with ``root_path``.
         """
 
         sample_paths = self.data[index]
 
         img_path = sample_paths[0]
-        gt_path = sample_paths[1] if len(sample_paths) > 1 else None
+        meta_data = sample_paths[1:]
 
         # images are converted to RGB mode automatically
         sample = [Image.open(img_path).convert(mode="RGB")]
 
-        if gt_path is not None:
-            if gt_path.endswith(".hdf5"):
-                gt = bob.io.base.load(str(gt_path)).astype("float32")
-                # a bit hackish, but will get what we need
-                gt = VF.to_pil_image(torch.from_numpy(gt))
-            else:
-                gt = Image.open(gt_path)
-            gt = gt.convert(mode="1", dither=None)
-            sample = sample + [gt]
+        # ground-truth annotations and masks are treated the same
+        for path in meta_data:
+            if path is not None:
+                if path.endswith(".hdf5"):
+                    data = bob.io.base.load(str(path)).astype("float32")
+                    # a bit hackish, but will get what we need
+                    data = VF.to_pil_image(torch.from_numpy(data))
+                else:
+                    data = Image.open(path)
+                sample += [data.convert(mode="1", dither=None)]
 
         if self.transform:
             sample = self.transform(*sample)
 
+        # make paths relative if necessary
         stem = img_path
         if stem.startswith(self.root_path):
             stem = os.path.relpath(stem, self.root_path)
         elif stem.startswith(os.pathsep):
             stem = stem[len(os.pathsep):]
+
         return [stem] + sample
