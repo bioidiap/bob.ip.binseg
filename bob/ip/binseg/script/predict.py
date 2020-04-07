@@ -14,8 +14,7 @@ from bob.extension.scripts.click_helper import (
     AliasedGroup,
 )
 
-from ..utils.checkpointer import DetectronCheckpointer
-from ..engine.inferencer import do_inference
+from ..engine.predictor import run
 
 import logging
 logger = logging.getLogger(__name__)
@@ -27,10 +26,20 @@ logger = logging.getLogger(__name__)
     epilog="""Examples:
 
 \b
-    1. Evaluates a M2U-Net model on the DRIVE test set:
+    1. Runs prediction on an existing dataset configuration:
 
-       $ bob binseg evaluate -vv m2unet drive-test --weight=results/model_final.pth
+       $ bob binseg predict -vv m2unet drive-test --weight=path/to/model_final.pth --output-path=path/to/predictions
+\b
+    2. To run prediction on a folder with your own images, you must first
+       specify resizing, cropping, etc, so that the image can be correctly
+       input to the model.  Failing to do so will likely result in poor
+       performance.  To figure out such specifications, you must consult the
+       dataset configuration used for **training** the provided model.  Once
+       you figured this out, do the following:
 
+       $ bob binseg config copy image-folder myfolder.py
+       # modify "myfolder.py" to include the base path and required transforms
+       $ bob binseg predict -vv m2unet myfolder.py --weight=path/to/model_final.pth --output-path=path/to/predictions
 """,
 )
 @click.option(
@@ -81,9 +90,8 @@ logger = logging.getLogger(__name__)
     cls=ResourceOption,
 )
 @verbosity_option(cls=ResourceOption)
-def evaluate(output_path, model, dataset, batch_size, device, weight, **kwargs):
-    """Evaluates an FCN on a binary segmentation task.
-    """
+def predict(output_path, model, dataset, batch_size, device, weight, **kwargs):
+    """Predicts vessel map (probabilities) on input images"""
 
     # PyTorch dataloader
     data_loader = DataLoader(
@@ -93,9 +101,9 @@ def evaluate(output_path, model, dataset, batch_size, device, weight, **kwargs):
         pin_memory=torch.cuda.is_available(),
     )
 
-    # checkpointer, load last model in dir
-    checkpointer = DetectronCheckpointer(
-        model, save_dir=output_path, save_to_disk=False
-    )
+    # checkpointer, loads pre-fit model
+    checkpointer = DetectronCheckpointer(model, save_dir=output_path,
+            save_to_disk=False)
     checkpointer.load(weight)
-    do_inference(model, data_loader, device, output_path)
+
+    run(model, data_loader, device, output_path)

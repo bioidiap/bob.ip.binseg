@@ -71,12 +71,26 @@ evaluation tests or for inference.
 .. command-output:: bob binseg train --help
 
 
+.. _bob.ip.binseg.cli.predict:
+
+FCN Inference
+-------------
+
+Inference takes as input a PyTorch_ model and generates output probabilities as
+HDF5 files.  The probability map has the same size as the input and indicates,
+from 0 to 1 (floating-point number), the probability of a vessel in that pixel,
+from less probable (0.0) to more probable (1.0).
+
+.. command-output:: bob binseg predict --help
+
+
 .. _bob.ip.binseg.cli.evaluate:
 
 FCN Performance Evaluation
 --------------------------
 
-Evaluation takes as input a PyTorch_ model and generates analysis information.
+Evaluation takes inference results and compares it to ground-truth, generating
+a series of analysis figures which are useful to understand model performance.
 
 .. command-output:: bob binseg evaluate --help
 

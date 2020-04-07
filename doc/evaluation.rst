@@ -2,9 +2,59 @@
 
 .. _bob.ip.binseg.eval:
 
-============
- Evaluation
-============
+==========================
+ Inference and Evaluation
+==========================
+
+
+Inference
+---------
+
+You may use one of your trained models (or :ref:`one of ours
+<bob.ip.binseg.models>` to run inference on existing datasets or your own
+dataset.
+
+
+Inference on an existing datasets
+=================================
+
+To run inference, use the sub-command :ref:`predict
+<bob.ip.binseg.cli.predict>` to run prediction on an existing dataset:
+
+.. code-block:: sh
+
+   $ bob binseg predict -vv <model> -w <path/to/model.pth> <dataset>
+
+
+Replace ``<model>`` and ``<dataset>`` by the appropriate :ref:`configuration
+files <bob.ip.binseg.configs>`.  Replace ``<path/to/model.pth>`` to a path
+leading to the pre-trained model, or URL pointing to a pre-trained model (e.g.
+:ref:`one of ours <bob.ip.binseg.models>`).
+
+
+Inference on a custom dataset
+=============================
+
+If you would like to test your own data against one of the pre-trained models,
+you need to instantiate one of:
+
+* :py:mod:`A CSV-based configuration <bob.ip.binseg.configs.datasets.csv>`
+* :py:mod:`A folder-based configuration <bob.ip.binseg.configs.datasets.folder>`
+
+Read the appropriate module documentation for details.
+
+
+.. code-block:: bash
+
+   $ bob binseg config copy folder-dataset-example mydataset.py
+   # or
+   $ bob binseg config copy csv-dataset-example mydataset.py
+   # edit mydataset.py to your liking
+   $ bob binseg predict -vv <model> -w <path/to/model.pth> ./mydataset.py
+
+
+Evaluation
+----------
 
 To evaluate trained models use our CLI interface. ``bob binseg evaluate``
 followed by the model and the dataset configuration, and the path to the
@@ -47,19 +97,6 @@ The inference run generates the following output files:
         ├── ModelSummary.txt # model summary and parameter count
         ├── precision_recall.pdf # precision vs recall plot
         └── Times.txt # inference times
-
-
-Inference Only Mode
-====================
-
-If you wish to run inference only on a folder containing images, use the
-``predict`` function in combination with a
-:py:mod:`bob.ip.binseg.configs.datasets.imagefolderinference` config. E.g.:
-
-.. code-block:: bash
-
-    bob binseg predict M2UNet /path/to/myinferencedatasetconfig.py -b 1 -d cpu -o /my/output/path -w /path/to/pretrained/weight/model_final.pth -vv
-
 
 
 To run evaluation of pretrained models pass url as ``-w`` argument. E.g.:

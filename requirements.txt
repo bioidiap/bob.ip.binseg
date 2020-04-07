@@ -8,3 +8,4 @@ matplotlib
 tqdm
 tabulate
 bob.core
+bob.io.base

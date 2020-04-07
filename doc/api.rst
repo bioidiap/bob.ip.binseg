@@ -17,8 +17,8 @@ Data Manipulation
 
    bob.ip.binseg.data
    bob.ip.binseg.data.binsegdataset
-   bob.ip.binseg.data.imagefolder
-   bob.ip.binseg.data.imagefolderinference
+   bob.ip.binseg.data.csvdataset
+   bob.ip.binseg.data.folderdataset
    bob.ip.binseg.data.transforms
 
 
@@ -31,7 +31,7 @@ Engines
    bob.ip.binseg.engine
    bob.ip.binseg.engine.adabound
    bob.ip.binseg.engine.inferencer
-   bob.ip.binseg.engine.predicter
+   bob.ip.binseg.engine.predictor
    bob.ip.binseg.engine.ssltrainer
    bob.ip.binseg.engine.trainer
 
@@ -125,6 +125,7 @@ Datasets
    bob.ip.binseg.configs.datasets.chasedb1544
    bob.ip.binseg.configs.datasets.chasedb1608
    bob.ip.binseg.configs.datasets.chasedb1test
+   bob.ip.binseg.configs.datasets.csv
    bob.ip.binseg.configs.datasets.drionsdb
    bob.ip.binseg.configs.datasets.drionsdbtest
    bob.ip.binseg.configs.datasets.dristhigs1cup
@@ -147,6 +148,7 @@ Datasets
    bob.ip.binseg.configs.datasets.drivestareiostarhrf960
    bob.ip.binseg.configs.datasets.drivestareiostarhrf960sslchase
    bob.ip.binseg.configs.datasets.drivetest
+   bob.ip.binseg.configs.datasets.folder
    bob.ip.binseg.configs.datasets.hrf
    bob.ip.binseg.configs.datasets.hrf1024
    bob.ip.binseg.configs.datasets.hrf1168
@@ -156,9 +158,6 @@ Datasets
    bob.ip.binseg.configs.datasets.hrf608
    bob.ip.binseg.configs.datasets.hrf960
    bob.ip.binseg.configs.datasets.hrftest
-   bob.ip.binseg.configs.datasets.imagefolder
-   bob.ip.binseg.configs.datasets.imagefolderinference
-   bob.ip.binseg.configs.datasets.imagefoldertest
    bob.ip.binseg.configs.datasets.iostarod
    bob.ip.binseg.configs.datasets.iostarodtest
    bob.ip.binseg.configs.datasets.iostarvessel
@@ -184,7 +183,6 @@ Datasets
    bob.ip.binseg.configs.datasets.starechasedb1iostarhrf544
    bob.ip.binseg.configs.datasets.starechasedb1iostarhrf544ssldrive
    bob.ip.binseg.configs.datasets.staretest
-
 
 Test Units
 ----------

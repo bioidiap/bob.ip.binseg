@@ -22,6 +22,7 @@ command-line options.  Use ``bob binseg train --help`` for more information.
    Depending on the available GPU memory you might have to adjust your batch
    size (``--batch``).
 
+
 Baseline Benchmarks
 ===================
 
@@ -147,3 +148,20 @@ card, for semi-supervised learning of COVD- systems.  Use it like this:
     - 2
     - 2
     - 2
+
+
+Using your own dataset
+======================
+
+To use your own dataset, we recommend you read our instructions at
+:py:mod:`bob.ip.binseg.configs.datasets.csv`, and setup a CSV file describing
+input data and ground-truth (segmentation maps).  Then, prepare a configuration
+file by copying our configuration example and edit it to apply the required
+transforms to your input data.  Once you are happy with the result, use it in
+place of one of our datasets:
+
+.. code-block:: sh
+
+   $ bob binseg config copy csv-dataset-example mydataset.py
+   # edit mydataset following instructions
+   $ bob binseg train ... mydataset.py ...

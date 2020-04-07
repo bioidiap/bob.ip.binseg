@@ -34,10 +34,10 @@ setup(
             "compare =  bob.bin.binseg.script.binseg:compare",
             "evalpred = bob.ip.binseg.script.binseg:evalpred",
             "gridtable = bob.ip.binseg.script.binseg:testcheckpoints",
-            "predict = bob.ip.binseg.script.binseg:predict",
             "visualize = bob.ip.binseg.script.binseg:visualize",
             "config = bob.ip.binseg.script.config:config",
             "train = bob.ip.binseg.script.train:train",
+            "predict = bob.ip.binseg.script.predict:predict",
             "evaluate = bob.ip.binseg.script.evaluate:evaluate",
         ],
         # bob train configurations
@@ -56,7 +56,8 @@ setup(
             "resunet = bob.ip.binseg.configs.models.resunet",
 
             # datasets
-            "imagefolder = bob.ip.binseg.configs.datasets.imagefolder",
+            "csv-dataset-example = bob.ip.binseg.configs.datasets.csv",
+            "folder-dataset-example = bob.ip.binseg.configs.datasets.folder",
 
             # drive dataset (numbers represent target resolution)
             "drive = bob.ip.binseg.configs.datasets.drive",

@@ -20,28 +20,33 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-def batch_metrics(predictions, ground_truths, names, output_folder, logger):
+def batch_metrics(predictions, ground_truths, names, output_folder):
     """
     Calculates metrics on the batch and saves it to disc
 
+
     Parameters
     ----------
+
     predictions : :py:class:`torch.Tensor`
         tensor with pixel-wise probabilities
+
     ground_truths : :py:class:`torch.Tensor`
         tensor with binary ground-truth
+
     names : list
         list of file names
+
     output_folder : str
         output path
-    logger : :py:class:`logging.Logger`
-        python logger
+
 
     Returns
     -------
-    list
-        list containing batch metrics: ``[name, threshold, precision, recall, specificity, accuracy, jaccard, f1_score]``
+    metrics : tuple
+        A tuple containing batch metrics: ``(name, threshold, precision, recall, specificity, accuracy, jaccard, f1_score)``
     """
+
     step_size = 0.01
     batch_metrics = []
 
@@ -101,17 +106,24 @@ def save_probability_images(predictions, names, output_folder, logger):
     """
     Saves probability maps as image in the same format as the test image
 
+
     Parameters
     ----------
+
     predictions : :py:class:`torch.Tensor`
         tensor with pixel-wise probabilities
+
     names : list
         list of file names
+
     output_folder : str
         output path
+
     logger : :py:class:`logging.Logger`
         python logger
+
     """
+
     images_subfolder = os.path.join(output_folder, "images")
     for j in range(predictions.size()[0]):
         img = VF.to_pil_image(predictions.cpu().data[j])
@@ -124,39 +136,9 @@ def save_probability_images(predictions, names, output_folder, logger):
         img.save(fullpath)
 
 
-def save_hdf(predictions, names, output_folder, logger):
-    """
-    Saves probability maps as image in the same format as the test image
-
-    Parameters
-    ----------
-    predictions : :py:class:`torch.Tensor`
-        tensor with pixel-wise probabilities
-    names : list
-        list of file names
-    output_folder : str
-        output path
-    logger : :py:class:`logging.Logger`
-        python logger
-    """
-    hdf5_subfolder = os.path.join(output_folder, "hdf5")
-    if not os.path.exists(hdf5_subfolder):
-        os.makedirs(hdf5_subfolder)
-    for j in range(predictions.size()[0]):
-        img = predictions.cpu().data[j].squeeze(0).numpy()
-        filename = "{}.hdf5".format(names[j].split(".")[0])
-        fullpath = os.path.join(hdf5_subfolder, filename)
-        logger.info("saving {}".format(filename))
-        fulldir = os.path.dirname(fullpath)
-        if not os.path.exists(fulldir):
-            os.makedirs(fulldir)
-        bob.io.base.save(img, fullpath)
-
-
 def do_inference(model, data_loader, device, output_folder=None):
-
     """
-    Run inference and calculate metrics
+    Runs inference and calculate metrics
 
     Parameters
     ---------
