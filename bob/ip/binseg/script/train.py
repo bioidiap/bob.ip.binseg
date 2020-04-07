@@ -1,8 +1,7 @@
 #!/usr/bin/env python
-# vim: set fileencoding=utf-8 :
+# coding=utf-8
 
 import os
-import pkg_resources
 
 import click
 from click_plugins import with_plugins
@@ -20,7 +19,6 @@ from bob.extension.scripts.click_helper import (
 from ..utils.checkpointer import DetectronCheckpointer
 
 import logging
-
 logger = logging.getLogger(__name__)
 
 
@@ -50,7 +48,7 @@ logger = logging.getLogger(__name__)
 """,
 )
 @click.option(
-    "--output-path",
+    "--output-folder",
     "-o",
     help="Path where to store the generated model (created if does not exist)",
     required=True,
@@ -193,7 +191,7 @@ def train(
     model,
     optimizer,
     scheduler,
-    output_path,
+    output_folder,
     epochs,
     pretrained_backbone,
     batch_size,
@@ -217,8 +215,6 @@ def train(
     abruptly.
     """
 
-    if not os.path.exists(output_path):
-        os.makedirs(output_path)
     torch.manual_seed(seed)
 
     # PyTorch dataloader
@@ -232,7 +228,7 @@ def train(
 
     # Checkpointer
     checkpointer = DetectronCheckpointer(
-        model, optimizer, scheduler, save_dir=output_path, save_to_disk=True
+        model, optimizer, scheduler, save_dir=output_folder, save_to_disk=True
     )
 
     arguments = {}
@@ -256,7 +252,7 @@ def train(
             checkpoint_period,
             device,
             arguments,
-            output_path,
+            output_folder,
         )
 
     else:
@@ -271,6 +267,6 @@ def train(
             checkpoint_period,
             device,
             arguments,
-            output_path,
+            output_folder,
             rampup,
         )

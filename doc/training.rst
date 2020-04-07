@@ -33,6 +33,7 @@ card, for supervised training of baselines.  Use it like this:
 
    # change <model> and <dataset> by one of items bellow
    $ bob binseg train -vv <model> <dataset> --batch-size=<see-table> --device="cuda:0"
+   # check results in the "results" folder
 
 .. list-table::
 

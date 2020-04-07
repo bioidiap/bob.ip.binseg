@@ -213,6 +213,10 @@ def run(
     start_epoch = arguments["epoch"]
     max_epoch = arguments["max_epoch"]
 
+    if not os.path.exists(output_folder):
+        logger.debug(f"Creating output directory '{output_folder}'...")
+        os.makedirs(output_folder)
+
     # Log to file
     logfile_name = os.path.join(output_folder, "trainlog.csv")
 
