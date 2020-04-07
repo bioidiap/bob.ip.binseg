@@ -16,7 +16,7 @@ To replicate our results, use our main application ``bob binseg train``
 followed by the model configuration, and dataset configuration files, and/or
 command-line options.  Use ``bob binseg train --help`` for more information.
 
-.. note::
+.. tip::
 
    We strongly advice training with a GPU (using ``--device="cuda:0"``).
    Depending on the available GPU memory you might have to adjust your batch
@@ -83,6 +83,18 @@ card, for supervised training of baselines.  Use it like this:
       $ bob binseg config copy drive my_drive_remix.py
       # edit my_drive_remix.py to your needs
       $ bob binseg train -vv <model> ./my_drive_remix.py --batch-size=<see-table> --device="cuda:0"
+
+
+.. _bob.ip.binseg.gridtk-tip:
+
+.. tip::
+
+   If you are at Idiap, you may install the package ``gridtk`` (``conda install
+   gridtk``) on your environment, and submit the job like this:
+
+   .. code-block:: sh
+
+      $ jman submit --queue=gpu --memory=24G --name=m2unet-drive -- bob binseg train --device='cuda:0' ... #paste the rest of the command-line
 
 
 Combined Vessel Dataset (COVD)
