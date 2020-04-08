@@ -95,4 +95,15 @@ a series of analysis figures which are useful to understand model performance.
 .. command-output:: bob binseg evaluate --help
 
 
+.. _bob.ip.binseg.cli.compare:
+
+Performance Comparison
+----------------------
+
+Performance comparison takes the performance evaluation results and generate
+combined figures and tables that compare results of multiple systems.
+
+.. command-output:: bob binseg compare --help
+
+
 .. include:: links.rst

@@ -4,8 +4,6 @@
 import os
 
 import click
-from click_plugins import with_plugins
-
 import torch
 from torch.utils.data import DataLoader
 
@@ -13,7 +11,6 @@ from bob.extension.scripts.click_helper import (
     verbosity_option,
     ConfigCommand,
     ResourceOption,
-    AliasedGroup,
 )
 
 from ..engine.predictor import run
@@ -52,6 +49,7 @@ logger = logging.getLogger(__name__)
     required=True,
     default="results",
     cls=ResourceOption,
+    type=click.Path(),
 )
 @click.option(
     "--model",
@@ -74,6 +72,7 @@ logger = logging.getLogger(__name__)
     required=True,
     show_default=True,
     default=1,
+    type=click.IntRange(min=1),
     cls=ResourceOption,
 )
 @click.option(

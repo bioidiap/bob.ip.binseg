@@ -180,7 +180,7 @@ def run(
 
     # plots a version of the CSV trainlog into a PDF
     logdf = pandas.read_csv(logfile_name, header=0, names=logfile_fields)
-    fig = loss_curve(logdf, title="Loss Evolution")
+    fig = loss_curve(logdf)
     figurefile_name = os.path.join(output_folder, "trainlog.pdf")
     logger.info(f"Saving {figurefile_name}")
     fig.savefig(figurefile_name)

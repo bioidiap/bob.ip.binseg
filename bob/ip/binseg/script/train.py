@@ -4,8 +4,6 @@
 import os
 
 import click
-from click_plugins import with_plugins
-
 import torch
 from torch.utils.data import DataLoader
 
@@ -13,7 +11,6 @@ from bob.extension.scripts.click_helper import (
     verbosity_option,
     ConfigCommand,
     ResourceOption,
-    AliasedGroup,
 )
 
 from ..utils.checkpointer import DetectronCheckpointer
@@ -52,6 +49,7 @@ logger = logging.getLogger(__name__)
     "-o",
     help="Path where to store the generated model (created if does not exist)",
     required=True,
+    type=click.Path(),
     default="results",
     cls=ResourceOption,
 )
@@ -115,6 +113,7 @@ logger = logging.getLogger(__name__)
     required=True,
     show_default=True,
     default=2,
+    type=click.IntRange(min=1),
     cls=ResourceOption,
 )
 @click.option(
@@ -136,6 +135,7 @@ logger = logging.getLogger(__name__)
     show_default=True,
     required=True,
     default=1000,
+    type=click.IntRange(min=1),
     cls=ResourceOption,
 )
 @click.option(
@@ -149,6 +149,7 @@ logger = logging.getLogger(__name__)
     show_default=True,
     required=True,
     default=0,
+    type=click.IntRange(min=0),
     cls=ResourceOption,
 )
 @click.option(
@@ -167,6 +168,7 @@ logger = logging.getLogger(__name__)
     show_default=True,
     required=False,
     default=42,
+    type=click.IntRange(min=0),
     cls=ResourceOption,
 )
 @click.option(
@@ -184,6 +186,7 @@ logger = logging.getLogger(__name__)
     show_default=True,
     required=True,
     default=900,
+    type=click.IntRange(min=0),
     cls=ResourceOption,
 )
 @verbosity_option(cls=ResourceOption)

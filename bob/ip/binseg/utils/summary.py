@@ -10,11 +10,11 @@ from torch.nn.modules.module import _addindent
 
 def summary(model, file=sys.stderr):
     """Counts the number of paramters in each layers
-    
+
     Parameters
     ----------
     model : :py:class:`torch.nn.Module`
-    
+
     Returns
     -------
     int

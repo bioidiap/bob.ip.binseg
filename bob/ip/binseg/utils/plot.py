@@ -1,54 +1,51 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import os
-import csv
+from itertools import cycle
 
-import numpy as np
-import pandas as pd
-import PIL
-
-import torchvision.transforms.functional as VF
-import torch
+import numpy
+import pandas
 
 import matplotlib
 matplotlib.use("agg")
 
+import matplotlib.pyplot as plt
 
-def precision_recall_f1iso(precision, recall, names, title=None):
-    """
-    Author: Andre Anjos (andre.anjos@idiap.ch).
+import logging
+logger = logging.getLogger(__name__)
 
-    Creates a precision-recall plot of the given data.
+
+def precision_recall_f1iso(precision, recall, names):
+    """Creates a precision-recall plot of the given data.
+
     The plot will be annotated with F1-score iso-lines (in which the F1-score
     maintains the same value)
 
     Parameters
     ----------
+
     precision : :py:class:`numpy.ndarray` or :py:class:`list`
-        A list of 1D np arrays containing the Y coordinates of the plot, or
-        the precision, or a 2D np array in which the rows correspond to each
-        of the system's precision coordinates.
+        A list of 1D arrays containing the Y coordinates of the plot, or the
+        precision, or a 2D np array in which the rows correspond to each of the
+        system's precision coordinates.
+
     recall : :py:class:`numpy.ndarray` or :py:class:`list`
-        A list of 1D np arrays containing the X coordinates of the plot, or
-        the recall, or a 2D np array in which the rows correspond to each
-        of the system's recall coordinates.
+        A list of 1D arrays containing the X coordinates of the plot, or the
+        recall, or a 2D np array in which the rows correspond to each of the
+        system's recall coordinates.
+
     names : :py:class:`list`
         An iterable over the names of each of the systems along the rows of
         ``precision`` and ``recall``
-    title : :py:class:`str`, optional
-        A title for the plot. If not set, omits the title
+
 
     Returns
     -------
-    matplotlib.figure.Figure
-        A matplotlib figure you can save or display
-    """
-    import matplotlib
 
-    matplotlib.use("agg")
-    import matplotlib.pyplot as plt
-    from itertools import cycle
+    figure : matplotlib.figure.Figure
+        A matplotlib figure you can save or display
+
+    """
 
     fig, ax1 = plt.subplots(1)
     lines = ["-", "--", "-.", ":"]
@@ -72,7 +69,9 @@ def precision_recall_f1iso(precision, recall, names, title=None):
             next(linecycler),
             label="[F={:.4f}] {}".format(f1.max(), n),
         )
-        ax1.plot(ori, opi, marker="o", linestyle=None, markersize=3, color="black")
+        ax1.plot(
+            ori, opi, marker="o", linestyle=None, markersize=3, color="black"
+        )
     ax1.grid(linestyle="--", linewidth=1, color="gray", alpha=0.2)
     if len(names) > 1:
         plt.legend(loc="lower left", framealpha=0.5)
@@ -80,15 +79,13 @@ def precision_recall_f1iso(precision, recall, names, title=None):
     ax1.set_ylabel("Precision")
     ax1.set_xlim([0.0, 1.0])
     ax1.set_ylim([0.0, 1.0])
-    if title is not None:
-        ax1.set_title(title)
     # Annotates plot with F1-score iso-lines
     ax2 = ax1.twinx()
-    f_scores = np.linspace(0.1, 0.9, num=9)
+    f_scores = numpy.linspace(0.1, 0.9, num=9)
     tick_locs = []
     tick_labels = []
     for f_score in f_scores:
-        x = np.linspace(0.01, 1)
+        x = numpy.linspace(0.01, 1)
         y = f_score * x / (2 * x - f_score)
         (l,) = plt.plot(x[y >= 0], y[y >= 0], color="green", alpha=0.1)
         tick_locs.append(y[-1])
@@ -117,42 +114,62 @@ def precision_recall_f1iso(precision, recall, names, title=None):
 
 
 def precision_recall_f1iso_confintval(
-    precision, recall, pr_upper, pr_lower, re_upper, re_lower, names, title=None
+    precision, recall, pr_upper, pr_lower, re_upper, re_lower, names
 ):
-    """
-    Creates a precision-recall plot of the given data.
+    """Creates a precision-recall plot of the given data, with confidence
+    intervals
+
     The plot will be annotated with F1-score iso-lines (in which the F1-score
     maintains the same value)
 
     Parameters
     ----------
+
     precision : :py:class:`numpy.ndarray` or :py:class:`list`
-        A list of 1D np arrays containing the Y coordinates of the plot, or
-        the precision, or a 2D np array in which the rows correspond to each
+        A list of 1D arrays containing the Y coordinates of the plot, or the
+        precision, or a 2D array in which the rows correspond to each
         of the system's precision coordinates.
 
     recall : :py:class:`numpy.ndarray` or :py:class:`list`
-        A list of 1D np arrays containing the X coordinates of the plot, or
-        the recall, or a 2D np array in which the rows correspond to each
+        A list of 1D arrays containing the X coordinates of the plot, or
+        the recall, or a 2D array in which the rows correspond to each
         of the system's recall coordinates.
+
+    pr_upper : :py:class:`numpy.ndarray` or :py:class:`list`
+        A list of 1D arrays containing the upper bound of the confidence
+        interval for the Y coordinates of the plot, or the precision upper
+        bound, or a 2D array in which the rows correspond to each of the
+        system's precision upper-bound coordinates.
+
+    pr_lower : :py:class:`numpy.ndarray` or :py:class:`list`
+        A list of 1D arrays containing the lower bound of the confidence
+        interval for the Y coordinates of the plot, or the precision lower
+        bound, or a 2D array in which the rows correspond to each of the
+        system's precision lower-bound coordinates.
+
+    re_upper : :py:class:`numpy.ndarray` or :py:class:`list`
+        A list of 1D arrays containing the upper bound of the confidence
+        interval for the Y coordinates of the plot, or the recall upper bound,
+        or a 2D array in which the rows correspond to each of the system's
+        recall upper-bound coordinates.
+
+    re_lower : :py:class:`numpy.ndarray` or :py:class:`list`
+        A list of 1D arrays containing the lower bound of the confidence
+        interval for the Y coordinates of the plot, or the recall lower bound,
+        or a 2D array in which the rows correspond to each of the system's
+        recall lower-bound coordinates.
 
     names : :py:class:`list`
         An iterable over the names of each of the systems along the rows of
         ``precision`` and ``recall``
 
-    title : :py:class:`str`, optional
-        A title for the plot. If not set, omits the title
 
     Returns
     -------
-    matplotlib.figure.Figure
+    figure : matplotlib.figure.Figure
         A matplotlib figure you can save or display
-    """
-    import matplotlib
 
-    matplotlib.use("agg")
-    import matplotlib.pyplot as plt
-    from itertools import cycle
+    """
 
     fig, ax1 = plt.subplots(1)
     lines = ["-", "--", "-.", ":"]
@@ -195,20 +212,22 @@ def precision_recall_f1iso_confintval(
             next(linecycler),
             label="[F={:.4f}] {}".format(f1.max(), n),
         )
-        ax1.plot(ori, opi, marker="o", linestyle=None, markersize=3, color="black")
+        ax1.plot(
+            ori, opi, marker="o", linestyle=None, markersize=3, color="black"
+        )
         # Plot confidence
         # Upper bound
         # ax1.plot(r95ui[p95ui>0], p95ui[p95ui>0])
         # Lower bound
         # ax1.plot(r95li[p95li>0], p95li[p95li>0])
         # create the limiting polygon
-        vert_x = np.concatenate((rui[pui > 0], rli[pli > 0][::-1]))
-        vert_y = np.concatenate((pui[pui > 0], pli[pli > 0][::-1]))
+        vert_x = numpy.concatenate((rui[pui > 0], rli[pli > 0][::-1]))
+        vert_y = numpy.concatenate((pui[pui > 0], pli[pli > 0][::-1]))
         # hacky workaround to plot 2nd human
-        if np.isclose(np.mean(rui), rui[1], rtol=1e-05):
+        if numpy.isclose(numpy.mean(rui), rui[1], rtol=1e-05):
             print("found human")
             p = plt.Polygon(
-                np.column_stack((vert_x, vert_y)),
+                numpy.column_stack((vert_x, vert_y)),
                 facecolor="none",
                 alpha=0.2,
                 edgecolor=next(colorcycler),
@@ -216,7 +235,7 @@ def precision_recall_f1iso_confintval(
             )
         else:
             p = plt.Polygon(
-                np.column_stack((vert_x, vert_y)),
+                numpy.column_stack((vert_x, vert_y)),
                 facecolor=next(colorcycler),
                 alpha=0.2,
                 edgecolor="none",
@@ -231,15 +250,13 @@ def precision_recall_f1iso_confintval(
     ax1.set_ylabel("Precision")
     ax1.set_xlim([0.0, 1.0])
     ax1.set_ylim([0.0, 1.0])
-    if title is not None:
-        ax1.set_title(title)
     # Annotates plot with F1-score iso-lines
     ax2 = ax1.twinx()
-    f_scores = np.linspace(0.1, 0.9, num=9)
+    f_scores = numpy.linspace(0.1, 0.9, num=9)
     tick_locs = []
     tick_labels = []
     for f_score in f_scores:
-        x = np.linspace(0.01, 1)
+        x = numpy.linspace(0.01, 1)
         y = f_score * x / (2 * x - f_score)
         (l,) = plt.plot(x[y >= 0], y[y >= 0], color="green", alpha=0.1)
         tick_locs.append(y[-1])
@@ -267,7 +284,7 @@ def precision_recall_f1iso_confintval(
     return fig
 
 
-def loss_curve(df, title=None):
+def loss_curve(df):
     """Creates a loss curve in a Matplotlib figure.
 
     Parameters
@@ -277,9 +294,6 @@ def loss_curve(df, title=None):
         A dataframe containing, at least, "epoch", "median-loss" and
         "learning-rate" columns, that will be plotted.
 
-    title : :py:class:`str`, Optional
-        Optional title, that will be set on the figure if passed
-
     Returns
     -------
 
@@ -287,10 +301,8 @@ def loss_curve(df, title=None):
         A figure, that may be saved or displayed
 
     """
-    import matplotlib.pyplot as plt
 
     ax1 = df.plot(x="epoch", y="median-loss", grid=True)
-    if title is not None: ax1.set_title(title)
     ax1.set_ylabel("Median Loss")
     ax1.grid(linestyle="--", linewidth=1, color="gray", alpha=0.2)
     ax2 = df["learning-rate"].plot(secondary_y=True, legend=True, grid=True,)
@@ -301,61 +313,25 @@ def loss_curve(df, title=None):
     return fig
 
 
-def read_metricscsv(file):
-    """
-    Read precision and recall from csv file
+def combined_precision_recall_f1iso_confintval(data):
+    """Plots comparison chart of all evaluated models
 
     Parameters
     ----------
-    file : str
-        path to file
+
+    data : dict
+        A dict in which keys are the names of the systems and the values are
+        paths to ``metrics.csv`` style files.
+
 
     Returns
     -------
-    :py:class:`numpy.ndarray`
-    :py:class:`numpy.ndarray`
-    """
-    with open(file, "r") as infile:
-        metricsreader = csv.reader(infile)
-        # skip header row
-        next(metricsreader)
-        precision = []
-        recall = []
-        pr_upper = []
-        pr_lower = []
-        re_upper = []
-        re_lower = []
-        for row in metricsreader:
-            precision.append(float(row[1]))
-            recall.append(float(row[2]))
-            pr_upper.append(float(row[8]))
-            pr_lower.append(float(row[9]))
-            re_upper.append(float(row[11]))
-            re_lower.append(float(row[12]))
-    return (
-        np.array(precision),
-        np.array(recall),
-        np.array(pr_upper),
-        np.array(pr_lower),
-        np.array(re_upper),
-        np.array(re_lower),
-    )
 
+    figure : matplotlib.figure.Figure
+        A figure, with all systems combined into a single plot.
 
-def plot_overview(outputfolders, title):
     """
-    Plots comparison chart of all trained models
 
-    Parameters
-    ----------
-    outputfolder : list
-        list containing output paths of all evaluated models (e.g. ``['DRIVE/model1', 'DRIVE/model2']``)
-    title : str
-        title of plot
-    Returns
-    -------
-    matplotlib.figure.Figure
-    """
     precisions = []
     recalls = []
     pr_ups = []
@@ -363,103 +339,20 @@ def plot_overview(outputfolders, title):
     re_ups = []
     re_lows = []
     names = []
-    for folder in outputfolders:
-        # metrics
-        metrics_path = os.path.join(folder, "results/Metrics.csv")
-        pr, re, pr_upper, pr_lower, re_upper, re_lower = read_metricscsv(metrics_path)
-        precisions.append(pr)
-        recalls.append(re)
-        pr_ups.append(pr_upper)
-        pr_lows.append(pr_lower)
-        re_ups.append(re_upper)
-        re_lows.append(re_lower)
-        modelname = folder.split("/")[-1]
-        name = "{} ".format(modelname)
+
+    for name, metrics_path in data.items():
+        logger.info(f"Loading metrics from {metrics_path}...")
+        df = pandas.read_csv(metrics_path)
+        precisions.append(df.precision.to_numpy())
+        recalls.append(df.recall.to_numpy())
+        pr_ups.append(df.pr_upper.to_numpy())
+        pr_lows.append(df.pr_lower.to_numpy())
+        re_ups.append(df.re_upper.to_numpy())
+        re_lows.append(df.re_lower.to_numpy())
         names.append(name)
-    # title = folder.split('/')[-4]
+
     fig = precision_recall_f1iso_confintval(
-        precisions, recalls, pr_ups, pr_lows, re_ups, re_lows, names, title
+        precisions, recalls, pr_ups, pr_lows, re_ups, re_lows, names
     )
+
     return fig
-
-
-def metricsviz(
-    dataset,
-    output_path,
-    tp_color=(0, 255, 0),  # (128,128,128) Gray
-    fp_color=(0, 0, 255),  # (70, 240, 240) Cyan
-    fn_color=(255, 0, 0),  # (245, 130, 48) Orange
-    overlayed=True,
-):
-    """ Visualizes true positives, false positives and false negatives
-    Default colors TP: Gray, FP: Cyan, FN: Orange
-
-    Parameters
-    ----------
-    dataset : :py:class:`torch.utils.data.Dataset`
-    output_path : str
-        path where results and probability output images are stored. E.g. ``'DRIVE/MODEL'``
-    tp_color : tuple
-        RGB values, by default (128,128,128)
-    fp_color : tuple
-        RGB values, by default (70, 240, 240)
-    fn_color : tuple
-        RGB values, by default (245, 130, 48)
-    """
-
-    for sample in dataset:
-        # get sample
-        name = sample[0]
-        img = VF.to_pil_image(sample[1])  # PIL Image
-        gt = sample[2].byte()  # byte tensor
-
-        # read metrics
-        metrics = pd.read_csv(os.path.join(output_path, "results", "Metrics.csv"))
-        optimal_threshold = metrics["threshold"][metrics["f1_score"].idxmax()]
-
-        # read probability output
-        pred = Image.open(os.path.join(output_path, "images", name))
-        pred = pred.convert(mode="L")
-        pred = VF.to_tensor(pred)
-        binary_pred = torch.gt(pred, optimal_threshold).byte()
-
-        # calc metrics
-        # equals and not-equals
-        equals = torch.eq(binary_pred, gt)  # tensor
-        notequals = torch.ne(binary_pred, gt)  # tensor
-        # true positives
-        tp_tensor = gt * binary_pred  # tensor
-        tp_pil = VF.to_pil_image(tp_tensor.float())
-        tp_pil_colored = PIL.ImageOps.colorize(tp_pil, (0, 0, 0), tp_color)
-        # false positives
-        fp_tensor = torch.eq((binary_pred + tp_tensor), 1)
-        fp_pil = VF.to_pil_image(fp_tensor.float())
-        fp_pil_colored = PIL.ImageOps.colorize(fp_pil, (0, 0, 0), fp_color)
-        # false negatives
-        fn_tensor = notequals - fp_tensor
-        fn_pil = VF.to_pil_image(fn_tensor.float())
-        fn_pil_colored = PIL.ImageOps.colorize(fn_pil, (0, 0, 0), fn_color)
-
-        # paste together
-        tp_pil_colored.paste(fp_pil_colored, mask=fp_pil)
-        tp_pil_colored.paste(fn_pil_colored, mask=fn_pil)
-
-        if overlayed:
-            tp_pil_colored = PIL.Image.blend(img, tp_pil_colored, 0.4)
-            img_metrics = pd.read_csv(
-                os.path.join(output_path, "results", name + ".csv")
-            )
-            f1 = img_metrics[" f1_score"].max()
-            # add f1-score
-            fnt_size = tp_pil_colored.size[1] // 25
-            draw = PIL.ImageDraw.Draw(tp_pil_colored)
-            fnt = PIL.ImageFont.truetype("FreeMono.ttf", fnt_size)
-            draw.text((0, 0), "F1: {:.4f}".format(f1), (255, 255, 255), font=fnt)
-
-        # save to disk
-        overlayed_path = os.path.join(output_path, "tpfnfpviz")
-        fullpath = os.path.join(overlayed_path, name)
-        fulldir = os.path.dirname(fullpath)
-        if not os.path.exists(fulldir):
-            os.makedirs(fulldir)
-        tp_pil_colored.save(fullpath)

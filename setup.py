@@ -31,14 +31,11 @@ setup(
         "bob.cli": ["binseg = bob.ip.binseg.script.binseg:binseg"],
         # bob binseg sub-commands
         "bob.ip.binseg.cli": [
-            "compare =  bob.bin.binseg.script.binseg:compare",
-            "evalpred = bob.ip.binseg.script.binseg:evalpred",
-            "gridtable = bob.ip.binseg.script.binseg:testcheckpoints",
-            "visualize = bob.ip.binseg.script.binseg:visualize",
             "config = bob.ip.binseg.script.config:config",
             "train = bob.ip.binseg.script.train:train",
             "predict = bob.ip.binseg.script.predict:predict",
             "evaluate = bob.ip.binseg.script.evaluate:evaluate",
+            "compare =  bob.ip.binseg.script.compare:compare",
         ],
         # bob train configurations
         "bob.ip.binseg.config": [

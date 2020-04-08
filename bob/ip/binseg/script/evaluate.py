@@ -2,15 +2,12 @@
 # coding=utf-8
 
 import click
-from click_plugins import with_plugins
-
 from torch.utils.data import DataLoader
 
 from bob.extension.scripts.click_helper import (
     verbosity_option,
     ConfigCommand,
     ResourceOption,
-    AliasedGroup,
 )
 
 from ..engine.evaluator import run
@@ -47,6 +44,7 @@ logger = logging.getLogger(__name__)
     help="Path where to store the analysis result (created if does not exist)",
     required=True,
     default="results",
+    type=click.Path(),
     cls=ResourceOption,
 )
 @click.option(
@@ -54,6 +52,7 @@ logger = logging.getLogger(__name__)
     "-p",
     help="Path where predictions are currently stored",
     required=True,
+    type=click.Path(exists=True, file_okay=False, dir_okay=True),
     cls=ResourceOption,
 )
 @click.option(
@@ -65,7 +64,7 @@ logger = logging.getLogger(__name__)
 )
 @click.option(
     "--overlayed",
-    "-A",
+    "-O",
     help="Creates overlayed representations of the output probability maps, "
     "similar to --overlayed in prediction-mode, except it includes "
     "distinctive colours for true and false positives and false negatives.  "
@@ -77,10 +76,27 @@ logger = logging.getLogger(__name__)
     required=False,
     cls=ResourceOption,
 )
+@click.option(
+    "--overlay-threshold",
+    "-T",
+    help="If you set --overlayed, then you can provide a value to be used as "
+    "threshold to be applied on probability maps and decide for positives and "
+    "negatives.  This binary output will be used to define true and false "
+    "positives, and false negatives for the overlay analysis.  This number "
+    "should either come from the training set or a separate validation set "
+    "to avoid biasing the analysis",
+    default=0.5,
+    type=click.FloatRange(min=0.0, max=1.0),
+    show_default=True,
+    required=False,
+    cls=ResourceOption,
+)
 @verbosity_option(cls=ResourceOption)
-def evaluate(output_folder, predictions_folder, dataset, overlayed, **kwargs):
+def evaluate(output_folder, predictions_folder, dataset, overlayed,
+        overlay_threshold, **kwargs):
     """Evaluates an FCN on a binary segmentation task.
     """
     data_loader = DataLoader(dataset=dataset, batch_size=1, shuffle=False,
             pin_memory=False)
-    run(dataset, predictions_folder, output_folder)
+    run(dataset, predictions_folder, output_folder, overlayed,
+            overlay_threshold)

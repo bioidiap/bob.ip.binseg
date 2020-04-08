@@ -84,4 +84,15 @@ E.g. run inference on predictions from the DRIVE test set, do the following:
     bob binseg evaluate -vv drive-test -p /predictions/folder -o /eval/results/folder
 
 
+Comparing Systems
+=================
+
+To compare multiple systems together and generate combined plots and tables,
+use ``bob binseg compare``.  Use ``--help`` for a quick guide.
+
+.. code-block:: bash
+
+   $ bob binseg compare -vv A A/metrics.csv B B/metrics.csv
+
+
 .. include:: links.rst

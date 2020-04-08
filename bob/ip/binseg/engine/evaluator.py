@@ -5,6 +5,7 @@
 
 import os
 
+import PIL
 import numpy
 import pandas
 from tqdm import tqdm
@@ -22,16 +23,40 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-def _sample_metrics(stem, pred, gt):
+def _posneg(pred, gt, threshold):
+    """Calculates true and false positives and negatives"""
+
+    gt = gt.byte()  # byte tensor
+
+    # threshold
+    binary_pred = torch.gt(pred, threshold).byte()
+
+    # equals and not-equals
+    equals = torch.eq(binary_pred, gt).type(torch.uint8)  # tensor
+    notequals = torch.ne(binary_pred, gt).type(torch.uint8)  # tensor
+
+    # true positives
+    tp_tensor = gt * binary_pred
+
+    # false positives
+    fp_tensor = torch.eq((binary_pred + tp_tensor), 1)
+
+    # true negatives
+    tn_tensor = equals - tp_tensor
+
+    # false negatives
+    fn_tensor = notequals - fp_tensor.type(torch.uint8)
+
+    return tp_tensor, fp_tensor, tn_tensor, fn_tensor
+
+
+def _sample_metrics(pred, gt):
     """
     Calculates metrics on one single sample and saves it to disk
 
 
     Parameters
     ----------
-
-    stem : str
-        original filename without extension and relative to its root-path
 
     pred : torch.Tensor
         pixel-wise predictions
@@ -58,36 +83,17 @@ def _sample_metrics(stem, pred, gt):
     """
 
     step_size = 0.01
-    gts = gt.byte()
-
     data = []
 
     for threshold in numpy.arange(0.0, 1.0, step_size):
 
-        # threshold
-        binary_pred = torch.gt(pred, threshold).byte()
+        tp_tensor, fp_tensor, tn_tensor, fn_tensor = _posneg(pred, gt, threshold)
 
-        # equals and not-equals
-        equals = torch.eq(binary_pred, gts).type(torch.uint8)  # tensor
-        notequals = torch.ne(binary_pred, gts).type(torch.uint8)  # tensor
-
-        # true positives
-        tp_tensor = gt * binary_pred  # tensor
-        tp_count = torch.sum(tp_tensor).item()  # scalar
-
-        # false positives
-        fp_tensor = torch.eq((binary_pred + tp_tensor), 1)
+        # calc metrics from scalars
+        tp_count = torch.sum(tp_tensor).item()
         fp_count = torch.sum(fp_tensor).item()
-
-        # true negatives
-        tn_tensor = equals - tp_tensor
         tn_count = torch.sum(tn_tensor).item()
-
-        # false negatives
-        fn_tensor = notequals - fp_tensor.type(torch.uint8)
         fn_count = torch.sum(fn_tensor).item()
-
-        # calc metrics
         precision, recall, specificity, accuracy, jaccard, f1_score = \
                 base_metrics(tp_count, fp_count, tn_count, fn_count)
 
@@ -105,7 +111,82 @@ def _sample_metrics(stem, pred, gt):
         ))
 
 
-def run(data_loader, predictions_folder, output_folder):
+def _sample_analysis(
+        img,
+        pred,
+        gt,
+        threshold,
+        tp_color=(0, 255, 0),  # (128,128,128) Gray
+        fp_color=(0, 0, 255),  # (70, 240, 240) Cyan
+        fn_color=(255, 0, 0),  # (245, 130, 48) Orange
+        overlay=True,
+        ):
+    """Visualizes true positives, false positives and false negatives
+
+
+    Parameters
+    ----------
+
+    img : torch.Tensor
+        original image
+
+    pred : torch.Tensor
+        pixel-wise predictions
+
+    gt : torch.Tensor
+        ground-truth (annotations)
+
+    threshold : float
+        The threshold to be used while analyzing this image's probability map
+
+    tp_color : tuple
+        RGB value for true positives
+
+    fp_color : tuple
+        RGB value for false positives
+
+    fn_color : tuple
+        RGB value for false negatives
+
+    overlay : :py:class:`bool`, Optional
+        If set to ``True`` (which is the default), then overlay annotations on
+        top of the image.  Otherwise, represent data on a black canvas.
+
+
+    Returns
+    -------
+
+    figure : PIL.Image.Image
+
+        A PIL image that contains the overlayed analysis of true-positives
+        (TP), false-positives (FP) and false negatives (FN).
+
+    """
+
+    tp_tensor, fp_tensor, tn_tensor, fn_tensor = _posneg(pred, gt, threshold)
+
+    # change to PIL representation
+    tp_pil = VF.to_pil_image(tp_tensor.float())
+    tp_pil_colored = PIL.ImageOps.colorize(tp_pil, (0, 0, 0), tp_color)
+
+    fp_pil = VF.to_pil_image(fp_tensor.float())
+    fp_pil_colored = PIL.ImageOps.colorize(fp_pil, (0, 0, 0), fp_color)
+
+    fn_pil = VF.to_pil_image(fn_tensor.float())
+    fn_pil_colored = PIL.ImageOps.colorize(fn_pil, (0, 0, 0), fn_color)
+
+    tp_pil_colored.paste(fp_pil_colored, mask=fp_pil)
+    tp_pil_colored.paste(fn_pil_colored, mask=fn_pil)
+
+    if overlay:
+        img = VF.to_pil_image(img)  # PIL Image
+        tp_pil_colored = PIL.Image.blend(img, tp_pil_colored, 0.4)
+
+    return tp_pil_colored
+
+
+def run(data_loader, predictions_folder, output_folder, overlayed_folder=None,
+        overlay_threshold=None):
     """
     Runs inference and calculates metrics
 
@@ -122,6 +203,17 @@ def run(data_loader, predictions_folder, output_folder):
 
     output_folder : str
         folder where to store results
+
+    overlayed_folder : :py:class:`str`, Optional
+        if not ``None``, then it should be the name of a folder where to store
+        overlayed versions of the images and ground-truths
+
+    overlay_threshold : :py:class:`float`, Optional
+        if ``overlayed_folder``, then this should be threshold (floating point)
+        to apply to prediction maps to decide on positives and negatives for
+        overlaying analysis (graphical output).  This number should come from
+        the training set or a separate validation set.  Using a test set value
+        may bias your analysis.
 
     """
 
@@ -146,7 +238,18 @@ def run(data_loader, predictions_folder, output_folder):
         if stem in data:
             raise RuntimeError(f"{stem} entry already exists in data. "
                     f"Cannot overwrite.")
-        data[stem] = _sample_metrics(stem, pred, gt)
+        data[stem] = _sample_metrics(pred, gt)
+
+        if overlayed_folder is not None:
+            overlay_image = _sample_analysis(image, pred, gt,
+                    threshold=overlay_threshold, overlay=True)
+            fullpath = os.path.join(overlayed_folder, f"{stem}.png")
+            tqdm.write(f"Saving {fullpath}...")
+            fulldir = os.path.dirname(fullpath)
+            if not os.path.exists(fulldir):
+                tqdm.write(f"Creating directory {fulldir}...")
+                os.makedirs(fulldir, exist_ok=True)
+            overlay_image.save(fullpath)
 
     # Merges all dataframes together
     df_metrics = pandas.concat(data.values())

@@ -49,8 +49,6 @@ modifying one of our configuration resources.
    training
    models
    evaluation
-   plotting
-   visualization
 
 
 .. include:: links.rst
