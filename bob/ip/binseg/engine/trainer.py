@@ -5,8 +5,9 @@ import os
 import csv
 import time
 import datetime
+
 import torch
-import pandas as pd
+import pandas
 from tqdm import tqdm
 
 from bob.ip.binseg.utils.metric import SmoothedValue
@@ -178,7 +179,7 @@ def run(
         )
 
     # plots a version of the CSV trainlog into a PDF
-    logdf = pd.read_csv(logfile_name, header=0, names=logfile_fields)
+    logdf = pandas.read_csv(logfile_name, header=0, names=logfile_fields)
     fig = loss_curve(logdf, title="Loss Evolution")
     figurefile_name = os.path.join(output_folder, "trainlog.pdf")
     logger.info(f"Saving {figurefile_name}")

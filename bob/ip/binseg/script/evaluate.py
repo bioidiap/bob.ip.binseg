@@ -4,7 +4,6 @@
 import click
 from click_plugins import with_plugins
 
-import torch
 from torch.utils.data import DataLoader
 
 from bob.extension.scripts.click_helper import (
@@ -14,8 +13,7 @@ from bob.extension.scripts.click_helper import (
     AliasedGroup,
 )
 
-from ..utils.checkpointer import DetectronCheckpointer
-from ..engine.inferencer import do_inference
+from ..engine.evaluator import run
 
 import logging
 logger = logging.getLogger(__name__)
@@ -27,75 +25,62 @@ logger = logging.getLogger(__name__)
     epilog="""Examples:
 
 \b
-    1. Evaluates a M2U-Net model on the DRIVE test set:
-
-       $ bob binseg evaluate -vv m2unet drive-test --weight=results/model_final.pth
-
+    1. Runs evaluation on an existing dataset configuration:
+\b
+       $ bob binseg evaluate -vv m2unet drive-test --predictions-folder=path/to/predictions --output-folder=path/to/results
+\b
+    2. To run evaluation on a folder with your own images and annotations, you
+       must first specify resizing, cropping, etc, so that the image can be
+       correctly input to the model.  Failing to do so will likely result in
+       poor performance.  To figure out such specifications, you must consult
+       the dataset configuration used for **training** the provided model.
+       Once you figured this out, do the following:
+\b
+       $ bob binseg config copy csv-dataset-example mydataset.py
+       # modify "mydataset.py" to your liking
+       $ bob binseg evaluate -vv m2unet mydataset.py --predictions-folder=path/to/predictions --output-folder=path/to/results
 """,
 )
 @click.option(
-    "--output-path",
+    "--output-folder",
     "-o",
-    help="Path where to store the generated model (created if does not exist)",
+    help="Path where to store the analysis result (created if does not exist)",
     required=True,
     default="results",
     cls=ResourceOption,
 )
 @click.option(
-    "--model",
-    "-m",
-    help="A torch.nn.Module instance implementing the network to be evaluated",
+    "--predictions-folder",
+    "-p",
+    help="Path where predictions are currently stored",
     required=True,
     cls=ResourceOption,
 )
 @click.option(
     "--dataset",
     "-d",
-    help="A torch.utils.data.dataset.Dataset instance implementing a dataset to be used for evaluating the model, possibly including all pre-processing pipelines required",
+    help="A torch.utils.data.dataset.Dataset instance implementing a dataset to be used for evaluating predictions, possibly including all pre-processing pipelines required",
     required=True,
     cls=ResourceOption,
 )
 @click.option(
-    "--batch-size",
-    "-b",
-    help="Number of samples in every batch (this parameter affects memory requirements for the network)",
-    required=True,
+    "--overlayed",
+    "-A",
+    help="Creates overlayed representations of the output probability maps, "
+    "similar to --overlayed in prediction-mode, except it includes "
+    "distinctive colours for true and false positives and false negatives.  "
+    "If not set, or empty then do **NOT** output overlayed images.  "
+    "Otherwise, the parameter represents the name of a folder where to "
+    "store those",
     show_default=True,
-    default=1,
-    cls=ResourceOption,
-)
-@click.option(
-    "--device",
-    "-d",
-    help='A string indicating the device to use (e.g. "cpu" or "cuda:0")',
-    show_default=True,
-    required=True,
-    default="cpu",
-    cls=ResourceOption,
-)
-@click.option(
-    "--weight",
-    "-w",
-    help="Path or URL to pretrained model file (.pth extension)",
-    required=True,
+    default=None,
+    required=False,
     cls=ResourceOption,
 )
 @verbosity_option(cls=ResourceOption)
-def evaluate(output_path, model, dataset, batch_size, device, weight, **kwargs):
+def evaluate(output_folder, predictions_folder, dataset, overlayed, **kwargs):
     """Evaluates an FCN on a binary segmentation task.
     """
-
-    # PyTorch dataloader
-    data_loader = DataLoader(
-        dataset=dataset,
-        batch_size=batch_size,
-        shuffle=False,
-        pin_memory=torch.cuda.is_available(),
-    )
-
-    # checkpointer, load last model in dir
-    checkpointer = DetectronCheckpointer(
-        model, save_dir=output_path, save_to_disk=False
-    )
-    checkpointer.load(weight)
-    do_inference(model, data_loader, device, output_path)
+    data_loader = DataLoader(dataset=dataset, batch_size=1, shuffle=False,
+            pin_memory=False)
+    run(dataset, predictions_folder, output_folder)

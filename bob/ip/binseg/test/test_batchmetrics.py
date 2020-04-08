@@ -2,11 +2,17 @@
 # -*- coding: utf-8 -*-
 
 import unittest
-from bob.ip.binseg.engine.inferencer import batch_metrics
 import random
-import shutil, tempfile
-import logging
+import shutil
+
 import torch
+import pandas
+import numpy
+
+from ..engine.evaluator import _sample_metrics
+
+import logging
+logger = logging.getLogger(__name__)
 
 
 class Tester(unittest.TestCase):
@@ -22,26 +28,19 @@ class Tester(unittest.TestCase):
         self.predictions = torch.rand(size=(2, 1, 420, 420))
         self.ground_truths = torch.randint(low=0, high=2, size=(2, 1, 420, 420))
         self.names = ["Bob", "Tim"]
-        self.output_folder = tempfile.mkdtemp()
-        self.logger = logging.getLogger(__name__)
-
-    def tearDown(self):
-        # Remove the temporary folder after the test
-        shutil.rmtree(self.output_folder)
 
     def test_batch_metrics(self):
-        bm = batch_metrics(
-            self.predictions,
-            self.ground_truths,
-            self.names,
-            self.output_folder,
-        )
+        dfs = []
+        for stem, pred, gt in zip(self.names, self.predictions,
+                self.ground_truths):
+            dfs.append(_sample_metrics(stem, pred, gt))
+        bm = pandas.concat(dfs)
+
         self.assertEqual(len(bm), 2 * 100)
-        for metric in bm:
-            # check whether f1 score agree
-            self.assertAlmostEqual(
-                metric[-1], 2 * (metric[-6] * metric[-5]) / (metric[-6] + metric[-5])
-            )
+        # check whether f1 score agree
+        calculated = bm.f1_score.to_numpy()
+        ours = (2*(bm.precision*bm.recall)/(bm.precision+bm.recall)).to_numpy()
+        assert numpy.isclose(calculated, ours).all()
 
 
 if __name__ == "__main__":

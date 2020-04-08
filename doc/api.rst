@@ -29,11 +29,11 @@ Engines
    :toctree: api/engine
 
    bob.ip.binseg.engine
-   bob.ip.binseg.engine.adabound
-   bob.ip.binseg.engine.inferencer
-   bob.ip.binseg.engine.predictor
-   bob.ip.binseg.engine.ssltrainer
    bob.ip.binseg.engine.trainer
+   bob.ip.binseg.engine.ssltrainer
+   bob.ip.binseg.engine.predictor
+   bob.ip.binseg.engine.evaluator
+   bob.ip.binseg.engine.adabound
 
 
 Neural Network Models
@@ -68,7 +68,6 @@ Toolbox
    bob.ip.binseg.utils
    bob.ip.binseg.utils.checkpointer
    bob.ip.binseg.utils.click
-   bob.ip.binseg.utils.evaluate
    bob.ip.binseg.utils.metric
    bob.ip.binseg.utils.model_serialization
    bob.ip.binseg.utils.model_zoo

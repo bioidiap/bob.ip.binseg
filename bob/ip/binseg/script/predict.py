@@ -31,7 +31,7 @@ logger = logging.getLogger(__name__)
 \b
     1. Runs prediction on an existing dataset configuration:
 \b
-       $ bob binseg predict -vv m2unet drive-test --weight=path/to/model_final.pth --output-path=path/to/predictions
+       $ bob binseg predict -vv m2unet drive-test --weight=path/to/model_final.pth --output-folder=path/to/predictions
 \b
     2. To run prediction on a folder with your own images, you must first
        specify resizing, cropping, etc, so that the image can be correctly
@@ -42,13 +42,13 @@ logger = logging.getLogger(__name__)
 \b
        $ bob binseg config copy folder-dataset-example mydataset.py
        # modify "mydataset.py" to include the base path and required transforms
-       $ bob binseg predict -vv m2unet mydataset.py --weight=path/to/model_final.pth --output-path=path/to/predictions
+       $ bob binseg predict -vv m2unet mydataset.py --weight=path/to/model_final.pth --output-folder=path/to/predictions
 """,
 )
 @click.option(
-    "--output-path",
+    "--output-folder",
     "-o",
-    help="Path where to store the generated model (created if does not exist)",
+    help="Path where to store the predictions (created if does not exist)",
     required=True,
     default="results",
     cls=ResourceOption,
@@ -92,8 +92,33 @@ logger = logging.getLogger(__name__)
     required=True,
     cls=ResourceOption,
 )
+@click.option(
+    "--overlayed",
+    "-O",
+    help="Creates overlayed representations of the output probability maps on "
+    "top of input images (store results as PNG files).   If not set, or empty "
+    "then do **NOT** output overlayed images.  Otherwise, the parameter "
+    "represents the name of a folder where to store those",
+    show_default=True,
+    default=None,
+    required=False,
+    cls=ResourceOption,
+)
+@click.option(
+    "--transformed",
+    "-T",
+    help="Creates a version of the input dataset with transformations applied, "
+    "but before feeding to FCN.   If not set, or empty then do **NOT** output "
+    "transformed images.  Otherwise, the parameter represents the name of a "
+    "folder where to store those",
+    show_default=True,
+    default=None,
+    required=False,
+    cls=ResourceOption,
+)
 @verbosity_option(cls=ResourceOption)
-def predict(output_path, model, dataset, batch_size, device, weight, **kwargs):
+def predict(output_folder, model, dataset, batch_size, device, weight,
+        overlayed, transformed, **kwargs):
     """Predicts vessel map (probabilities) on input images"""
 
     # PyTorch dataloader
@@ -112,4 +137,8 @@ def predict(output_path, model, dataset, batch_size, device, weight, **kwargs):
             save_to_disk=False)
     checkpointer.load(weight_name)
 
-    run(model, data_loader, device, output_path)
+    # clean-up the overlayed path
+    if overlayed is not None:
+        overlayed = overlayed.strip()
+
+    run(model, data_loader, device, output_folder, overlayed, transformed)

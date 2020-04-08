@@ -120,8 +120,6 @@ def precision_recall_f1iso_confintval(
     precision, recall, pr_upper, pr_lower, re_upper, re_lower, names, title=None
 ):
     """
-    Author: Andre Anjos (andre.anjos@idiap.ch).
-
     Creates a precision-recall plot of the given data.
     The plot will be annotated with F1-score iso-lines (in which the F1-score
     maintains the same value)
@@ -132,13 +130,16 @@ def precision_recall_f1iso_confintval(
         A list of 1D np arrays containing the Y coordinates of the plot, or
         the precision, or a 2D np array in which the rows correspond to each
         of the system's precision coordinates.
+
     recall : :py:class:`numpy.ndarray` or :py:class:`list`
         A list of 1D np arrays containing the X coordinates of the plot, or
         the recall, or a 2D np array in which the rows correspond to each
         of the system's recall coordinates.
+
     names : :py:class:`list`
         An iterable over the names of each of the systems along the rows of
         ``precision`` and ``recall``
+
     title : :py:class:`str`, optional
         A title for the plot. If not set, omits the title
 
@@ -462,63 +463,3 @@ def metricsviz(
         if not os.path.exists(fulldir):
             os.makedirs(fulldir)
         tp_pil_colored.save(fullpath)
-
-
-def overlay(dataset, output_path):
-    """Overlays prediction probabilities vessel tree with original test image.
-
-    Parameters
-    ----------
-    dataset : :py:class:`torch.utils.data.Dataset`
-    output_path : str
-        path where results and probability output images are stored. E.g. ``'DRIVE/MODEL'``
-    """
-
-    for sample in dataset:
-        # get sample
-        name = sample[0]
-        img = VF.to_pil_image(sample[1])  # PIL Image
-
-        # read probability output
-        pred = PIL.Image.open(os.path.join(output_path, "images", name)).convert(mode="L")
-        # color and overlay
-        pred_green = PIL.ImageOps.colorize(pred, (0, 0, 0), (0, 255, 0))
-        overlayed = PIL.Image.blend(img, pred_green, 0.4)
-
-        # add f1-score
-        # fnt_size = overlayed.size[1]//25
-        # draw = PIL.ImageDraw.Draw(overlayed)
-        # fnt = PIL.ImageFont.truetype('FreeMono.ttf', fnt_size)
-        # draw.text((0, 0),"F1: {:.4f}".format(f1),(255,255,255),font=fnt)
-        # save to disk
-        overlayed_path = os.path.join(output_path, "overlayed")
-        fullpath = os.path.join(overlayed_path, name)
-        fulldir = os.path.dirname(fullpath)
-        if not os.path.exists(fulldir):
-            os.makedirs(fulldir)
-        overlayed.save(fullpath)
-
-
-def savetransformedtest(dataset, output_path):
-    """Save the test images as they are fed into the neural network.
-    Makes it easier to create overlay animations (e.g. slide)
-
-    Parameters
-    ----------
-    dataset : :py:class:`torch.utils.data.Dataset`
-    output_path : str
-        path where results and probability output images are stored. E.g. ``'DRIVE/MODEL'``
-    """
-
-    for sample in dataset:
-        # get sample
-        name = sample[0]
-        img = VF.to_pil_image(sample[1])  # PIL Image
-
-        # save to disk
-        testimg_path = os.path.join(output_path, "transformedtestimages")
-        fullpath = os.path.join(testimg_path, name)
-        fulldir = os.path.dirname(fullpath)
-        if not os.path.exists(fulldir):
-            os.makedirs(fulldir)
-        img.save(fullpath)

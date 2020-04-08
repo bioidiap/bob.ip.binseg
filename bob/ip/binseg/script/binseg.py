@@ -25,9 +25,8 @@ from torch.utils.data import DataLoader
 from bob.ip.binseg.utils.plot import plot_overview
 from bob.ip.binseg.utils.click import OptionEatAll
 from bob.ip.binseg.utils.rsttable import create_overview_grid
-from bob.ip.binseg.utils.plot import metricsviz, savetransformedtest
+from bob.ip.binseg.utils.plot import metricsviz
 from bob.ip.binseg.utils.transformfolder import transformfolder as transfld
-from bob.ip.binseg.utils.evaluate import do_eval
 
 logger = logging.getLogger(__name__)
 
@@ -104,10 +103,6 @@ def visualize(dataset, output_path, **kwargs):
     """
     logger.info("Creating TP, FP, FN visualizations for {}".format(output_path))
     metricsviz(dataset=dataset, output_path=output_path)
-    logger.info("Creating overlay visualizations for {}".format(output_path))
-    overlay(dataset=dataset, output_path=output_path)
-    logger.info("Saving transformed test images {}".format(output_path))
-    savetransformedtest(dataset=dataset, output_path=output_path)
 
 # Apply image transforms to a folder containing images
 @binseg.command(entry_point_group="bob.ip.binseg.config", cls=ConfigCommand)
