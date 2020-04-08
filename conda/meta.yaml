@@ -58,13 +58,9 @@ test:
     - bob binseg config copy --help
     - bob binseg config copy drive /tmp/test.py
     - bob binseg train --help
-    - bob binseg evaluate --help
     - bob binseg predict --help
+    - bob binseg evaluate --help
     - bob binseg compare --help
-    - bob binseg evalpred --help
-    - bob binseg gridtable --help
-    - bob binseg transformfolder --help
-    - bob binseg visualize --help
     - nosetests --with-coverage --cover-package={{ name }} -sv {{ name }}
     - sphinx-build -aEW {{ project_dir }}/doc {{ project_dir }}/sphinx
     - sphinx-build -aEb doctest {{ project_dir }}/doc sphinx

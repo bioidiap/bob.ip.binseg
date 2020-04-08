@@ -67,14 +67,11 @@ Toolbox
 
    bob.ip.binseg.utils
    bob.ip.binseg.utils.checkpointer
-   bob.ip.binseg.utils.click
    bob.ip.binseg.utils.metric
    bob.ip.binseg.utils.model_serialization
    bob.ip.binseg.utils.model_zoo
    bob.ip.binseg.utils.plot
-   bob.ip.binseg.utils.rsttable
    bob.ip.binseg.utils.summary
-   bob.ip.binseg.utils.transformfolder
 
 
 .. _bob.ip.binseg.configs:
