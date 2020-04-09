@@ -13,6 +13,7 @@ import torchvision.transforms.functional as VF
 import bob.io.base
 
 import logging
+
 logger = logging.getLogger(__name__)
 
 
@@ -87,7 +88,9 @@ class CSVDataset(Dataset):
 
     """
 
-    def __init__(self, path, root_path=None, check_available=True, transform=None):
+    def __init__(
+        self, path, root_path=None, check_available=True, transform=None
+    ):
 
         self.root_path = root_path or os.path.dirname(path)
         self.transform = transform
@@ -99,7 +102,7 @@ class CSVDataset(Dataset):
                     retval.append(os.path.join(root, p))
             return retval
 
-        with open(path, newline='') as f:
+        with open(path, newline="") as f:
             reader = csv.reader(f)
             self.data = [_make_abs_path(self.root_path, k) for k in reader]
 
@@ -111,14 +114,16 @@ class CSVDataset(Dataset):
                     if not os.path.exists(p):
                         errors += 1
                         logger.error(f"Cannot find {p}")
-            assert errors == 0, f"There {errors} files which cannot be " \
-                    f"found on your filelist ({path}) dataset"
+            assert errors == 0, (
+                f"There {errors} files which cannot be "
+                f"found on your filelist ({path}) dataset"
+            )
 
         # check all data entries have the same size
-        assert all(len(k) == len(self.data[0]) for k in self.data), \
-                f"There is an inconsistence on your dataset - not all " \
-                f"entries have length=={len(self.data[0])}"
-
+        assert all(len(k) == len(self.data[0]) for k in self.data), (
+            f"There is an inconsistence on your dataset - not all "
+            f"entries have length=={len(self.data[0])}"
+        )
 
     def __len__(self):
         """
@@ -175,6 +180,6 @@ class CSVDataset(Dataset):
         if stem.startswith(self.root_path):
             stem = os.path.relpath(stem, self.root_path)
         elif stem.startswith(os.pathsep):
-            stem = stem[len(os.pathsep):]
+            stem = stem[len(os.pathsep) :]
 
         return [stem] + sample

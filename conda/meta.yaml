@@ -29,6 +29,8 @@ requirements:
     - pytorch {{ pytorch }} # [linux]
     - numpy {{ numpy }}
     - bob.extension
+    - bob.core
+    - bob.io.base
   run:
     - python
     - setuptools
@@ -36,11 +38,10 @@ requirements:
     - {{ pin_compatible('torchvision') }} # [linux]
     - {{ pin_compatible('numpy') }}
     - pandas
+    - pillow
     - matplotlib
     - tqdm
     - tabulate
-    - bob.core
-    - bob.io.base
 
 test:
   imports:

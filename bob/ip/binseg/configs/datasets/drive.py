@@ -13,12 +13,7 @@ segmentation of blood vessels in retinal images.
 * Split reference: [DRIVE-2004]_
 """
 
-from bob.db.drive import Database as DRIVE
 from bob.ip.binseg.data.transforms import *
-from bob.ip.binseg.data.binsegdataset import BinSegDataset
-
-#### Config ####
-
 transforms = Compose(
     [
         CenterCrop((544, 544)),
@@ -30,8 +25,7 @@ transforms = Compose(
     ]
 )
 
-# bob.db.dataset init
-bobdb = DRIVE(protocol="default")
-
-# PyTorch dataset
-dataset = BinSegDataset(bobdb, split="train", transform=transforms)
+from bob.ip.binseg.data.utils import DelayedSample2TorchDataset
+from bob.ip.binseg.data.drive import dataset as drive
+dataset = DelayedSample2TorchDataset(drive.subsets("default")["train"],
+        transform=transforms)

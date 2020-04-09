@@ -17,9 +17,22 @@ Data Manipulation
 
    bob.ip.binseg.data
    bob.ip.binseg.data.binsegdataset
-   bob.ip.binseg.data.csvdataset
    bob.ip.binseg.data.folderdataset
+   bob.ip.binseg.data.csvdataset
+   bob.ip.binseg.data.jsondataset
+   bob.ip.binseg.data.loader
+   bob.ip.binseg.data.sample
+   bob.ip.binseg.data.utils
    bob.ip.binseg.data.transforms
+
+
+Datasets
+--------
+
+.. autosummary::
+   :toctree: api/dataset
+
+   bob.ip.binseg.data.drive
 
 
 Engines
@@ -179,16 +192,3 @@ Datasets
    bob.ip.binseg.configs.datasets.starechasedb1iostarhrf544
    bob.ip.binseg.configs.datasets.starechasedb1iostarhrf544ssldrive
    bob.ip.binseg.configs.datasets.staretest
-
-Test Units
-----------
-
-.. autosummary::
-   :toctree: api/tests
-
-   bob.ip.binseg.test
-   bob.ip.binseg.test.test_basemetrics
-   bob.ip.binseg.test.test_batchmetrics
-   bob.ip.binseg.test.test_checkpointer
-   bob.ip.binseg.test.test_summary
-   bob.ip.binseg.test.test_transforms
