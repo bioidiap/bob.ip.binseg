@@ -1,13 +1,23 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
+# coding=utf-8
 
-from bob.db.stare import Database as STARE
+"""STARE (training set) for Vessel Segmentation
+
+A subset of the original STARE dataset contains 20 annotated eye fundus images
+with a resolution of 605 x 700 (height x width). Two sets of ground-truth
+vessel annotations are available. The first set by Adam Hoover is commonly used
+for training and testing. The second set by Valentina Kouznetsova acts as a
+“human” baseline.
+
+* Reference: [STARE-2000]_
+* Original resolution (width x height): 700 x 605
+* Configuration resolution: 544 x 544
+* Training samples: 10
+* Split reference: [MANINIS-2016]_
+"""
+
 from bob.ip.binseg.data.transforms import *
-from bob.ip.binseg.data.binsegdataset import BinSegDataset
-
-#### Config ####
-
-transforms = Compose(
+_transforms = Compose(
     [
         RandomRotation(),
         Resize(471),
@@ -19,8 +29,7 @@ transforms = Compose(
     ]
 )
 
-# bob.db.dataset init
-bobdb = STARE(protocol="default")
-
-# PyTorch dataset
-dataset = BinSegDataset(bobdb, split="train", transform=transforms)
+from bob.ip.binseg.data.utils import DelayedSample2TorchDataset
+from bob.ip.binseg.data.stare import dataset as stare
+dataset = DelayedSample2TorchDataset(stare.subsets("default")["train"],
+        transform=_transforms)

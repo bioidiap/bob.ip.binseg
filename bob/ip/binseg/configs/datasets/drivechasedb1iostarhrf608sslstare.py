@@ -1,42 +1,32 @@
-from bob.ip.binseg.configs.datasets.drive608 import dataset as drive
-from bob.ip.binseg.configs.datasets.chasedb1608 import dataset as chase
-from bob.ip.binseg.configs.datasets.iostarvessel608 import dataset as iostar
-from bob.ip.binseg.configs.datasets.hrf608 import dataset as hrf
-from bob.db.stare import Database as STARE
-from bob.ip.binseg.data.transforms import *
-import torch
-from bob.ip.binseg.data.binsegdataset import (
-    BinSegDataset,
-    SSLBinSegDataset,
-    UnLabeledBinSegDataset,
-)
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
+"""STARE (SSL training set) for Vessel Segmentation
 
-#### Config ####
+A subset of the original STARE dataset contains 20 annotated eye fundus images
+with a resolution of 605 x 700 (height x width). Two sets of ground-truth
+vessel annotations are available. The first set by Adam Hoover is commonly used
+for training and testing. The second set by Valentina Kouznetsova acts as a
+“human” baseline.
 
-# PyTorch dataset
-labeled_dataset = torch.utils.data.ConcatDataset([drive, chase, iostar, hrf])
+* Reference: [STARE-2000]_
+* Configuration resolution: 704 x 608 (after padding)
 
-#### Unlabeled STARE TRAIN ####
-unlabeled_transforms = Compose(
-    [
-        Pad((2, 1, 2, 2)),
-        RandomHFlip(),
-        RandomVFlip(),
-        RandomRotation(),
-        ColorJitter(),
-        ToTensor(),
-    ]
-)
+The dataset available in this file is composed of DRIVE, CHASE-DB1, IOSTAR
+vessel and HRF (with annotated samples) and STARE without labels.
+"""
 
-# bob.db.dataset init
-starebobdb = STARE(protocol="default")
+# Labelled bits
+import torch.utils.data
 
-# PyTorch dataset
-unlabeled_dataset = UnLabeledBinSegDataset(
-    starebobdb, split="train", transform=unlabeled_transforms
-)
+from bob.ip.binseg.configs.datasets.drive608 import dataset as _drive
+from bob.ip.binseg.configs.datasets.chasedb1608 import dataset as _chase
+from bob.ip.binseg.configs.datasets.iostarvessel608 import dataset as _iostar
+from bob.ip.binseg.configs.datasets.hrf608 import dataset as _hrf
+_labelled = torch.utils.data.ConcatDataset([_drive, _chase, _iostar, _hrf])
 
-# SSL Dataset
+# Use STARE without labels in this setup
+from .stare import dataset as _unlabelled
 
-dataset = SSLBinSegDataset(labeled_dataset, unlabeled_dataset)
+from bob.ip.binseg.data.utils import SSLDataset
+dataset = SSLDataset(_labelled, _unlabelled)

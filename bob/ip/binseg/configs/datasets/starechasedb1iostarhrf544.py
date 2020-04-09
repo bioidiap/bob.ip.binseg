@@ -1,10 +1,13 @@
-from bob.ip.binseg.configs.datasets.stare544 import dataset as stare
-from bob.ip.binseg.configs.datasets.chasedb1544 import dataset as chase
-from bob.ip.binseg.configs.datasets.iostarvessel544 import dataset as iostar
-from bob.ip.binseg.configs.datasets.hrf544 import dataset as hrf
-import torch
+#!/usr/bin/env python
+# coding=utf-8
 
-#### Config ####
+"""COVD-STARE (training set) for Vessel Segmentation
+"""
 
-# PyTorch dataset
-dataset = torch.utils.data.ConcatDataset([stare, chase, hrf, iostar])
+from bob.ip.binseg.configs.datasets.stare544 import dataset as _stare
+from bob.ip.binseg.configs.datasets.chasedb1544 import dataset as _chase
+from bob.ip.binseg.configs.datasets.iostarvessel544 import dataset as _iostar
+from bob.ip.binseg.configs.datasets.hrf544 import dataset as _hrf
+
+import torch.utils.data
+dataset = torch.utils.data.ConcatDataset([_stare, _chase, _hrf, _iostar])

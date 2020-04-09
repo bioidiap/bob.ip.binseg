@@ -10,19 +10,14 @@ for training and testing. The second set by Valentina Kouznetsova acts as a
 “human” baseline.
 
 * Reference: [STARE-2000]_
-* Original resolution (height x width): 605 x 700
-* Configuration resolution: 608 x 704 (after padding)
+* Original resolution (width x height): 700 x 605
+* Configuration resolution: 704 x 608 (after padding)
 * Training samples: 10
 * Split reference: [MANINIS-2016]_
 """
 
-from bob.db.stare import Database as STARE
 from bob.ip.binseg.data.transforms import *
-from bob.ip.binseg.data.binsegdataset import BinSegDataset
-
-#### Config ####
-
-transforms = Compose(
+_transforms = Compose(
     [
         Pad((2, 1, 2, 2)),  #(left, top, right, bottom)
         RandomHFlip(),
@@ -33,8 +28,7 @@ transforms = Compose(
     ]
 )
 
-# bob.db.dataset init
-bobdb = STARE(protocol="default")
-
-# PyTorch dataset
-dataset = BinSegDataset(bobdb, split="train", transform=transforms)
+from bob.ip.binseg.data.utils import DelayedSample2TorchDataset
+from bob.ip.binseg.data.stare import dataset as stare
+dataset = DelayedSample2TorchDataset(stare.subsets("default")["train"],
+        transform=_transforms)

@@ -7,8 +7,7 @@ The DRIVE database has been established to enable comparative studies on
 segmentation of blood vessels in retinal images.
 
 * Reference: [DRIVE-2004]_
-* This configuration resolution: 544 x 544 (center-crop)
-* Split reference: [DRIVE-2004]_
+* Configuration resolution: 544 x 544
 
 The dataset available in this file is composed of STARE, CHASE-DB1, IOSTAR
 vessel and HRF (with annotated samples) and DRIVE without labels.
