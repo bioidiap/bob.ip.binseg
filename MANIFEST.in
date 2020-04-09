@@ -1,2 +1,3 @@
 include README.rst buildout.cfg COPYING version.txt requirements.txt
 recursive-include doc *.rst *.png *.ico *.txt
+recursive-include bob *.json
