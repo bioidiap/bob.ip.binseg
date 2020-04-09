@@ -19,10 +19,9 @@ def rc_variable_set(name):
     def wrapped_function(test):
         @functools.wraps(test)
         def wrapper(*args, **kwargs):
-            if bob.extension.rc[name]:
-                return test(*args, **kwargs)
-            else:
+            if name not in bob.extension.rc:
                 raise nose.plugins.skip.SkipTest("Bob's RC variable '%s' is not set" % name)
+            return test(*args, **kwargs)
 
         return wrapper
 

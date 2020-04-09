@@ -9,7 +9,6 @@ import bob.extension
 from ..jsondataset import JSONDataset
 from ..loader import load_pil_rgb, load_pil_1
 
-
 _protocols = [
         pkg_resources.resource_filename(__name__, "default.json"),
         pkg_resources.resource_filename(__name__, "second-annotation.json"),
