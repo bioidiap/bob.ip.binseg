@@ -22,9 +22,8 @@ this:
 Datasets
 --------
 
-The package supports a range of retina fundus datasets, but does not install the
-`bob.db` iterator APIs by default, or includes the raw data itself, which you
-must procure.
+The package supports a range of retina fundus datasets, but does not include
+the raw data itself, which you must procure.
 
 To setup a dataset, do the following:
 
@@ -37,16 +36,6 @@ To setup a dataset, do the following:
       Our dataset connectors expect you provide "root" paths of raw datasets as
       you unpack them in their **pristine** state.  Changing the location of
       files within a dataset distribution will likely cause execution errors.
-
-2. Install the corresponding ``bob.db`` package (package names are marked on
-   :ref:`bob.ip.binseg.datasets`) with the following command:
-
-   .. code-block:: sh
-
-      # replace "<package>" by the corresponding package name
-      (<myenv>) $ conda install <package>
-      # example:
-      (<myenv>) $ conda install bob.db.drive #to install DRIVE iterators
 
 3.  For each dataset that you are planning to use, set the ``datadir`` to the
     root path where it is stored.  E.g.:

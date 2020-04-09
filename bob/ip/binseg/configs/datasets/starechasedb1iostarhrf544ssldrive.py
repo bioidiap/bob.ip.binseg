@@ -1,42 +1,29 @@
-from bob.ip.binseg.configs.datasets.stare544 import dataset as stare
-from bob.ip.binseg.configs.datasets.chasedb1544 import dataset as chase
-from bob.ip.binseg.configs.datasets.iostarvessel544 import dataset as iostar
-from bob.ip.binseg.configs.datasets.hrf544 import dataset as hrf
-from bob.db.drive import Database as DRIVE
-from bob.ip.binseg.data.transforms import *
-import torch
-from bob.ip.binseg.data.binsegdataset import (
-    BinSegDataset,
-    SSLBinSegDataset,
-    UnLabeledBinSegDataset,
-)
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
+"""DRIVE (SSL training set) for Vessel Segmentation
 
-#### Config ####
+The DRIVE database has been established to enable comparative studies on
+segmentation of blood vessels in retinal images.
 
-# PyTorch dataset
-labeled_dataset = torch.utils.data.ConcatDataset([stare, chase, iostar, hrf])
+* Reference: [DRIVE-2004]_
+* This configuration resolution: 544 x 544 (center-crop)
+* Split reference: [DRIVE-2004]_
 
-#### Unlabeled STARE TRAIN ####
-unlabeled_transforms = Compose(
-    [
-        CenterCrop((544, 544)),
-        RandomHFlip(),
-        RandomVFlip(),
-        RandomRotation(),
-        ColorJitter(),
-        ToTensor(),
-    ]
-)
+The dataset available in this file is composed of STARE, CHASE-DB1, IOSTAR
+vessel and HRF (with annotated samples) and DRIVE without labels.
+"""
 
-# bob.db.dataset init
-drivebobdb = DRIVE(protocol="default")
+# Labelled bits
+import torch.utils.data
+from bob.ip.binseg.configs.datasets.stare544 import dataset as _stare
+from bob.ip.binseg.configs.datasets.chasedb1544 import dataset as _chase
+from bob.ip.binseg.configs.datasets.iostarvessel544 import dataset as _iostar
+from bob.ip.binseg.configs.datasets.hrf544 import dataset as _hrf
+_labelled = torch.utils.data.ConcatDataset([_stare, _chase, _iostar, _hrf])
 
-# PyTorch dataset
-unlabeled_dataset = UnLabeledBinSegDataset(
-    drivebobdb, split="train", transform=unlabeled_transforms
-)
+# Use DRIVE without labels in this setup
+from .drive import dataset as _unlabelled
 
-# SSL Dataset
-
-dataset = SSLBinSegDataset(labeled_dataset, unlabeled_dataset)
+from bob.ip.binseg.data.utils import SSLDataset
+dataset = SSLDataset(_labelled, _unlabelled)

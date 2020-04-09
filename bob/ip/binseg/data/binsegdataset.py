@@ -5,15 +5,15 @@ import random
 
 
 class BinSegDataset(Dataset):
-    """PyTorch dataset wrapper around bob.db binary segmentation datasets. 
-    A transform object can be passed that will be applied to the image, ground truth and mask (if present). 
+    """PyTorch dataset wrapper around bob.db binary segmentation datasets.
+    A transform object can be passed that will be applied to the image, ground truth and mask (if present).
     It supports indexing such that dataset[i] can be used to get ith sample.
-    
+
     Parameters
-    ---------- 
+    ----------
     bobdb : :py:mod:`bob.db.base`
-        Binary segmentation bob database (e.g. bob.db.drive) 
-    split : str 
+        Binary segmentation bob database (e.g. bob.db.drive)
+    split : str
         ``'train'`` or ``'test'``. Defaults to ``'train'``
     transform : :py:mod:`bob.ip.binseg.data.transforms`, optional
         A transform or composition of transfroms. Defaults to ``None``.
@@ -48,7 +48,7 @@ class BinSegDataset(Dataset):
         Parameters
         ----------
         index : int
-        
+
         Returns
         -------
         list
@@ -68,12 +68,12 @@ class BinSegDataset(Dataset):
 
 
 class SSLBinSegDataset(Dataset):
-    """PyTorch dataset wrapper around bob.db binary segmentation datasets. 
-    A transform object can be passed that will be applied to the image, ground truth and mask (if present). 
+    """PyTorch dataset wrapper around bob.db binary segmentation datasets.
+    A transform object can be passed that will be applied to the image, ground truth and mask (if present).
     It supports indexing such that dataset[i] can be used to get ith sample.
-    
+
     Parameters
-    ---------- 
+    ----------
     labeled_dataset : :py:class:`torch.utils.data.Dataset`
         BinSegDataset with labeled samples
     unlabeled_dataset : :py:class:`torch.utils.data.Dataset`
@@ -98,7 +98,7 @@ class SSLBinSegDataset(Dataset):
         Parameters
         ----------
         index : int
-        
+
         Returns
         -------
         list
@@ -112,15 +112,15 @@ class SSLBinSegDataset(Dataset):
 
 class UnLabeledBinSegDataset(Dataset):
     # TODO: if switch to handle case were not a bob.db object but a path to a directory is used
-    """PyTorch dataset wrapper around bob.db binary segmentation datasets. 
-    A transform object can be passed that will be applied to the image, ground truth and mask (if present). 
+    """PyTorch dataset wrapper around bob.db binary segmentation datasets.
+    A transform object can be passed that will be applied to the image, ground truth and mask (if present).
     It supports indexing such that dataset[i] can be used to get ith sample.
-    
+
     Parameters
-    ---------- 
+    ----------
     dv : :py:mod:`bob.db.base` or str
         Binary segmentation bob database (e.g. bob.db.drive) or path to folder containing unlabeled images
-    split : str 
+    split : str
         ``'train'`` or ``'test'``. Defaults to ``'train'``
     transform : :py:mod:`bob.ip.binseg.data.transforms`, optional
         A transform or composition of transfroms. Defaults to ``None``.
@@ -148,7 +148,7 @@ class UnLabeledBinSegDataset(Dataset):
         Parameters
         ----------
         index : int
-        
+
         Returns
         -------
         list
