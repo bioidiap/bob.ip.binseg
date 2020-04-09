@@ -26,3 +26,6 @@ output
 *.ipynb
 .ipynb_checkpoints
 */.ipynb_checkpoints/*
+submitted.sql3
+logs/
+results/
