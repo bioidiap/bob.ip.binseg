@@ -33,6 +33,7 @@ Datasets
    :toctree: api/dataset
 
    bob.ip.binseg.data.drive
+   bob.ip.binseg.data.stare
 
 
 Engines
@@ -126,8 +127,6 @@ Datasets
    :toctree: api/configs/datasets
    :template: config.rst
 
-   bob.ip.binseg.configs.datasets.amdrive
-   bob.ip.binseg.configs.datasets.amdrivetest
    bob.ip.binseg.configs.datasets.chasedb1
    bob.ip.binseg.configs.datasets.chasedb11024
    bob.ip.binseg.configs.datasets.chasedb11168
