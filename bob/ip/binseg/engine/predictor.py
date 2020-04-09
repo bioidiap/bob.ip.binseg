@@ -14,6 +14,8 @@ import torchvision.transforms.functional as VF
 
 import bob.io.base
 
+from ..utils.summary import summary
+
 import logging
 logger = logging.getLogger(__name__)
 
