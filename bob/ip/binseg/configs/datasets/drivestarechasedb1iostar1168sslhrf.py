@@ -1,43 +1,20 @@
-from bob.ip.binseg.configs.datasets.drive1168 import dataset as drive
-from bob.ip.binseg.configs.datasets.stare1168 import dataset as stare
-from bob.ip.binseg.configs.datasets.chasedb11168 import dataset as chasedb
-from bob.ip.binseg.configs.datasets.iostarvessel1168 import dataset as iostar
-from bob.db.hrf import Database as HRF
-from bob.ip.binseg.data.transforms import *
-import torch
-from bob.ip.binseg.data.binsegdataset import (
-    BinSegDataset,
-    SSLBinSegDataset,
-    UnLabeledBinSegDataset,
-)
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
+"""HRF (SSL training set) for Vessel Segmentation
 
-#### Config ####
+The database includes 15 images of each healthy, diabetic retinopathy (DR), and
+glaucomatous eyes.  It contains 45 eye fundus images with a resolution of 3504
+x 2336. One set of ground-truth vessel annotations is available.
 
-# PyTorch dataset
-labeled_dataset = torch.utils.data.ConcatDataset([drive, stare, iostar, chasedb])
+* Reference: [HRF-2013]_
+* Configuration resolution: 1168 x 1648
 
-#### Unlabeled HRF TRAIN ####
-unlabeled_transforms = Compose(
-    [
-        RandomRotation(),
-        Crop(0, 108, 2336, 3296),
-        Resize((1168)),
-        RandomHFlip(),
-        RandomVFlip(),
-        ColorJitter(),
-        ToTensor(),
-    ]
-)
+The dataset available in this file is composed of STARE, CHASE-DB1, IOSTAR
+vessel and CHASE-DB1 (with annotated samples) and HRF without labels.
+"""
 
-# bob.db.dataset init
-hrfbobdb = HRF(protocol="default")
-
-# PyTorch dataset
-unlabeled_dataset = UnLabeledBinSegDataset(
-    hrfbobdb, split="train", transform=unlabeled_transforms
-)
-
-# SSL Dataset
-
-dataset = SSLBinSegDataset(labeled_dataset, unlabeled_dataset)
+from bob.ip.binseg.configs.datasets.drivestarechasedb1iostar1168 import dataset as _labelled
+from bob.ip.binseg.configs.datasets.hrf1168 import dataset as _unlabelled
+from bob.ip.binseg.data.utils import SSLDataset
+dataset = SSLDataset(_labelled, _unlabelled)

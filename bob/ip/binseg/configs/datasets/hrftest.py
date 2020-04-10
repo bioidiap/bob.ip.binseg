@@ -4,26 +4,20 @@
 """HRF (test set) for Vessel Segmentation
 
 The database includes 15 images of each healthy, diabetic retinopathy (DR), and
-glaucomatous eyes.  It contains 45 eye fundus images with a resolution of 3304
+glaucomatous eyes.  It contains 45 eye fundus images with a resolution of 3504
 x 2336. One set of ground-truth vessel annotations is available.
 
 * Reference: [HRF-2013]_
 * Original resolution (height x width): 2336 x 3504
-* Configuration resolution: 1168 x 1648 (after specific cropping and rescaling)
+* Configuration resolution: 2336 x 3296 (after specific cropping and rescaling)
 * Test samples: 30
 * Split reference: [ORLANDO-2017]_
 """
 
-from bob.db.hrf import Database as HRF
 from bob.ip.binseg.data.transforms import *
-from bob.ip.binseg.data.binsegdataset import BinSegDataset
+_transforms = Compose([Crop(0, 108, 2336, 3296), ToTensor()])
 
-#### Config ####
-
-transforms = Compose([Crop(0, 108, 2336, 3296), ToTensor()])
-
-# bob.db.dataset init
-bobdb = HRF(protocol="default")
-
-# PyTorch dataset
-dataset = BinSegDataset(bobdb, split="test", transform=transforms)
+from bob.ip.binseg.data.utils import DelayedSample2TorchDataset
+from bob.ip.binseg.data.hrf import dataset as hrf
+dataset = DelayedSample2TorchDataset(hrf.subsets("default")["test"],
+        transform=_transforms)

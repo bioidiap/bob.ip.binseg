@@ -26,7 +26,7 @@ from bob.ip.binseg.configs.datasets.hrf608 import dataset as _hrf
 _labelled = torch.utils.data.ConcatDataset([_drive, _chase, _iostar, _hrf])
 
 # Use STARE without labels in this setup
-from .stare import dataset as _unlabelled
+from bob.ip.binseg.configs.datasets.stare import dataset as _unlabelled
 
 from bob.ip.binseg.data.utils import SSLDataset
 dataset = SSLDataset(_labelled, _unlabelled)

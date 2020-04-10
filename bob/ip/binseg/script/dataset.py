@@ -113,13 +113,16 @@ def check(dataset, **kwargs):
     if dataset:  #check only some
         to_check = [k for k in to_check if k.group("name") in dataset]
 
-    if not dataset:
+    if not to_check:
         click.echo("No configured datasets matching specifications")
         click.echo("Try bob binseg dataset list --help to get help in "
                 "configuring a dataset")
     else:
+        errors = 0
         for k in to_check:
             click.echo(f"Checking \"{k.group('name')}\" dataset...")
             module = importlib.import_module(f"...data.{k.group('name')}",
                     __name__)
-            module.dataset.check()
+            errors += module.dataset.check()
+        if not errors:
+            click.echo(f"No errors reported")

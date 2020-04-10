@@ -122,6 +122,8 @@ class JSONDataset:
 
         """
 
+        logger.info(f"Checking dataset at '{self.root_path}'...")
+
         errors = 0
         for proto in self.protocols:
             logger.info(f"Checking protocol '{proto}'...")

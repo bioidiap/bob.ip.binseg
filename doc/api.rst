@@ -148,7 +148,6 @@ Datasets
    bob.ip.binseg.configs.datasets.drive960
    bob.ip.binseg.configs.datasets.drivechasedb1iostarhrf608
    bob.ip.binseg.configs.datasets.drivechasedb1iostarhrf608sslstare
-   bob.ip.binseg.configs.datasets.drivestarechasedb11168
    bob.ip.binseg.configs.datasets.drivestarechasedb1hrf1024
    bob.ip.binseg.configs.datasets.drivestarechasedb1hrf1024ssliostar
    bob.ip.binseg.configs.datasets.drivestarechasedb1iostar1168

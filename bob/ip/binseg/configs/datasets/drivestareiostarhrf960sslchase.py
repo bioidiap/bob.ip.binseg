@@ -23,16 +23,7 @@ The dataset available in this file is composed of STARE, CHASE-DB1, IOSTAR
 vessel and HRF (with annotated samples) and CHASE-DB1 without labels.
 """
 
-# Labelled bits
-import torch.utils.data
-from bob.ip.binseg.configs.datasets.drive960 import dataset as _drive
-from bob.ip.binseg.configs.datasets.stare960 import dataset as _stare
-from bob.ip.binseg.configs.datasets.hrf960 import dataset as _hrf
-from bob.ip.binseg.configs.datasets.iostarvessel960 import dataset as _iostar
-_labelled = torch.utils.data.ConcatDataset([_drive, _stare, _hrf, _iostar])
-
-# Use CHASE-DB1 without labels in this setup
+from bob.ip.binseg.configs.datasets.drivestareiostarhrf960 import dataset as _labelled
 from bob.ip.binseg.configs.datasets.chasedb1 import dataset as _unlabelled
-
 from bob.ip.binseg.data.utils import SSLDataset
 dataset = SSLDataset(_labelled, _unlabelled)

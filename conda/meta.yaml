@@ -79,7 +79,6 @@ test:
     - sphinx
     - sphinx_rtd_theme
     - sphinxcontrib-programoutput
-    - bob.db.hrf
     - bob.db.drionsdb
     - bob.db.rimoner3
     - bob.db.drishtigs1
