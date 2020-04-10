@@ -34,13 +34,16 @@ def test_loading():
     def _check_sample(s):
         data = s.data
         assert isinstance(data, dict)
-        nose.tools.eq_(len(data), 2)
+        nose.tools.eq_(len(data), 3)
         assert "data" in data
         nose.tools.eq_(data["data"].size, (3504, 2336))
         nose.tools.eq_(data["data"].mode, "RGB")
         assert "label" in data
         nose.tools.eq_(data["label"].size, (3504, 2336))
         nose.tools.eq_(data["label"].mode, "1")
+        assert "mask" in data
+        nose.tools.eq_(data["mask"].size, (3504, 2336))
+        nose.tools.eq_(data["mask"].mode, "1")
 
     subset = dataset.subsets("default")
     for s in subset["train"]: _check_sample(s)
@@ -56,12 +59,14 @@ def test_check():
 def test_torch_dataset():
 
     def _check_sample(s):
-        nose.tools.eq_(len(s), 3)
+        nose.tools.eq_(len(s), 4)
         assert isinstance(s[0], str)
         nose.tools.eq_(s[1].size, (1648, 1168))
         nose.tools.eq_(s[1].mode, "RGB")
         nose.tools.eq_(s[2].size, (1648, 1168))
         nose.tools.eq_(s[2].mode, "1")
+        nose.tools.eq_(s[3].size, (1648, 1168))
+        nose.tools.eq_(s[3].mode, "1")
 
 
     transforms = Compose([Crop(0, 108, 2336, 3296), Resize((1168))])

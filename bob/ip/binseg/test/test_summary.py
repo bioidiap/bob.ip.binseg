@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import os
 import unittest
 from bob.ip.binseg.modeling.driu import build_driu
 from bob.ip.binseg.modeling.driuod import build_driuod
@@ -17,27 +18,32 @@ class Tester(unittest.TestCase):
 
     def test_summary_driu(self):
         model = build_driu()
-        param = summary(model)
+        s, param = summary(model)
+        self.assertIsInstance(s, str)
         self.assertIsInstance(param, int)
 
     def test__summary_driuod(self):
         model = build_driuod()
-        param = summary(model)
+        s, param = summary(model)
+        self.assertIsInstance(s, str)
         self.assertIsInstance(param, int)
 
     def test_summary_hed(self):
         model = build_hed()
-        param = summary(model)
+        s, param = summary(model)
+        self.assertIsInstance(s, str)
         self.assertIsInstance(param, int)
 
     def test_summary_unet(self):
         model = build_unet()
-        param = summary(model)
+        s, param = summary(model)
+        self.assertIsInstance(s, str)
         self.assertIsInstance(param, int)
 
     def test_summary_resunet(self):
         model = build_res50unet()
-        param = summary(model)
+        s, param = summary(model)
+        self.assertIsInstance(s, str)
         self.assertIsInstance(param, int)
 
 

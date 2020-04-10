@@ -219,5 +219,7 @@ def run(model, data_loader, device, output_folder, overlayed_folder,
     # Save model summary
     summary_path = os.path.join(output_folder, "model-info.txt")
     logger.info(f"Saving model summary at {summary_path}...")
-
-    with open(summary_path, "w") as f: summary(model, f)
+    with open(summary_path, "wt") as f:
+        r, n = summary(model)
+        logger.info(f"Model has {n} parameters...")
+        f.write(r)

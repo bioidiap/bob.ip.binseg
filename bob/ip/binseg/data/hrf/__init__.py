@@ -38,6 +38,7 @@ def _loader(s):
     return dict(
             data=load_pil_rgb(s["data"]),
             label=load_pil_1(s["label"]),
+            mask=load_pil_1(s["mask"]),
             )
 
 dataset = JSONDataset(protocols=_protocols, root_path=_root_path, loader=_loader)

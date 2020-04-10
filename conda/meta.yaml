@@ -83,7 +83,6 @@ test:
     - bob.db.rimoner3
     - bob.db.drishtigs1
     - bob.db.refuge
-    - bob.db.iostar
 
 about:
   summary: Binary Segmentation Benchmark Package for Bob

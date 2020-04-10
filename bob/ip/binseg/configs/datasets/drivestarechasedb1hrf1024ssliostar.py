@@ -1,35 +1,15 @@
-from bob.ip.binseg.configs.datasets.drive1024 import dataset as drive
-from bob.ip.binseg.configs.datasets.stare1024 import dataset as stare
-from bob.ip.binseg.configs.datasets.hrf1024 import dataset as hrf
-from bob.ip.binseg.configs.datasets.chasedb11024 import dataset as chasedb
-from bob.db.iostar import Database as IOSTAR
-from bob.ip.binseg.data.transforms import *
-import torch
-from bob.ip.binseg.data.binsegdataset import (
-    BinSegDataset,
-    SSLBinSegDataset,
-    UnLabeledBinSegDataset,
-)
+#!/usr/bin/env python
+# coding=utf-8
 
+"""COVD-IOSTAR + SSL (training set) for Vessel Segmentation
 
-#### Config ####
+* Configuration resolution: 1024 x 1024
 
-# PyTorch dataset
-labeled_dataset = torch.utils.data.ConcatDataset([drive, stare, hrf, chasedb])
+The dataset available in this file is composed of DRIVE, STARE, CHASE-DB1, and
+HRF (with annotated samples) and IOSTAR without labels.
+"""
 
-#### Unlabeled IOSTAR Train ####
-unlabeled_transforms = Compose(
-    [RandomHFlip(), RandomVFlip(), RandomRotation(), ColorJitter(), ToTensor()]
-)
-
-# bob.db.dataset init
-iostarbobdb = IOSTAR(protocol="default_vessel")
-
-# PyTorch dataset
-unlabeled_dataset = UnLabeledBinSegDataset(
-    iostarbobdb, split="train", transform=unlabeled_transforms
-)
-
-# SSL Dataset
-
-dataset = SSLBinSegDataset(labeled_dataset, unlabeled_dataset)
+from bob.ip.binseg.configs.datasets.drivestarechasedb1hrf1024 import dataset as _labelled
+from bob.ip.binseg.configs.datasets.iostarvessel import dataset as _unlabelled
+from bob.ip.binseg.data.utils import SSLDataset
+dataset = SSLDataset(_labelled, _unlabelled)

@@ -8,20 +8,28 @@ from functools import reduce
 from torch.nn.modules.module import _addindent
 
 
-def summary(model, file=sys.stderr):
-    """Counts the number of paramters in each layers
+def summary(model):
+    """Counts the number of paramters in each model layer
 
     Parameters
     ----------
+
     model : :py:class:`torch.nn.Module`
+        model to summarize
 
     Returns
     -------
-    int
+
+    repr : str
+        a multiline string representation of the network
+
+    nparam : int
         number of parameters
+
     """
 
     def repr(model):
+
         # We treat the extra repr like the sub-module, one item per line
         extra_lines = []
         extra_repr = model.extra_repr()
@@ -50,13 +58,7 @@ def summary(model, file=sys.stderr):
                 main_str += "\n  " + "\n  ".join(lines) + "\n"
 
         main_str += ")"
-        if file is sys.stderr:
-            main_str += ", \033[92m{:,}\033[0m params".format(total_params)
-        else:
-            main_str += ", {:,} params".format(total_params)
+        main_str += ", {:,} params".format(total_params)
         return main_str, total_params
 
-    string, count = repr(model)
-    if file is not None:
-        print(string, file=file)
-    return count
+    return repr(model)

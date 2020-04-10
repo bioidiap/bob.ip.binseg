@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
+# coding=utf-8
 
-"""IOSTAR (test set) for Optic Disc Segmentation
+"""IOSTAR (training set) for Optic Disc Segmentation
 
 The IOSTAR vessel segmentation dataset includes 30 images with a resolution of
 1024 × 1024 pixels. All the vessels in this dataset are annotated by a group of
@@ -15,16 +15,10 @@ dataset includes annotations for the optic disc and the artery/vein ratio.
 * Split reference: [MEYER-2017]_
 """
 
-from bob.db.iostar import Database as IOSTAR
 from bob.ip.binseg.data.transforms import *
-from bob.ip.binseg.data.binsegdataset import BinSegDataset
+_transforms = Compose([ToTensor()])
 
-#### Config ####
-
-transforms = Compose([ToTensor()])
-
-# bob.db.dataset init
-bobdb = IOSTAR(protocol="default_od")
-
-# PyTorch dataset
-dataset = BinSegDataset(bobdb, split="test", transform=transforms)
+from bob.ip.binseg.data.utils import DelayedSample2TorchDataset
+from bob.ip.binseg.data.iostar import dataset as iostar
+dataset = DelayedSample2TorchDataset(iostar.subsets("optic-disc")["test"],
+        transform=_transforms)

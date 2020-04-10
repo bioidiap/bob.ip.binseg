@@ -34,6 +34,8 @@ Datasets
    bob.ip.binseg.data.drive
    bob.ip.binseg.data.stare
    bob.ip.binseg.data.chasedb1
+   bob.ip.binseg.data.hrf
+   bob.ip.binseg.data.iostar
 
 
 Engines
@@ -169,7 +171,6 @@ Datasets
    bob.ip.binseg.configs.datasets.iostarvessel
    bob.ip.binseg.configs.datasets.iostarvessel1168
    bob.ip.binseg.configs.datasets.iostarvessel544
-   bob.ip.binseg.configs.datasets.iostarvessel544test
    bob.ip.binseg.configs.datasets.iostarvessel608
    bob.ip.binseg.configs.datasets.iostarvessel960
    bob.ip.binseg.configs.datasets.iostarvesseltest

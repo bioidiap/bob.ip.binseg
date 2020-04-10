@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
+# coding=utf-8
 
 """IOSTAR (training set) for Vessel Segmentation
 
@@ -15,18 +15,18 @@ dataset includes annotations for the optic disc and the artery/vein ratio.
 * Split reference: [MEYER-2017]_
 """
 
-from bob.db.iostar import Database as IOSTAR
 from bob.ip.binseg.data.transforms import *
-from bob.ip.binseg.data.binsegdataset import BinSegDataset
-
-#### Config ####
-
-transforms = Compose(
-    [RandomHFlip(), RandomVFlip(), RandomRotation(), ColorJitter(), ToTensor()]
+_transforms = Compose(
+    [
+        RandomHFlip(),
+        RandomVFlip(),
+        RandomRotation(),
+        ColorJitter(),
+        ToTensor(),
+    ]
 )
 
-# bob.db.dataset init
-bobdb = IOSTAR(protocol="default_vessel")
-
-# PyTorch dataset
-dataset = BinSegDataset(bobdb, split="train", transform=transforms)
+from bob.ip.binseg.data.utils import DelayedSample2TorchDataset
+from bob.ip.binseg.data.iostar import dataset as iostar
+dataset = DelayedSample2TorchDataset(iostar.subsets("vessel")["train"],
+        transform=_transforms)

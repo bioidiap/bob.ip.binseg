@@ -17,7 +17,6 @@ import bob.io.base
 
 from ..utils.metric import base_metrics
 from ..utils.plot import precision_recall_f1iso_confintval
-from ..utils.summary import summary
 
 import logging
 logger = logging.getLogger(__name__)
