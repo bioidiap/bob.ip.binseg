@@ -58,6 +58,11 @@ test:
     - bob binseg config describe drive -v
     - bob binseg config copy --help
     - bob binseg config copy drive /tmp/test.py
+    - bob binseg dataset --help
+    - bob binseg dataset list --help
+    - bob binseg dataset list
+    - bob binseg dataset check --help
+    - bob binseg dataset check
     - bob binseg train --help
     - bob binseg predict --help
     - bob binseg evaluate --help
