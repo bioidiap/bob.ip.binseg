@@ -1,9 +1,12 @@
 #!/usr/bin/env python
 # coding=utf-8
 
+import os
+import pkg_resources
 import importlib
 import click
 
+from bob.extension import rc
 from bob.extension.scripts.click_helper import (
     verbosity_option,
     AliasedGroup,
@@ -14,6 +17,20 @@ import logging
 logger = logging.getLogger(__name__)
 
 
+def _get_supported_datasets():
+    """Returns a list of supported dataset names
+    """
+
+    basedir = pkg_resources.resource_filename(__name__, '')
+    basedir = os.path.join(os.path.dirname(basedir), 'data')
+
+    retval = []
+    for k in os.listdir(basedir):
+        candidate = os.path.join(basedir, k)
+        if os.path.isdir(candidate) and 'test.py' in os.listdir(candidate):
+            retval.append(k)
+    return retval
+
 def _get_installed_datasets():
     """Returns a list of installed datasets as regular expressions
 
@@ -23,7 +40,6 @@ def _get_installed_datasets():
     """
 
     import re
-    from bob.extension import rc
     dataset_re = re.compile(r'^bob\.ip\.binseg\.(?P<name>[^\.]+)\.datadir$')
     return [dataset_re.match(k) for k in rc.keys() if dataset_re.match(k)]
 
@@ -44,27 +60,28 @@ def dataset():
 \b
        $ bob config set "bob.ip.binseg.drive.datadir" "/path/to/drive/files"
 
-       Notice this setting is **NOT** case-insensitive.
+       Notice this setting **is** case-insensitive.
 
-    2. List all raw datasets available (and configured):
+    2. List all raw datasets supported (and configured):
 
-       $ bob binseg dataset list -vv
+       $ bob binseg dataset list
 
 """,
 )
 @verbosity_option()
 def list(**kwargs):
-    """Lists all installed datasets"""
+    """Lists all supported and configured datasets"""
 
+    supported = _get_supported_datasets()
     installed = _get_installed_datasets()
-    if installed:
-        click.echo("Configured datasets:")
-        for k in installed:
-            value = bob.extension.rc.get(k.group(0))
-            click.echo(f"- {k.group('name')}: {k.group(0)} = \"{value}\"")
-    else:
-        click.echo("No configured datasets")
-        click.echo("Try --help to get help in configuring a dataset")
+    installed = dict((k.group("name"), k.group(0)) for k in installed)
+
+    click.echo("Supported datasets:")
+    for k in supported:
+        if k in installed:
+            click.echo(f"- {k}: {installed[k]} = \"{rc.get(installed[k])}\"")
+        else:
+            click.echo(f"* {k}: bob.ip.binseg.{k}.datadir (not set)")
 
 
 @dataset.command(

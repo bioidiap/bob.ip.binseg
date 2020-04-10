@@ -16,7 +16,6 @@ to generate iterators for training and testing.
 
    * - Dataset
      - Reference
-     - ``bob.db`` package
      - H x W
      - Samples
      - Mask
@@ -28,7 +27,6 @@ to generate iterators for training and testing.
      - Test
    * - DRIVE_
      - [DRIVE-2004]_
-     - ``bob.db.drive``
      - 584 x 565
      - 40
      - x
@@ -40,7 +38,6 @@ to generate iterators for training and testing.
      - 20
    * - STARE_
      - [STARE-2000]_
-     - ``bob.db.stare``
      - 605 x 700
      - 20
      -
@@ -64,7 +61,6 @@ to generate iterators for training and testing.
      - 20
    * - HRF_
      - [HRF-2013]_
-     - ``bob.db.hrf``
      - 2336 x 3504
      - 45
      - x
@@ -76,7 +72,6 @@ to generate iterators for training and testing.
      - 30
    * - IOSTAR_
      - [IOSTAR-2016]_
-     - ``bob.db.iostar``
      - 1024 x 1024
      - 30
      - x
@@ -88,7 +83,6 @@ to generate iterators for training and testing.
      - 10
    * - DRIONS-DB_
      - [DRIONSDB-2008]_
-     - ``bob.db.drionsdb``
      - 400 x 600
      - 110
      -
@@ -100,7 +94,6 @@ to generate iterators for training and testing.
      - 50
    * - `RIM-ONE r3`_
      - [RIMONER3-2015]_
-     - ``bob.db.rimoner3``
      - 1424 x 1072
      - 159
      -
@@ -112,7 +105,6 @@ to generate iterators for training and testing.
      - 60
    * - Drishti-GS1_
      - [DRISHTIGS1-2014]_
-     - ``bob.db.drishtigs1``
      - varying
      - 101
      -
@@ -124,7 +116,6 @@ to generate iterators for training and testing.
      - 51
    * - REFUGE_ (train)
      - [REFUGE-2018]_
-     - ``bob.db.refuge``
      - 2056 x 2124
      - 400
      -
@@ -136,7 +127,6 @@ to generate iterators for training and testing.
      -
    * - REFUGE_ (val)
      - [REFUGE-2018]_
-     - ``bob.db.refuge``
      - 1634 x 1634
      - 400
      -

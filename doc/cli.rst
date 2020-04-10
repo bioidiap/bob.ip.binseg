@@ -13,6 +13,37 @@ applications can be retrieved using:
 .. command-output:: bob binseg --help
 
 
+Setup
+-----
+
+A CLI application to list and check installed (raw) datasets.
+
+.. _bob.ip.binseg.cli.dataset:
+
+.. command-output:: bob binseg dataset --help
+
+
+List available datasets
+=======================
+
+Lists supported and configured raw datasets.
+
+.. _bob.ip.binseg.cli.dataset.list:
+
+.. command-output:: bob binseg dataset list --help
+
+
+Check available datasets
+========================
+
+Checks if we can load all files listed for a given dataset (all subsets in all
+protocols).
+
+.. _bob.ip.binseg.cli.dataset.check:
+
+.. command-output:: bob binseg dataset check --help
+
+
 Preset Configuration Resources
 ------------------------------
 

@@ -37,48 +37,36 @@ To setup a dataset, do the following:
       you unpack them in their **pristine** state.  Changing the location of
       files within a dataset distribution will likely cause execution errors.
 
-3.  For each dataset that you are planning to use, set the ``datadir`` to the
+2.  For each dataset that you are planning to use, set the ``datadir`` to the
     root path where it is stored.  E.g.:
 
     .. code-block:: sh
 
-       (<myenv>) $ bob config set bob.db.drive.datadir "/path/to/drivedataset/"
+       (<myenv>) $ bob config set bob.ip.binseg.drive.datadir "/path/to/drive"
 
-    To check your current setup, do the following:
+    To check supported raw datasets and your current setup, do the following:
 
     .. code-block:: sh
 
-       (<myenv>) $ bob config show
-       {
-           "bob.db.chasedb1.datadir": "/path/to/chasedb1/",
-           "bob.db.drionsdb.datadir": "/path/to/drionsdb",
-           "bob.db.drive.datadir": "/path/to/drive",
-           "bob.db.hrf.datadir": "/path/to/hrf",
-       }
+       (<myenv>) $ bob binseg dataset list
+       Supported datasets:
+       - drive: bob.ip.binseg.drive.datadir = "/Users/andre/work/bob/dbs/drive"
+       * stare: bob.ip.binseg.stare.datadir (not set)
 
-    This command will show the set location for each configured dataset.  These
-    paths are automatically used by the dataset iterators provided by the
-    ``bob.db`` packages to find the raw datafiles.
+    This command will show the set location for each configured dataset, and
+    the variable names for each supported dataset which has not yet been setup.
 
-4. To check whether the downloaded version is consistent with the structure
-   that is expected by our ``bob.db`` packages, run ``bob_dbmanage.py
-   <dataset> checkfiles``, where ``<dataset>`` should be replaced by the
+3. To check whether the downloaded version is consistent with the structure
+   that is expected by this package, run ``bob binseg dataset check
+   <dataset>``, where ``<dataset>`` should be replaced by the
    dataset programmatic name. E.g., to check DRIVE files, use:
 
    .. code-block:: sh
 
-      (<myenv>) $ bob_dbmanage.py drive checkfiles
-      > checkfiles completed sucessfully
+      (<myenv>) $ bob binseg dataset check drive
+      ...
 
    If there are problems on the current file organisation, this procedure
-   should detect and highlight which files are missing.
-
-   .. tip::
-
-      The programmatic name of datasets follow the ``bob.db.<dataset>``
-      nomenclature.  For example, the programmatic name of CHASE-DB1 is
-      ``chasedb1``, because the package name implementing iterators to its
-      files is ``bob.db.chasedb1``.
-
+   should detect and highlight which files are missing (cannot be loaded).
 
 .. include:: links.rst
