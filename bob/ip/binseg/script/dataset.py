@@ -60,7 +60,7 @@ def dataset():
 \b
        $ bob config set "bob.ip.binseg.drive.datadir" "/path/to/drive/files"
 
-       Notice this setting **is** case-insensitive.
+       Notice this setting **is** case-sensitive.
 
     2. List all raw datasets supported (and configured):
 
