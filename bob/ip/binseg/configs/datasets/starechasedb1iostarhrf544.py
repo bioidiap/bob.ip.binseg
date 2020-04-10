@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding=utf-8
 
-"""COVD-STARE (training set) for Vessel Segmentation
+"""COVD-DRIVE (training set) for Vessel Segmentation
 """
 
 from bob.ip.binseg.configs.datasets.stare544 import dataset as _stare
