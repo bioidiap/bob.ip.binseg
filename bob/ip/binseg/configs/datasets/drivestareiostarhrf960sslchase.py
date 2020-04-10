@@ -1,42 +1,38 @@
-from bob.ip.binseg.configs.datasets.drive960 import dataset as drive
-from bob.ip.binseg.configs.datasets.stare960 import dataset as stare
-from bob.ip.binseg.configs.datasets.hrf960 import dataset as hrf
-from bob.ip.binseg.configs.datasets.iostarvessel960 import dataset as iostar
-from bob.db.chasedb1 import Database as CHASE
-from bob.ip.binseg.data.transforms import *
-import torch
-from bob.ip.binseg.data.binsegdataset import (
-    BinSegDataset,
-    SSLBinSegDataset,
-    UnLabeledBinSegDataset,
-)
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
+"""CHASE-DB1 (SSL training set) for Vessel Segmentation
 
-#### Config ####
+The CHASE_DB1 is a retinal vessel reference dataset acquired from multiethnic
+school children. This database is a part of the Child Heart and Health Study in
+England (CHASE), a cardiovascular health survey in 200 primary schools in
+London, Birmingham, and Leicester. The ocular imaging was carried out in
+46 schools and demonstrated associations between retinal vessel tortuosity and
+early risk factors for cardiovascular disease in over 1000 British primary
+school children of different ethnic origin. The retinal images of both of the
+eyes of each child were recorded with a hand-held Nidek NM-200-D fundus camera.
+The images were captured at 30 degrees FOV camera. The dataset of images are
+characterized by having nonuniform back-ground illumination, poor contrast of
+blood vessels as compared with the background and wider arteriolars that have a
+bright strip running down the centre known as the central vessel reflex.
 
-# PyTorch dataset
-labeled_dataset = torch.utils.data.ConcatDataset([drive, stare, hrf, iostar])
+* Reference: [CHASEDB1-2012]_
+* Configuration resolution (height x width): 960 x 960
 
-#### Unlabeled CHASE TRAIN ####
-unlabeled_transforms = Compose(
-    [
-        Crop(0, 18, 960, 960),
-        RandomHFlip(),
-        RandomVFlip(),
-        RandomRotation(),
-        ColorJitter(),
-        ToTensor(),
-    ]
-)
+The dataset available in this file is composed of STARE, CHASE-DB1, IOSTAR
+vessel and HRF (with annotated samples) and CHASE-DB1 without labels.
+"""
 
-# bob.db.dataset init
-chasebobdb = CHASE(protocol="default")
+# Labelled bits
+import torch.utils.data
+from bob.ip.binseg.configs.datasets.drive960 import dataset as _drive
+from bob.ip.binseg.configs.datasets.stare960 import dataset as _stare
+from bob.ip.binseg.configs.datasets.hrf960 import dataset as _hrf
+from bob.ip.binseg.configs.datasets.iostarvessel960 import dataset as _iostar
+_labelled = torch.utils.data.ConcatDataset([_drive, _stare, _hrf, _iostar])
 
-# PyTorch dataset
-unlabeled_dataset = UnLabeledBinSegDataset(
-    chasebobdb, split="train", transform=unlabeled_transforms
-)
+# Use CHASE-DB1 without labels in this setup
+from bob.ip.binseg.configs.datasets.chasedb1 import dataset as _unlabelled
 
-# SSL Dataset
-
-dataset = SSLBinSegDataset(labeled_dataset, unlabeled_dataset)
+from bob.ip.binseg.data.utils import SSLDataset
+dataset = SSLDataset(_labelled, _unlabelled)

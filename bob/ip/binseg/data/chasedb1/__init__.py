@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
+# coding=utf-8
 
-"""CHASE-DB1 (test set) for Vessel Segmentation
+"""CHASE-DB1 dataset for Vessel Segmentation
 
 The CHASE_DB1 is a retinal vessel reference dataset acquired from multiethnic
 school children. This database is a part of the Child Heart and Health Study in
@@ -18,20 +18,40 @@ bright strip running down the centre known as the central vessel reflex.
 
 * Reference: [CHASEDB1-2012]_
 * Original resolution (height x width): 960 x 999
-* Configuration resolution: 960 x 960 (after hand-specified crop)
-* Test samples: 20
 * Split reference: [CHASEDB1-2012]_
+* Protocol ``default``:
+
+  * Training samples: 8 (including labels from annotator "1stHO")
+  * Test samples: 20 (including labels from annotator "1stHO")
+
+* Protocol ``second-annotation``:
+
+  * Training samples: 8 (including labels from annotator "2ndHO")
+  * Test samples: 20 (including labels from annotator "2ndHO")
+
 """
 
-from bob.ip.binseg.data.transforms import *
-_transforms = Compose(
-    [
-        Crop(0, 18, 960, 960),  #(upper, left, height, width)
-        ToTensor(),
-    ]
-)
+import os
+import pkg_resources
 
-from bob.ip.binseg.data.utils import DelayedSample2TorchDataset
-from bob.ip.binseg.data.chasedb1 import dataset as chasedb1
-dataset = DelayedSample2TorchDataset(chasedb1.subsets("default")["test"],
-        transform=_transforms)
+import bob.extension
+
+from ..jsondataset import JSONDataset
+from ..loader import load_pil_rgb, load_pil_1
+
+_protocols = [
+        pkg_resources.resource_filename(__name__, "default.json"),
+        pkg_resources.resource_filename(__name__, "second-annotation.json"),
+        ]
+
+_root_path = bob.extension.rc.get('bob.ip.binseg.chasedb1.datadir',
+        os.path.realpath(os.curdir))
+
+def _loader(s):
+    return dict(
+            data=load_pil_rgb(s["data"]),
+            label=load_pil_1(s["label"]),
+            )
+
+dataset = JSONDataset(protocols=_protocols, root_path=_root_path, loader=_loader)
+"""CHASE-DB1 dataset object"""

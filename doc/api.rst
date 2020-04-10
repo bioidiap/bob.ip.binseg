@@ -15,7 +15,6 @@ Data Manipulation
 .. autosummary::
    :toctree: api/data
 
-   bob.ip.binseg.data
    bob.ip.binseg.data.binsegdataset
    bob.ip.binseg.data.folderdataset
    bob.ip.binseg.data.csvdataset
@@ -34,6 +33,7 @@ Datasets
 
    bob.ip.binseg.data.drive
    bob.ip.binseg.data.stare
+   bob.ip.binseg.data.chasedb1
 
 
 Engines

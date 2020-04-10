@@ -2,7 +2,7 @@
 # coding=utf-8
 
 
-"""Tests for DRIVE"""
+"""Tests for STARE"""
 
 import os
 import nose.tools
@@ -41,7 +41,7 @@ def test_protocol_consitency():
         assert s.key.startswith(os.path.join("stare-images", "im0"))
 
 
-@rc_variable_set('bob.db.stare.datadir')
+@rc_variable_set('bob.ip.binseg.stare.datadir')
 def test_loading():
 
     def _check_sample(s):
@@ -63,12 +63,12 @@ def test_loading():
     for s in subset["test"]: _check_sample(s)
 
 
-@rc_variable_set('bob.db.drive.datadir')
+@rc_variable_set('bob.ip.binseg.drive.datadir')
 def test_check():
     nose.tools.eq_(dataset.check(), 0)
 
 
-@rc_variable_set('bob.db.drive.datadir')
+@rc_variable_set('bob.ip.binseg.drive.datadir')
 def test_torch_dataset():
 
     def _check_sample(s):

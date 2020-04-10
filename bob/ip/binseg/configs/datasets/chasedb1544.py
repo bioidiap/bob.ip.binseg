@@ -1,13 +1,5 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
-from bob.db.chasedb1 import Database as CHASEDB1
 from bob.ip.binseg.data.transforms import *
-from bob.ip.binseg.data.binsegdataset import BinSegDataset
-
-#### Config ####
-
-transforms = Compose(
+_transforms = Compose(
     [
         Resize(544),
         Crop(0, 12, 544, 544),
@@ -19,8 +11,7 @@ transforms = Compose(
     ]
 )
 
-# bob.db.dataset init
-bobdb = CHASEDB1(protocol="default")
-
-# PyTorch dataset
-dataset = BinSegDataset(bobdb, split="train", transform=transforms)
+from bob.ip.binseg.data.utils import DelayedSample2TorchDataset
+from bob.ip.binseg.data.chasedb1 import dataset as chasedb1
+dataset = DelayedSample2TorchDataset(chasedb1.subsets("default")["train"],
+        transform=_transforms)

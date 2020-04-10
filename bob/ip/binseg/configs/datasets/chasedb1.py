@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
+# coding=utf-8
 
 """CHASE-DB1 (training set) for Vessel Segmentation
 
@@ -19,18 +19,12 @@ bright strip running down the centre known as the central vessel reflex.
 * Reference: [CHASEDB1-2012]_
 * Original resolution (height x width): 960 x 999
 * Configuration resolution: 960 x 960 (after hand-specified crop)
-* Training samples: 20
+* Training samples: 8
 * Split reference: [CHASEDB1-2012]_
 """
 
-
-from bob.db.chasedb1 import Database as CHASEDB1
 from bob.ip.binseg.data.transforms import *
-from bob.ip.binseg.data.binsegdataset import BinSegDataset
-
-#### Config ####
-
-transforms = Compose(
+_transforms = Compose(
     [
         Crop(0, 18, 960, 960),  #(upper, left, height, width)
         RandomHFlip(),
@@ -41,8 +35,7 @@ transforms = Compose(
     ]
 )
 
-# bob.db.dataset init
-bobdb = CHASEDB1(protocol="default")
-
-# PyTorch dataset
-dataset = BinSegDataset(bobdb, split="train", transform=transforms)
+from bob.ip.binseg.data.utils import DelayedSample2TorchDataset
+from bob.ip.binseg.data.chasedb1 import dataset as chasedb1
+dataset = DelayedSample2TorchDataset(chasedb1.subsets("default")["train"],
+        transform=_transforms)

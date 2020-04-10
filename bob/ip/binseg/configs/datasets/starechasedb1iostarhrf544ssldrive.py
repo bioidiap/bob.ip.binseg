@@ -22,7 +22,7 @@ from bob.ip.binseg.configs.datasets.hrf544 import dataset as _hrf
 _labelled = torch.utils.data.ConcatDataset([_stare, _chase, _iostar, _hrf])
 
 # Use DRIVE without labels in this setup
-from .drive import dataset as _unlabelled
+from bob.ip.binseg.configs.datasets.drive import dataset as _unlabelled
 
 from bob.ip.binseg.data.utils import SSLDataset
 dataset = SSLDataset(_labelled, _unlabelled)
