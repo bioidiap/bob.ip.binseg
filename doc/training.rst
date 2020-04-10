@@ -149,13 +149,13 @@ card, for semi-supervised learning of COVD- systems.  Use it like this:
     - :py:mod:`covd-chasedb1-ssl <bob.ip.binseg.configs.datasets.drivestareiostarhrf960sslchase>`
     - :py:mod:`covd-iostar-vessel-ssl <bob.ip.binseg.configs.datasets.drivestarechasedb1hrf1024ssliostar>`
     - :py:mod:`covd-hrf-ssl <bob.ip.binseg.configs.datasets.drivestarechasedb1iostar1168sslhrf>`
-  * - :py:mod:`driu-ssl <bob.ip.binseg.configs.models.driussl>` / :py:mod:`driu-bn <bob.ip.binseg.configs.models.driubnssl>`
+  * - :py:mod:`driu-ssl <bob.ip.binseg.configs.models.driussl>` / :py:mod:`driu-bn-ssl <bob.ip.binseg.configs.models.driubnssl>`
     - 4
     - 4
     - 2
     - 1
     - 1
-  * - :py:mod:`m2unet <bob.ip.binseg.configs.models.m2unetssl>`
+  * - :py:mod:`m2unet-ssl <bob.ip.binseg.configs.models.m2unetssl>`
     - 4
     - 4
     - 2
