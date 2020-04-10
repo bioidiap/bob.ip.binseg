@@ -142,7 +142,6 @@ Datasets
    bob.ip.binseg.configs.datasets.dristhigs1odtest
    bob.ip.binseg.configs.datasets.drive
    bob.ip.binseg.configs.datasets.drive1024
-   bob.ip.binseg.configs.datasets.drive1024test
    bob.ip.binseg.configs.datasets.drive1168
    bob.ip.binseg.configs.datasets.drive608
    bob.ip.binseg.configs.datasets.drive960
