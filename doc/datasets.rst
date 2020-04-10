@@ -49,7 +49,6 @@ to generate iterators for training and testing.
      - 10
    * - CHASE-DB1_
      - [CHASEDB1-2012]_
-     - ``bob.db.chasedb``
      - 960 x 999
      - 28
      -
