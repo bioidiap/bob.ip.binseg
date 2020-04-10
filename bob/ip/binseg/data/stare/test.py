@@ -63,12 +63,12 @@ def test_loading():
     for s in subset["test"]: _check_sample(s)
 
 
-@rc_variable_set('bob.ip.binseg.drive.datadir')
+@rc_variable_set('bob.ip.binseg.stare.datadir')
 def test_check():
     nose.tools.eq_(dataset.check(), 0)
 
 
-@rc_variable_set('bob.ip.binseg.drive.datadir')
+@rc_variable_set('bob.ip.binseg.stare.datadir')
 def test_torch_dataset():
 
     def _check_sample(s):
