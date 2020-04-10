@@ -46,7 +46,7 @@ def _get_installed_datasets():
 
 @click.group(cls=AliasedGroup)
 def dataset():
-    """Commands for listing, describing and copying configuration resources"""
+    """Commands for listing and verifying datasets"""
     pass
 
 
