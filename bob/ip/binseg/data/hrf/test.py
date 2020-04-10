@@ -2,7 +2,7 @@
 # coding=utf-8
 
 
-"""Tests for STARE"""
+"""Tests for HRF"""
 
 import os
 import nose.tools
@@ -47,12 +47,12 @@ def test_loading():
     for s in subset["test"]: _check_sample(s)
 
 
-@rc_variable_set('bob.ip.binseg.stare.datadir')
+@rc_variable_set('bob.ip.binseg.hrf.datadir')
 def test_check():
     nose.tools.eq_(dataset.check(), 0)
 
 
-@rc_variable_set('bob.ip.binseg.stare.datadir')
+@rc_variable_set('bob.ip.binseg.hrf.datadir')
 def test_torch_dataset():
 
     def _check_sample(s):
