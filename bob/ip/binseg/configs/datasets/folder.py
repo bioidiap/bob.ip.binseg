@@ -37,7 +37,7 @@ possible.
 """
 
 # add your transforms below - these are just examples
-from bob.ip.binseg.data.transforms import *
+from bob.ip.binseg.data.transforms import CenterCrop
 _transforms = [
         #CenterCrop((544, 544)),
     ]

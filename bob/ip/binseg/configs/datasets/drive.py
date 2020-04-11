@@ -13,14 +13,9 @@ segmentation of blood vessels in retinal images.
 * Split reference: [DRIVE-2004]_
 """
 
-from bob.ip.binseg.data.transforms import *
-_transforms = [
-        CenterCrop((544, 544)),
-        RandomHFlip(),
-        RandomVFlip(),
-        RandomRotation(),
-        ColorJitter(),
-        ]
+from bob.ip.binseg.data.transforms import CenterCrop
+from bob.ip.binseg.configs.datasets.utils import DATA_AUGMENTATION as _DA
+_transforms = [CenterCrop((544, 544))] + _DA
 
 from bob.ip.binseg.data.utils import SampleList2TorchDataset
 from bob.ip.binseg.data.drive import dataset as drive

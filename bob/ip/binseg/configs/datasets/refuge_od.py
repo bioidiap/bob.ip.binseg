@@ -21,15 +21,9 @@ dataset of retinal fundus images.
 
 """
 
-from bob.ip.binseg.data.transforms import *
-_transforms = [
-        Resize((1539)),
-        Pad((21, 46, 22, 47)),
-        RandomHFlip(),
-        RandomVFlip(),
-        RandomRotation(),
-        ColorJitter(),
-        ]
+from bob.ip.binseg.data.transforms import Resize, Pad
+from bob.ip.binseg.configs.datasets.utils import DATA_AUGMENTATION as _DA
+_transforms = [Resize((1539)), Pad((21, 46, 22, 47))] + _DA
 
 from bob.db.refuge import Database as REFUGE
 bobdb = REFUGE(protocol="default_od")

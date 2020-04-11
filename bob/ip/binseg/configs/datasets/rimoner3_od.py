@@ -16,14 +16,9 @@ baseline.
 * Split reference: [MANINIS-2016]_
 """
 
-from bob.ip.binseg.data.transforms import *
-_transforms = [
-        Pad((8, 8, 8, 8)),
-        RandomHFlip(),
-        RandomVFlip(),
-        RandomRotation(),
-        ColorJitter(),
-        ]
+from bob.ip.binseg.data.transforms import Pad
+from bob.ip.binseg.configs.datasets.utils import DATA_AUGMENTATION as _DA
+_transforms = [Pad((8, 8, 8, 8))] + _DA
 
 from bob.db.rimoner3 import Database as RIMONER3
 bobdb = RIMONER3(protocol="default_od")

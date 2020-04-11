@@ -21,22 +21,12 @@ and notching information.
 * Split reference: [DRISHTIGS1-2014]_
 """
 
+from bob.ip.binseg.data.transforms import CenterCrop
+from bob.ip.binseg.configs.datasets.utils import DATA_AUGMENTATION as _DA
+_transforms = [CenterCrop((1760, 2048))] + _DA
+
 from bob.db.drishtigs1 import Database as DRISHTI
-from bob.ip.binseg.data.transforms import *
-from bob.ip.binseg.data.binsegdataset import BinSegDataset
-
-#### Config ####
-
-_transforms = [
-        CenterCrop((1760, 2048)),
-        RandomHFlip(),
-        RandomVFlip(),
-        RandomRotation(),
-        ColorJitter(),
-        ]
-
-# bob.db.dataset init
 bobdb = DRISHTI(protocol="default_cup")
 
-# PyTorch dataset
+from bob.ip.binseg.data.binsegdataset import BinSegDataset
 dataset = BinSegDataset(bobdb, split="train", transforms=_transforms)

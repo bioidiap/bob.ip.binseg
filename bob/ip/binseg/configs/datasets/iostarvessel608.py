@@ -15,15 +15,9 @@ dataset includes annotations for the optic disc and the artery/vein ratio.
 * Split reference: [MEYER-2017]_
 """
 
-from bob.ip.binseg.data.transforms import *
-_transforms = [
-        Pad((81, 0, 81, 0)),
-        Resize(608),
-        RandomHFlip(),
-        RandomVFlip(),
-        RandomRotation(),
-        ColorJitter(),
-        ]
+from bob.ip.binseg.data.transforms import Pad, Resize
+from bob.ip.binseg.configs.datasets.utils import DATA_AUGMENTATION as _DA
+_transforms = [Pad((81, 0, 81, 0)), Resize(608)] + _DA
 
 from bob.ip.binseg.data.utils import SampleList2TorchDataset
 from bob.ip.binseg.data.iostar import dataset as iostar

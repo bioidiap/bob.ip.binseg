@@ -16,14 +16,8 @@ dataset includes annotations for the optic disc and the artery/vein ratio.
 """
 
 from bob.ip.binseg.data.transforms import *
-_transforms = [
-        RandomHFlip(),
-        RandomVFlip(),
-        RandomRotation(),
-        ColorJitter(),
-        ]
-
+from bob.ip.binseg.configs.datasets.utils import DATA_AUGMENTATION as _DA
 from bob.ip.binseg.data.utils import SampleList2TorchDataset
 from bob.ip.binseg.data.iostar import dataset as iostar
 dataset = SampleList2TorchDataset(iostar.subsets("vessel")["train"],
-        transforms=_transforms)
+        transforms=_DA)

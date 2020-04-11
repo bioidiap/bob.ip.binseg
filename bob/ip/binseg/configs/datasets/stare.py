@@ -16,14 +16,9 @@ for training and testing. The second set by Valentina Kouznetsova acts as a
 * Split reference: [MANINIS-2016]_
 """
 
-from bob.ip.binseg.data.transforms import *
-_transforms = [
-        Pad((2, 1, 2, 2)),  #(left, top, right, bottom)
-        RandomHFlip(),
-        RandomVFlip(),
-        RandomRotation(),
-        ColorJitter(),
-        ]
+from bob.ip.binseg.data.transforms import Pad
+from bob.ip.binseg.configs.datasets.utils import DATA_AUGMENTATION as _DA
+_transforms = [Pad((2, 1, 2, 2))] + _DA
 
 from bob.ip.binseg.data.utils import SampleList2TorchDataset
 from bob.ip.binseg.data.stare import dataset as stare

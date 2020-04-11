@@ -18,16 +18,11 @@ baseline.
 * Split reference: [MANINIS-2016]_
 """
 
-from bob.db.drionsdb import Database as DRIONS
-from bob.ip.binseg.data.transforms import *
-from bob.ip.binseg.data.binsegdataset import BinSegDataset
-
-#### Config ####
-
+from bob.ip.binseg.data.transforms import Pad
 _transforms = [Pad((4, 8, 4, 8))]
 
-# bob.db.dataset init
+from bob.db.drionsdb import Database as DRIONS
 bobdb = DRIONS(protocol="default")
 
-# PyTorch dataset
+from bob.ip.binseg.data.binsegdataset import BinSegDataset
 dataset = BinSegDataset(bobdb, split="test", transforms=_transforms)

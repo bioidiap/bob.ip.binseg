@@ -67,14 +67,11 @@ See:
 """
 
 # add your transforms below - these are just examples
-from bob.ip.binseg.data.transforms import *
+from bob.ip.binseg.data.transforms import CenterCrop
+#from bob.ip.binseg.configs.datasets.utils import DATA_AUGMENTATION as _DA
 _transforms = [
-        #CenterCrop((544, 544)),
-        #RandomHFlip(),
-        #RandomVFlip(),
-        #RandomRotation(),
-        #ColorJitter(),
-        ]
+        CenterCrop((544, 544)),
+        ] # + _DA
 
 from bob.ip.binseg.data.csvdataset import CSVDataset
 #dataset = CSVDataset("<path.csv>", check_available=False, transforms=_transforms)

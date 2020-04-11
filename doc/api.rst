@@ -131,6 +131,7 @@ Datasets
 
    bob.ip.binseg.configs.datasets.csv
    bob.ip.binseg.configs.datasets.folder
+   bob.ip.binseg.configs.datasets.utils
 
    bob.ip.binseg.configs.datasets.chasedb1
    bob.ip.binseg.configs.datasets.chasedb1_test

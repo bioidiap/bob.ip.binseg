@@ -18,23 +18,12 @@ baseline.
 * Split reference: [MANINIS-2016]_
 """
 
+from bob.ip.binseg.data.transforms import Pad
+from bob.ip.binseg.configs.datasets.utils import DATA_AUGMENTATION as _DA
+_transforms = [Pad((4, 8, 4, 8))] + _DA
 
 from bob.db.drionsdb import Database as DRIONS
-from bob.ip.binseg.data.transforms import *
-from bob.ip.binseg.data.binsegdataset import BinSegDataset
-
-#### Config ####
-
-_transforms = [
-        Pad((4, 8, 4, 8)),  #(left, top, right, bottom)
-        RandomHFlip(),
-        RandomVFlip(),
-        RandomRotation(),
-        ColorJitter(),
-        ]
-
-# bob.db.dataset init
 bobdb = DRIONS(protocol="default")
 
-# PyTorch dataset
+from bob.ip.binseg.data.binsegdataset import BinSegDataset
 dataset = BinSegDataset(bobdb, split="train", transforms=_transforms)

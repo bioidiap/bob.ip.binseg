@@ -14,15 +14,9 @@ x 2336. One set of ground-truth vessel annotations is available.
 * Split reference: [ORLANDO-2017]_
 """
 
-from bob.ip.binseg.data.transforms import *
-_transforms = [
-        Pad((0, 584, 0, 584)),
-        Resize(1024),
-        RandomRotation(),
-        RandomHFlip(),
-        RandomVFlip(),
-        ColorJitter(),
-        ]
+from bob.ip.binseg.data.transforms import Pad, Resize
+from bob.ip.binseg.configs.datasets.utils import DATA_AUGMENTATION as _DA
+_transforms = [Pad((0, 584, 0, 584)), Resize(1024)] + _DA
 
 from bob.ip.binseg.data.utils import SampleList2TorchDataset
 from bob.ip.binseg.data.hrf import dataset as hrf

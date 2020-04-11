@@ -16,7 +16,6 @@ baseline.
 * Split reference: [MANINIS-2016]_
 """
 
-
 from bob.ip.binseg.data.transforms import Pad
 _transforms = [Pad((8, 8, 8, 8))]
 
