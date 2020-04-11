@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""DRISHTI-GS1 (training set) for Cup Segmentation
+"""DRISHTI-GS1 (training set) for Optic Disc Segmentation
 
 Drishti-GS is a dataset meant for validation of segmenting OD, cup and
 detecting notching.  The images in the Drishti-GS dataset have been collected
@@ -27,19 +27,16 @@ from bob.ip.binseg.data.binsegdataset import BinSegDataset
 
 #### Config ####
 
-transforms = Compose(
-    [
+_transforms = [
         CenterCrop((1760, 2048)),
         RandomHFlip(),
         RandomVFlip(),
         RandomRotation(),
         ColorJitter(),
-        ToTensor(),
-    ]
-)
+        ]
 
 # bob.db.dataset init
-bobdb = DRISHTI(protocol="default_cup")
+bobdb = DRISHTI(protocol="default_od")
 
 # PyTorch dataset
-dataset = BinSegDataset(bobdb, split="train", transform=transforms)
+dataset = BinSegDataset(bobdb, split="train", transforms=_transforms)

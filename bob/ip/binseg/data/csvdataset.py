@@ -12,6 +12,8 @@ import torchvision.transforms.functional as VF
 
 import bob.io.base
 
+from .transforms import Compose, ToTensor
+
 import logging
 
 logger = logging.getLogger(__name__)
@@ -80,20 +82,21 @@ class CSVDataset(Dataset):
         If set to ``True``, then checks if files in the file list are
         available.  Otherwise does not.
 
-    transform : :py:class:`.transforms.Compose`, Optional
-        a composition of transformations to be applied to **both** image and
+    transforms : :py:class:`list`, Optional
+        a list of transformations to be applied to **both** image and
         ground-truth data.  Notice that image changing transformations such as
         :py:class:`.transforms.ColorJitter` are only applied to the image and
-        **not** to ground-truth.
+        **not** to ground-truth.  Also notice a last transform
+        (:py:class:`bob.ip.binseg.data.transforms.ToTensor`) is always applied.
 
     """
 
     def __init__(
-        self, path, root_path=None, check_available=True, transform=None
+        self, path, root_path=None, check_available=True, transforms=[]
     ):
 
         self.root_path = root_path or os.path.dirname(path)
-        self.transform = transform
+        self.transform = Compose(transforms + [ToTensor()])
 
         def _make_abs_path(root, s):
             retval = []

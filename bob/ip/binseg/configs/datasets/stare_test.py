@@ -16,10 +16,10 @@ for training and testing. The second set by Valentina Kouznetsova acts as a
 * Split reference: [MANINIS-2016]_
 """
 
-from bob.ip.binseg.data.transforms import *
-_transforms = Compose([Pad((2, 1, 2, 2)), ToTensor()])
+from bob.ip.binseg.data.transforms import Pad
+_transforms = [Pad((2, 1, 2, 2))]
 
-from bob.ip.binseg.data.utils import DelayedSample2TorchDataset
+from bob.ip.binseg.data.utils import SampleList2TorchDataset
 from bob.ip.binseg.data.stare import dataset as stare
-dataset = DelayedSample2TorchDataset(stare.subsets("default")["test"],
-        transform=_transforms)
+dataset = SampleList2TorchDataset(stare.subsets("default")["test"],
+        transforms=_transforms)

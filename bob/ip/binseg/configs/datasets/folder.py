@@ -36,16 +36,11 @@ configuration that was used to train models and try to match it as well as
 possible.
 """
 
-from bob.ip.binseg.data.transforms import *
-from bob.ip.binseg.data.folderdataset import FolderDataset
-
 # add your transforms below - these are just examples
-# keep the ``ToTensor()`` transform at the end
-transforms = Compose(
-    [
+from bob.ip.binseg.data.transforms import *
+_transforms = [
         #CenterCrop((544, 544)),
-        ToTensor(),
     ]
-)
 
-#dataset = FolderDataset("<path.csv>", glob="*.*", transform=transforms)
+from bob.ip.binseg.data.folderdataset import FolderDataset
+#dataset = FolderDataset("<path.csv>", glob="*.*", transforms=_transforms)

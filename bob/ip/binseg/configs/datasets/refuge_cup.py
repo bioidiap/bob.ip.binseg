@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""REFUGE (validation set) for Optic Disc Segmentation
+"""REFUGE (training set) for Cup Segmentation
 
 The dataset consists of 1200 color fundus photographs, created for a MICCAI
 challenge. The goal of the challenge is to evaluate and compare automated
@@ -11,18 +11,13 @@ dataset of retinal fundus images.
 * Reference: [REFUGE-2018]_
 * Original resolution (height x width): 2056 x 2124
 * Configuration resolution: 1632 x 1632 (after center cropping)
-* Validation samples: 400
+* Training samples: 400
 * Split reference: [REFUGE-2018]_
 
 .. warning:
 
-   Notice 2 aspects before using these configurations:
-
-   1. The data cropping/resizing algorithm applied on training and "validation"
-      data are slightly different and need to be cross-checked.
-   2. This is the **validation** set!  The real **test** set is still not
-      integrated to the originating bob.db.refuge package: See
-      https://gitlab.idiap.ch/bob/bob.db.refuge/issues/1
+   Notice that the data cropping/resizing algorithm applied on training and
+   "validation" data are slightly different and need to be cross-checked.
 
 """
 
@@ -32,10 +27,17 @@ from bob.ip.binseg.data.binsegdataset import BinSegDataset
 
 #### Config ####
 
-transforms = Compose([CenterCrop(1632), ToTensor()])
+_transforms = [
+        Resize(1539),
+        Pad((21, 46, 22, 47)),  #(left, top, right, bottom)
+        RandomHFlip(),
+        RandomVFlip(),
+        RandomRotation(),
+        ColorJitter(),
+        ]
 
 # bob.db.dataset init
-bobdb = REFUGE(protocol="default_od")
+bobdb = REFUGE(protocol="default_cup")
 
 # PyTorch dataset
-dataset = BinSegDataset(bobdb, split="test", transform=transforms)
+dataset = BinSegDataset(bobdb, split="train", transforms=_transforms)

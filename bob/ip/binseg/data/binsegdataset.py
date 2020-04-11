@@ -1,7 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+
 from torch.utils.data import Dataset
 import random
+
+from .transforms import Compose, ToTensor
 
 
 class BinSegDataset(Dataset):
@@ -13,20 +16,28 @@ class BinSegDataset(Dataset):
     ----------
     bobdb : :py:mod:`bob.db.base`
         Binary segmentation bob database (e.g. bob.db.drive)
+
     split : str
         ``'train'`` or ``'test'``. Defaults to ``'train'``
-    transform : :py:mod:`bob.ip.binseg.data.transforms`, optional
-        A transform or composition of transfroms. Defaults to ``None``.
+
+    transforms : :py:class:`list`, Optional
+        a list of transformations to be applied to **both** image and
+        ground-truth data.  Notice that image changing transformations such as
+        :py:class:`.transforms.ColorJitter` are only applied to the image and
+        **not** to ground-truth.  Also notice a last transform
+        (:py:class:`bob.ip.binseg.data.transforms.ToTensor`) is always applied.
+
     mask : bool
         whether dataset contains masks or not
+
     """
 
-    def __init__(self, bobdb, split="train", transform=None, index_to=None):
+    def __init__(self, bobdb, split="train", transforms=[], index_to=None):
         if index_to:
             self.database = bobdb.samples(split)[:index_to]
         else:
             self.database = bobdb.samples(split)
-        self.transform = transform
+        self.transform = Compose(transforms + [ToTensor()])
         self.split = split
 
     @property

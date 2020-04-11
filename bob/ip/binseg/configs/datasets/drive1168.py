@@ -14,8 +14,7 @@ segmentation of blood vessels in retinal images.
 """
 
 from bob.ip.binseg.data.transforms import *
-_transforms = Compose(
-    [
+_transforms = [
         RandomRotation(),
         Crop(75, 10, 416, 544),
         Pad((21, 0, 22, 0)),
@@ -23,11 +22,9 @@ _transforms = Compose(
         RandomHFlip(),
         RandomVFlip(),
         ColorJitter(),
-        ToTensor(),
-    ]
-)
+        ]
 
-from bob.ip.binseg.data.utils import DelayedSample2TorchDataset
+from bob.ip.binseg.data.utils import SampleList2TorchDataset
 from bob.ip.binseg.data.drive import dataset as drive
-dataset = DelayedSample2TorchDataset(drive.subsets("default")["train"],
-        transform=_transforms)
+dataset = SampleList2TorchDataset(drive.subsets("default")["train"],
+        transforms=_transforms)

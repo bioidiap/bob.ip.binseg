@@ -15,10 +15,6 @@ dataset includes annotations for the optic disc and the artery/vein ratio.
 * Split reference: [MEYER-2017]_
 """
 
-from bob.ip.binseg.data.transforms import *
-_transforms = Compose([ToTensor()])
-
-from bob.ip.binseg.data.utils import DelayedSample2TorchDataset
+from bob.ip.binseg.data.utils import SampleList2TorchDataset
 from bob.ip.binseg.data.iostar import dataset as iostar
-dataset = DelayedSample2TorchDataset(iostar.subsets("vessel")["test"],
-        transform=_transforms)
+dataset = SampleList2TorchDataset(iostar.subsets("vessel")["test"])

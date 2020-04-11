@@ -41,8 +41,8 @@ card, for supervised training of baselines.  Use it like this:
     - :py:mod:`drive <bob.ip.binseg.configs.datasets.drive>`
     - :py:mod:`stare <bob.ip.binseg.configs.datasets.stare>`
     - :py:mod:`chasedb1 <bob.ip.binseg.configs.datasets.chasedb1>`
-    - :py:mod:`iostar-vessel <bob.ip.binseg.configs.datasets.iostarvessel>`
-    - :py:mod:`hrf <bob.ip.binseg.configs.datasets.hrf1168>`
+    - :py:mod:`iostar-vessel <bob.ip.binseg.configs.datasets.iostar_vessel>`
+    - :py:mod:`hrf <bob.ip.binseg.configs.datasets.hrf_1168>`
   * - :py:mod:`unet <bob.ip.binseg.configs.models.unet>`
     - 4
     - 2
@@ -55,7 +55,7 @@ card, for supervised training of baselines.  Use it like this:
     - 4
     - 4
     - 1
-  * - :py:mod:`driu <bob.ip.binseg.configs.models.driu>` / :py:mod:`driu-bn <bob.ip.binseg.configs.models.driubn>`
+  * - :py:mod:`driu <bob.ip.binseg.configs.models.driu>` / :py:mod:`driu-bn <bob.ip.binseg.configs.models.driu_bn>`
     - 8
     - 5
     - 4
@@ -111,12 +111,12 @@ card, for supervised training of COVD- systems.  Use it like this:
 .. list-table::
 
   * - **Models / Datasets**
-    - :py:mod:`covd-drive <bob.ip.binseg.configs.datasets.starechasedb1iostarhrf544>`
-    - :py:mod:`covd-stare <bob.ip.binseg.configs.datasets.drivechasedb1iostarhrf608>`
-    - :py:mod:`covd-chasedb1 <bob.ip.binseg.configs.datasets.drivestareiostarhrf960>`
-    - :py:mod:`covd-iostar-vessel <bob.ip.binseg.configs.datasets.drivestarechasedb1hrf1024>`
-    - :py:mod:`covd-hrf <bob.ip.binseg.configs.datasets.drivestarechasedb1iostar1168>`
-  * - :py:mod:`driu <bob.ip.binseg.configs.models.driu>` / :py:mod:`driu-bn <bob.ip.binseg.configs.models.driubn>`
+    - :py:mod:`covd-drive <bob.ip.binseg.configs.datasets.covd_drive>`
+    - :py:mod:`covd-stare <bob.ip.binseg.configs.datasets.covd_stare>`
+    - :py:mod:`covd-chasedb1 <bob.ip.binseg.configs.datasets.covd_chasedb1>`
+    - :py:mod:`covd-iostar-vessel <bob.ip.binseg.configs.datasets.covd_iostar_vessel>`
+    - :py:mod:`covd-hrf <bob.ip.binseg.configs.datasets.covd_hrf>`
+  * - :py:mod:`driu <bob.ip.binseg.configs.models.driu>` / :py:mod:`driu-bn <bob.ip.binseg.configs.models.driu_bn>`
     - 4
     - 4
     - 2
@@ -144,18 +144,18 @@ card, for semi-supervised learning of COVD- systems.  Use it like this:
 .. list-table::
 
   * - **Models / Datasets**
-    - :py:mod:`covd-drive-ssl <bob.ip.binseg.configs.datasets.starechasedb1iostarhrf544ssldrive>`
-    - :py:mod:`covd-stare-ssl <bob.ip.binseg.configs.datasets.drivechasedb1iostarhrf608sslstare>`
-    - :py:mod:`covd-chasedb1-ssl <bob.ip.binseg.configs.datasets.drivestareiostarhrf960sslchase>`
-    - :py:mod:`covd-iostar-vessel-ssl <bob.ip.binseg.configs.datasets.drivestarechasedb1hrf1024ssliostar>`
-    - :py:mod:`covd-hrf-ssl <bob.ip.binseg.configs.datasets.drivestarechasedb1iostar1168sslhrf>`
-  * - :py:mod:`driu-ssl <bob.ip.binseg.configs.models.driussl>` / :py:mod:`driu-bn-ssl <bob.ip.binseg.configs.models.driubnssl>`
+    - :py:mod:`covd-drive-ssl <bob.ip.binseg.configs.datasets.covd_drive_ssl>`
+    - :py:mod:`covd-stare-ssl <bob.ip.binseg.configs.datasets.covd_stare_ssl>`
+    - :py:mod:`covd-chasedb1-ssl <bob.ip.binseg.configs.datasets.covd_chasedb1_ssl>`
+    - :py:mod:`covd-iostar-vessel-ssl <bob.ip.binseg.configs.datasets.covd_iostar_vessel_ssl>`
+    - :py:mod:`covd-hrf-ssl <bob.ip.binseg.configs.datasets.covd_hrf_ssl>`
+  * - :py:mod:`driu-ssl <bob.ip.binseg.configs.models.driu_ssl>` / :py:mod:`driu-bn-ssl <bob.ip.binseg.configs.models.driu_bn_ssl>`
     - 4
     - 4
     - 2
     - 1
     - 1
-  * - :py:mod:`m2unet-ssl <bob.ip.binseg.configs.models.m2unetssl>`
+  * - :py:mod:`m2unet-ssl <bob.ip.binseg.configs.models.m2unet_ssl>`
     - 4
     - 4
     - 2

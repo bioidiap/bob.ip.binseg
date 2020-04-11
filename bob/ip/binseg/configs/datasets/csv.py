@@ -66,20 +66,15 @@ See:
 
 """
 
-from bob.ip.binseg.data.transforms import *
-from bob.ip.binseg.data.csvdataset import CSVDataset
-
 # add your transforms below - these are just examples
-# keep the ``ToTensor()`` transform at the end
-transforms = Compose(
-    [
+from bob.ip.binseg.data.transforms import *
+_transforms = [
         #CenterCrop((544, 544)),
         #RandomHFlip(),
         #RandomVFlip(),
         #RandomRotation(),
         #ColorJitter(),
-        ToTensor(),
-    ]
-)
+        ]
 
-#dataset = CSVDataset("<path.csv>", check_available=False, transform=transforms)
+from bob.ip.binseg.data.csvdataset import CSVDataset
+#dataset = CSVDataset("<path.csv>", check_available=False, transforms=_transforms)

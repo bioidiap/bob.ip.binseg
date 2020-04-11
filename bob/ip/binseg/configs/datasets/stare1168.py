@@ -14,8 +14,7 @@ for training and testing. The second set by Valentina Kouznetsova acts as a
 """
 
 from bob.ip.binseg.data.transforms import *
-_transforms = Compose(
-    [
+_transforms = [
         RandomRotation(),
         Crop(50, 0, 500, 705),
         Resize(1168),
@@ -23,11 +22,9 @@ _transforms = Compose(
         RandomHFlip(),
         RandomVFlip(),
         ColorJitter(),
-        ToTensor(),
-    ]
-)
+        ]
 
-from bob.ip.binseg.data.utils import DelayedSample2TorchDataset
+from bob.ip.binseg.data.utils import SampleList2TorchDataset
 from bob.ip.binseg.data.stare import dataset as stare
-dataset = DelayedSample2TorchDataset(stare.subsets("default")["train"],
-        transform=_transforms)
+dataset = SampleList2TorchDataset(stare.subsets("default")["train"],
+        transforms=_transforms)

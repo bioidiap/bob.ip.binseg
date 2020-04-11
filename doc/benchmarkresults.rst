@@ -39,12 +39,12 @@ F1 Scores (micro-level)
      - 0.817 (0.013)
      - `0.803 (0.014) <m2unet_drive.pth_>`_
      - 0.822 (0.015)
-   * - :py:mod:`HRF <bob.ip.binseg.configs.datasets.hrf1168>`
+   * - :py:mod:`HRF <bob.ip.binseg.configs.datasets.hrf_1168>`
      - `0.783 (0.055) <driu_hrf.pth_>`_
      - 0.783 (0.058)
      - `0.780 (0.057) <m2unet_hrf.pth_>`_
      - 0.788 (0.051)
-   * - :py:mod:`IOSTAR (vessel) <bob.ip.binseg.configs.datasets.iostarvessel>`
+   * - :py:mod:`IOSTAR (vessel) <bob.ip.binseg.configs.datasets.iostar_vessel>`
      - `0.825 (0.020) <driu_iostar.pth_>`_
      - 0.825 (0.020)
      - `0.817 (0.020) <m2unet_iostar.pth_>`_

@@ -43,13 +43,13 @@ setup(
 
             # models
             "driu = bob.ip.binseg.configs.models.driu",
-            "driu-bn = bob.ip.binseg.configs.models.driubn",
-            "driu-ssl = bob.ip.binseg.configs.models.driussl",
-            "driu-bn-ssl = bob.ip.binseg.configs.models.driubnssl",
-            "driu-od = bob.ip.binseg.configs.models.driuod",
+            "driu-bn = bob.ip.binseg.configs.models.driu_bn",
+            "driu-ssl = bob.ip.binseg.configs.models.driu_ssl",
+            "driu-bn-ssl = bob.ip.binseg.configs.models.driu_bn_ssl",
+            "driu-od = bob.ip.binseg.configs.models.driu_od",
             "hed = bob.ip.binseg.configs.models.hed",
             "m2unet = bob.ip.binseg.configs.models.m2unet",
-            "m2unet-ssl = bob.ip.binseg.configs.models.m2unetssl",
+            "m2unet-ssl = bob.ip.binseg.configs.models.m2unet_ssl",
             "unet = bob.ip.binseg.configs.models.unet",
             "resunet = bob.ip.binseg.configs.models.resunet",
 
@@ -57,60 +57,60 @@ setup(
             "csv-dataset-example = bob.ip.binseg.configs.datasets.csv",
             "folder-dataset-example = bob.ip.binseg.configs.datasets.folder",
 
-            # drive dataset (numbers represent target resolution)
+            # drive dataset
             "drive = bob.ip.binseg.configs.datasets.drive",
-            "covd-drive = bob.ip.binseg.configs.datasets.starechasedb1iostarhrf544",
-            "covd-drive-ssl = bob.ip.binseg.configs.datasets.starechasedb1iostarhrf544ssldrive",
-            "drive-test = bob.ip.binseg.configs.datasets.drivetest",
+            "covd-drive = bob.ip.binseg.configs.datasets.covd_drive",
+            "covd-drive-ssl = bob.ip.binseg.configs.datasets.covd_drive_ssl",
+            "drive-test = bob.ip.binseg.configs.datasets.drive_test",
 
-            # stare dataset (numbers represent target resolution)
+            # stare dataset
             "stare = bob.ip.binseg.configs.datasets.stare",
-            "covd-stare = bob.ip.binseg.configs.datasets.drivechasedb1iostarhrf608",
-            "covd-stare-ssl = bob.ip.binseg.configs.datasets.drivechasedb1iostarhrf608sslstare",
-            "stare-test = bob.ip.binseg.configs.datasets.staretest",
+            "covd-stare = bob.ip.binseg.configs.datasets.covd_stare",
+            "covd-stare-ssl = bob.ip.binseg.configs.datasets.covd_stare_ssl",
+            "stare-test = bob.ip.binseg.configs.datasets.stare_test",
 
-            # iostar vessel (numbers represent target resolution)
-            "iostar-vessel = bob.ip.binseg.configs.datasets.iostarvessel",
-            "covd-iostar-vessel = bob.ip.binseg.configs.datasets.drivestarechasedb1hrf1024",
-            "covd-iostar-vessel-ssl = bob.ip.binseg.configs.datasets.drivestarechasedb1hrf1024ssliostar",
-            "iostar-vessel-test = bob.ip.binseg.configs.datasets.iostarvesseltest",
+            # iostar vessel
+            "iostar-vessel = bob.ip.binseg.configs.datasets.iostar_vessel",
+            "covd-iostar-vessel = bob.ip.binseg.configs.datasets.covd_iostar_vessel",
+            "covd-iostar-vessel-ssl = bob.ip.binseg.configs.datasets.covd_iostar_vessel_ssl",
+            "iostar-vessel-test = bob.ip.binseg.configs.datasets.iostar_vessel_test",
 
             # iostar optic disc
-            "iostarod = bob.ip.binseg.configs.datasets.iostarod",
-            "iostarodtest = bob.ip.binseg.configs.datasets.iostarodtest",
+            "iostar-optic-disc = bob.ip.binseg.configs.datasets.iostar_od",
+            "iostar-optic-disc-test = bob.ip.binseg.configs.datasets.iostar_od_test",
 
             # hrf (numbers represent target resolution)
-            "hrf = bob.ip.binseg.configs.datasets.hrf1168",
-            "covd-hrf = bob.ip.binseg.configs.datasets.drivestarechasedb1iostar1168",
-            "covd-hrf-ssl = bob.ip.binseg.configs.datasets.drivestarechasedb1iostar1168sslhrf",
-            "hrftest-test = bob.ip.binseg.configs.datasets.hrftest",
+            "hrf = bob.ip.binseg.configs.datasets.hrf_1168",
+            "covd-hrf = bob.ip.binseg.configs.datasets.covd_hrf",
+            "covd-hrf-ssl = bob.ip.binseg.configs.datasets.covd_hrf_ssl",
+            "hrftest-test = bob.ip.binseg.configs.datasets.hrf_1168_test",
 
-            # chase-db1 (numbers represent target resolution)
+            # chase-db1
             "chasedb1 = bob.ip.binseg.configs.datasets.chasedb1",
-            "covd-chasedb1 = bob.ip.binseg.configs.datasets.drivestareiostarhrf960",
-            "covd-chasedb1-ssl = bob.ip.binseg.configs.datasets.drivestareiostarhrf960sslchase",
-            "chasedb1-test = bob.ip.binseg.configs.datasets.chasedb1test",
+            "covd-chasedb1 = bob.ip.binseg.configs.datasets.covd_chasedb1",
+            "covd-chasedb1-ssl = bob.ip.binseg.configs.datasets.covd_chasedb1_ssl",
+            "chasedb1-test = bob.ip.binseg.configs.datasets.chasedb1_test",
 
             # drionsdb
             "drionsdb = bob.ip.binseg.configs.datasets.drionsdb",
-            "drionsdb-test = bob.ip.binseg.configs.datasets.drionsdbtest",
+            "drionsdb-test = bob.ip.binseg.configs.datasets.drionsdb_test",
 
             # drishtigs
-            "drishtigs1-od = bob.ip.binseg.configs.datasets.dristhigs1od",
-            "drishtigs1-od-test = bob.ip.binseg.configs.datasets.dristhigs1odtest",
-            "drishtigs1-cup = bob.ip.binseg.configs.datasets.dristhigs1cup",
-            "drishtigs1-cup-test = bob.ip.binseg.configs.datasets.dristhigs1cuptest",
+            "drishtigs1-od = bob.ip.binseg.configs.datasets.dristhigs1_od",
+            "drishtigs1-od-test = bob.ip.binseg.configs.datasets.dristhigs1_od_test",
+            "drishtigs1-cup = bob.ip.binseg.configs.datasets.dristhigs1_cup",
+            "drishtigs1-cup-test = bob.ip.binseg.configs.datasets.dristhigs1_cup_test",
             # refuge
-            "refuge-cup = bob.ip.binseg.configs.datasets.refugecup",
-            "refuge-cup-test = bob.ip.binseg.configs.datasets.refugecuptest",
-            "refuge-od = bob.ip.binseg.configs.datasets.refugeod",
-            "refuge-od-test = bob.ip.binseg.configs.datasets.refugeodtest",
+            "refuge-cup = bob.ip.binseg.configs.datasets.refuge_cup",
+            "refuge-cup-test = bob.ip.binseg.configs.datasets.refuge_cup_test",
+            "refuge-od = bob.ip.binseg.configs.datasets.refuge_od",
+            "refuge-od-test = bob.ip.binseg.configs.datasets.refuge_od_test",
 
             # rim one r3
-            "rimoner3-cup = bob.ip.binseg.configs.datasets.rimoner3cup",
-            "rimoner3-cup-test = bob.ip.binseg.configs.datasets.rimoner3cuptest",
-            "rimoner3-od = bob.ip.binseg.configs.datasets.rimoner3od",
-            "rimoner3-od-test = bob.ip.binseg.configs.datasets.rimoner3odtest",
+            "rimoner3-cup = bob.ip.binseg.configs.datasets.rimoner3_cup",
+            "rimoner3-cup-test = bob.ip.binseg.configs.datasets.rimoner3_cup_test",
+            "rimoner3-od = bob.ip.binseg.configs.datasets.rimoner3_od",
+            "rimoner3-od-test = bob.ip.binseg.configs.datasets.rimoner3_od_test",
         ],
     },
     # check classifiers, add and remove as you see fit

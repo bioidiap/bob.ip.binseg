@@ -5,35 +5,14 @@
 """Common utilities"""
 
 
-import functools
-
-import nose.plugins.skip
-
 import torch
 import torch.utils.data
 
-import bob.extension
+from .transforms import Compose, ToTensor
 
 
-def rc_variable_set(name):
-    """
-    Decorator that checks if a given bobrc variable is set before running
-    """
-
-    def wrapped_function(test):
-        @functools.wraps(test)
-        def wrapper(*args, **kwargs):
-            if name not in bob.extension.rc:
-                raise nose.plugins.skip.SkipTest("Bob's RC variable '%s' is not set" % name)
-            return test(*args, **kwargs)
-
-        return wrapper
-
-    return wrapped_function
-
-
-class DelayedSample2TorchDataset(torch.utils.data.Dataset):
-    """PyTorch dataset wrapper around DelayedSample lists
+class SampleList2TorchDataset(torch.utils.data.Dataset):
+    """PyTorch dataset wrapper around Sample lists
 
     A transform object can be passed that will be applied to the image, ground
     truth and mask (if present).
@@ -43,17 +22,21 @@ class DelayedSample2TorchDataset(torch.utils.data.Dataset):
     Parameters
     ----------
     samples : list
-        A list of :py:class:`bob.ip.binseg.data.sample.DelayedSample` objects
+        A list of :py:class:`bob.ip.binseg.data.sample.Sample` objects
 
-    transform : :py:mod:`bob.ip.binseg.data.transforms`, optional
-        A transform or composition of transfroms. Defaults to ``None``.
+    transforms : :py:class:`list`, Optional
+        a list of transformations to be applied to **both** image and
+        ground-truth data.  Notice that image changing transformations such as
+        :py:class:`.transforms.ColorJitter` are only applied to the image and
+        **not** to ground-truth.  Also notice a last transform
+        (:py:class:`bob.ip.binseg.data.transforms.ToTensor`) is always applied.
 
     """
 
-    def __init__(self, samples, transform=None):
+    def __init__(self, samples, transforms=[]):
 
         self._samples = samples
-        self._transform = transform
+        self._transform = Compose(transforms + [ToTensor()])
 
     def __len__(self):
         """

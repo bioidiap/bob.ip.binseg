@@ -9,7 +9,7 @@ The dataset available in this file is composed of DRIVE, CHASE-DB1, IOSTAR
 vessel and HRF (with annotated samples) and STARE without labels.
 """
 
-from bob.ip.binseg.configs.datasets.drivechasedb1iostarhrf608 import dataset as _labelled
+from bob.ip.binseg.configs.datasets.covd_stare import dataset as _labelled
 from bob.ip.binseg.configs.datasets.stare import dataset as _unlabelled
 from bob.ip.binseg.data.utils import SSLDataset
 dataset = SSLDataset(_labelled, _unlabelled)

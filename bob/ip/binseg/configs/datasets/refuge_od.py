@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""REFUGE (training set) for Cup Segmentation
+"""REFUGE (training set) for Optic Disc Segmentation
 
 The dataset consists of 1200 color fundus photographs, created for a MICCAI
 challenge. The goal of the challenge is to evaluate and compare automated
@@ -21,26 +21,18 @@ dataset of retinal fundus images.
 
 """
 
-from bob.db.refuge import Database as REFUGE
 from bob.ip.binseg.data.transforms import *
-from bob.ip.binseg.data.binsegdataset import BinSegDataset
-
-#### Config ####
-
-transforms = Compose(
-    [
+_transforms = [
         Resize((1539)),
-        Pad((21, 46, 22, 47)),  #(left, top, right, bottom)
+        Pad((21, 46, 22, 47)),
         RandomHFlip(),
         RandomVFlip(),
         RandomRotation(),
         ColorJitter(),
-        ToTensor(),
-    ]
-)
+        ]
 
-# bob.db.dataset init
-bobdb = REFUGE(protocol="default_cup")
+from bob.db.refuge import Database as REFUGE
+bobdb = REFUGE(protocol="default_od")
 
-# PyTorch dataset
-dataset = BinSegDataset(bobdb, split="train", transform=transforms)
+from bob.ip.binseg.data.binsegdataset import BinSegDataset
+dataset = BinSegDataset(bobdb, split="train", transforms=_transforms)

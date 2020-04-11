@@ -14,10 +14,10 @@ x 2336. One set of ground-truth vessel annotations is available.
 * Split reference: [ORLANDO-2017]_
 """
 
-from bob.ip.binseg.data.transforms import *
-_transforms = Compose([Crop(0, 108, 2336, 3296), ToTensor()])
+from bob.ip.binseg.data.transforms import Crop
+_transforms = [Crop(0, 108, 2336, 3296)]
 
-from bob.ip.binseg.data.utils import DelayedSample2TorchDataset
+from bob.ip.binseg.data.utils import SampleList2TorchDataset
 from bob.ip.binseg.data.hrf import dataset as hrf
-dataset = DelayedSample2TorchDataset(hrf.subsets("default")["test"],
-        transform=_transforms)
+dataset = SampleList2TorchDataset(hrf.subsets("default")["test"],
+        transforms=_transforms)

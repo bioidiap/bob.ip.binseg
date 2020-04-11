@@ -7,6 +7,8 @@ from PIL import Image
 
 from torch.utils.data import Dataset
 
+from .transforms import Compose, ToTensor
+
 
 def _find_files(data_path, glob):
     """
@@ -42,16 +44,17 @@ class FolderDataset(Dataset):
         glob that can be used to filter-down files to be loaded on the provided
         path
 
-    transform : :py:class:`.transforms.Compose`, Optional
-        a composition of transformations to be applied to **both** image and
+    transforms : :py:class:`list`, Optional
+        a list of transformations to be applied to **both** image and
         ground-truth data.  Notice that image changing transformations such as
         :py:class:`.transforms.ColorJitter` are only applied to the image and
-        **not** to ground-truth.
+        **not** to ground-truth.  Also notice a last transform
+        (:py:class:`bob.ip.binseg.data.transforms.ToTensor`) is always applied.
 
     """
 
-    def __init__(self, path, glob="*", transform=None):
-        self.transform = transform
+    def __init__(self, path, glob="*", transforms=[]):
+        self.transform = Compose(transforms + [ToTensor()])
         self.path = path
         self.data = _find_files(path, glob)
 

@@ -13,10 +13,10 @@ segmentation of blood vessels in retinal images.
 * Split reference: [DRIVE-2004]_
 """
 
-from bob.ip.binseg.data.transforms import *
-_transforms = Compose([CenterCrop((544, 544)), ToTensor()])
+from bob.ip.binseg.data.transforms import CenterCrop
+_transforms = [CenterCrop((544, 544))]
 
-from bob.ip.binseg.data.utils import DelayedSample2TorchDataset
+from bob.ip.binseg.data.utils import SampleList2TorchDataset
 from bob.ip.binseg.data.drive import dataset as drive
-dataset = DelayedSample2TorchDataset(drive.subsets("default")["test"],
-        transform=_transforms)
+dataset = SampleList2TorchDataset(drive.subsets("default")["test"],
+        transforms=_transforms)

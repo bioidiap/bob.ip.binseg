@@ -24,18 +24,15 @@ bright strip running down the centre known as the central vessel reflex.
 """
 
 from bob.ip.binseg.data.transforms import *
-_transforms = Compose(
-    [
+_transforms = [
         Crop(0, 18, 960, 960),  #(upper, left, height, width)
         RandomHFlip(),
         RandomVFlip(),
         RandomRotation(),
         ColorJitter(),
-        ToTensor(),
-    ]
-)
+        ]
 
-from bob.ip.binseg.data.utils import DelayedSample2TorchDataset
+from bob.ip.binseg.data.utils import SampleList2TorchDataset
 from bob.ip.binseg.data.chasedb1 import dataset as chasedb1
-dataset = DelayedSample2TorchDataset(chasedb1.subsets("default")["train"],
-        transform=_transforms)
+dataset = SampleList2TorchDataset(chasedb1.subsets("default")["train"],
+        transforms=_transforms)

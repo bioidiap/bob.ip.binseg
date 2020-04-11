@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""DRISHTI-GS1 (test set) for Cup Segmentation
+"""DRISHTI-GS1 (test set) for Optic Disc Segmentation
 
 Drishti-GS is a dataset meant for validation of segmenting OD, cup and
 detecting notching.  The images in the Drishti-GS dataset have been collected
@@ -22,15 +22,15 @@ and notching information.
 """
 
 from bob.db.drishtigs1 import Database as DRISHTI
-from bob.ip.binseg.data.transforms import *
+from bob.ip.binseg.data.transforms import CenterCrop
 from bob.ip.binseg.data.binsegdataset import BinSegDataset
 
 #### Config ####
 
-transforms = Compose([CenterCrop((1760, 2048)), ToTensor()])
+_transforms = [CenterCrop((1760, 2048))]
 
 # bob.db.dataset init
-bobdb = DRISHTI(protocol="default_cup")
+bobdb = DRISHTI(protocol="default_od")
 
 # PyTorch dataset
-dataset = BinSegDataset(bobdb, split="test", transform=transforms)
+dataset = BinSegDataset(bobdb, split="test", transforms=_transforms)

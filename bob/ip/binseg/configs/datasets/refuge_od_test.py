@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""REFUGE (validation set) for Cup Segmentation
+"""REFUGE (validation set) for Optic Disc Segmentation
 
 The dataset consists of 1200 color fundus photographs, created for a MICCAI
 challenge. The goal of the challenge is to evaluate and compare automated
@@ -26,16 +26,11 @@ dataset of retinal fundus images.
 
 """
 
+from bob.ip.binseg.data.transforms import CenterCrop
+_transforms = [CenterCrop(1632)]
+
 from bob.db.refuge import Database as REFUGE
-from bob.ip.binseg.data.transforms import *
+bobdb = REFUGE(protocol="default_od")
+
 from bob.ip.binseg.data.binsegdataset import BinSegDataset
-
-#### Config ####
-
-transforms = Compose([CenterCrop(1632), ToTensor()])
-
-# bob.db.dataset init
-bobdb = REFUGE(protocol="default_cup")
-
-# PyTorch dataset
-dataset = BinSegDataset(bobdb, split="test", transform=transforms)
+dataset = BinSegDataset(bobdb, split="test", transforms=_transforms)

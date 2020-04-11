@@ -15,18 +15,15 @@ x 2336. One set of ground-truth vessel annotations is available.
 """
 
 from bob.ip.binseg.data.transforms import *
-_transforms = Compose(
-    [
+_transforms = [
         Crop(0, 108, 2336, 3296),
         RandomHFlip(),
         RandomVFlip(),
         RandomRotation(),
         ColorJitter(),
-        ToTensor(),
-    ]
-)
+        ]
 
-from bob.ip.binseg.data.utils import DelayedSample2TorchDataset
+from bob.ip.binseg.data.utils import SampleList2TorchDataset
 from bob.ip.binseg.data.hrf import dataset as hrf
-dataset = DelayedSample2TorchDataset(hrf.subsets("default")["train"],
-        transform=_transforms)
+dataset = SampleList2TorchDataset(hrf.subsets("default")["train"],
+        transforms=_transforms)
