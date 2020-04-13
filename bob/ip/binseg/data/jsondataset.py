@@ -14,7 +14,7 @@ from .sample import DelayedSample
 
 class JSONDataset:
     """
-    Generic multi-protocol filelist dataset
+    Generic multi-protocol filelist dataset that yields samples
 
     To create a new dataset, you need to provide one or more JSON formatted
     filelists (one per protocol) with the following contents:
@@ -66,11 +66,18 @@ class JSONDataset:
 
     Where:
 
-    * ``data``: absolute or relative path leading to original image
+    * ``data``: absolute or relative path leading to original image, in RGB
+      format
     * ``label``: (optional) absolute or relative path with manual segmentation
-      information
+      information.  This image will be converted to a binary image.  This
+      dataset shall always yield label images in which white pixels (value=1)
+      indicate the **presence** of the object, and black pixels (value=0), its
+      absence.
     * ``mask``: (optional) absolute or relative path with a mask that indicates
-      valid regions in the image where automatic segmentation should occur
+      valid regions in the image where automatic segmentation should occur.
+      This image will be converted to a binary image.  This dataset shall
+      always yield mask images in which white pixels (value=1) indicate the
+      **valid** regions of the mask, and black pixels (value=0), invalid parts.
 
     Relative paths are interpreted with respect to the location where the JSON
     file is or to an optional ``root_path`` parameter, that can be provided.
@@ -97,8 +104,11 @@ class JSONDataset:
         relative paths.
 
     loader : object
-        A function that receives, as input, a dictionary with ``{key: path}``
-        entries, and returns a dictionary with the loaded data
+        A function that receives, as input, a context dictionary (with a
+        "protocol" and "subset" keys indicating which protocol and subset are
+        being served), and a dictionary with ``{key: path}`` entries, and
+        returns a dictionary with the loaded data.  It shall respect the
+        loading principles of data, label and mask objects as stated above.
 
     """
 
@@ -173,6 +183,7 @@ class JSONDataset:
 
         for subset, samples in data.items():
             delayeds = []
+            context = dict(protocol=protocol, subset=subset)
             for k in samples:
 
                 if isinstance(k, dict):
@@ -194,7 +205,7 @@ class JSONDataset:
                     if not os.path.isabs(v):
                         abs_item[k] = os.path.join(self.root_path, v)
 
-                load = functools.partial(self.loader, abs_item)
+                load = functools.partial(self.loader, context, abs_item)
                 delayeds.append(DelayedSample(load, key=key))
 
             retval[subset] = delayeds

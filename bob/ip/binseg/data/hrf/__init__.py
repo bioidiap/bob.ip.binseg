@@ -34,11 +34,12 @@ _protocols = [
 _root_path = bob.extension.rc.get('bob.ip.binseg.hrf.datadir',
         os.path.realpath(os.curdir))
 
-def _loader(s):
+def _loader(context, sample):
+    #"context" is ignore in this case - database is homogeneous
     return dict(
-            data=load_pil_rgb(s["data"]),
-            label=load_pil_1(s["label"]),
-            mask=load_pil_1(s["mask"]),
+            data=load_pil_rgb(sample["data"]),
+            label=load_pil_1(sample["label"]),
+            mask=load_pil_1(sample["mask"]),
             )
 
 dataset = JSONDataset(protocols=_protocols, root_path=_root_path, loader=_loader)

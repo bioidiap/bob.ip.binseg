@@ -29,6 +29,7 @@ import bob.extension
 
 from ..jsondataset import JSONDataset
 from ..loader import load_pil_rgb, load_pil_1
+from ..utils import invert_mode1_image, subtract_mode1_images
 
 _protocols = [
         pkg_resources.resource_filename(__name__, "vessel.json"),
@@ -38,12 +39,23 @@ _protocols = [
 _root_path = bob.extension.rc.get('bob.ip.binseg.iostar.datadir',
         os.path.realpath(os.curdir))
 
-def _loader(s):
-    return dict(
-            data=load_pil_rgb(s["data"]),
-            label=load_pil_1(s["label"]),
-            mask=load_pil_1(s["mask"]),
+def _loader(context, sample):
+    retval = dict(
+            data=load_pil_rgb(sample["data"]),
+            label=load_pil_1(sample["label"]),
+            mask=load_pil_1(sample["mask"]),
             )
+    if context["protocol"] == "optic-disc":
+        # For optic-disc analysis, the label provided by IOSTAR raw data is the
+        # "inverted" (negative) label, and does not consider the mask region,
+        # which must be subtracted.  We do this special manipulation here.
+        retval["label"] = subtract_mode1_images(
+                invert_mode1_image(retval["label"]),
+                invert_mode1_image(retval["mask"]))
+        return retval
+    elif context["protocol"] == "vessel":
+        return retval
+    raise RuntimeError(f"Unknown protocol {context['protocol']}")
 
 dataset = JSONDataset(protocols=_protocols, root_path=_root_path, loader=_loader)
 """IOSTAR dataset object"""
