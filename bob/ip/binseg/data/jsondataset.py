@@ -94,9 +94,11 @@ class JSONDataset:
     Parameters
     ----------
 
-    protocols : [str]
+    protocols : list, dict
         Paths to one or more JSON formatted files containing the various
-        protocols to be recognized by this dataset.
+        protocols to be recognized by this dataset, or a dictionary, mapping
+        protocol names to paths of JSON files.  Internally, we save a
+        dictionary where keys default to the basename of paths.
 
     root_path : str
         Path to a common filesystem root where files with relative paths should
@@ -114,10 +116,14 @@ class JSONDataset:
 
     def __init__(self, protocols, root_path, loader):
 
-        self.protocols = dict(
-            (os.path.splitext(os.path.basename(k))[0], os.path.realpath(k))
-            for k in protocols
-        )
+        if isinstance(protocols, dict):
+            self.protocols = dict((k,os.path.realpath(v)) for k,v in
+                    protocols.items())
+        else:
+            self.protocols = dict(
+                (os.path.splitext(os.path.basename(k))[0], os.path.realpath(k))
+                for k in protocols
+            )
         self.root_path = root_path
         self.loader = loader
 
