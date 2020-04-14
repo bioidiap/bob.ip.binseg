@@ -61,7 +61,6 @@ test:
     - sphinxcontrib-programoutput
     - bob.db.drionsdb
     - bob.db.rimoner3
-    - bob.db.drishtigs1
 
 about:
   summary: Binary Segmentation Benchmark Package for Bob

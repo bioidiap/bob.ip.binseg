@@ -217,3 +217,59 @@ def test_refuge_optic_cup_test():
         nose.tools.eq_(sample[1].dtype, torch.float32)
         nose.tools.eq_(sample[2].shape, (1, 1632, 1632)) #planes, height, width
         nose.tools.eq_(sample[2].dtype, torch.float32)
+
+
+@rc_variable_set("bob.ip.binseg.drishtigs1.datadir")
+def test_drishtigs1_optic_disc_all_train():
+
+    from ..configs.datasets.dristhigs1_od import dataset
+    nose.tools.eq_(len(dataset), 50)
+    for sample in dataset:
+        nose.tools.eq_(len(sample), 3)
+        assert isinstance(sample[0], str)
+        nose.tools.eq_(sample[1].shape, (3, 1760, 2048)) #planes, height, width
+        nose.tools.eq_(sample[1].dtype, torch.float32)
+        nose.tools.eq_(sample[2].shape, (1, 1760, 2048)) #planes, height, width
+        nose.tools.eq_(sample[2].dtype, torch.float32)
+
+
+@rc_variable_set("bob.ip.binseg.drishtigs1.datadir")
+def test_drishtigs1_optic_disc_all_test():
+
+    from ..configs.datasets.dristhigs1_od_test import dataset
+    nose.tools.eq_(len(dataset), 51)
+    for sample in dataset:
+        nose.tools.eq_(len(sample), 3)
+        assert isinstance(sample[0], str)
+        nose.tools.eq_(sample[1].shape, (3, 1760, 2048)) #planes, height, width
+        nose.tools.eq_(sample[1].dtype, torch.float32)
+        nose.tools.eq_(sample[2].shape, (1, 1760, 2048)) #planes, height, width
+        nose.tools.eq_(sample[2].dtype, torch.float32)
+
+
+@rc_variable_set("bob.ip.binseg.drishtigs1.datadir")
+def test_drishtigs1_optic_cup_all_train():
+
+    from ..configs.datasets.dristhigs1_cup import dataset
+    nose.tools.eq_(len(dataset), 50)
+    for sample in dataset:
+        nose.tools.eq_(len(sample), 3)
+        assert isinstance(sample[0], str)
+        nose.tools.eq_(sample[1].shape, (3, 1760, 2048)) #planes, height, width
+        nose.tools.eq_(sample[1].dtype, torch.float32)
+        nose.tools.eq_(sample[2].shape, (1, 1760, 2048)) #planes, height, width
+        nose.tools.eq_(sample[2].dtype, torch.float32)
+
+
+@rc_variable_set("bob.ip.binseg.drishtigs1.datadir")
+def test_drishtigs1_optic_cup_all_test():
+
+    from ..configs.datasets.dristhigs1_cup_test import dataset
+    nose.tools.eq_(len(dataset), 51)
+    for sample in dataset:
+        nose.tools.eq_(len(sample), 3)
+        assert isinstance(sample[0], str)
+        nose.tools.eq_(sample[1].shape, (3, 1760, 2048)) #planes, height, width
+        nose.tools.eq_(sample[1].dtype, torch.float32)
+        nose.tools.eq_(sample[2].shape, (1, 1760, 2048)) #planes, height, width
+        nose.tools.eq_(sample[2].dtype, torch.float32)

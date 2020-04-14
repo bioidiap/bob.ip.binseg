@@ -13,20 +13,18 @@ The dataset is divided into two: a training set and a testing set of images.
 Training images (50) are provided with groundtruths for OD and Cup segmentation
 and notching information.
 
-* Reference: [DRISHTIGS1-2014]_
+* Reference (includes split): [DRISHTIGS1-2014]_
 * Original resolution (height x width): varying (min: 1749 x 2045, max: 1845 x
   2468)
 * Configuration resolution: 1760 x 2048 (after center cropping)
 * Training samples: 50
-* Split reference: [DRISHTIGS1-2014]_
 """
 
 from bob.ip.binseg.data.transforms import CenterCrop
 from bob.ip.binseg.configs.datasets.utils import DATA_AUGMENTATION as _DA
 _transforms = [CenterCrop((1760, 2048))] + _DA
 
-from bob.db.drishtigs1 import Database as DRISHTI
-bobdb = DRISHTI(protocol="default_od")
-
-from bob.ip.binseg.data.binsegdataset import BinSegDataset
-dataset = BinSegDataset(bobdb, split="train", transforms=_transforms)
+from bob.ip.binseg.data.utils import SampleList2TorchDataset
+from bob.ip.binseg.data.drishtigs1 import dataset as drishtigs1
+dataset = SampleList2TorchDataset(drishtigs1.subsets("optic-disc-all")["train"],
+        transforms=_transforms)

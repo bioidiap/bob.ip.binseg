@@ -37,6 +37,7 @@ Datasets
    bob.ip.binseg.data.hrf
    bob.ip.binseg.data.iostar
    bob.ip.binseg.data.refuge
+   bob.ip.binseg.data.drishtigs1
 
 
 Engines
