@@ -113,27 +113,16 @@ to generate iterators for training and testing.
      - [DRISHTIGS1-2014]_
      - 50
      - 51
-   * - REFUGE_ (train)
+   * - REFUGE_
      - [REFUGE-2018]_
-     - 2056 x 2124
-     - 400
+     - 2056 x 2124 (1634 x 1634)
+     - 1200 (400+400+400)
      -
      -
      - x
      - x
      - [REFUGE-2018]_
-     - 400
-     -
-   * - REFUGE_ (val)
-     - [REFUGE-2018]_
-     - 1634 x 1634
-     - 400
-     -
-     -
-     - x
-     - x
-     - [REFUGE-2018]_
-     -
+     - 400 (+400)
      - 400
 
 

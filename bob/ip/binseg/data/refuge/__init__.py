@@ -8,29 +8,28 @@ challenge. The goal of the challenge is to evaluate and compare automated
 algorithms for glaucoma detection and optic disc/cup segmentation on a common
 dataset of retinal fundus images.
 
-* Reference: [REFUGE-2018]_
+* Reference (including train/dev/test split): [REFUGE-2018]_
 * Protocols ``optic-disc`` and ``cup``:
-    * Training samples:
-        * 400
-        * includes optic-disc and cup labels
-        * includes label: glaucomatous and non-glaucomatous
-        * original resolution: 2056 x 2124
-    * Validation samples: 400:
-        * 400
-        * includes optic-disc and cup labels
-        * original resolution: 1634 x 1634
-    * Test samples:
-        * 400
-        * includes optic-disc and cup labels
-        * includes label: glaucomatous and non-glaucomatous
-        * original resolution:
-* Split reference: [REFUGE-2018]_
 
-.. warning:
+  * Training samples:
 
-   Notice that the data cropping/resizing algorithm applied on training and
-   "validation" data are slightly different and need to be cross-checked.
+    * 400
+    * includes optic-disc and cup labels
+    * includes label: glaucomatous and non-glaucomatous
+    * original resolution: 2056 x 2124
 
+  * Validation samples:
+
+    * 400
+    * includes optic-disc and cup labels
+    * original resolution: 1634 x 1634
+
+  * Test samples:
+
+    * 400
+    * includes optic-disc and cup labels
+    * includes label: glaucomatous and non-glaucomatous
+    * original resolution:
 """
 
 import os

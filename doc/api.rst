@@ -36,6 +36,7 @@ Datasets
    bob.ip.binseg.data.chasedb1
    bob.ip.binseg.data.hrf
    bob.ip.binseg.data.iostar
+   bob.ip.binseg.data.refuge
 
 
 Engines
@@ -171,8 +172,11 @@ Datasets
    bob.ip.binseg.configs.datasets.dristhigs1_od_test
 
    bob.ip.binseg.configs.datasets.refuge_cup
+   bob.ip.binseg.configs.datasets.refuge_cup_dev
+   bob.ip.binseg.configs.datasets.refuge_cup_test
    bob.ip.binseg.configs.datasets.refuge_cup_test
    bob.ip.binseg.configs.datasets.refuge_od
+   bob.ip.binseg.configs.datasets.refuge_od_dev
    bob.ip.binseg.configs.datasets.refuge_od_test
 
    bob.ip.binseg.configs.datasets.rimoner3_cup
