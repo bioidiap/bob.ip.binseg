@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding=utf-8
 
-"""REFUGE (training set) for Optic Disc Segmentation
+"""REFUGE for Optic Disc and Cup Segmentation
 
 The dataset consists of 1200 color fundus photographs, created for a MICCAI
 challenge. The goal of the challenge is to evaluate and compare automated
@@ -40,10 +40,10 @@ import bob.extension
 from ..jsondataset import JSONDataset
 from ..loader import load_pil_rgb
 
-_protocols = [
-        pkg_resources.resource_filename(__name__, "optic-disc.json"),
-        pkg_resources.resource_filename(__name__, "optic-cup.json"),
-        ]
+_protocols = {
+        "optic-disc": pkg_resources.resource_filename(__name__, "default.json"),
+        "optic-cup": pkg_resources.resource_filename(__name__, "default.json"),
+        }
 
 _root_path = bob.extension.rc.get('bob.ip.binseg.refuge.datadir',
         os.path.realpath(os.curdir))
