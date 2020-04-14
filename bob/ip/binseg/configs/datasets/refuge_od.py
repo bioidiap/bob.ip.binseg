@@ -10,23 +10,16 @@ dataset of retinal fundus images.
 
 * Reference: [REFUGE-2018]_
 * Original resolution (height x width): 2056 x 2124
-* Configuration resolution: 1632 x 1632 (after center cropping)
+* Configuration resolution: 1632 x 1632 (after resizing and padding)
 * Training samples: 400
 * Split reference: [REFUGE-2018]_
-
-.. warning:
-
-   Notice that the data cropping/resizing algorithm applied on training and
-   "validation" data are slightly different and need to be cross-checked.
-
 """
 
 from bob.ip.binseg.data.transforms import Resize, Pad
 from bob.ip.binseg.configs.datasets.utils import DATA_AUGMENTATION as _DA
-_transforms = [Resize((1539)), Pad((21, 46, 22, 47))] + _DA
+_transforms = [Resize(1539), Pad((21, 46, 22, 47))] + _DA
 
-from bob.db.refuge import Database as REFUGE
-bobdb = REFUGE(protocol="default_od")
-
-from bob.ip.binseg.data.binsegdataset import BinSegDataset
-dataset = BinSegDataset(bobdb, split="train", transforms=_transforms)
+from bob.ip.binseg.data.utils import SampleList2TorchDataset
+from bob.ip.binseg.data.refuge import dataset as refuge
+dataset = SampleList2TorchDataset(refuge.subsets("optic-disc")["train"],
+        transforms=_transforms)

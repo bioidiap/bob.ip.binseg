@@ -22,7 +22,7 @@ class Tester(unittest.TestCase):
         self.assertIsInstance(s, str)
         self.assertIsInstance(param, int)
 
-    def test__summary_driuod(self):
+    def test_summary_driuod(self):
         model = build_driuod()
         s, param = summary(model)
         self.assertIsInstance(s, str)

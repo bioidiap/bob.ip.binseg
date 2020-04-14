@@ -13,7 +13,7 @@ from . import dataset
 from ...test.utils import rc_variable_set
 
 
-def test_protocol_consitency():
+def test_protocol_consistency():
 
     subset = dataset.subsets("default")
     nose.tools.eq_(len(subset), 2)

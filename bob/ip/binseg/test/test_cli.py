@@ -5,6 +5,8 @@
 
 from click.testing import CliRunner
 
+from nose.plugins.attrib import attr
+
 
 def _check_help(entry_point):
 
@@ -136,6 +138,7 @@ def test_dataset_check_help():
     _check_help(check)
 
 
+@attr('slow')
 def test_dataset_check():
     from ..script.dataset import check
 

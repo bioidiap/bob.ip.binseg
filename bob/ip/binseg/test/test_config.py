@@ -2,6 +2,7 @@
 # coding=utf-8
 
 import nose.tools
+from nose.plugins.attrib import attr
 
 import torch
 
@@ -12,6 +13,7 @@ from .utils import rc_variable_set
 def test_drive_default_train():
 
     from ..configs.datasets.drive import dataset
+    nose.tools.eq_(len(dataset), 20)
     for sample in dataset:
         nose.tools.eq_(len(sample), 4)
         assert isinstance(sample[0], str)
@@ -27,6 +29,7 @@ def test_drive_default_train():
 def test_drive_default_test():
 
     from ..configs.datasets.drive_test import dataset
+    nose.tools.eq_(len(dataset), 20)
     for sample in dataset:
         nose.tools.eq_(len(sample), 4)
         assert isinstance(sample[0], str)
@@ -42,6 +45,7 @@ def test_drive_default_test():
 def test_stare_default_train():
 
     from ..configs.datasets.stare import dataset
+    nose.tools.eq_(len(dataset), 10)
     for sample in dataset:
         nose.tools.eq_(len(sample), 3)
         assert isinstance(sample[0], str)
@@ -55,6 +59,7 @@ def test_stare_default_train():
 def test_stare_default_test():
 
     from ..configs.datasets.stare_test import dataset
+    nose.tools.eq_(len(dataset), 10)
     for sample in dataset:
         nose.tools.eq_(len(sample), 3)
         assert isinstance(sample[0], str)
@@ -68,6 +73,7 @@ def test_stare_default_test():
 def test_chasedb1_default_train():
 
     from ..configs.datasets.chasedb1 import dataset
+    nose.tools.eq_(len(dataset), 8)
     for sample in dataset:
         nose.tools.eq_(len(sample), 3)
         assert isinstance(sample[0], str)
@@ -81,6 +87,7 @@ def test_chasedb1_default_train():
 def test_chasedb1_default_test():
 
     from ..configs.datasets.chasedb1_test import dataset
+    nose.tools.eq_(len(dataset), 20)
     for sample in dataset:
         nose.tools.eq_(len(sample), 3)
         assert isinstance(sample[0], str)
@@ -94,6 +101,7 @@ def test_chasedb1_default_test():
 def test_hrf_default_train():
 
     from ..configs.datasets.hrf_1168 import dataset
+    nose.tools.eq_(len(dataset), 15)
     for sample in dataset:
         nose.tools.eq_(len(sample), 4)
         assert isinstance(sample[0], str)
@@ -109,6 +117,7 @@ def test_hrf_default_train():
 def test_hrf_default_test():
 
     from ..configs.datasets.hrf_1168_test import dataset
+    nose.tools.eq_(len(dataset), 30)
     for sample in dataset:
         nose.tools.eq_(len(sample), 4)
         assert isinstance(sample[0], str)
@@ -118,3 +127,93 @@ def test_hrf_default_test():
         nose.tools.eq_(sample[2].dtype, torch.float32)
         nose.tools.eq_(sample[3].shape, (1, 1168, 1648)) #planes, height, width
         nose.tools.eq_(sample[3].dtype, torch.float32)
+
+
+@rc_variable_set("bob.ip.binseg.refuge.datadir")
+@attr("slow")
+def test_refuge_optic_disc_train():
+
+    from ..configs.datasets.refuge_od import dataset
+    nose.tools.eq_(len(dataset), 400)
+    for sample in dataset:
+        nose.tools.eq_(len(sample), 3)
+        assert isinstance(sample[0], str)
+        nose.tools.eq_(sample[1].shape, (3, 1632, 1632)) #planes, height, width
+        nose.tools.eq_(sample[1].dtype, torch.float32)
+        nose.tools.eq_(sample[2].shape, (1, 1632, 1632)) #planes, height, width
+        nose.tools.eq_(sample[2].dtype, torch.float32)
+
+
+@rc_variable_set("bob.ip.binseg.refuge.datadir")
+@attr("slow")
+def test_refuge_optic_disc_dev():
+
+    from ..configs.datasets.refuge_od_dev import dataset
+    nose.tools.eq_(len(dataset), 400)
+    for sample in dataset:
+        nose.tools.eq_(len(sample), 3)
+        assert isinstance(sample[0], str)
+        nose.tools.eq_(sample[1].shape, (3, 1632, 1632)) #planes, height, width
+        nose.tools.eq_(sample[1].dtype, torch.float32)
+        nose.tools.eq_(sample[2].shape, (1, 1632, 1632)) #planes, height, width
+        nose.tools.eq_(sample[2].dtype, torch.float32)
+
+
+@rc_variable_set("bob.ip.binseg.refuge.datadir")
+@attr("slow")
+def test_refuge_optic_disc_test():
+
+    from ..configs.datasets.refuge_od_test import dataset
+    nose.tools.eq_(len(dataset), 400)
+    for sample in dataset:
+        nose.tools.eq_(len(sample), 3)
+        assert isinstance(sample[0], str)
+        nose.tools.eq_(sample[1].shape, (3, 1632, 1632)) #planes, height, width
+        nose.tools.eq_(sample[1].dtype, torch.float32)
+        nose.tools.eq_(sample[2].shape, (1, 1632, 1632)) #planes, height, width
+        nose.tools.eq_(sample[2].dtype, torch.float32)
+
+
+@rc_variable_set("bob.ip.binseg.refuge.datadir")
+@attr("slow")
+def test_refuge_optic_cup_train():
+
+    from ..configs.datasets.refuge_cup import dataset
+    nose.tools.eq_(len(dataset), 400)
+    for sample in dataset:
+        nose.tools.eq_(len(sample), 3)
+        assert isinstance(sample[0], str)
+        nose.tools.eq_(sample[1].shape, (3, 1632, 1632)) #planes, height, width
+        nose.tools.eq_(sample[1].dtype, torch.float32)
+        nose.tools.eq_(sample[2].shape, (1, 1632, 1632)) #planes, height, width
+        nose.tools.eq_(sample[2].dtype, torch.float32)
+
+
+@rc_variable_set("bob.ip.binseg.refuge.datadir")
+@attr("slow")
+def test_refuge_optic_cup_dev():
+
+    from ..configs.datasets.refuge_cup_dev import dataset
+    nose.tools.eq_(len(dataset), 400)
+    for sample in dataset:
+        nose.tools.eq_(len(sample), 3)
+        assert isinstance(sample[0], str)
+        nose.tools.eq_(sample[1].shape, (3, 1632, 1632)) #planes, height, width
+        nose.tools.eq_(sample[1].dtype, torch.float32)
+        nose.tools.eq_(sample[2].shape, (1, 1632, 1632)) #planes, height, width
+        nose.tools.eq_(sample[2].dtype, torch.float32)
+
+
+@rc_variable_set("bob.ip.binseg.refuge.datadir")
+@attr("slow")
+def test_refuge_optic_cup_test():
+
+    from ..configs.datasets.refuge_cup_test import dataset
+    nose.tools.eq_(len(dataset), 400)
+    for sample in dataset:
+        nose.tools.eq_(len(sample), 3)
+        assert isinstance(sample[0], str)
+        nose.tools.eq_(sample[1].shape, (3, 1632, 1632)) #planes, height, width
+        nose.tools.eq_(sample[1].dtype, torch.float32)
+        nose.tools.eq_(sample[2].shape, (1, 1632, 1632)) #planes, height, width
+        nose.tools.eq_(sample[2].dtype, torch.float32)

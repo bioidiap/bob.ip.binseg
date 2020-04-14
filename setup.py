@@ -102,8 +102,10 @@ setup(
             "drishtigs1-cup-test = bob.ip.binseg.configs.datasets.dristhigs1_cup_test",
             # refuge
             "refuge-cup = bob.ip.binseg.configs.datasets.refuge_cup",
+            "refuge-cup-dev = bob.ip.binseg.configs.datasets.refuge_cup_dev",
             "refuge-cup-test = bob.ip.binseg.configs.datasets.refuge_cup_test",
             "refuge-od = bob.ip.binseg.configs.datasets.refuge_od",
+            "refuge-od-dev = bob.ip.binseg.configs.datasets.refuge_od_dev",
             "refuge-od-test = bob.ip.binseg.configs.datasets.refuge_od_test",
 
             # rim one r3
