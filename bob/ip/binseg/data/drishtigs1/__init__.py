@@ -28,7 +28,7 @@ import pkg_resources
 import bob.extension
 
 from ..jsondataset import JSONDataset
-from ..loader import load_pil_rgb, load_pil_1
+from ..loader import load_pil_rgb
 
 _protocols = {
         "optic-disc-all": pkg_resources.resource_filename(__name__, "optic-disc.json"),
