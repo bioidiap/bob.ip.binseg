@@ -29,3 +29,4 @@ output
 submitted.sql3
 logs/
 results/
+.coverage

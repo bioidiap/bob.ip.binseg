@@ -20,8 +20,7 @@ from bob.ip.binseg.data.transforms import Pad
 from bob.ip.binseg.configs.datasets.utils import DATA_AUGMENTATION as _DA
 _transforms = [Pad((8, 8, 8, 8))] + _DA
 
-from bob.db.rimoner3 import Database as RIMONER3
-bobdb = RIMONER3(protocol="default_cup")
-
-from bob.ip.binseg.data.binsegdataset import BinSegDataset
-dataset = BinSegDataset(bobdb, split="train", transforms=_transforms)
+from bob.ip.binseg.data.utils import SampleList2TorchDataset
+from bob.ip.binseg.data.rimoner3 import dataset as rimoner3
+dataset = SampleList2TorchDataset(rimoner3.subsets("optic-cup-exp1")["train"],
+        transforms=_transforms)

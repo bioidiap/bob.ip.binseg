@@ -19,8 +19,7 @@ baseline.
 from bob.ip.binseg.data.transforms import Pad
 _transforms = [Pad((8, 8, 8, 8))]
 
-from bob.db.rimoner3 import Database as RIMONER3
-bobdb = RIMONER3(protocol="default_cup")
-
-from bob.ip.binseg.data.binsegdataset import BinSegDataset
-dataset = BinSegDataset(bobdb, split="test", transforms=_transforms)
+from bob.ip.binseg.data.utils import SampleList2TorchDataset
+from bob.ip.binseg.data.rimoner3 import dataset as rimoner3
+dataset = SampleList2TorchDataset(rimoner3.subsets("optic-cup-exp1")["test"],
+        transforms=_transforms)
