@@ -37,8 +37,8 @@ _iostar = SampleList2TorchDataset(_raw_iostar.subsets("vessel")["train"],
 
 from bob.ip.binseg.data.hrf import dataset as _raw_hrf
 _hrf_transforms = [Resize((363)), Pad((0, 90, 0, 91))] + _DA
-dataset = SampleList2TorchDataset(_raw_hrf.subsets("default")["train"],
+_hrf = SampleList2TorchDataset(_raw_hrf.subsets("default")["train"],
         transforms=_hrf_transforms)
 
 import torch.utils.data
-dataset = torch.utils.data.ConcatDataset([_stare, _chase, _hrf, _iostar])
+dataset = torch.utils.data.ConcatDataset([_stare, _chase, _iostar, _hrf])

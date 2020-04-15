@@ -40,12 +40,12 @@ _chase = SampleList2TorchDataset(_raw_chase.subsets("default")["train"],
 
 from bob.ip.binseg.data.iostar import dataset as _raw_iostar
 _iostar_transforms = [Pad((81, 0, 81, 0)), Resize(608)] + _DA
-dataset = SampleList2TorchDataset(_raw_iostar.subsets("vessel")["train"],
+_iostar = SampleList2TorchDataset(_raw_iostar.subsets("vessel")["train"],
         transforms=_iostar_transforms)
 
 from bob.ip.binseg.data.hrf import dataset as _raw_hrf
 _hrf_transforms = [Pad((0, 345, 0, 345)), Resize(608)] + _DA
-dataset = SampleList2TorchDataset(_raw_hrf.subsets("default")["train"],
+_hrf = SampleList2TorchDataset(_raw_hrf.subsets("default")["train"],
         transforms=_hrf_transforms)
 
 import torch.utils.data

@@ -73,7 +73,7 @@ More information:
 # First, define how to access and load the raw data. Our package provides some
 # stock loaders we use for other datasets. You may have a look at the
 # documentation of that module for details.
-from bob.ip.binseg.data.loaders import (
+from bob.ip.binseg.data.loader import (
     load_pil_rgb,
     load_pil_1,
     data_path_keymaker,
@@ -129,4 +129,4 @@ _transforms = [
 # This class also inherits from pytorch Dataset and respect its required API.
 # See the documentation for details.
 from bob.ip.binseg.data.utils import SampleList2TorchDataset
-dataset = SampleList2TorchDataset(raw_dataset.subset("data"), _transforms)
+#dataset = SampleList2TorchDataset(raw_dataset.samples("data"), _transforms)

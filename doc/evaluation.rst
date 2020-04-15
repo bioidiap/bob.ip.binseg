@@ -45,17 +45,13 @@ Inference on a custom dataset
 =============================
 
 If you would like to test your own data against one of the pre-trained models,
-you need to instantiate one of:
-
-* :py:mod:`A CSV-based configuration <bob.ip.binseg.configs.datasets.csv>`
-* :py:mod:`A folder-based configuration <bob.ip.binseg.configs.datasets.folder>`
+you need to instantiate :py:mod:`A CSV-based configuration
+<bob.ip.binseg.configs.datasets.csv>`
 
 Read the appropriate module documentation for details.
 
 .. code-block:: bash
 
-   $ bob binseg config copy folder-dataset-example mydataset.py
-   # or
    $ bob binseg config copy csv-dataset-example mydataset.py
    # edit mydataset.py to your liking
    $ bob binseg predict -vv <model> -w <path/to/model.pth> ./mydataset.py
