@@ -36,8 +36,8 @@ import pkg_resources
 
 import bob.extension
 
-from ..jsondataset import JSONDataset
-from ..loader import load_pil_rgb, load_pil_1
+from ..dataset import JSONDataset
+from ..loader import load_pil_rgb, load_pil_1, data_path_keymaker
 
 _protocols = [
         pkg_resources.resource_filename(__name__, "default.json"),
@@ -48,11 +48,12 @@ _root_path = bob.extension.rc.get('bob.ip.binseg.chasedb1.datadir',
         os.path.realpath(os.curdir))
 
 def _loader(context, sample):
-    #"context" is ignore in this case - database is homogeneous
+    #"context" is ignored in this case - database is homogeneous
     return dict(
-            data=load_pil_rgb(sample["data"]),
-            label=load_pil_1(sample["label"]),
+            data=load_pil_rgb(os.path.join(_root_path, sample["data"])),
+            label=load_pil_1(os.path.join(_root_path, sample["label"])),
             )
 
-dataset = JSONDataset(protocols=_protocols, root_path=_root_path, loader=_loader)
+dataset = JSONDataset(protocols=_protocols, fieldnames=("data", "label"),
+        loader=_loader, keymaker=data_path_keymaker)
 """CHASE-DB1 dataset object"""

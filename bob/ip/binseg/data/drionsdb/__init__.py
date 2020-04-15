@@ -30,8 +30,8 @@ import PIL.ImageDraw
 
 import bob.extension
 
-from ..jsondataset import JSONDataset
-from ..loader import load_pil_rgb
+from ..dataset import JSONDataset
+from ..loader import load_pil_rgb, data_path_keymaker
 
 _protocols = [
         pkg_resources.resource_filename(__name__, "default.json"),
@@ -63,8 +63,8 @@ def _pad_right(img):
 
 
 def _loader(context, sample):
-    data  = load_pil_rgb(sample["data"])
-    label = _txt_to_pil_1(sample["label"], data.size)
+    data  = load_pil_rgb(os.path.join(_root_path, sample["data"]))
+    label = _txt_to_pil_1(os.path.join(_root_path, sample["label"]), data.size)
 
     if sample["data"].endswith("_101.jpg"):
         # pads the image on the right side to account for a difference in
@@ -74,5 +74,6 @@ def _loader(context, sample):
 
     return dict(data=data, label=label)
 
-dataset = JSONDataset(protocols=_protocols, root_path=_root_path, loader=_loader)
+dataset = JSONDataset(protocols=_protocols, fieldnames=("data", "label"),
+        loader=_loader, keymaker=data_path_keymaker)
 """DRIONSDB dataset object"""

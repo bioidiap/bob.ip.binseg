@@ -15,9 +15,7 @@ Data Manipulation
 .. autosummary::
    :toctree: api/data
 
-   bob.ip.binseg.data.folderdataset
-   bob.ip.binseg.data.csvdataset
-   bob.ip.binseg.data.jsondataset
+   bob.ip.binseg.data.dataset
    bob.ip.binseg.data.loader
    bob.ip.binseg.data.sample
    bob.ip.binseg.data.utils
@@ -133,7 +131,6 @@ Datasets
    :template: config.rst
 
    bob.ip.binseg.configs.datasets.csv
-   bob.ip.binseg.configs.datasets.folder
    bob.ip.binseg.configs.datasets.utils
 
    bob.ip.binseg.configs.datasets.chasedb1

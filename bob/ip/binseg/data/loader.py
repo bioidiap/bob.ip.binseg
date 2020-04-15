@@ -5,6 +5,7 @@
 """Data loading code"""
 
 
+import os
 import PIL.Image
 
 
@@ -48,3 +49,34 @@ def load_pil_1(path):
     """
 
     return PIL.Image.open(path).convert(mode="1", dither=None)
+
+
+def data_path_keymaker(context, sample):
+    """Returns a path without extension as a key
+
+    This method assumes ``sample`` contains at least one entry named ``path``,
+    that contains a path to the sample raw data, without extension.  It will
+    return the said path without its extension.
+
+
+    Parameters
+    ----------
+
+    context : dict
+        Context dictionary with entries (``protocol``, ``subset``), depending
+        on the context
+
+    sample : dict
+        A dictionary that maps field names to sample entries from the original
+        dataset.
+
+
+    Returns
+    -------
+
+    key : str
+        A string that uniquely identifies the sample within a given context
+
+    """
+
+    return os.path.splitext(sample["data"])[0]

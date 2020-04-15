@@ -37,8 +37,8 @@ import pkg_resources
 
 import bob.extension
 
-from ..jsondataset import JSONDataset
-from ..loader import load_pil_rgb
+from ..dataset import JSONDataset
+from ..loader import load_pil_rgb, data_path_keymaker
 
 _protocols = {
         "optic-disc": pkg_resources.resource_filename(__name__, "default.json"),
@@ -50,8 +50,8 @@ _root_path = bob.extension.rc.get('bob.ip.binseg.refuge.datadir',
 
 def _loader(context, sample):
     retval = dict(
-            data=load_pil_rgb(sample["data"]),
-            label=load_pil_rgb(sample["label"]),
+            data=load_pil_rgb(os.path.join(_root_path, sample["data"])),
+            label=load_pil_rgb(os.path.join(_root_path, sample["label"])),
             )
 
     if context["subset"] == "train":
@@ -77,5 +77,6 @@ def _loader(context, sample):
 
     return retval
 
-dataset = JSONDataset(protocols=_protocols, root_path=_root_path, loader=_loader)
+dataset = JSONDataset(protocols=_protocols, fieldnames=("data", "label"),
+        loader=_loader, keymaker=data_path_keymaker)
 """REFUGE dataset object"""

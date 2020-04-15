@@ -27,33 +27,49 @@ import pkg_resources
 
 import bob.extension
 
-from ..jsondataset import JSONDataset
-from ..loader import load_pil_rgb
+from ..dataset import JSONDataset
+from ..loader import load_pil_rgb, data_path_keymaker
 
 _protocols = {
-        "optic-disc-all": pkg_resources.resource_filename(__name__, "optic-disc.json"),
-        "optic-cup-all": pkg_resources.resource_filename(__name__, "optic-cup.json"),
-        "optic-disc-any": pkg_resources.resource_filename(__name__, "optic-disc.json"),
-        "optic-cup-any": pkg_resources.resource_filename(__name__, "optic-cup.json"),
-        }
+    "optic-disc-all": pkg_resources.resource_filename(
+        __name__, "optic-disc.json"
+    ),
+    "optic-cup-all": pkg_resources.resource_filename(
+        __name__, "optic-cup.json"
+    ),
+    "optic-disc-any": pkg_resources.resource_filename(
+        __name__, "optic-disc.json"
+    ),
+    "optic-cup-any": pkg_resources.resource_filename(
+        __name__, "optic-cup.json"
+    ),
+}
 
-_root_path = bob.extension.rc.get('bob.ip.binseg.drishtigs1.datadir',
-        os.path.realpath(os.curdir))
+_root_path = bob.extension.rc.get(
+    "bob.ip.binseg.drishtigs1.datadir", os.path.realpath(os.curdir)
+)
+
 
 def _loader(context, sample):
     retval = dict(
-            data=load_pil_rgb(sample["data"]),
-            label=load_pil_rgb(sample["label"]).convert("L"),
-            )
+        data=load_pil_rgb(os.path.join(_root_path, sample["data"])),
+        label=load_pil_rgb(os.path.join(_root_path, sample["label"])).convert(
+            "L"
+        ),
+    )
     # Drishti-GS provides softmaps of multiple annotators
     # we threshold to get gt where all/any of the annotators overlap
     if context["protocol"].endswith("-all"):
-        retval["label"] = retval["label"].point(lambda p: p>254, mode="1")
+        retval["label"] = retval["label"].point(lambda p: p > 254, mode="1")
     elif context["protocol"].endswith("-any"):
-        retval["label"] = retval["label"].point(lambda p: p>0, mode="1")
+        retval["label"] = retval["label"].point(lambda p: p > 0, mode="1")
     else:
         raise RuntimeError(f"Unknown protocol {context['protocol']}")
     return retval
 
-dataset = JSONDataset(protocols=_protocols, root_path=_root_path, loader=_loader)
+
+dataset = JSONDataset(
+    protocols=_protocols, fieldnames=("data", "label"), loader=_loader,
+    keymaker=data_path_keymaker
+)
 """Drishti-GS1 dataset object"""

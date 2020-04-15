@@ -29,23 +29,35 @@ import pkg_resources
 
 import bob.extension
 
-from ..jsondataset import JSONDataset
-from ..loader import load_pil_rgb, load_pil_1
+from ..dataset import JSONDataset
+from ..loader import load_pil_rgb, load_pil_1, data_path_keymaker
 
 _protocols = [
-        pkg_resources.resource_filename(__name__, "default.json"),
-        pkg_resources.resource_filename(__name__, "second-annotation.json"),
-        ]
+    pkg_resources.resource_filename(__name__, "default.json"),
+    pkg_resources.resource_filename(__name__, "second-annotation.json"),
+]
 
-_root_path = bob.extension.rc.get('bob.ip.binseg.stare.datadir',
-        os.path.realpath(os.curdir))
+_fieldnames = ("data", "label")
 
-def _loader(context, sample):
-    #"context" is ignore in this case - database is homogeneous
-    return dict(
-            data=load_pil_rgb(sample["data"]),
-            label=load_pil_1(sample["label"]),
-            )
+_root_path = bob.extension.rc.get(
+    "bob.ip.binseg.stare.datadir", os.path.realpath(os.curdir)
+)
 
-dataset = JSONDataset(protocols=_protocols, root_path=_root_path, loader=_loader)
+def _make_loader(root_path):
+
+    def _loader(context, sample):
+        # "context" is ignore in this case - database is homogeneous
+        return dict(
+            data=load_pil_rgb(os.path.join(root_path, sample["data"])),
+            label=load_pil_1(os.path.join(root_path, sample["label"])),
+        )
+    return _loader
+
+
+dataset = JSONDataset(
+    protocols=_protocols,
+    fieldnames=_fieldnames,
+    loader=_make_loader(_root_path),
+    keymaker=data_path_keymaker,
+)
 """STARE dataset object"""

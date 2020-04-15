@@ -53,9 +53,8 @@ setup(
             "unet = bob.ip.binseg.configs.models.unet",
             "resunet = bob.ip.binseg.configs.models.resunet",
 
-            # datasets
+            # example datasets
             "csv-dataset-example = bob.ip.binseg.configs.datasets.csv",
-            "folder-dataset-example = bob.ip.binseg.configs.datasets.folder",
 
             # drive dataset
             "drive = bob.ip.binseg.configs.datasets.drive",

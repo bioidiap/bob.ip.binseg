@@ -25,24 +25,32 @@ import pkg_resources
 
 import bob.extension
 
-from ..jsondataset import JSONDataset
-from ..loader import load_pil_rgb, load_pil_1
+from ..dataset import JSONDataset
+from ..loader import load_pil_rgb, load_pil_1, data_path_keymaker
 
 _protocols = [
-        pkg_resources.resource_filename(__name__, "default.json"),
-        pkg_resources.resource_filename(__name__, "second-annotation.json"),
-        ]
+    pkg_resources.resource_filename(__name__, "default.json"),
+    pkg_resources.resource_filename(__name__, "second-annotation.json"),
+]
 
-_root_path = bob.extension.rc.get('bob.ip.binseg.drive.datadir',
-        os.path.realpath(os.curdir))
+_root_path = bob.extension.rc.get(
+    "bob.ip.binseg.drive.datadir", os.path.realpath(os.curdir)
+)
+
 
 def _loader(context, sample):
-    #"context" is ignore in this case - database is homogeneous
+    # "context" is ignored in this case - database is homogeneous
     return dict(
-            data=load_pil_rgb(sample["data"]),
-            label=load_pil_1(sample["label"]),
-            mask=load_pil_1(sample["mask"]),
-            )
+        data=load_pil_rgb(os.path.join(_root_path, sample["data"])),
+        label=load_pil_1(os.path.join(_root_path, sample["label"])),
+        mask=load_pil_1(os.path.join(_root_path, sample["mask"])),
+    )
 
-dataset = JSONDataset(protocols=_protocols, root_path=_root_path, loader=_loader)
+
+dataset = JSONDataset(
+    protocols=_protocols,
+    fieldnames=("data", "label", "mask"),
+    loader=_loader,
+    keymaker=data_path_keymaker,
+)
 """DRIVE dataset object"""
