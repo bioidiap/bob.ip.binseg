@@ -2,12 +2,43 @@
 # coding=utf-8
 
 """COVD-DRIVE (training set) for Vessel Segmentation
+
+* Configuration resolution: 544 x 544
+
+The dataset available in this file is composed of STARE, CHASE-DB1, IOSTAR
+vessel and HRF (with annotated samples).
 """
 
-from bob.ip.binseg.configs.datasets.stare544 import dataset as _stare
-from bob.ip.binseg.configs.datasets.chasedb1544 import dataset as _chase
-from bob.ip.binseg.configs.datasets.iostarvessel544 import dataset as _iostar
-from bob.ip.binseg.configs.datasets.hrf544 import dataset as _hrf
+from bob.ip.binseg.data.transforms import *
+from bob.ip.binseg.data.utils import SampleList2TorchDataset
+from bob.ip.binseg.configs.datasets.utils import DATA_AUGMENTATION as _DA
+
+from bob.ip.binseg.data.stare import dataset as _raw_stare
+_stare_transforms = [
+        RandomRotation(),
+        Resize(471),
+        Pad((0, 37, 0, 36)),
+        RandomHFlip(),
+        RandomVFlip(),
+        ColorJitter(),
+        ]
+_stare = SampleList2TorchDataset(_raw_stare.subsets("default")["train"],
+        transforms=_stare_transforms)
+
+from bob.ip.binseg.data.chasedb1 import dataset as _raw_chase
+_chase_transforms = [Resize(544), Crop(0, 12, 544, 544)] + _DA
+_chase = SampleList2TorchDataset(_raw_chase.subsets("default")["train"],
+        transforms=_chase_transforms)
+
+from bob.ip.binseg.data.iostar import dataset as _raw_iostar
+_iostar_transforms = [Resize(544)] + _DA
+_iostar = SampleList2TorchDataset(_raw_iostar.subsets("vessel")["train"],
+        transforms=_iostar_transforms)
+
+from bob.ip.binseg.data.hrf import dataset as _raw_hrf
+_hrf_transforms = [Resize((363)), Pad((0, 90, 0, 91))] + _DA
+dataset = SampleList2TorchDataset(_raw_hrf.subsets("default")["train"],
+        transforms=_hrf_transforms)
 
 import torch.utils.data
 dataset = torch.utils.data.ConcatDataset([_stare, _chase, _hrf, _iostar])
