@@ -82,32 +82,33 @@ def test_loading():
         #display = overlayed_image(data["data"], data["label"])
         #display.show()
         #import ipdb; ipdb.set_trace()
-        #pass
 
-    subset = dataset.subsets("optic-cup-all")
+        return w/b
+
     limit = None
-    for s in subset["train"][:limit]:
-        _check_sample(s, 0.03)
-    for s in subset["test"][:limit]:
-        _check_sample(s, 0.04)
+    subset = dataset.subsets("optic-cup-all")
+    proportions = [_check_sample(s, 0.027) for s in subset["train"][:limit]]
+    #print(f"max label proportions = {max(proportions)}")
+    proportions = [_check_sample(s, 0.035) for s in subset["test"][:limit]]
+    #print(f"max label proportions = {max(proportions)}")
 
     subset = dataset.subsets("optic-disc-all")
-    for s in subset["train"][:limit]:
-        _check_sample(s, 0.05)
-    for s in subset["test"][:limit]:
-        _check_sample(s, 0.06)
+    proportions = [_check_sample(s, 0.045) for s in subset["train"][:limit]]
+    #print(f"max label proportions = {max(proportions)}")
+    proportions = [_check_sample(s, 0.055) for s in subset["test"][:limit]]
+    #print(f"max label proportions = {max(proportions)}")
 
     subset = dataset.subsets("optic-cup-any")
-    for s in subset["train"][:limit]:
-        _check_sample(s, 0.04)
-    for s in subset["test"][:limit]:
-        _check_sample(s, 0.05)
+    proportions = [_check_sample(s, 0.034) for s in subset["train"][:limit]]
+    #print(f"max label proportions = {max(proportions)}")
+    proportions = [_check_sample(s, 0.047) for s in subset["test"][:limit]]
+    #print(f"max label proportions = {max(proportions)}")
 
     subset = dataset.subsets("optic-disc-any")
-    for s in subset["train"][:limit]:
-        _check_sample(s, 0.055)
-    for s in subset["test"][:limit]:
-        _check_sample(s, 0.06)
+    proportions = [_check_sample(s, 0.052) for s in subset["train"][:limit]]
+    #print(f"max label proportions = {max(proportions)}")
+    proportions = [_check_sample(s, 0.060) for s in subset["test"][:limit]]
+    #print(f"max label proportions = {max(proportions)}")
 
 
 @rc_variable_set("bob.ip.binseg.drishtigs1.datadir")

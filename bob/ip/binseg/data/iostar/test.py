@@ -48,7 +48,7 @@ def test_loading():
     from ..utils import count_bw
     image_size = (1024, 1024)
 
-    def _check_sample(s, bw_threshold_label):
+    def _check_sample(s, bw_threshold_label, bw_threshold_mask):
 
         data = s.data
         assert isinstance(data, dict)
@@ -74,13 +74,14 @@ def test_loading():
         assert "mask" in data
         nose.tools.eq_(data["mask"].size, image_size)
         nose.tools.eq_(data["mask"].mode, "1")
-        b, w = count_bw(data["mask"])
-        assert (b+w) == numpy.prod(image_size), \
-                f"Counts of black + white ({b}+{w}) do not add up to total " \
+        bm, wm = count_bw(data["mask"])
+        assert (bm+wm) == numpy.prod(image_size), \
+                f"Counts of black + white ({bm}+{wm}) do not add up to total " \
                 f"image size ({numpy.prod(image_size)}) at '{s.key}':mask"
-        assert w > b, \
-                f"The proportion between white and black pixels " \
-                f"({w} > {b}?) is not respected at '{s.key}':mask - " \
+        assert (wm/bm) > bw_threshold_mask, \
+                f"The proportion between black and white pixels in masks " \
+                f"({wm}/{bm}={wm/bm:.2f}) is smaller than the allowed " \
+                f"threshold of {bw_threshold_mask} at '{s.key}':label - " \
                 f"this could indicate a loading problem!"
 
         # to visualize images, uncomment the folowing code
@@ -91,17 +92,25 @@ def test_loading():
         #display = overlayed_image(data["data"], data["label"], data["mask"])
         #display.show()
         #import ipdb; ipdb.set_trace()
-        #pass
 
+        return w/b, wm/bm
+
+    limit = None  #use this to limit testing to first images only
     subset = dataset.subsets("vessel")
-    bw_threshold_label = 0.11  #(vessels to background proportion limit)
-    for s in subset["train"]: _check_sample(s, bw_threshold_label)
-    for s in subset["test"]: _check_sample(s, bw_threshold_label)
+    proportions = [_check_sample(s, 0.11, 3.19) for s in subset["train"][:limit]]
+    #print(f"max label proportions = {max(k[0] for k in proportions)}")
+    #print(f"min mask proportions = {min(k[1] for k in proportions)}")
+    proportions = [_check_sample(s, 0.10, 3.27) for s in subset["test"][:limit]]
+    #print(f"max label proportions = {max(k[0] for k in proportions)}")
+    #print(f"min mask proportions = {min(k[1] for k in proportions)}")
 
     subset = dataset.subsets("optic-disc")
-    bw_threshold_label = 0.04  #(optic-disc to background proportion limit)
-    for s in subset["train"]: _check_sample(s, bw_threshold_label)
-    for s in subset["test"]: _check_sample(s, bw_threshold_label)
+    proportions = [_check_sample(s, 0.023, 3.19) for s in subset["train"][:limit]]
+    #print(f"max label proportions = {max(k[0] for k in proportions)}")
+    #print(f"min mask proportions = {min(k[1] for k in proportions)}")
+    proportions = [_check_sample(s, 0.033, 3.27) for s in subset["test"][:limit]]
+    #print(f"max label proportions = {max(k[0] for k in proportions)}")
+    #print(f"min mask proportions = {min(k[1] for k in proportions)}")
 
 @rc_variable_set('bob.ip.binseg.iostar.datadir')
 def test_check():

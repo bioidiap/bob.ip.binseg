@@ -81,23 +81,25 @@ def test_loading():
         # display = overlayed_image(data["data"], data["label"])
         # display.show()
         # import ipdb; ipdb.set_trace()
-        # pass
 
+        return w/b
+
+    limit = None  #use this to limit testing to first images only
     subset = dataset.subsets("optic-disc")
-    for s in subset["train"]:
-        _check_sample(s, (2124, 2056), True, 3, 0.03)
-    for s in subset["validation"]:
-        _check_sample(s, (1634, 1634), False, 2, 0.045)
-    for s in subset["test"]:
-        _check_sample(s, (1634, 1634), True, 3, 0.03)
+    proportions = [_check_sample(s, (2124, 2056), True, 3, 0.029) for s in subset["train"][:limit]]
+    #print(f"max label proportions = {max(proportions)}")
+    proportions = [_check_sample(s, (1634, 1634), False, 2, 0.043) for s in subset["validation"][:limit]]
+    #print(f"max label proportions = {max(proportions)}")
+    proportions = [_check_sample(s, (1634, 1634), True, 3, 0.026) for s in subset["test"][:limit]]
+    #print(f"max label proportions = {max(proportions)}")
 
     subset = dataset.subsets("optic-cup")
-    for s in subset["train"]:
-        _check_sample(s, (2124, 2056), True, 3, 0.018)
-    for s in subset["validation"]:
-        _check_sample(s, (1634, 1634), False, 2, 0.035)
-    for s in subset["test"]:
-        _check_sample(s, (1634, 1634), True, 3, 0.018)
+    proportions = [_check_sample(s, (2124, 2056), True, 3, 0.018) for s in subset["train"][:limit]]
+    #print(f"max label proportions = {max(proportions)}")
+    proportions = [_check_sample(s, (1634, 1634), False, 2, 0.030) for s in subset["validation"][:limit]]
+    #print(f"max label proportions = {max(proportions)}")
+    proportions = [_check_sample(s, (1634, 1634), True, 3, 0.017) for s in subset["test"][:limit]]
+    #print(f"max label proportions = {max(proportions)}")
 
 
 @rc_variable_set("bob.ip.binseg.refuge.datadir")

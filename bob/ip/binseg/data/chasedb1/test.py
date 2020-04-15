@@ -47,9 +47,8 @@ def test_loading():
 
     from ..utils import count_bw
     image_size = (999, 960)
-    bw_threshold_label = 0.10  #(vessels to background proportion limit)
 
-    def _check_sample(s):
+    def _check_sample(s, bw_threshold_label):
 
         data = s.data
         assert isinstance(data, dict)
@@ -79,14 +78,21 @@ def test_loading():
         #display = overlayed_image(data["data"], data["label"])
         #display.show()
         #import ipdb; ipdb.set_trace()
-        #pass
 
+        return w/b
+
+    limit = None  #use this to limit testing to first images only
     subset = dataset.subsets("default")
-    for s in subset["train"]: _check_sample(s)
-    for s in subset["test"]: _check_sample(s)
+    proportions = [_check_sample(s, 0.08) for s in subset["train"][:limit]]
+    #print(f"max label proportions = {max(proportions)}")
+    proportions = [_check_sample(s, 0.10) for s in subset["test"][:limit]]
+    #print(f"max label proportions = {max(proportions)}")
 
     subset = dataset.subsets("second-annotation")
-    for s in subset["test"]: _check_sample(s)
+    proportions = [_check_sample(s, 0.09) for s in subset["train"][:limit]]
+    #print(f"max label proportions = {max(proportions)}")
+    proportions = [_check_sample(s, 0.09) for s in subset["test"][:limit]]
+    #print(f"max label proportions = {max(proportions)}")
 
 
 @rc_variable_set('bob.ip.binseg.chasedb1.datadir')
