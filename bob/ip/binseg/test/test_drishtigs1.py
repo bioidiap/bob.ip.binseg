@@ -10,8 +10,8 @@ import numpy
 import nose.tools
 from nose.plugins.attrib import attr
 
-from . import dataset
-from ...test.utils import rc_variable_set
+from ..data.drishtigs1 import dataset
+from .utils import rc_variable_set, count_bw
 
 
 def test_protocol_consistency():
@@ -38,8 +38,6 @@ def test_protocol_consistency():
 @rc_variable_set("bob.ip.binseg.drishtigs1.datadir")
 @attr("slow")
 def test_loading():
-
-    from ..utils import count_bw
 
     def _check_sample(s, bw_threshold_label):
 
@@ -77,8 +75,7 @@ def test_loading():
         # to visualize images, uncomment the folowing code
         # it should display an image with a faded background representing the
         # original data, blended with green labels.
-        #print(f"{s.key}: {data['data'].size}, w/b = {w/b:.3f}")
-        #from ..utils import overlayed_image
+        #from ..data.utils import overlayed_image
         #display = overlayed_image(data["data"], data["label"])
         #display.show()
         #import ipdb; ipdb.set_trace()

@@ -2,15 +2,15 @@
 # coding=utf-8
 
 
-"""Tests for STARE"""
+"""Tests for CHASE-DB1"""
 
 import os
 
 import numpy
 import nose.tools
 
-from . import dataset
-from ...test.utils import rc_variable_set
+from ..data.chasedb1 import dataset
+from .utils import rc_variable_set, count_bw
 
 
 def test_protocol_consistency():
@@ -19,34 +19,33 @@ def test_protocol_consistency():
     nose.tools.eq_(len(subset), 2)
 
     assert "train" in subset
-    nose.tools.eq_(len(subset["train"]), 10)
+    nose.tools.eq_(len(subset["train"]), 8)
     for s in subset["train"]:
-        assert s.key.startswith(os.path.join("stare-images", "im0"))
+        assert s.key.startswith("Image_")
 
     assert "test" in subset
-    nose.tools.eq_(len(subset["test"]), 10)
+    nose.tools.eq_(len(subset["test"]), 20)
     for s in subset["test"]:
-        assert s.key.startswith(os.path.join("stare-images", "im0"))
+        assert s.key.startswith("Image_")
 
     subset = dataset.subsets("second-annotation")
     nose.tools.eq_(len(subset), 2)
 
     assert "train" in subset
-    nose.tools.eq_(len(subset["train"]), 10)
+    nose.tools.eq_(len(subset["train"]), 8)
     for s in subset["train"]:
-        assert s.key.startswith(os.path.join("stare-images", "im0"))
+        assert s.key.startswith("Image_")
 
     assert "test" in subset
-    nose.tools.eq_(len(subset["test"]), 10)
+    nose.tools.eq_(len(subset["test"]), 20)
     for s in subset["test"]:
-        assert s.key.startswith(os.path.join("stare-images", "im0"))
+        assert s.key.startswith("Image_")
 
 
-@rc_variable_set('bob.ip.binseg.stare.datadir')
+@rc_variable_set('bob.ip.binseg.chasedb1.datadir')
 def test_loading():
 
-    from ..utils import count_bw
-    image_size = (700, 605)
+    image_size = (999, 960)
 
     def _check_sample(s, bw_threshold_label):
 
@@ -74,7 +73,7 @@ def test_loading():
         # to visualize images, uncomment the folowing code
         # it should display an image with a faded background representing the
         # original data, blended with green labels.
-        #from ..utils import overlayed_image
+        #from ..data.utils import overlayed_image
         #display = overlayed_image(data["data"], data["label"])
         #display.show()
         #import ipdb; ipdb.set_trace()
@@ -83,18 +82,18 @@ def test_loading():
 
     limit = None  #use this to limit testing to first images only
     subset = dataset.subsets("default")
-    proportions = [_check_sample(s, 0.10) for s in subset["train"][:limit]]
+    proportions = [_check_sample(s, 0.08) for s in subset["train"][:limit]]
     #print(f"max label proportions = {max(proportions)}")
-    proportions = [_check_sample(s, 0.12) for s in subset["test"][:limit]]
+    proportions = [_check_sample(s, 0.10) for s in subset["test"][:limit]]
     #print(f"max label proportions = {max(proportions)}")
 
     subset = dataset.subsets("second-annotation")
-    proportions = [_check_sample(s, 0.19) for s in subset["train"][:limit]]
+    proportions = [_check_sample(s, 0.09) for s in subset["train"][:limit]]
     #print(f"max label proportions = {max(proportions)}")
-    proportions = [_check_sample(s, 0.18) for s in subset["test"][:limit]]
+    proportions = [_check_sample(s, 0.09) for s in subset["test"][:limit]]
     #print(f"max label proportions = {max(proportions)}")
 
 
-@rc_variable_set('bob.ip.binseg.stare.datadir')
+@rc_variable_set('bob.ip.binseg.chasedb1.datadir')
 def test_check():
     nose.tools.eq_(dataset.check(), 0)

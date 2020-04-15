@@ -9,8 +9,8 @@ import os
 import numpy
 import nose.tools
 
-from . import dataset
-from ...test.utils import rc_variable_set
+from ..data.iostar import dataset
+from .utils import rc_variable_set, count_bw
 
 
 def test_protocol_consistency():
@@ -45,7 +45,6 @@ def test_protocol_consistency():
 @rc_variable_set('bob.ip.binseg.iostar.datadir')
 def test_loading():
 
-    from ..utils import count_bw
     image_size = (1024, 1024)
 
     def _check_sample(s, bw_threshold_label, bw_threshold_mask):
@@ -88,7 +87,7 @@ def test_loading():
         # it should display an image with a faded background representing the
         # original data, blended with green labels and blue area indicating the
         # parts to be masked out.
-        #from ..utils import overlayed_image
+        #from ..data.utils import overlayed_image
         #display = overlayed_image(data["data"], data["label"], data["mask"])
         #display.show()
         #import ipdb; ipdb.set_trace()

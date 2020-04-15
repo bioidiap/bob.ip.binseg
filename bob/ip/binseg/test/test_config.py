@@ -6,6 +6,8 @@ from nose.plugins.attrib import attr
 
 import torch
 
+from . import mock_dataset
+stare_dataset, stare_variable_set = mock_dataset()
 from .utils import rc_variable_set
 
 
@@ -41,10 +43,12 @@ def test_drive_default_test():
         nose.tools.eq_(sample[3].dtype, torch.float32)
 
 
-@rc_variable_set("bob.ip.binseg.stare.datadir")
+@stare_variable_set("bob.ip.binseg.stare.datadir")
 def test_stare_default_train():
 
     from ..configs.datasets.stare import dataset
+    # hack to allow testing on the CI
+    dataset._samples = stare_dataset.subsets("default")["train"]
     nose.tools.eq_(len(dataset), 10)
     for sample in dataset:
         nose.tools.eq_(len(sample), 3)
@@ -55,10 +59,12 @@ def test_stare_default_train():
         nose.tools.eq_(sample[2].dtype, torch.float32)
 
 
-@rc_variable_set("bob.ip.binseg.stare.datadir")
+@stare_variable_set("bob.ip.binseg.stare.datadir")
 def test_stare_default_test():
 
     from ..configs.datasets.stare_test import dataset
+    # hack to allow testing on the CI
+    dataset._samples = stare_dataset.subsets("default")["test"]
     nose.tools.eq_(len(dataset), 10)
     for sample in dataset:
         nose.tools.eq_(len(sample), 3)
