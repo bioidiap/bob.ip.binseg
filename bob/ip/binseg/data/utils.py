@@ -228,6 +228,6 @@ class SSLDataset(torch.utils.data.Dataset):
 
         retval = self.labelled[index]
         # gets one an unlabelled sample randomly to follow the labelled sample
-        unlab = self.unlabelled[torch.randint(len(self.unlabelled))]
+        unlab = self.unlabelled[torch.randint(len(self.unlabelled), ())]
         # only interested in key and data
         return retval + unlab[:2]

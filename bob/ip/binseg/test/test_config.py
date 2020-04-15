@@ -330,6 +330,34 @@ def test_covd_drive():
 
 
 @rc_variable_set("bob.ip.binseg.drive.datadir")
+@rc_variable_set("bob.ip.binseg.stare.datadir")
+@rc_variable_set("bob.ip.binseg.chasedb1.datadir")
+@rc_variable_set("bob.ip.binseg.hrf.datadir")
+@rc_variable_set("bob.ip.binseg.iostar.datadir")
+def test_covd_drive_ssl():
+
+    from ..configs.datasets.covd_drive_ssl import dataset
+    nose.tools.eq_(len(dataset), 53)
+    for sample in dataset:
+        assert 5 <= len(sample) <= 6
+        assert isinstance(sample[0], str)
+        nose.tools.eq_(sample[1].shape, (3, 544, 544)) #planes, height, width
+        nose.tools.eq_(sample[1].dtype, torch.float32)
+        nose.tools.eq_(sample[2].shape, (1, 544, 544)) #planes, height, width
+        nose.tools.eq_(sample[2].dtype, torch.float32)
+        if len(sample) == 6:
+            nose.tools.eq_(sample[3].shape, (1, 544, 544)) #planes, height, width
+            nose.tools.eq_(sample[3].dtype, torch.float32)
+            assert isinstance(sample[4], str)
+            nose.tools.eq_(sample[5].shape, (3, 544, 544)) #planes, height, width
+            nose.tools.eq_(sample[5].dtype, torch.float32)
+        else:
+            assert isinstance(sample[3], str)
+            nose.tools.eq_(sample[4].shape, (3, 544, 544)) #planes, height, width
+            nose.tools.eq_(sample[4].dtype, torch.float32)
+
+
+@rc_variable_set("bob.ip.binseg.drive.datadir")
 @rc_variable_set("bob.ip.binseg.chasedb1.datadir")
 @rc_variable_set("bob.ip.binseg.hrf.datadir")
 @rc_variable_set("bob.ip.binseg.iostar.datadir")
