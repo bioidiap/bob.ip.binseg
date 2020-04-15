@@ -5,7 +5,7 @@
 
 * Configuration resolution (height x width): 960 x 960
 
-The dataset available in this file is composed of STARE, CHASE-DB1, IOSTAR
+The dataset available in this file is composed of DRIVE, STARE, IOSTAR
 vessel and HRF (with annotated samples).
 """
 

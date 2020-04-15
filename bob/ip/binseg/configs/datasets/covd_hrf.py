@@ -5,8 +5,8 @@
 
 * Configuration resolution: 1168 x 1648
 
-The dataset available in this file is composed of STARE, CHASE-DB1, IOSTAR
-vessel and CHASE-DB1 (with annotated samples).
+The dataset available in this file is composed of DRIVE STARE, CHASE-DB1, and
+IOSTAR vessel (with annotated samples).
 """
 
 from bob.ip.binseg.data.transforms import *
