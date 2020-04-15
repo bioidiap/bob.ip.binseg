@@ -59,7 +59,6 @@ test:
     - sphinx
     - sphinx_rtd_theme
     - sphinxcontrib-programoutput
-    - bob.db.drionsdb
 
 about:
   summary: Binary Segmentation Benchmark Package for Bob

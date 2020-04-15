@@ -21,8 +21,7 @@ baseline.
 from bob.ip.binseg.data.transforms import Pad
 _transforms = [Pad((4, 8, 4, 8))]
 
-from bob.db.drionsdb import Database as DRIONS
-bobdb = DRIONS(protocol="default")
-
-from bob.ip.binseg.data.binsegdataset import BinSegDataset
-dataset = BinSegDataset(bobdb, split="test", transforms=_transforms)
+from bob.ip.binseg.data.utils import SampleList2TorchDataset
+from bob.ip.binseg.data.drionsdb import dataset as drionsdb
+dataset = SampleList2TorchDataset(drionsdb.subsets("default")["test"],
+        transforms=_transforms)

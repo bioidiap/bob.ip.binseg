@@ -27,7 +27,7 @@ def _get_supported_datasets():
     retval = []
     for k in os.listdir(basedir):
         candidate = os.path.join(basedir, k)
-        if os.path.isdir(candidate) and 'test.py' in os.listdir(candidate):
+        if os.path.isdir(candidate) and '__init__.py' in os.listdir(candidate):
             retval.append(k)
     return retval
 

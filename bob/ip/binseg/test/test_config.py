@@ -279,3 +279,31 @@ def test_drishtigs1_optic_cup_all_test():
         nose.tools.eq_(sample[1].dtype, torch.float32)
         nose.tools.eq_(sample[2].shape, (1, 1760, 2048)) #planes, height, width
         nose.tools.eq_(sample[2].dtype, torch.float32)
+
+
+@rc_variable_set("bob.ip.binseg.drionsdb.datadir")
+def test_drionsdb_default_train():
+
+    from ..configs.datasets.drionsdb import dataset
+    nose.tools.eq_(len(dataset), 60)
+    for sample in dataset:
+        nose.tools.eq_(len(sample), 3)
+        assert isinstance(sample[0], str)
+        nose.tools.eq_(sample[1].shape, (3, 416, 608)) #planes, height, width
+        nose.tools.eq_(sample[1].dtype, torch.float32)
+        nose.tools.eq_(sample[2].shape, (1, 416, 608)) #planes, height, width
+        nose.tools.eq_(sample[2].dtype, torch.float32)
+
+
+@rc_variable_set("bob.ip.binseg.drionsdb.datadir")
+def test_drionsdb_default_test():
+
+    from ..configs.datasets.drionsdb_test import dataset
+    nose.tools.eq_(len(dataset), 50)
+    for sample in dataset:
+        nose.tools.eq_(len(sample), 3)
+        assert isinstance(sample[0], str)
+        nose.tools.eq_(sample[1].shape, (3, 416, 608)) #planes, height, width
+        nose.tools.eq_(sample[1].dtype, torch.float32)
+        nose.tools.eq_(sample[2].shape, (1, 416, 608)) #planes, height, width
+        nose.tools.eq_(sample[2].dtype, torch.float32)

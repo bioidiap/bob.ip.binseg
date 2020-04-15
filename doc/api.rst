@@ -15,7 +15,6 @@ Data Manipulation
 .. autosummary::
    :toctree: api/data
 
-   bob.ip.binseg.data.binsegdataset
    bob.ip.binseg.data.folderdataset
    bob.ip.binseg.data.csvdataset
    bob.ip.binseg.data.jsondataset
@@ -39,6 +38,7 @@ Datasets
    bob.ip.binseg.data.refuge
    bob.ip.binseg.data.drishtigs1
    bob.ip.binseg.data.rimoner3
+   bob.ip.binseg.data.drionsdb
 
 
 Engines
@@ -165,14 +165,6 @@ Datasets
    bob.ip.binseg.configs.datasets.covd_stare
    bob.ip.binseg.configs.datasets.covd_stare_ssl
 
-   bob.ip.binseg.configs.datasets.drionsdb
-   bob.ip.binseg.configs.datasets.drionsdb_test
-
-   bob.ip.binseg.configs.datasets.dristhigs1_cup
-   bob.ip.binseg.configs.datasets.dristhigs1_cup_test
-   bob.ip.binseg.configs.datasets.dristhigs1_od
-   bob.ip.binseg.configs.datasets.dristhigs1_od_test
-
    bob.ip.binseg.configs.datasets.refuge_cup
    bob.ip.binseg.configs.datasets.refuge_cup_dev
    bob.ip.binseg.configs.datasets.refuge_cup_test
@@ -185,3 +177,11 @@ Datasets
    bob.ip.binseg.configs.datasets.rimoner3_cup_test
    bob.ip.binseg.configs.datasets.rimoner3_od
    bob.ip.binseg.configs.datasets.rimoner3_od_test
+
+   bob.ip.binseg.configs.datasets.dristhigs1_cup
+   bob.ip.binseg.configs.datasets.dristhigs1_cup_test
+   bob.ip.binseg.configs.datasets.dristhigs1_od
+   bob.ip.binseg.configs.datasets.dristhigs1_od_test
+
+   bob.ip.binseg.configs.datasets.drionsdb
+   bob.ip.binseg.configs.datasets.drionsdb_test
