@@ -43,8 +43,7 @@ User Guide
 
    setup
    usage
-   benchmarkresults
-   covdresults
+   results
    acknowledgements
    references
    datasets

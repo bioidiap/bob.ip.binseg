@@ -2,9 +2,9 @@
 
 .. _bob.ip.binseg.usage:
 
-==================
- Usage Guidelines
-==================
+=======
+ Usage
+=======
 
 This package supports a fully reproducible research experimentation cycle for
 semantic binary segmentation with support for the following activities:
