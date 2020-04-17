@@ -61,8 +61,8 @@ class JSONDataset:
         the JSON file.
 
     loader : object
-        A function that receives as input, a context dictionary (with a
-        "protocol" and "subset" keys indicating which protocol and subset are
+        A function that receives as input, a context dictionary (with at least
+        a "protocol" and "subset" keys indicating which protocol and subset are
         being served), and a dictionary with ``{key: path}`` entries, and
         returns a dictionary with the loaded data.
 
@@ -204,9 +204,10 @@ class CSVDataset:
         the CSV file(s).
 
     loader : object
-        A function that receives, as input, a dictionary with ``{name: value}``
-        entries (for each header in the input CSV file), and returns a
-        dictionary with the loaded data.
+        A function that receives as input, a context dictionary (with, at
+        least, a "subset" key indicating which subset is being served), and a
+        dictionary with ``{key: path}`` entries, and returns a dictionary with
+        the loaded data.
 
     keymaker : object
         A function that receives as input the same input from the ``loader``,
