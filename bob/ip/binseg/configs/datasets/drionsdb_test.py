@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
+# coding=utf-8
 
 """DRIONS-DB (test set) for Optic Disc Segmentation
 
@@ -19,9 +19,12 @@ baseline.
 """
 
 from bob.ip.binseg.data.transforms import Pad
+
 _transforms = [Pad((4, 8, 4, 8))]
 
 from bob.ip.binseg.data.utils import SampleList2TorchDataset
 from bob.ip.binseg.data.drionsdb import dataset as drionsdb
-dataset = SampleList2TorchDataset(drionsdb.subsets("default")["test"],
-        transforms=_transforms)
+
+dataset = SampleList2TorchDataset(
+    drionsdb.subsets("default")["test"], transforms=_transforms
+)

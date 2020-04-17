@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
+# coding=utf-8
 
 """REFUGE (validation set) for Optic Disc Segmentation
 
@@ -16,9 +16,12 @@ dataset of retinal fundus images.
 """
 
 from bob.ip.binseg.data.transforms import CenterCrop
+
 _transforms = [CenterCrop(1632)]
 
 from bob.ip.binseg.data.utils import SampleList2TorchDataset
 from bob.ip.binseg.data.refuge import dataset as refuge
-dataset = SampleList2TorchDataset(refuge.subsets("optic-disc")["validation"],
-        transforms=_transforms)
+
+dataset = SampleList2TorchDataset(
+    refuge.subsets("optic-disc")["validation"], transforms=_transforms
+)

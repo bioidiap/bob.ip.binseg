@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
+# coding=utf-8
 
 """CHASE-DB1 (test set) for Vessel Segmentation
 
@@ -24,9 +24,12 @@ bright strip running down the centre known as the central vessel reflex.
 """
 
 from bob.ip.binseg.data.transforms import Crop
-_transforms = [Crop(0, 18, 960, 960)]  #(upper, left, height, width)
+
+_transforms = [Crop(0, 18, 960, 960)]  # (upper, left, height, width)
 
 from bob.ip.binseg.data.utils import SampleList2TorchDataset
 from bob.ip.binseg.data.chasedb1 import dataset as chasedb1
-dataset = SampleList2TorchDataset(chasedb1.subsets("default")["test"],
-        transforms=_transforms)
+
+dataset = SampleList2TorchDataset(
+    chasedb1.subsets("default")["test"], transforms=_transforms
+)

@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
+# coding=utf-8
 
 """HRF (test set) for Vessel Segmentation
 
@@ -15,9 +15,12 @@ x 2336. One set of ground-truth vessel annotations is available.
 """
 
 from bob.ip.binseg.data.transforms import Crop
+
 _transforms = [Crop(0, 108, 2336, 3296)]
 
 from bob.ip.binseg.data.utils import SampleList2TorchDataset
 from bob.ip.binseg.data.hrf import dataset as hrf
-dataset = SampleList2TorchDataset(hrf.subsets("default")["test"],
-        transforms=_transforms)
+
+dataset = SampleList2TorchDataset(
+    hrf.subsets("default")["test"], transforms=_transforms
+)

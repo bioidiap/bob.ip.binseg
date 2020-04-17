@@ -131,7 +131,7 @@ Datasets
    :template: config.rst
 
    bob.ip.binseg.configs.datasets.csv
-   bob.ip.binseg.configs.datasets.utils
+   bob.ip.binseg.configs.datasets.augmentation
 
    bob.ip.binseg.configs.datasets.chasedb1
    bob.ip.binseg.configs.datasets.chasedb1_test

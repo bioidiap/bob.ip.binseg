@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
+# coding=utf-8
 
 """Example CSV-based filelist dataset
 
@@ -91,6 +91,7 @@ def _loader(context, sample):
     # compact.  Of course, you can make those paths absolute and then simplify
     # it here.
     import os
+
     root_path = "/path/where/raw/files/sit"
 
     return dict(
@@ -98,16 +99,18 @@ def _loader(context, sample):
         label=load_pil_1(os.path.join(root_path, sample["label"])),
     )
 
+
 # This is just a class that puts everything together: the CSV file, how to load
 # each sample defined in the dataset, names for the various columns of the CSV
 # file and how to make unique keys for each sample (keymaker).  Once created,
 # this object can be called to generate sample lists.
 from bob.ip.binseg.data.dataset import CSVDataset
+
 raw_dataset = CSVDataset(
     # path to the CSV file(s) - you may add as many subsets as you want, each
     # with an unique name, you'll use later to generate sample lists
     subsets=dict(data="<path/to/train.csv>"),
-    fieldnames=("data", "label"),  #these are the column names
+    fieldnames=("data", "label"),  # these are the column names
     loader=_loader,
     keymaker=data_path_keymaker,
 )
@@ -119,7 +122,7 @@ raw_dataset = CSVDataset(
 # model that requires image inputs of 544 x 544 pixels.
 from bob.ip.binseg.data.transforms import CenterCrop
 
-# from bob.ip.binseg.configs.datasets.utils import DATA_AUGMENTATION as _DA
+# from bob.ip.binseg.configs.datasets.augmentation import DEFAULT as _DA
 _transforms = [
     CenterCrop((544, 544)),
 ]  # + _DA
@@ -129,4 +132,5 @@ _transforms = [
 # This class also inherits from pytorch Dataset and respect its required API.
 # See the documentation for details.
 from bob.ip.binseg.data.utils import SampleList2TorchDataset
-#dataset = SampleList2TorchDataset(raw_dataset.samples("data"), _transforms)
+
+# dataset = SampleList2TorchDataset(raw_dataset.samples("data"), _transforms)

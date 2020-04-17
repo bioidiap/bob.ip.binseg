@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
+# coding=utf-8
 
 """DRISHTI-GS1 (training set) for Cup Segmentation
 
@@ -21,10 +21,13 @@ and notching information.
 """
 
 from bob.ip.binseg.data.transforms import CenterCrop
-from bob.ip.binseg.configs.datasets.utils import DATA_AUGMENTATION as _DA
+from bob.ip.binseg.configs.datasets.augmentation import DEFAULT as _DA
+
 _transforms = [CenterCrop((1760, 2048))] + _DA
 
 from bob.ip.binseg.data.utils import SampleList2TorchDataset
 from bob.ip.binseg.data.drishtigs1 import dataset as drishtigs1
-dataset = SampleList2TorchDataset(drishtigs1.subsets("optic-cup-all")["train"],
-        transforms=_transforms)
+
+dataset = SampleList2TorchDataset(
+    drishtigs1.subsets("optic-cup-all")["train"], transforms=_transforms
+)

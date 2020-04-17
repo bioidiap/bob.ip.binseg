@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
+# coding=utf-8
 
 """DRIVE (training set) for Vessel Segmentation
 
@@ -14,10 +14,13 @@ segmentation of blood vessels in retinal images.
 """
 
 from bob.ip.binseg.data.transforms import CenterCrop
-from bob.ip.binseg.configs.datasets.utils import DATA_AUGMENTATION as _DA
+from bob.ip.binseg.configs.datasets.augmentation import DEFAULT as _DA
+
 _transforms = [CenterCrop((544, 544))] + _DA
 
 from bob.ip.binseg.data.utils import SampleList2TorchDataset
 from bob.ip.binseg.data.drive import dataset as drive
-dataset = SampleList2TorchDataset(drive.subsets("default")["train"],
-        transforms=_transforms)
+
+dataset = SampleList2TorchDataset(
+    drive.subsets("default")["train"], transforms=_transforms
+)

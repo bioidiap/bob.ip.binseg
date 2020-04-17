@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
+# coding=utf-8
 
 """RIM-ONE r3 (training set) for Cup Segmentation
 
@@ -17,10 +17,13 @@ baseline.
 """
 
 from bob.ip.binseg.data.transforms import Pad
-from bob.ip.binseg.configs.datasets.utils import DATA_AUGMENTATION as _DA
+from bob.ip.binseg.configs.datasets.augmentation import DEFAULT as _DA
+
 _transforms = [Pad((8, 8, 8, 8))] + _DA
 
 from bob.ip.binseg.data.utils import SampleList2TorchDataset
 from bob.ip.binseg.data.rimoner3 import dataset as rimoner3
-dataset = SampleList2TorchDataset(rimoner3.subsets("optic-cup-exp1")["train"],
-        transforms=_transforms)
+
+dataset = SampleList2TorchDataset(
+    rimoner3.subsets("optic-cup-exp1")["train"], transforms=_transforms
+)

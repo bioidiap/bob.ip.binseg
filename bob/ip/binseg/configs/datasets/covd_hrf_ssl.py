@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
+# coding=utf-8
 
 """COVD-HRF + SSL (training set) for Vessel Segmentation
 
@@ -12,4 +12,5 @@ IOSTAR vessel (with annotated samples), and HRF without labels.
 from bob.ip.binseg.configs.datasets.covd_hrf import dataset as _labelled
 from bob.ip.binseg.configs.datasets.hrf_1168 import dataset as _unlabelled
 from bob.ip.binseg.data.utils import SSLDataset
+
 dataset = SSLDataset(_labelled, _unlabelled)

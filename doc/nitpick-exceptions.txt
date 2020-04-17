@@ -1,3 +1,2 @@
 py:class torch.nn.modules.loss._Loss
 py:class Module
-py:class click.core.Option

@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
+# coding=utf-8
 
 """REFUGE (training set) for Optic Disc Segmentation
 
@@ -16,10 +16,13 @@ dataset of retinal fundus images.
 """
 
 from bob.ip.binseg.data.transforms import Resize, Pad
-from bob.ip.binseg.configs.datasets.utils import DATA_AUGMENTATION as _DA
+from bob.ip.binseg.configs.datasets.augmentation import DEFAULT as _DA
+
 _transforms = [Resize(1539), Pad((21, 46, 22, 47))] + _DA
 
 from bob.ip.binseg.data.utils import SampleList2TorchDataset
 from bob.ip.binseg.data.refuge import dataset as refuge
-dataset = SampleList2TorchDataset(refuge.subsets("optic-disc")["train"],
-        transforms=_transforms)
+
+dataset = SampleList2TorchDataset(
+    refuge.subsets("optic-disc")["train"], transforms=_transforms
+)

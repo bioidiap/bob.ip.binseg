@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
+# coding=utf-8
 
 """RIM-ONE r3 (test set) for Optic Disc Segmentation
 
@@ -17,9 +17,12 @@ baseline.
 """
 
 from bob.ip.binseg.data.transforms import Pad
+
 _transforms = [Pad((8, 8, 8, 8))]
 
 from bob.ip.binseg.data.utils import SampleList2TorchDataset
 from bob.ip.binseg.data.rimoner3 import dataset as rimoner3
-dataset = SampleList2TorchDataset(rimoner3.subsets("optic-disc-exp1")["test"],
-        transforms=_transforms)
+
+dataset = SampleList2TorchDataset(
+    rimoner3.subsets("optic-disc-exp1")["test"], transforms=_transforms
+)

@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
+# coding=utf-8
 
 """DRISHTI-GS1 (test set) for Cup Segmentation
 
@@ -21,9 +21,12 @@ and notching information.
 """
 
 from bob.ip.binseg.data.transforms import CenterCrop
+
 _transforms = [CenterCrop((1760, 2048))]
 
 from bob.ip.binseg.data.utils import SampleList2TorchDataset
 from bob.ip.binseg.data.drishtigs1 import dataset as drishtigs1
-dataset = SampleList2TorchDataset(drishtigs1.subsets("optic-cup-all")["test"],
-        transforms=_transforms)
+
+dataset = SampleList2TorchDataset(
+    drishtigs1.subsets("optic-cup-all")["test"], transforms=_transforms
+)

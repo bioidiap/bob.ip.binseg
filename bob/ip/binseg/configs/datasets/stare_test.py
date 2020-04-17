@@ -17,9 +17,12 @@ for training and testing. The second set by Valentina Kouznetsova acts as a
 """
 
 from bob.ip.binseg.data.transforms import Pad
+
 _transforms = [Pad((2, 1, 2, 2))]
 
 from bob.ip.binseg.data.utils import SampleList2TorchDataset
 from bob.ip.binseg.data.stare import dataset as stare
-dataset = SampleList2TorchDataset(stare.subsets("default")["test"],
-        transforms=_transforms)
+
+dataset = SampleList2TorchDataset(
+    stare.subsets("default")["test"], transforms=_transforms
+)

@@ -51,7 +51,22 @@ class Compose(torchvision.transforms.Compose):
         return args
 
 
-class _Crop:
+class SingleCrop:
+    """
+    Crops one image at the given coordinates.
+
+    Attributes
+    ----------
+    i : int
+        upper pixel coordinate.
+    j : int
+        left pixel coordinate.
+    h : int
+        height of the cropped image.
+    w : int
+        width of the cropped image.
+    """
+
     def __init__(self, i, j, h, w):
         self.i = i
         self.j = j
@@ -62,9 +77,9 @@ class _Crop:
         return img.crop((self.j, self.i, self.j + self.w, self.i + self.h))
 
 
-class Crop(TupleMixin, _Crop):
+class Crop(TupleMixin, SingleCrop):
     """
-    Crops one image at the given coordinates.
+    Crops multiple images at the given coordinates.
 
     Attributes
     ----------
@@ -81,15 +96,24 @@ class Crop(TupleMixin, _Crop):
     pass
 
 
-class _AutoLevel16to8:
+class SingleAutoLevel16to8:
+    """Converts a 16-bit image to 8-bit representation using "auto-level"
+
+    This transform assumes that the input image is gray-scaled.
+
+    To auto-level, we calculate the maximum and the minimum of the image, and
+    consider such a range should be mapped to the [0,255] range of the
+    destination image.
+    """
+
     def __call__(self, img):
         return PIL.Image.fromarray(
             bob.core.convert(img, "uint8", (0, 255), img.getextrema())
         )
 
 
-class AutoLevel16to8(TupleMixin, _AutoLevel16to8):
-    """Converts a 16-bit image to 8-bit representation using "auto-level"
+class AutoLevel16to8(TupleMixin, SingleAutoLevel16to8):
+    """Converts multiple 16-bit images to 8-bit representations using "auto-level"
 
     This transform assumes that the input images are gray-scaled.
 
@@ -97,16 +121,22 @@ class AutoLevel16to8(TupleMixin, _AutoLevel16to8):
     consider such a range should be mapped to the [0,255] range of the
     destination image.
     """
-
     pass
 
 
-class _ToRGB:
+class SingleToRGB:
+    """Converts from any input format to RGB, using an ADAPTIVE conversion.
+
+    This transform takes the input image and converts it to RGB using
+    py:method:`PIL.Image.Image.convert`, with `mode='RGB'` and using all other
+    defaults.  This may be aggressive if applied to 16-bit images without
+    further considerations.
+    """
     def __call__(self, img):
         return img.convert(mode="RGB")
 
 
-class ToRGB(TupleMixin, _ToRGB):
+class ToRGB(TupleMixin, SingleToRGB):
     """Converts from any input format to RGB, using an ADAPTIVE conversion.
 
     This transform takes the input image and converts it to RGB using
