@@ -2,8 +2,10 @@
 # coding=utf-8
 
 import os
+import csv
 import copy
 import json
+import pathlib
 import functools
 
 import logging
@@ -49,8 +51,9 @@ class JSONDataset:
     protocols : list, dict
         Paths to one or more JSON formatted files containing the various
         protocols to be recognized by this dataset, or a dictionary, mapping
-        protocol names to paths of JSON files.  Internally, we save a
-        dictionary where keys default to the basename of paths.
+        protocol names to paths (or opened file objects) of CSV files.
+        Internally, we save a dictionary where keys default to the basename of
+        paths (list input).
 
     fieldnames : list, tuple
         An iterable over the field names (strings) to assign to each entry in
@@ -74,12 +77,10 @@ class JSONDataset:
     def __init__(self, protocols, fieldnames, loader, keymaker):
 
         if isinstance(protocols, dict):
-            self.protocols = dict(
-                (k, os.path.realpath(v)) for k, v in protocols.items()
-            )
+            self.protocols = protocols
         else:
             self.protocols = dict(
-                (os.path.splitext(os.path.basename(k))[0], os.path.realpath(k))
+                (os.path.splitext(os.path.basename(k))[0], k)
                 for k in protocols
             )
         self.fieldnames = fieldnames
@@ -155,8 +156,13 @@ class JSONDataset:
 
         """
 
-        with open(self.protocols[protocol], "r") as f:
+        fileobj = self.protocols[protocol]
+        if isinstance(fileobj, (str, bytes, pathlib.Path)):
+            with open(self.protocols[protocol], "r") as f:
+                data = json.load(f)
+        else:
             data = json.load(f)
+            fileobj.seek(0)
 
         retval = {}
         for subset, samples in data.items():
@@ -187,10 +193,10 @@ class CSVDataset:
     ----------
 
     subsets : list, dict
-        Paths to one or more CSV formatted files containing the various
-        subsets to be recognized by this dataset, or a dictionary, mapping
-        subset names to paths of CSV files.  Internally, we save a
-        dictionary where keys default to the basename of paths.
+        Paths to one or more CSV formatted files containing the various subsets
+        to be recognized by this dataset, or a dictionary, mapping subset names
+        to paths (or opened file objects) of CSV files.  Internally, we save a
+        dictionary where keys default to the basename of paths (list input).
 
     fieldnames : list, tuple
         An iterable over the field names (strings) to assign to each column in
@@ -213,12 +219,10 @@ class CSVDataset:
     def __init__(self, subsets, fieldnames, loader, keymaker):
 
         if isinstance(subsets, dict):
-            self.subsets = dict(
-                (k, os.path.realpath(v)) for k, v in subsets.items()
-            )
+            self.subsets = subsets
         else:
             self.subsets = dict(
-                (os.path.splitext(os.path.basename(k))[0], os.path.realpath(k))
+                (os.path.splitext(os.path.basename(k))[0], k)
                 for k in subsets
             )
         self.fieldnames = fieldnames
@@ -257,7 +261,7 @@ class CSVDataset:
             f"entries instead of {len(self.fieldnames)} (expected). Fix "
             f"file {self.subsets[context['subset']]}"
         )
-        item = dict(zip(self.fieldnames, v))
+        item = dict(zip(self.fieldnames, sample))
         return DelayedSample(
             functools.partial(self.loader, context, item),
             key=self.keymaker(context, item),
@@ -291,9 +295,15 @@ class CSVDataset:
 
         """
 
-        with open(self.subsets[subset], newline="") as f:
-            cf = csv.reader(f)
+        fileobj = self.subsets[subset]
+        if isinstance(fileobj, (str, bytes, pathlib.Path)):
+            with open(self.subsets[subset], newline="") as f:
+                cf = csv.reader(f)
+                samples = [k for k in cf]
+        else:
+            cf = csv.reader(fileobj)
             samples = [k for k in cf]
+            fileobj.seek(0)
 
         context = dict(subset=subset)
         return [self._make_delayed(k, v, context) for (k, v) in enumerate(samples)]
