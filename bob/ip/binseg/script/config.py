@@ -54,6 +54,12 @@ def list(verbose):
     modules = set(
         k.module_name.rsplit(".", 1)[0] for k in entry_points.values()
     )
+    keep_modules = []
+    for k in sorted(modules):
+        if k not in keep_modules and \
+                not any(k.startswith(l) for l in keep_modules):
+            keep_modules.append(k)
+    modules = keep_modules
 
     # sort data entries by originating module
     entry_points_by_module = {}

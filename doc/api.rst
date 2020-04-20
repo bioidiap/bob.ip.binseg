@@ -126,59 +126,51 @@ Models
 Datasets
 ========
 
+.. automodule:: bob.ip.binseg.configs.datasets
+
 .. autosummary::
    :toctree: api/configs/datasets
    :template: config.rst
 
    bob.ip.binseg.configs.datasets.csv
-   bob.ip.binseg.configs.datasets.augmentation
 
-   bob.ip.binseg.configs.datasets.chasedb1
-   bob.ip.binseg.configs.datasets.chasedb1_test
-   bob.ip.binseg.configs.datasets.covd_chasedb1
-   bob.ip.binseg.configs.datasets.covd_chasedb1_ssl
+   bob.ip.binseg.configs.datasets.chasedb1.first_annotator
+   bob.ip.binseg.configs.datasets.chasedb1.second_annotator
+   bob.ip.binseg.configs.datasets.chasedb1.covd
+   bob.ip.binseg.configs.datasets.chasedb1.ssl
 
-   bob.ip.binseg.configs.datasets.drive
-   bob.ip.binseg.configs.datasets.drive_test
-   bob.ip.binseg.configs.datasets.covd_drive
-   bob.ip.binseg.configs.datasets.covd_drive_ssl
+   bob.ip.binseg.configs.datasets.drive.default
+   bob.ip.binseg.configs.datasets.drive.second_annotator
+   bob.ip.binseg.configs.datasets.drive.covd
+   bob.ip.binseg.configs.datasets.drive.ssl
 
-   bob.ip.binseg.configs.datasets.hrf
-   bob.ip.binseg.configs.datasets.hrf_1168
-   bob.ip.binseg.configs.datasets.hrf_1168_test
-   bob.ip.binseg.configs.datasets.hrf_test
-   bob.ip.binseg.configs.datasets.covd_hrf
-   bob.ip.binseg.configs.datasets.covd_hrf_ssl
+   bob.ip.binseg.configs.datasets.hrf.default
+   bob.ip.binseg.configs.datasets.hrf.default_fullres
+   bob.ip.binseg.configs.datasets.hrf.covd
+   bob.ip.binseg.configs.datasets.hrf.ssl
 
-   bob.ip.binseg.configs.datasets.iostar_vessel
-   bob.ip.binseg.configs.datasets.iostar_vessel_test
-   bob.ip.binseg.configs.datasets.covd_iostar_vessel
-   bob.ip.binseg.configs.datasets.covd_iostar_vessel_ssl
-   bob.ip.binseg.configs.datasets.iostar_od
-   bob.ip.binseg.configs.datasets.iostar_od_test
+   bob.ip.binseg.configs.datasets.iostar.vessel
+   bob.ip.binseg.configs.datasets.iostar.optic_disc
+   bob.ip.binseg.configs.datasets.iostar.covd
+   bob.ip.binseg.configs.datasets.iostar.ssl
 
-   bob.ip.binseg.configs.datasets.stare
-   bob.ip.binseg.configs.datasets.stare_test
-   bob.ip.binseg.configs.datasets.covd_stare
-   bob.ip.binseg.configs.datasets.covd_stare_ssl
+   bob.ip.binseg.configs.datasets.stare.ah
+   bob.ip.binseg.configs.datasets.stare.vk
+   bob.ip.binseg.configs.datasets.stare.covd
+   bob.ip.binseg.configs.datasets.stare.ssl
 
-   bob.ip.binseg.configs.datasets.refuge_cup
-   bob.ip.binseg.configs.datasets.refuge_cup_dev
-   bob.ip.binseg.configs.datasets.refuge_cup_test
-   bob.ip.binseg.configs.datasets.refuge_cup_test
-   bob.ip.binseg.configs.datasets.refuge_od
-   bob.ip.binseg.configs.datasets.refuge_od_dev
-   bob.ip.binseg.configs.datasets.refuge_od_test
+   bob.ip.binseg.configs.datasets.refuge.cup
+   bob.ip.binseg.configs.datasets.refuge.disc
 
-   bob.ip.binseg.configs.datasets.rimoner3_cup
-   bob.ip.binseg.configs.datasets.rimoner3_cup_test
-   bob.ip.binseg.configs.datasets.rimoner3_od
-   bob.ip.binseg.configs.datasets.rimoner3_od_test
+   bob.ip.binseg.configs.datasets.rimoner3.cup_exp1
+   bob.ip.binseg.configs.datasets.rimoner3.cup_exp2
+   bob.ip.binseg.configs.datasets.rimoner3.disc_exp1
+   bob.ip.binseg.configs.datasets.rimoner3.disc_exp2
 
-   bob.ip.binseg.configs.datasets.dristhigs1_cup
-   bob.ip.binseg.configs.datasets.dristhigs1_cup_test
-   bob.ip.binseg.configs.datasets.dristhigs1_od
-   bob.ip.binseg.configs.datasets.dristhigs1_od_test
+   bob.ip.binseg.configs.datasets.drishtigs1.cup_all
+   bob.ip.binseg.configs.datasets.drishtigs1.cup_any
+   bob.ip.binseg.configs.datasets.drishtigs1.disc_all
+   bob.ip.binseg.configs.datasets.drishtigs1.disc_any
 
-   bob.ip.binseg.configs.datasets.drionsdb
-   bob.ip.binseg.configs.datasets.drionsdb_test
+   bob.ip.binseg.configs.datasets.drionsdb.expert1
+   bob.ip.binseg.configs.datasets.drionsdb.expert2

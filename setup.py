@@ -37,6 +37,7 @@ setup(
             "predict = bob.ip.binseg.script.predict:predict",
             "evaluate = bob.ip.binseg.script.evaluate:evaluate",
             "compare =  bob.ip.binseg.script.compare:compare",
+            "experiment =  bob.ip.binseg.script.experiment:experiment",
         ],
         # bob train configurations
         "bob.ip.binseg.config": [
@@ -57,61 +58,54 @@ setup(
             "csv-dataset-example = bob.ip.binseg.configs.datasets.csv",
 
             # drive dataset
-            "drive = bob.ip.binseg.configs.datasets.drive",
-            "covd-drive = bob.ip.binseg.configs.datasets.covd_drive",
-            "covd-drive-ssl = bob.ip.binseg.configs.datasets.covd_drive_ssl",
-            "drive-test = bob.ip.binseg.configs.datasets.drive_test",
+            "drive = bob.ip.binseg.configs.datasets.drive.default",
+            "drive-2nd = bob.ip.binseg.configs.datasets.drive.second_annotator",
+            "drive-covd = bob.ip.binseg.configs.datasets.drive.covd",
+            "drive-ssl = bob.ip.binseg.configs.datasets.drive.ssl",
 
             # stare dataset
-            "stare = bob.ip.binseg.configs.datasets.stare",
-            "covd-stare = bob.ip.binseg.configs.datasets.covd_stare",
-            "covd-stare-ssl = bob.ip.binseg.configs.datasets.covd_stare_ssl",
-            "stare-test = bob.ip.binseg.configs.datasets.stare_test",
+            "stare = bob.ip.binseg.configs.datasets.stare.ah",
+            "stare-2nd = bob.ip.binseg.configs.datasets.stare.vk",
+            "stare-covd = bob.ip.binseg.configs.datasets.stare.covd",
+            "stare-ssl = bob.ip.binseg.configs.datasets.stare.ssl",
 
-            # iostar vessel
-            "iostar-vessel = bob.ip.binseg.configs.datasets.iostar_vessel",
-            "covd-iostar-vessel = bob.ip.binseg.configs.datasets.covd_iostar_vessel",
-            "covd-iostar-vessel-ssl = bob.ip.binseg.configs.datasets.covd_iostar_vessel_ssl",
-            "iostar-vessel-test = bob.ip.binseg.configs.datasets.iostar_vessel_test",
+            # iostar
+            "iostar-vessel = bob.ip.binseg.configs.datasets.iostar.vessel",
+            "iostar-disc = bob.ip.binseg.configs.datasets.iostar.optic_disc",
+            "iostar-vessel-covd = bob.ip.binseg.configs.datasets.iostar.covd",
+            "iostar-vessel-ssl = bob.ip.binseg.configs.datasets.iostar.ssl",
 
-            # iostar optic disc
-            "iostar-optic-disc = bob.ip.binseg.configs.datasets.iostar_od",
-            "iostar-optic-disc-test = bob.ip.binseg.configs.datasets.iostar_od_test",
-
-            # hrf (numbers represent target resolution)
-            "hrf = bob.ip.binseg.configs.datasets.hrf_1168",
-            "covd-hrf = bob.ip.binseg.configs.datasets.covd_hrf",
-            "covd-hrf-ssl = bob.ip.binseg.configs.datasets.covd_hrf_ssl",
-            "hrftest-test = bob.ip.binseg.configs.datasets.hrf_1168_test",
+            # hrf
+            "hrf = bob.ip.binseg.configs.datasets.hrf.default",
+            "hrf-highres = bob.ip.binseg.configs.datasets.hrf.default_fullres",
+            "hrf-covd = bob.ip.binseg.configs.datasets.hrf.covd",
+            "hrf-ssl = bob.ip.binseg.configs.datasets.hrf.ssl",
 
             # chase-db1
-            "chasedb1 = bob.ip.binseg.configs.datasets.chasedb1",
-            "covd-chasedb1 = bob.ip.binseg.configs.datasets.covd_chasedb1",
-            "covd-chasedb1-ssl = bob.ip.binseg.configs.datasets.covd_chasedb1_ssl",
-            "chasedb1-test = bob.ip.binseg.configs.datasets.chasedb1_test",
+            "chasedb1 = bob.ip.binseg.configs.datasets.chasedb1.first_annotator",
+            "chasedb1-2nd = bob.ip.binseg.configs.datasets.chasedb1.second_annotator",
+            "chasedb1-covd = bob.ip.binseg.configs.datasets.chasedb1.covd",
+            "chasedb1-ssl = bob.ip.binseg.configs.datasets.chasedb1.ssl",
 
             # drionsdb
-            "drionsdb = bob.ip.binseg.configs.datasets.drionsdb",
-            "drionsdb-test = bob.ip.binseg.configs.datasets.drionsdb_test",
+            "drionsdb = bob.ip.binseg.configs.datasets.drionsdb.expert1",
+            "drionsdb-2nd = bob.ip.binseg.configs.datasets.drionsdb.expert2",
 
-            # drishtigs
-            "drishtigs1-od = bob.ip.binseg.configs.datasets.dristhigs1_od",
-            "drishtigs1-od-test = bob.ip.binseg.configs.datasets.dristhigs1_od_test",
-            "drishtigs1-cup = bob.ip.binseg.configs.datasets.dristhigs1_cup",
-            "drishtigs1-cup-test = bob.ip.binseg.configs.datasets.dristhigs1_cup_test",
+            # drishti-gs1
+            "drishtigs1-disc = bob.ip.binseg.configs.datasets.drishtigs1.disc_all",
+            "drishtigs1-cup = bob.ip.binseg.configs.datasets.drishtigs1.cup_all",
+            "drishtigs1-disc-any = bob.ip.binseg.configs.datasets.drishtigs1.disc_any",
+            "drishtigs1-cup-any = bob.ip.binseg.configs.datasets.drishtigs1.cup_any",
+
             # refuge
-            "refuge-cup = bob.ip.binseg.configs.datasets.refuge_cup",
-            "refuge-cup-dev = bob.ip.binseg.configs.datasets.refuge_cup_dev",
-            "refuge-cup-test = bob.ip.binseg.configs.datasets.refuge_cup_test",
-            "refuge-od = bob.ip.binseg.configs.datasets.refuge_od",
-            "refuge-od-dev = bob.ip.binseg.configs.datasets.refuge_od_dev",
-            "refuge-od-test = bob.ip.binseg.configs.datasets.refuge_od_test",
+            "refuge-cup = bob.ip.binseg.configs.datasets.refuge.cup",
+            "refuge-disc = bob.ip.binseg.configs.datasets.refuge.disc",
 
             # rim one r3
-            "rimoner3-cup = bob.ip.binseg.configs.datasets.rimoner3_cup",
-            "rimoner3-cup-test = bob.ip.binseg.configs.datasets.rimoner3_cup_test",
-            "rimoner3-od = bob.ip.binseg.configs.datasets.rimoner3_od",
-            "rimoner3-od-test = bob.ip.binseg.configs.datasets.rimoner3_od_test",
+            "rimoner3-cup = bob.ip.binseg.configs.datasets.rimoner3.cup_exp1",
+            "rimoner3-disc = bob.ip.binseg.configs.datasets.rimoner3.disc_exp1",
+            "rimoner3-cup-2nd = bob.ip.binseg.configs.datasets.rimoner3.cup_exp2",
+            "rimoner3-disc-2nd = bob.ip.binseg.configs.datasets.rimoner3.disc_exp2",
         ],
     },
     # check classifiers, add and remove as you see fit

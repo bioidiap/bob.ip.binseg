@@ -15,7 +15,7 @@ from .utils import rc_variable_set, count_bw
 
 def test_protocol_consistency():
 
-    subset = dataset.subsets("default")
+    subset = dataset.subsets("first-annotator")
     nose.tools.eq_(len(subset), 2)
 
     assert "train" in subset
@@ -28,7 +28,7 @@ def test_protocol_consistency():
     for s in subset["test"]:
         assert s.key.startswith("Image_")
 
-    subset = dataset.subsets("second-annotation")
+    subset = dataset.subsets("second-annotator")
     nose.tools.eq_(len(subset), 2)
 
     assert "train" in subset
@@ -81,13 +81,13 @@ def test_loading():
         return w/b
 
     limit = None  #use this to limit testing to first images only
-    subset = dataset.subsets("default")
+    subset = dataset.subsets("first-annotator")
     proportions = [_check_sample(s, 0.08) for s in subset["train"][:limit]]
     #print(f"max label proportions = {max(proportions)}")
     proportions = [_check_sample(s, 0.10) for s in subset["test"][:limit]]
     #print(f"max label proportions = {max(proportions)}")
 
-    subset = dataset.subsets("second-annotation")
+    subset = dataset.subsets("second-annotator")
     proportions = [_check_sample(s, 0.09) for s in subset["train"][:limit]]
     #print(f"max label proportions = {max(proportions)}")
     proportions = [_check_sample(s, 0.09) for s in subset["test"][:limit]]

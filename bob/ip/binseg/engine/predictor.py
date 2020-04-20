@@ -106,29 +106,7 @@ def _save_overlayed_png(stem, image, prob, output_folder):
     _save_image(stem, '.png', overlayed, output_folder)
 
 
-def _save_transformed_png(stem, image, output_folder):
-    """Saves a PNG copy of the transformed input image to a folder
-
-
-    Parameters
-    ----------
-
-    stem : str
-        the name of the file without extension on the original dataset
-
-    image : torch.Tensor
-        Tensor with RGB input image
-
-    output_folder : str
-        path where to store overlayed results
-
-    """
-
-    _save_image(stem, '.png', VF.to_pil_image(image), output_folder)
-
-
-def run(model, data_loader, device, output_folder, overlayed_folder,
-        transformed_input_folder):
+def run(model, data_loader, device, output_folder, overlayed_folder):
     """
     Runs inference on input data, outputs HDF5 files with predictions
 
@@ -148,10 +126,6 @@ def run(model, data_loader, device, output_folder, overlayed_folder,
 
     overlayed_folder : str
         folder where to store output images (PNG files)
-
-    transformed_input_folder : str
-        folder where to store input images, transformed through the input
-        pipeline (PNG files)
 
     """
 
@@ -201,8 +175,6 @@ def run(model, data_loader, device, output_folder, overlayed_folder,
                 _save_hdf5(stem, prob, output_folder)
                 if overlayed_folder is not None:
                     _save_overlayed_png(stem, img, prob, overlayed_folder)
-                if transformed_input_folder is not None:
-                    _save_transformed_png(stem, img, transformed_input_folder)
 
     logger.info("End prediction")
 

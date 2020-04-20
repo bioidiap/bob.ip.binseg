@@ -14,7 +14,7 @@ segmentation of blood vessels in retinal images.
   * Training samples: 20 (including labels and masks)
   * Test samples: 20 (including labels from annotator 1 and masks)
 
-* Protocol ``second-annotation``:
+* Protocol ``second-annotator``:
 
   * Test samples: 20 (including labels from annotator 2 and masks)
 
@@ -30,7 +30,7 @@ from ..loader import load_pil_rgb, load_pil_1, data_path_keymaker
 
 _protocols = [
     pkg_resources.resource_filename(__name__, "default.json"),
-    pkg_resources.resource_filename(__name__, "second-annotation.json"),
+    pkg_resources.resource_filename(__name__, "second-annotator.json"),
 ]
 
 _root_path = bob.extension.rc.get(

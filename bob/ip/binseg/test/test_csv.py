@@ -67,7 +67,16 @@ def test_compare_to_json():
     for subset in ("train", "test"):
         for t1, t2 in zip(
             test_dataset.samples(subset),
-            json_dataset.subsets("default")[subset],
+            json_dataset.subsets("ah")[subset],
+        ):
+            nose.tools.eq_(t1.key, t2.key)
+            nose.tools.eq_(t1.data, t2.data)
+
+    subsets = test_dataset.subsets()
+    for subset in subsets.keys():
+        for t1, t2 in zip(
+            subsets[subset],
+            json_dataset.subsets("ah")[subset],
         ):
             nose.tools.eq_(t1.key, t2.key)
             nose.tools.eq_(t1.data, t2.data)

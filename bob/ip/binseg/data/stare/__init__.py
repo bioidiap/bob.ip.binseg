@@ -12,12 +12,12 @@ commonly used for training and testing. The second set by Valentina Kouznetsova
 * Reference: [STARE-2000]_
 * Original resolution (width x height): 700 x 605
 * Split reference: [MANINIS-2016]_
-* Protocol ``default``:
+* Protocol ``ah`` (default baseline):
 
   * Training samples: 10 (including labels from annotator "ah")
   * Test samples: 10 (including labels from annotator "ah")
 
-* Protocol ``second-annotation``:
+* Protocol ``vk`` (normally used as human comparison):
 
   * Training samples: 10 (including labels from annotator "vk")
   * Test samples: 10 (including labels from annotator "vk")
@@ -33,8 +33,8 @@ from ..dataset import JSONDataset
 from ..loader import load_pil_rgb, load_pil_1, data_path_keymaker
 
 _protocols = [
-    pkg_resources.resource_filename(__name__, "default.json"),
-    pkg_resources.resource_filename(__name__, "second-annotation.json"),
+    pkg_resources.resource_filename(__name__, "ah.json"),
+    pkg_resources.resource_filename(__name__, "vk.json"),
 ]
 
 _fieldnames = ("data", "label")

@@ -30,43 +30,43 @@ brackets.
      - :py:mod:`DRIU <bob.ip.binseg.configs.models.driu>`/:py:mod:`DRIU@SSL <bob.ip.binseg.configs.models.driu_ssl>`
      - :py:mod:`DRIU+BN <bob.ip.binseg.configs.models.driu_bn>`/:py:mod:`DRIU+BN@SSL <bob.ip.binseg.configs.models.driu_bn_ssl>`
      - :py:mod:`M2U-Net <bob.ip.binseg.configs.models.m2unet>`/:py:mod:`M2U-Net@SSL <bob.ip.binseg.configs.models.m2unet_ssl>`
-   * - :py:mod:`COVD-DRIVE <bob.ip.binseg.configs.datasets.covd_drive>`
+   * - :py:mod:`COVD-DRIVE <bob.ip.binseg.configs.datasets.drive.covd>`
      - 0.788 (0.018)
      - 0.797 (0.019)
      - `0.789 (0.018) <m2unet_covd-drive.pth>`_
-   * - :py:mod:`COVD-DRIVE+SSL <bob.ip.binseg.configs.datasets.covd_drive_ssl>`
+   * - :py:mod:`COVD-DRIVE+SSL <bob.ip.binseg.configs.datasets.drive.ssl>`
      - 0.785 (0.018)
      - 0.783 (0.019)
      - `0.791 (0.014) <m2unet_covd-drive_ssl.pth>`_
-   * - :py:mod:`COVD-STARE <bob.ip.binseg.configs.datasets.covd_stare>`
+   * - :py:mod:`COVD-STARE <bob.ip.binseg.configs.datasets.stare.covd>`
      - 0.778 (0.117)
      - 0.778 (0.122)
      - `0.812 (0.046) <m2unet_covd-stare.pth>`_
-   * - :py:mod:`COVD-STARE+SSL <bob.ip.binseg.configs.datasets.covd_stare_ssl>`
+   * - :py:mod:`COVD-STARE+SSL <bob.ip.binseg.configs.datasets.stare.ssl>`
      - 0.788 (0.102)
      - 0.811 (0.074)
      - `0.820 (0.044) <m2unet_covd-stare_ssl.pth>`_
-   * - :py:mod:`COVD-CHASEDB1 <bob.ip.binseg.configs.datasets.covd_chasedb1>`
+   * - :py:mod:`COVD-CHASEDB1 <bob.ip.binseg.configs.datasets.chasedb1.covd>`
      - 0.796 (0.027)
      - 0.791 (0.025)
      - `0.788 (0.024) <m2unet_covd-chasedb1.pth>`_
-   * - :py:mod:`COVD-CHASEDB1+SSL <bob.ip.binseg.configs.datasets.covd_chasedb1_ssl>`
+   * - :py:mod:`COVD-CHASEDB1+SSL <bob.ip.binseg.configs.datasets.chasedb1.ssl>`
      - 0.796 (0.024)
      - 0.798 (0.025)
      - `0.799 (0.026) <m2unet_covd-chasedb1_ssl.pth>`_
-   * - :py:mod:`COVD-HRF <bob.ip.binseg.configs.datasets.covd_hrf>`
+   * - :py:mod:`COVD-HRF <bob.ip.binseg.configs.datasets.hrf.covd>`
      - 0.799 (0.044)
      - 0.800 (0.045)
      - `0.802 (0.045) <m2unet_covd-hrf.pth>`_
-   * - :py:mod:`COVD-HRF+SSL <bob.ip.binseg.configs.datasets.covd_hrf_ssl>`
+   * - :py:mod:`COVD-HRF+SSL <bob.ip.binseg.configs.datasets.hrf.ssl>`
      - 0.799 (0.044)
      - 0.784 (0.048)
      - `0.797 (0.044) <m2unet_covd-hrf_ssl.pth>`_
-   * - :py:mod:`COVD-IOSTAR-VESSEL <bob.ip.binseg.configs.datasets.covd_iostar_vessel>`
+   * - :py:mod:`COVD-IOSTAR-VESSEL <bob.ip.binseg.configs.datasets.iostar.covd>`
      - 0.791 (0.021)
      - 0.777 (0.032)
      - `0.793 (0.015) <m2unet_covd-iostar.pth>`_
-   * - :py:mod:`COVD-IOSTAR-VESSEL+SSL <bob.ip.binseg.configs.datasets.covd_iostar_vessel_ssl>`
+   * - :py:mod:`COVD-IOSTAR-VESSEL+SSL <bob.ip.binseg.configs.datasets.iostar.ssl>`
      - 0.797 (0.017)
      - 0.811 (0.074)
      - `0.785 (0.018) <m2unet_covd-iostar_ssl.pth>`_

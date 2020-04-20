@@ -15,7 +15,7 @@ baseline.
 * Original resolution (height x width): 400 x 600
 * Configuration resolution: 416 x 608 (after padding)
 * Split reference: [MANINIS-2016]_
-* Protocols ``default`` and ``expert2``:
+* Protocols ``expert1`` (baseline) and ``expert2`` (human comparison):
 
     * Training samples: 60
     * Test samples: 50
@@ -34,7 +34,7 @@ from ..dataset import JSONDataset
 from ..loader import load_pil_rgb, data_path_keymaker
 
 _protocols = [
-        pkg_resources.resource_filename(__name__, "default.json"),
+        pkg_resources.resource_filename(__name__, "expert1.json"),
         pkg_resources.resource_filename(__name__, "expert2.json"),
         ]
 

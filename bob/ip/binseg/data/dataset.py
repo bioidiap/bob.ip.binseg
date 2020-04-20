@@ -220,9 +220,9 @@ class CSVDataset:
     def __init__(self, subsets, fieldnames, loader, keymaker):
 
         if isinstance(subsets, dict):
-            self.subsets = subsets
+            self._subsets = subsets
         else:
-            self.subsets = dict(
+            self._subsets = dict(
                 (os.path.splitext(os.path.basename(k))[0], k)
                 for k in subsets
             )
@@ -243,7 +243,7 @@ class CSVDataset:
 
         logger.info(f"Checking dataset...")
         errors = 0
-        for name in self.subsets.keys():
+        for name in self._subsets.keys():
             logger.info(f"Checking subset '{name}'...")
             for sample in self.samples(name):
                 try:
@@ -260,13 +260,32 @@ class CSVDataset:
         assert len(sample) == len(self.fieldnames), (
             f"Entry {k} in subset {context['subset']} has {len(sample)} "
             f"entries instead of {len(self.fieldnames)} (expected). Fix "
-            f"file {self.subsets[context['subset']]}"
+            f"file {self._subsets[context['subset']]}"
         )
         item = dict(zip(self.fieldnames, sample))
         return DelayedSample(
             functools.partial(self.loader, context, item),
             key=self.keymaker(context, item),
         )
+
+    def subsets(self):
+        """Returns all available subsets at once
+
+        Returns
+        -------
+
+        subsets : dict
+            A dictionary mapping subset names to lists of
+            :py:class:`bob.ip.binseg.data.sample.DelayedSample` objects, with
+            the proper loading implemented.  Each delayed sample also carries a
+            ``key`` parameter, that contains the output of the sample
+            contextual data after passing through the ``keymaker``.  This
+            parameter can be used for recording sample transforms during
+            check-pointing.
+
+        """
+
+        return dict((k, self.samples(k)) for k in self._subsets.keys())
 
     def samples(self, subset):
         """Returns all samples in a subset
@@ -296,9 +315,9 @@ class CSVDataset:
 
         """
 
-        fileobj = self.subsets[subset]
+        fileobj = self._subsets[subset]
         if isinstance(fileobj, (str, bytes, pathlib.Path)):
-            with open(self.subsets[subset], newline="") as f:
+            with open(self._subsets[subset], newline="") as f:
                 cf = csv.reader(f)
                 samples = [k for k in cf]
         else:

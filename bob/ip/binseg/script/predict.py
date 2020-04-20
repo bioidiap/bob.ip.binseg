@@ -37,7 +37,7 @@ logger = logging.getLogger(__name__)
        dataset configuration used for **training** the provided model.  Once
        you figured this out, do the following:
 \b
-       $ bob binseg config copy folder-dataset-example mydataset.py
+       $ bob binseg config copy csv-dataset-example mydataset.py
        # modify "mydataset.py" to include the base path and required transforms
        $ bob binseg predict -vv m2unet mydataset.py --weight=path/to/model_final.pth --output-folder=path/to/predictions
 """,
@@ -103,21 +103,9 @@ logger = logging.getLogger(__name__)
     required=False,
     cls=ResourceOption,
 )
-@click.option(
-    "--transformed",
-    "-T",
-    help="Creates a version of the input dataset with transformations applied, "
-    "but before feeding to FCN.   If not set, or empty then do **NOT** output "
-    "transformed images.  Otherwise, the parameter represents the name of a "
-    "folder where to store those",
-    show_default=True,
-    default=None,
-    required=False,
-    cls=ResourceOption,
-)
 @verbosity_option(cls=ResourceOption)
 def predict(output_folder, model, dataset, batch_size, device, weight,
-        overlayed, transformed, **kwargs):
+        overlayed, **kwargs):
     """Predicts vessel map (probabilities) on input images"""
 
     # PyTorch dataloader
@@ -140,4 +128,4 @@ def predict(output_folder, model, dataset, batch_size, device, weight,
     if overlayed is not None:
         overlayed = overlayed.strip()
 
-    run(model, data_loader, device, output_folder, overlayed, transformed)
+    run(model, data_loader, device, output_folder, overlayed)

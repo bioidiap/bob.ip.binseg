@@ -19,12 +19,12 @@ bright strip running down the centre known as the central vessel reflex.
 * Reference: [CHASEDB1-2012]_
 * Original resolution (height x width): 960 x 999
 * Split reference: [CHASEDB1-2012]_
-* Protocol ``default``:
+* Protocol ``first-annotator``:
 
   * Training samples: 8 (including labels from annotator "1stHO")
   * Test samples: 20 (including labels from annotator "1stHO")
 
-* Protocol ``second-annotation``:
+* Protocol ``second-annotator``:
 
   * Training samples: 8 (including labels from annotator "2ndHO")
   * Test samples: 20 (including labels from annotator "2ndHO")
@@ -40,8 +40,8 @@ from ..dataset import JSONDataset
 from ..loader import load_pil_rgb, load_pil_1, data_path_keymaker
 
 _protocols = [
-        pkg_resources.resource_filename(__name__, "default.json"),
-        pkg_resources.resource_filename(__name__, "second-annotation.json"),
+        pkg_resources.resource_filename(__name__, "first-annotator.json"),
+        pkg_resources.resource_filename(__name__, "second-annotator.json"),
         ]
 
 _root_path = bob.extension.rc.get('bob.ip.binseg.chasedb1.datadir',

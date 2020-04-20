@@ -16,49 +16,49 @@ weights of a subset of all evaluated models.
    * - **Datasets / Models**
      - :py:mod:`driu <bob.ip.binseg.configs.models.driu>`
      - :py:mod:`m2unet <bob.ip.binseg.configs.models.m2unet>`
-   * - :py:mod:`drive <bob.ip.binseg.configs.datasets.drive>`
+   * - :py:mod:`drive <bob.ip.binseg.configs.datasets.drive.default>`
      - driu_drive.pth_
      - m2unet_drive.pth_
-   * - :py:mod:`covd-drive <bob.ip.binseg.configs.datasets.covd_drive>`
+   * - :py:mod:`drive-drive <bob.ip.binseg.configs.datasets.drive.covd>`
      -
      - m2unet_covd-drive.pth_
-   * - :py:mod:`covd-drive-ssl <bob.ip.binseg.configs.datasets.covd_drive_ssl>`
+   * - :py:mod:`drive-ssl <bob.ip.binseg.configs.datasets.drive.ssl>`
      -
      - m2unet_covd-drive_ssl.pth_
-   * - :py:mod:`stare <bob.ip.binseg.configs.datasets.stare>`
+   * - :py:mod:`stare <bob.ip.binseg.configs.datasets.stare.ah>`
      - driu_stare.pth_
      - m2unet_stare.pth_
-   * - :py:mod:`covd-stare <bob.ip.binseg.configs.datasets.covd_stare>`
+   * - :py:mod:`stare-covd <bob.ip.binseg.configs.datasets.stare.covd>`
      -
      - m2unet_covd-stare.pth_
-   * - :py:mod:`covd-stare-ssl <bob.ip.binseg.configs.datasets.covd_stare_ssl>`
+   * - :py:mod:`stare-ssl <bob.ip.binseg.configs.datasets.stare.ssl>`
      -
      - m2unet_covd-stare_ssl.pth_
-   * - :py:mod:`chasedb1 <bob.ip.binseg.configs.datasets.chasedb1>`
+   * - :py:mod:`chasedb1 <bob.ip.binseg.configs.datasets.chasedb1.first_annotator>`
      - driu_chasedb1.pth_
      - m2unet_chasedb1.pth_
-   * - :py:mod:`covd-chasedb1 <bob.ip.binseg.configs.datasets.covd_chasedb1>`
+   * - :py:mod:`chasedb1-covd <bob.ip.binseg.configs.datasets.chasedb1.covd>`
      -
      - m2unet_covd-chasedb1.pth_
-   * - :py:mod:`covd-chasedb1-ssl <bob.ip.binseg.configs.datasets.covd_chasedb1_ssl>`
+   * - :py:mod:`chasedb1-ssl <bob.ip.binseg.configs.datasets.chasedb1.ssl>`
      -
      - m2unet_covd-chasedb1_ssl.pth_
-   * - :py:mod:`iostar-vessel <bob.ip.binseg.configs.datasets.iostar_vessel>`
+   * - :py:mod:`iostar-vessel <bob.ip.binseg.configs.datasets.iostar.vessel>`
      - driu_iostar.pth_
      - m2unet_iostar.pth_
-   * - :py:mod:`covd-iostar-vessel <bob.ip.binseg.configs.datasets.covd_iostar_vessel>`
+   * - :py:mod:`iostar-vessel-covd <bob.ip.binseg.configs.datasets.iostar.covd>`
      -
      - m2unet_covd-iostar.pth_
-   * - :py:mod:`covd-iostar-vessel-ssl <bob.ip.binseg.configs.datasets.covd_iostar_vessel_ssl>`
+   * - :py:mod:`iostar-vessel-ssl <bob.ip.binseg.configs.datasets.iostar.ssl>`
      -
      - m2unet_covd-iostar_ssl.pth_
-   * - :py:mod:`hrf <bob.ip.binseg.configs.datasets.hrf_1168>`
+   * - :py:mod:`hrf <bob.ip.binseg.configs.datasets.hrf.default>`
      - driu_hrf.pth_
      - m2unet_hrf.pth_
-   * - :py:mod:`covd-hrf <bob.ip.binseg.configs.datasets.covd_hrf>`
+   * - :py:mod:`hrf-covd <bob.ip.binseg.configs.datasets.hrf.covd>`
      -
      - m2unet_covd-hrf.pth_
-   * - :py:mod:`covd-hrf-ssl <bob.ip.binseg.configs.datasets.covd_hrf_ssl>`
+   * - :py:mod:`hrf-ssl <bob.ip.binseg.configs.datasets.hrf.ssl>`
      -
      - m2unet_covd-hrf_ssl.pth_
 

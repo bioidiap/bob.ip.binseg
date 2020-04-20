@@ -28,7 +28,7 @@ def test_protocol_consistency():
     for s in subset["test"]:
         assert s.key.startswith(os.path.join("test", "images"))
 
-    subset = dataset.subsets("second-annotation")
+    subset = dataset.subsets("second-annotator")
     nose.tools.eq_(len(subset), 1)
 
     assert "test" in subset
@@ -98,7 +98,7 @@ def test_loading():
     #print(f"max label proportions = {max(k[0] for k in proportions)}")
     #print(f"min mask proportions = {min(k[1] for k in proportions)}")
 
-    subset = dataset.subsets("second-annotation")
+    subset = dataset.subsets("second-annotator")
     proportions = [_check_sample(s, 0.12, 2.12) for s in subset["test"][:limit]]
     #print(f"max label proportions = {max(k[0] for k in proportions)}")
     #print(f"min mask proportions = {min(k[1] for k in proportions)}")

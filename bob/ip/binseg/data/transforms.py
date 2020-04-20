@@ -177,6 +177,21 @@ class RandomRotation(torchvision.transforms.RandomRotation):
 
     Unlike the current torchvision implementation, we also accept a probability
     for applying the rotation.
+
+
+    Parameters
+    ----------
+
+    p : :py:class:`float`, Optional
+        probability at which the operation is applied
+
+    **kwargs : dict
+        passed to parent.  Notice that, if not set, we use the following
+        defaults here for the underlying transform from torchvision:
+
+        * ``degrees``: 15
+        * ``resample``: ``PIL.Image.BILINEAR``
+
     """
 
     def __init__(self, p=0.5, **kwargs):
@@ -186,6 +201,7 @@ class RandomRotation(torchvision.transforms.RandomRotation):
         self.p = p
 
     def __call__(self, *args):
+        # applies **the same** rotation to all inputs (data and ground-truth)
         if random.random() < self.p:
             angle = self.get_params(self.degrees)
             return [
@@ -196,6 +212,10 @@ class RandomRotation(torchvision.transforms.RandomRotation):
         else:
             return args
 
+    def __repr__(self):
+        retval = super(RandomRotation, self).__repr__()
+        return retval.replace('(', f'(p={self.p},', 1)
+
 
 class ColorJitter(torchvision.transforms.ColorJitter):
     """Randomly applies a color jitter transformation on the **first** image
@@ -204,17 +224,21 @@ class ColorJitter(torchvision.transforms.ColorJitter):
     the first image passed as input argument.  Unlike the current torchvision
     implementation, we also accept a probability for applying the jitter.
 
+
     Parameters
     ----------
 
-    p : float
+    p : :py:class:`float`, Optional
         probability at which the operation is applied
 
-    *args : tuple
-        passed to parent
-
     **kwargs : dict
-        passed to parent
+        passed to parent.  Notice that, if not set, we use the following
+        defaults here for the underlying transform from torchvision:
+
+        * ``brightness``: 0.3
+        * ``contrast``: 0.3
+        * ``saturation``: 0.02
+        * ``hue``: 0.02
 
     """
 
@@ -228,9 +252,11 @@ class ColorJitter(torchvision.transforms.ColorJitter):
 
     def __call__(self, *args):
         if random.random() < self.p:
-            transform = self.get_params(
-                self.brightness, self.contrast, self.saturation, self.hue
-            )
-            return [transform(args[0]), *args[1:]]
+            # applies color jitter only to the input image not ground-truth
+            return [super(ColorJitter, self).__call__(args[0]), *args[1:]]
         else:
             return args
+
+    def __repr__(self):
+        retval = super(ColorJitter, self).__repr__()
+        return retval.replace('(', f'(p={self.p},', 1)

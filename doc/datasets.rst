@@ -116,7 +116,7 @@ to generate iterators for training and testing.
    * - REFUGE_
      - [REFUGE-2018]_
      - 2056 x 2124 (1634 x 1634)
-     - 1200 (400+400+400)
+     - 1200
      -
      -
      - x

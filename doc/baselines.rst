@@ -25,31 +25,31 @@ F1 Scores (micro-level)
    :header-rows: 1
 
    * - F1 (std)
-     - :py:mod:`DRIU <bob.ip.binseg.configs.models.driu>`
-     - :py:mod:`HED <bob.ip.binseg.configs.models.hed>`
-     - :py:mod:`M2U-Net <bob.ip.binseg.configs.models.m2unet>`
-     - :py:mod:`U-Net <bob.ip.binseg.configs.models.unet>`
-   * - :py:mod:`CHASE-DB1 <bob.ip.binseg.configs.datasets.chasedb1>`
+     - :py:mod:`driu <bob.ip.binseg.configs.models.driu>`
+     - :py:mod:`hed <bob.ip.binseg.configs.models.hed>`
+     - :py:mod:`m2unet <bob.ip.binseg.configs.models.m2unet>`
+     - :py:mod:`unet <bob.ip.binseg.configs.models.unet>`
+   * - :py:mod:`chasedb1 <bob.ip.binseg.configs.datasets.chasedb1.first_annotator>`
      - `0.810 (0.021) <driu_chasedb1.pth_>`_
      - 0.810 (0.022)
      - `0.802 (0.019) <m2unet_chasedb1.pth_>`_
      - 0.812 (0.020)
-   * - :py:mod:`DRIVE <bob.ip.binseg.configs.datasets.drive>`
+   * - :py:mod:`drive <bob.ip.binseg.configs.datasets.drive.default>`
      - `0.820 (0.014) <driu_drive.pth_>`_
      - 0.817 (0.013)
      - `0.803 (0.014) <m2unet_drive.pth_>`_
      - 0.822 (0.015)
-   * - :py:mod:`HRF <bob.ip.binseg.configs.datasets.hrf_1168>`
+   * - :py:mod:`hrf <bob.ip.binseg.configs.datasets.hrf.default>`
      - `0.783 (0.055) <driu_hrf.pth_>`_
      - 0.783 (0.058)
      - `0.780 (0.057) <m2unet_hrf.pth_>`_
      - 0.788 (0.051)
-   * - :py:mod:`IOSTAR (vessel) <bob.ip.binseg.configs.datasets.iostar_vessel>`
+   * - :py:mod:`iostar-vessel <bob.ip.binseg.configs.datasets.iostar.vessel>`
      - `0.825 (0.020) <driu_iostar.pth_>`_
      - 0.825 (0.020)
      - `0.817 (0.020) <m2unet_iostar.pth_>`_
      - 0.818 (0.019)
-   * - :py:mod:`STARE <bob.ip.binseg.configs.datasets.stare>`
+   * - :py:mod:`stare <bob.ip.binseg.configs.datasets.stare.ah>`
      - `0.827 (0.037) <driu_stare.pth_>`_
      - 0.823 (0.037)
      - `0.815 (0.041) <m2unet_stare.pth_>`_

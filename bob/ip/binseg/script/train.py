@@ -209,7 +209,7 @@ def train(
     verbose,
     **kwargs,
 ):
-    """Trains an FCN to perform binary segmentation using a supervised approach
+    """Trains an FCN to perform binary segmentation
 
     Training is performed for a configurable number of epochs, and generates at
     least a final_model.pth.  It may also generate a number of intermediate

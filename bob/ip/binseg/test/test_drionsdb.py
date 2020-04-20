@@ -16,7 +16,7 @@ from .utils import rc_variable_set, count_bw
 
 def test_protocol_consistency():
 
-    for protocol in ("default", "expert2"):
+    for protocol in ("expert1", "expert2"):
 
         subset = dataset.subsets(protocol)
         nose.tools.eq_(len(subset), 2)
@@ -75,7 +75,7 @@ def test_loading():
         return w/b
 
     limit = None  #use this to limit testing to first images only
-    subset = dataset.subsets("default")
+    subset = dataset.subsets("expert1")
     proportions = [_check_sample(s, 0.046) for s in subset["train"][:limit]]
     #print(f"max label proportions = {max(proportions)}")
     proportions = [_check_sample(s, 0.043) for s in subset["test"][:limit]]

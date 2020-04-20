@@ -108,6 +108,7 @@ class SampleList2TorchDataset(torch.utils.data.Dataset):
 
     Parameters
     ----------
+
     samples : list
         A list of :py:class:`bob.ip.binseg.data.sample.Sample` objects
 
