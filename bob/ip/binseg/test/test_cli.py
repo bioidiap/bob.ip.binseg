@@ -62,7 +62,7 @@ def test_experiment_stare():
 
     runner = CliRunner()
     with runner.isolated_filesystem(), stdout_logging() as buf:
-        result = runner.invoke(experiment, ["m2unet", "drive", "-vv",
+        result = runner.invoke(experiment, ["m2unet", "stare", "-vv",
             "--epochs=1", "--batch-size=1", "--overlayed"])
         assert result.exit_code == 0
         keywords = {  #from different logging systems
