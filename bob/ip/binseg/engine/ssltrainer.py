@@ -16,6 +16,8 @@ from bob.ip.binseg.utils.plot import loss_curve
 import logging
 logger = logging.getLogger(__name__)
 
+PYTORCH_GE_110 = (distutils.version.StrictVersion(torch.__version__) >= "1.1.0")
+
 
 def sharpen(x, T):
     temp = x ** (1 / T)
@@ -209,7 +211,6 @@ def run(
 
     """
 
-    logger.info("Start SSL training")
     start_epoch = arguments["epoch"]
     max_epoch = arguments["max_epoch"]
 
@@ -251,7 +252,7 @@ def run(
         start_training_time = time.time()
 
         for epoch in range(start_epoch, max_epoch):
-            scheduler.step()
+            if not PYTORCH_GE_110: scheduler.step()
             losses = SmoothedValue(len(data_loader))
             labelled_loss = SmoothedValue(len(data_loader))
             unlabelled_loss = SmoothedValue(len(data_loader))
@@ -295,6 +296,8 @@ def run(
                 labelled_loss.update(ll)
                 unlabelled_loss.update(ul)
                 logger.debug(f"batch loss: {loss.item()}")
+
+            if PYTORCH_GE_110: scheduler.step()
 
             if checkpoint_period and (epoch % checkpoint_period == 0):
                 checkpointer.save(f"model_{epoch:03d}", **arguments)

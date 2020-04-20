@@ -216,7 +216,6 @@ def run(data_loader, predictions_folder, output_folder, overlayed_folder=None,
 
     """
 
-    logger.info("Start evaluation")
     logger.info(f"Output folder: {output_folder}")
 
     if not os.path.exists(output_folder):

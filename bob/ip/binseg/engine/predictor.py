@@ -129,7 +129,6 @@ def run(model, data_loader, device, output_folder, overlayed_folder):
 
     """
 
-    logger.info("Start prediction")
     logger.info(f"Output folder: {output_folder}")
     logger.info(f"Device: {device}")
 
@@ -175,8 +174,6 @@ def run(model, data_loader, device, output_folder, overlayed_folder):
                 _save_hdf5(stem, prob, output_folder)
                 if overlayed_folder is not None:
                     _save_overlayed_png(stem, img, prob, overlayed_folder)
-
-    logger.info("End prediction")
 
     # report operational summary
     total_time = datetime.timedelta(seconds=int(time.time() - start_total_time))
