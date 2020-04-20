@@ -12,19 +12,15 @@ from ...data.transforms import (
 )
 
 
-AUGMENTATION_ROTATION = [_rotation()]
+RANDOM_ROTATION = [_rotation()]
 """Shared data augmentation based on random rotation only"""
 
 
-AUGMENTATION_WITHOUT_ROTATION = [_hflip(), _vflip(), _jitter()]
+RANDOM_FLIP_JITTER = [_hflip(), _vflip(), _jitter()]
 """Shared data augmentation transforms without random rotation"""
 
 
-AUGMENTATION = AUGMENTATION_ROTATION + AUGMENTATION_WITHOUT_ROTATION
-"""Shared data augmentation transforms"""
-
-
-def make_subset(l, transforms):
+def make_subset(l, transforms, prefixes, suffixes):
     """Creates a new data set, applying transforms
 
     Parameters
@@ -36,6 +32,14 @@ def make_subset(l, transforms):
     transforms : list
         A list of transforms that needs to be applied to all samples in the set
 
+    prefixes : list
+        A list of data augmentation operations that needs to be applied
+        **before** the transforms above
+
+    suffixes : list
+        A list of data augmentation operations that needs to be applied
+        **after** the transforms above
+
 
     Returns
     -------
@@ -46,7 +50,8 @@ def make_subset(l, transforms):
     """
 
     from ...data.utils import SampleList2TorchDataset as wrapper
-    return wrapper(l, transforms)
+
+    return wrapper(l, transforms, prefixes, suffixes)
 
 
 def make_trainset(l, transforms, rotation_before=False):
@@ -77,10 +82,19 @@ def make_trainset(l, transforms, rotation_before=False):
     """
 
     if rotation_before:
-        return make_subset(l, AUGMENTATION_ROTATION + transforms + \
-                AUGMENTATION_WITHOUT_ROTATION)
+        return make_subset(
+            l,
+            transforms=transforms,
+            prefixes=RANDOM_ROTATION,
+            suffixes=RANDOM_FLIP_JITTER,
+        )
 
-    return make_subset(l, transforms + AUGMENTATION)
+    return make_subset(
+        l,
+        transforms,
+        prefixes=[],
+        suffixes=(RANDOM_ROTATION + RANDOM_FLIP_JITTER),
+    )
 
 
 def make_dataset(subsets, transforms):
@@ -120,8 +134,12 @@ def make_dataset(subsets, transforms):
 
     for key in subsets.keys():
         if key == "train":
-            retval[key] = make_trainset(subsets[key], transforms)
+            retval[key] = make_trainset(
+                subsets[key], transforms=transforms, rotation_before=False
+            )
         else:
-            retval[key] = make_subset(subsets[key], transforms)
+            retval[key] = make_subset(
+                subsets[key], transforms=transforms, prefixes=[], suffixes=[]
+            )
 
     return retval
