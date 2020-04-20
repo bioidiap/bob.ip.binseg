@@ -36,6 +36,7 @@ _chase = _maker(
 from bob.ip.binseg.data.iostar import dataset as _raw_iostar
 _iostar = _maker(
         _raw_iostar.subsets("vessel")["train"],
+        # n.b.: not the best fit, but what was there for Tim's work
         [Pad((81, 0, 81, 0)), Resize(608)],
         )
 
