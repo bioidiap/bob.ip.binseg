@@ -10,13 +10,17 @@ from . import mock_dataset
 stare_dataset, stare_variable_set = mock_dataset()
 from .utils import rc_variable_set
 
+# we only iterate over the first N elements at most - dataset loading has
+# already been checked on the individual datset tests.  Here, we are only
+# testing for the extra tools wrapping the dataset
+N = 20
 
 @rc_variable_set("bob.ip.binseg.drive.datadir")
 def test_drive_default():
 
     from ..configs.datasets.drive.default import dataset
     nose.tools.eq_(len(dataset["train"]), 20)
-    for sample in dataset["train"]:
+    for sample in dataset["train"][:N]:
         nose.tools.eq_(len(sample), 4)
         assert isinstance(sample[0], str)
         nose.tools.eq_(sample[1].shape, (3, 544, 544)) #planes, height, width
@@ -26,9 +30,8 @@ def test_drive_default():
         nose.tools.eq_(sample[3].shape, (1, 544, 544)) #planes, height, width
         nose.tools.eq_(sample[3].dtype, torch.float32)
 
-
     nose.tools.eq_(len(dataset["test"]), 20)
-    for sample in dataset["test"]:
+    for sample in dataset["test"][:N]:
         nose.tools.eq_(len(sample), 4)
         assert isinstance(sample[0], str)
         nose.tools.eq_(sample[1].shape, (3, 544, 544)) #planes, height, width
@@ -47,7 +50,7 @@ def test_stare_ah():
     dataset["train"]._samples = stare_dataset.subsets("ah")["train"]
 
     nose.tools.eq_(len(dataset["train"]), 10)
-    for sample in dataset["train"]:
+    for sample in dataset["train"][:N]:
         nose.tools.eq_(len(sample), 3)
         assert isinstance(sample[0], str)
         nose.tools.eq_(sample[1].shape, (3, 608, 704)) #planes, height, width
@@ -59,7 +62,7 @@ def test_stare_ah():
     dataset["test"]._samples = stare_dataset.subsets("ah")["test"]
 
     nose.tools.eq_(len(dataset["test"]), 10)
-    for sample in dataset["test"]:
+    for sample in dataset["test"][:N]:
         nose.tools.eq_(len(sample), 3)
         assert isinstance(sample[0], str)
         nose.tools.eq_(sample[1].shape, (3, 608, 704)) #planes, height, width
@@ -76,7 +79,7 @@ def test_stare_vk():
     dataset["train"]._samples = stare_dataset.subsets("vk")["train"]
 
     nose.tools.eq_(len(dataset["train"]), 10)
-    for sample in dataset["train"]:
+    for sample in dataset["train"][:N]:
         nose.tools.eq_(len(sample), 3)
         assert isinstance(sample[0], str)
         nose.tools.eq_(sample[1].shape, (3, 608, 704)) #planes, height, width
@@ -88,7 +91,7 @@ def test_stare_vk():
     dataset["test"]._samples = stare_dataset.subsets("vk")["test"]
 
     nose.tools.eq_(len(dataset["test"]), 10)
-    for sample in dataset["test"]:
+    for sample in dataset["test"][:N]:
         nose.tools.eq_(len(sample), 3)
         assert isinstance(sample[0], str)
         nose.tools.eq_(sample[1].shape, (3, 608, 704)) #planes, height, width
@@ -103,7 +106,7 @@ def test_chasedb1_first_annotator():
     from ..configs.datasets.chasedb1.first_annotator import dataset
 
     nose.tools.eq_(len(dataset["train"]), 8)
-    for sample in dataset["train"]:
+    for sample in dataset["train"][:N]:
         nose.tools.eq_(len(sample), 3)
         assert isinstance(sample[0], str)
         nose.tools.eq_(sample[1].shape, (3, 960, 960)) #planes, height, width
@@ -112,7 +115,7 @@ def test_chasedb1_first_annotator():
         nose.tools.eq_(sample[2].dtype, torch.float32)
 
     nose.tools.eq_(len(dataset["test"]), 20)
-    for sample in dataset["test"]:
+    for sample in dataset["test"][:N]:
         nose.tools.eq_(len(sample), 3)
         assert isinstance(sample[0], str)
         nose.tools.eq_(sample[1].shape, (3, 960, 960)) #planes, height, width
@@ -127,7 +130,7 @@ def test_chasedb1_second_annotator():
     from ..configs.datasets.chasedb1.second_annotator import dataset
 
     nose.tools.eq_(len(dataset["train"]), 8)
-    for sample in dataset["train"]:
+    for sample in dataset["train"][:N]:
         nose.tools.eq_(len(sample), 3)
         assert isinstance(sample[0], str)
         nose.tools.eq_(sample[1].shape, (3, 960, 960)) #planes, height, width
@@ -136,7 +139,7 @@ def test_chasedb1_second_annotator():
         nose.tools.eq_(sample[2].dtype, torch.float32)
 
     nose.tools.eq_(len(dataset["test"]), 20)
-    for sample in dataset["test"]:
+    for sample in dataset["test"][:N]:
         nose.tools.eq_(len(sample), 3)
         assert isinstance(sample[0], str)
         nose.tools.eq_(sample[1].shape, (3, 960, 960)) #planes, height, width
@@ -151,7 +154,7 @@ def test_hrf_default():
     from ..configs.datasets.hrf.default import dataset
 
     nose.tools.eq_(len(dataset["train"]), 15)
-    for sample in dataset["train"]:
+    for sample in dataset["train"][:N]:
         nose.tools.eq_(len(sample), 4)
         assert isinstance(sample[0], str)
         nose.tools.eq_(sample[1].shape, (3, 1168, 1648)) #planes, height, width
@@ -162,7 +165,7 @@ def test_hrf_default():
         nose.tools.eq_(sample[3].dtype, torch.float32)
 
     nose.tools.eq_(len(dataset["test"]), 30)
-    for sample in dataset["test"]:
+    for sample in dataset["test"][:N]:
         nose.tools.eq_(len(sample), 4)
         assert isinstance(sample[0], str)
         nose.tools.eq_(sample[1].shape, (3, 1168, 1648)) #planes, height, width
@@ -174,13 +177,12 @@ def test_hrf_default():
 
 
 @rc_variable_set("bob.ip.binseg.refuge.datadir")
-@attr("slow")
 def test_refuge_disc():
 
     from ..configs.datasets.refuge.disc import dataset
 
     nose.tools.eq_(len(dataset["train"]), 400)
-    for sample in dataset["train"]:
+    for sample in dataset["train"][:N]:
         nose.tools.eq_(len(sample), 3)
         assert isinstance(sample[0], str)
         nose.tools.eq_(sample[1].shape, (3, 1632, 1632)) #planes, height, width
@@ -189,7 +191,7 @@ def test_refuge_disc():
         nose.tools.eq_(sample[2].dtype, torch.float32)
 
     nose.tools.eq_(len(dataset["validation"]), 400)
-    for sample in dataset["validation"]:
+    for sample in dataset["validation"][:N]:
         nose.tools.eq_(len(sample), 3)
         assert isinstance(sample[0], str)
         nose.tools.eq_(sample[1].shape, (3, 1632, 1632)) #planes, height, width
@@ -198,7 +200,7 @@ def test_refuge_disc():
         nose.tools.eq_(sample[2].dtype, torch.float32)
 
     nose.tools.eq_(len(dataset["test"]), 400)
-    for sample in dataset["test"]:
+    for sample in dataset["test"][:N]:
         nose.tools.eq_(len(sample), 3)
         assert isinstance(sample[0], str)
         nose.tools.eq_(sample[1].shape, (3, 1632, 1632)) #planes, height, width
@@ -208,13 +210,12 @@ def test_refuge_disc():
 
 
 @rc_variable_set("bob.ip.binseg.refuge.datadir")
-@attr("slow")
 def test_refuge_cup():
 
     from ..configs.datasets.refuge.cup import dataset
 
     nose.tools.eq_(len(dataset["train"]), 400)
-    for sample in dataset["train"]:
+    for sample in dataset["train"][:N]:
         nose.tools.eq_(len(sample), 3)
         assert isinstance(sample[0], str)
         nose.tools.eq_(sample[1].shape, (3, 1632, 1632)) #planes, height, width
@@ -223,7 +224,7 @@ def test_refuge_cup():
         nose.tools.eq_(sample[2].dtype, torch.float32)
 
     nose.tools.eq_(len(dataset["validation"]), 400)
-    for sample in dataset["validation"]:
+    for sample in dataset["validation"][:N]:
         nose.tools.eq_(len(sample), 3)
         assert isinstance(sample[0], str)
         nose.tools.eq_(sample[1].shape, (3, 1632, 1632)) #planes, height, width
@@ -232,7 +233,7 @@ def test_refuge_cup():
         nose.tools.eq_(sample[2].dtype, torch.float32)
 
     nose.tools.eq_(len(dataset["test"]), 400)
-    for sample in dataset["test"]:
+    for sample in dataset["test"][:N]:
         nose.tools.eq_(len(sample), 3)
         assert isinstance(sample[0], str)
         nose.tools.eq_(sample[1].shape, (3, 1632, 1632)) #planes, height, width
@@ -247,7 +248,7 @@ def test_drishtigs1_disc_all():
     from ..configs.datasets.drishtigs1.disc_all import dataset
 
     nose.tools.eq_(len(dataset["train"]), 50)
-    for sample in dataset["train"]:
+    for sample in dataset["train"][:N]:
         nose.tools.eq_(len(sample), 3)
         assert isinstance(sample[0], str)
         nose.tools.eq_(sample[1].shape, (3, 1760, 2048)) #planes, height, width
@@ -256,7 +257,7 @@ def test_drishtigs1_disc_all():
         nose.tools.eq_(sample[2].dtype, torch.float32)
 
     nose.tools.eq_(len(dataset["test"]), 51)
-    for sample in dataset["test"]:
+    for sample in dataset["test"][:N]:
         nose.tools.eq_(len(sample), 3)
         assert isinstance(sample[0], str)
         nose.tools.eq_(sample[1].shape, (3, 1760, 2048)) #planes, height, width
@@ -271,7 +272,7 @@ def test_drishtigs1_cup_all():
     from ..configs.datasets.drishtigs1.cup_all import dataset
 
     nose.tools.eq_(len(dataset["train"]), 50)
-    for sample in dataset["train"]:
+    for sample in dataset["train"][:N]:
         nose.tools.eq_(len(sample), 3)
         assert isinstance(sample[0], str)
         nose.tools.eq_(sample[1].shape, (3, 1760, 2048)) #planes, height, width
@@ -280,7 +281,7 @@ def test_drishtigs1_cup_all():
         nose.tools.eq_(sample[2].dtype, torch.float32)
 
     nose.tools.eq_(len(dataset["test"]), 51)
-    for sample in dataset["test"]:
+    for sample in dataset["test"][:N]:
         nose.tools.eq_(len(sample), 3)
         assert isinstance(sample[0], str)
         nose.tools.eq_(sample[1].shape, (3, 1760, 2048)) #planes, height, width
@@ -295,7 +296,7 @@ def test_drionsdb_expert1():
     from ..configs.datasets.drionsdb.expert1 import dataset
 
     nose.tools.eq_(len(dataset["train"]), 60)
-    for sample in dataset["train"]:
+    for sample in dataset["train"][:N]:
         nose.tools.eq_(len(sample), 3)
         assert isinstance(sample[0], str)
         nose.tools.eq_(sample[1].shape, (3, 416, 608)) #planes, height, width
@@ -304,7 +305,7 @@ def test_drionsdb_expert1():
         nose.tools.eq_(sample[2].dtype, torch.float32)
 
     nose.tools.eq_(len(dataset["test"]), 50)
-    for sample in dataset["test"]:
+    for sample in dataset["test"][:N]:
         nose.tools.eq_(len(sample), 3)
         assert isinstance(sample[0], str)
         nose.tools.eq_(sample[1].shape, (3, 416, 608)) #planes, height, width
