@@ -64,8 +64,12 @@ logger = logging.getLogger(__name__)
     "--dataset",
     "-d",
     help="A torch.utils.data.dataset.Dataset instance implementing a dataset "
-    "to be used for training the model, possibly including all pre-processing"
-    " pipelines required",
+    "to be used for training the model, possibly including all pre-processing "
+    "pipelines required or, optionally, a dictionary mapping string keys to "
+    "bob.ip.binseg.data.utils.SampleList2TorchDataset's.  At least one key "
+    "named 'train' must be available.  This dataset will be used for training "
+    "the network model.  The dataset description include all required "
+    "pre-processing, including eventual data augmentation",
     required=True,
     cls=ResourceOption,
 )
@@ -222,7 +226,7 @@ def train(
 
     # PyTorch dataloader
     data_loader = DataLoader(
-        dataset=dataset,
+        dataset=dataset["train"] if isinstance(dataset, dict) else dataset,
         batch_size=batch_size,
         shuffle=True,
         drop_last=drop_incomplete_batch,

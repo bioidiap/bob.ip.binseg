@@ -61,7 +61,13 @@ logger = logging.getLogger(__name__)
 @click.option(
     "--dataset",
     "-d",
-    help="A torch.utils.data.dataset.Dataset instance implementing a dataset to be used for evaluating the model, possibly including all pre-processing pipelines required",
+    help="A bob.ip.binseg.data.utils.SampleList2TorchDataset instance "
+    "implementing a dataset to be used for running prediction, possibly "
+    "including all pre-processing pipelines required or, optionally, a "
+    "dictionary mapping string keys to "
+    "bob.ip.binseg.data.utils.SampleList2TorchDataset's.  In such a case, "
+    "all datasets will be used for running prediction.  Data augmentation "
+    "operations are excluded automatically for prediction purposes",
     required=True,
     cls=ResourceOption,
 )
@@ -108,13 +114,7 @@ def predict(output_folder, model, dataset, batch_size, device, weight,
         overlayed, **kwargs):
     """Predicts vessel map (probabilities) on input images"""
 
-    # PyTorch dataloader
-    data_loader = DataLoader(
-        dataset=dataset,
-        batch_size=batch_size,
-        shuffle=False,
-        pin_memory=torch.cuda.is_available(),
-    )
+    dataset = dataset if isinstance(dataset, dict) else dict(test=dataset)
 
     # checkpointer, loads pre-fit model
     weight_fullpath = os.path.abspath(weight)
@@ -128,4 +128,12 @@ def predict(output_folder, model, dataset, batch_size, device, weight,
     if overlayed is not None:
         overlayed = overlayed.strip()
 
-    run(model, data_loader, device, output_folder, overlayed)
+    for k,v in dataset.items():
+        with v.not_augmented() as d:  # we remove any data augmentation
+            data_loader = DataLoader(
+                dataset=d,
+                batch_size=batch_size,
+                shuffle=False,
+                pin_memory=torch.cuda.is_available(),
+            )
+            run(model, data_loader, device, output_folder, overlayed)

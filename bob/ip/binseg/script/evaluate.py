@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # coding=utf-8
 
+import os
 import click
 from torch.utils.data import DataLoader
 
@@ -58,7 +59,13 @@ logger = logging.getLogger(__name__)
 @click.option(
     "--dataset",
     "-d",
-    help="A torch.utils.data.dataset.Dataset instance implementing a dataset to be used for evaluating predictions, possibly including all pre-processing pipelines required",
+    help="A bob.ip.binseg.data.utils.SampleList2TorchDataset instance "
+    "implementing a dataset to be used for evaluation purposes, possibly "
+    "including all pre-processing pipelines required or, optionally, a "
+    "dictionary mapping string keys to "
+    "bob.ip.binseg.data.utils.SampleList2TorchDataset's.  In such a case, "
+    "all datasets will be used for evaluation.  Data augmentation "
+    "operations are excluded automatically in this case",
     required=True,
     cls=ResourceOption,
 )
@@ -96,7 +103,11 @@ def evaluate(output_folder, predictions_folder, dataset, overlayed,
         overlay_threshold, **kwargs):
     """Evaluates an FCN on a binary segmentation task.
     """
-    data_loader = DataLoader(dataset=dataset, batch_size=1, shuffle=False,
-            pin_memory=False)
-    run(dataset, predictions_folder, output_folder, overlayed,
-            overlay_threshold)
+    if isinstance(dataset, dict):
+        for k,v in dataset.items():
+            analysis_folder = os.path.join(output_folder, k)
+            with v.not_augmented() as d:
+                data_loader = DataLoader(dataset=d, batch_size=1,
+                        shuffle=False, pin_memory=False)
+                run(d, predictions_folder, analysis_folder, overlayed,
+                    overlay_threshold)

@@ -22,11 +22,11 @@ logger = logging.getLogger(__name__)
     epilog="""Examples:
 
 \b
-    1. Trains a M2U-Net model (VGG-16 backbone) with STARE (vessel segmentation),
+    1. Trains a M2U-Net model (VGG-16 backbone) with DRIVE (vessel segmentation),
        on the CPU, for only two epochs, then runs inference and evaluation on
        results from its test set:
 
-       $ bob binseg experiment -vv m2unet stare --epochs=2
+       $ bob binseg experiment -vv m2unet drive --epochs=2
 
 """,
 )
@@ -47,20 +47,15 @@ logger = logging.getLogger(__name__)
     cls=ResourceOption,
 )
 @click.option(
-    "--train-dataset",
+    "--dataset",
     "-d",
-    help="A torch.utils.data.dataset.Dataset instance implementing a dataset "
-    "to be used for training the model, possibly including all pre-processing"
-    " pipelines required, including data augmentation",
-    required=True,
-    cls=ResourceOption,
-)
-@click.option(
-    "--test-dataset",
-    "-d",
-    help="A torch.utils.data.dataset.Dataset instance implementing a dataset "
-    "to be used for testing the model, possibly including all pre-processing"
-    " pipelines required",
+    help="A dictionary mapping string keys to "
+    "bob.ip.binseg.data.utils.SampleList2TorchDataset's.  At least one key "
+    "named 'train' must be available.  This dataset will be used for training "
+    "the network model.  All other datasets will be used for prediction and "
+    "evaluation. Dataset descriptions include all required pre-processing, "
+    "including eventual data augmentation, which may be eventually excluded "
+    "for prediction and evaluation purposes",
     required=True,
     cls=ResourceOption,
 )
@@ -209,8 +204,7 @@ def experiment(
     batch_size,
     drop_incomplete_batch,
     criterion,
-    train_dataset,
-    test_dataset,
+    dataset,
     checkpoint_period,
     device,
     seed,
@@ -220,7 +214,7 @@ def experiment(
     verbose,
     **kwargs,
 ):
-    """Runs a complete experiment, from training, prediction and evaluation
+    """Runs a complete experiment, from training, to prediction and evaluation
 
     This script is just a wrapper around the individual scripts for training,
     running prediction and evaluating FCN models.  It organises the output in a
@@ -259,7 +253,7 @@ def experiment(
         batch_size=batch_size,
         drop_incomplete_batch=drop_incomplete_batch,
         criterion=criterion,
-        dataset=train_dataset,
+        dataset=dataset,
         checkpoint_period=checkpoint_period,
         device=device,
         seed=seed,
@@ -282,25 +276,11 @@ def experiment(
         else None
     )
 
-    # train set
     ctx.invoke(
         predict,
         output_folder=predictions_folder,
         model=model,
-        dataset=train_dataset,
-        batch_size=batch_size,
-        device=device,
-        weight=model_file,
-        overlayed=overlayed_folder,
-        verbose=verbose,
-    )
-
-    # test set
-    ctx.invoke(
-        predict,
-        output_folder=predictions_folder,
-        model=model,
-        dataset=test_dataset,
+        dataset=dataset,
         batch_size=batch_size,
         device=device,
         weight=model_file,
@@ -320,41 +300,29 @@ def experiment(
         else None
     )
 
-    # train set
-    train_analysis_folder = os.path.join(output_folder, "analysis", "train")
+    analysis_folder = os.path.join(output_folder, "analysis")
     ctx.invoke(
         evaluate,
-        output_folder=train_analysis_folder,
+        output_folder=analysis_folder,
         predictions_folder=predictions_folder,
-        dataset=train_dataset,
+        dataset=dataset,
         overlayed=overlayed_folder,
         overlay_threshold=0.5,
         verbose=verbose,
     )
 
-    # test set
-    test_analysis_folder = os.path.join(output_folder, "analysis", "test")
-    ctx.invoke(
-        evaluate,
-        output_folder=test_analysis_folder,
-        predictions_folder=predictions_folder,
-        dataset=test_dataset,
-        overlayed=overlayed_folder,
-        overlay_threshold=0.5,
-        verbose=verbose,
-    )
     logger.info("Ended evaluation")
 
     ## Comparison
     logger.info("Started comparison")
 
-    # compare train and test set performances
+    # compare performances on the various sets
     from .compare import compare
 
-    systems = (
-            "train": os.path.join(train_analysis_folder, "metric.csv"),
-            "test": os.path.join(test_analysis_folder, "metric.csv"),
-            )
+    systems = []
+    for k, v in dataset.items():
+        systems += [k, os.path.join(output_folder, "analysis", k, "metrics.csv")]
     output_pdf = os.path.join(output_folder, "comparison.pdf")
     ctx.invoke(compare, label_path=systems, output=output_pdf, verbose=verbose)
-    logger.info("End comparison, and the experiment - bye.")
+
+    logger.info("Ended comparison, and the experiment - bye.")
