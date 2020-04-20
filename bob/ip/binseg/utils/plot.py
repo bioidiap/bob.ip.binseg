@@ -225,7 +225,7 @@ def precision_recall_f1iso_confintval(
         vert_y = numpy.concatenate((pui[pui > 0], pli[pli > 0][::-1]))
         # hacky workaround to plot 2nd human
         if numpy.isclose(numpy.mean(rui), rui[1], rtol=1e-05):
-            print("found human")
+            logger.warning("Found 2nd human annotator in metrics - patching...")
             p = plt.Polygon(
                 numpy.column_stack((vert_x, vert_y)),
                 facecolor="none",
