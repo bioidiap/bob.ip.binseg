@@ -50,6 +50,7 @@ optimizer = AdaBound(
 
 # criterion
 criterion = MixJacLoss(lambda_u=0.05, jacalpha=0.7)
+ssl = True
 
 # scheduler
 scheduler = MultiStepLR(
