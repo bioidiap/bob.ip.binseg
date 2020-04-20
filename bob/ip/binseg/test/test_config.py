@@ -2,7 +2,6 @@
 # coding=utf-8
 
 import nose.tools
-from nose.plugins.attrib import attr
 
 import torch
 
@@ -13,7 +12,7 @@ from .utils import rc_variable_set
 # we only iterate over the first N elements at most - dataset loading has
 # already been checked on the individual datset tests.  Here, we are only
 # testing for the extra tools wrapping the dataset
-N = 20
+N = 10
 
 @rc_variable_set("bob.ip.binseg.drive.datadir")
 def test_drive_default():
