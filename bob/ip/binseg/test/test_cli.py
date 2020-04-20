@@ -3,9 +3,33 @@
 
 """Tests for our CLI applications"""
 
+import re
+import contextlib
+
 from click.testing import CliRunner
 
 from nose.plugins.attrib import attr
+
+## special trick for CI builds
+from . import mock_dataset
+_, rc_variable_set = mock_dataset()
+
+
+@contextlib.contextmanager
+def stdout_logging():
+
+    ## copy logging messages to std out
+    import sys
+    import logging
+    import io
+    buf = io.StringIO()
+    ch = logging.StreamHandler(buf)
+    ch.setFormatter(logging.Formatter('%(message)s'))
+    ch.setLevel(logging.INFO)
+    logger = logging.getLogger('bob')
+    logger.addHandler(ch)
+    yield buf
+    logger.removeHandler(ch)
 
 
 def _check_help(entry_point):
@@ -20,6 +44,56 @@ def test_main_help():
     from ..script.binseg import binseg
 
     _check_help(binseg)
+
+
+def test_experiment_help():
+    from ..script.experiment import experiment
+
+    _check_help(experiment)
+
+
+def _str_counter(substr, s):
+    return sum(1 for _ in re.finditer(r'\b%s\b' % re.escape(substr), s))
+
+
+@rc_variable_set("bob.ip.binseg.stare.datadir")
+def test_experiment_stare():
+    from ..script.experiment import experiment
+
+    runner = CliRunner()
+    with runner.isolated_filesystem(), stdout_logging() as buf:
+        result = runner.invoke(experiment, ["m2unet", "drive", "-vv",
+            "--epochs=1", "--batch-size=1", "--overlayed"])
+        assert result.exit_code == 0
+        keywords = {  #from different logging systems
+            "Started training": 1,  #logging
+            "epoch: 1|total-time": 1,  #logging
+            "Saving checkpoint to results/model/model_final.pth": 1,  #logging
+            "Ended training": 1,  #logging
+            "Started prediction": 1,  #logging
+            "Loading checkpoint from": 2,  #logging
+            #"Saving results/overlayed/probabilities": 1,  #tqdm.write
+            "Ended prediction": 1,  #logging
+            "Started evaluation": 1,  #logging
+            "Highest F1-score of": 2,  #logging
+            "Saving overall precision-recall plot": 2,  #logging
+            #"Saving results/overlayed/analysis": 1,  #tqdm.write
+            "Ended evaluation": 1,  #logging
+            "Started comparison": 1,  #logging
+            "Loading metrics from results/analysis": 2,  #logging
+            "Ended comparison": 1,  #logging
+            }
+        buf.seek(0)
+        logging_output = buf.read()
+        for k,v in keywords.items():
+            #if _str_counter(k, logging_output) != v:
+            #    print(f"Count for string '{k}' appeared " \
+            #        f"({_str_counter(k, result.output)}) " \
+            #        f"instead of the expected {v}")
+            assert _str_counter(k, logging_output) == v, \
+                    f"Count for string '{k}' appeared " \
+                    f"({_str_counter(k, result.output)}) " \
+                    f"instead of the expected {v}"
 
 
 def test_train_help():
