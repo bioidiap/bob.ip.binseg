@@ -30,9 +30,9 @@ modelurls = {
     "resnet101": "https://download.pytorch.org/models/resnet101-5d3b4d8f.pth",
     "resnet152": "https://download.pytorch.org/models/resnet152-b121ed2d.pth",
     #"resnet50_SIN_IN": "https://bitbucket.org/robert_geirhos/texture-vs-shape-pretrained-models/raw/60b770e128fffcbd8562a3ab3546c1a735432d03/resnet50_finetune_60_epochs_lr_decay_after_30_start_resnet50_train_45_epochs_combined_IN_SF-ca06340c.pth.tar",
-    "resnet50_SIN_IN": "https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/resnet50_finetune_60_epochs_lr_decay_after_30_start_resnet50_train_45_epochs_combined_IN_SF-ca06340c.pth.tar",
+    "resnet50_SIN_IN": "http://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/resnet50_finetune_60_epochs_lr_decay_after_30_start_resnet50_train_45_epochs_combined_IN_SF-ca06340c.pth.tar",
     #"mobilenetv2": "https://dl.dropboxusercontent.com/s/4nie4ygivq04p8y/mobilenet_v2.pth.tar",
-    "mobilenetv2": "https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/mobilenet_v2.pth.tar",
+    "mobilenetv2": "http://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/mobilenet_v2.pth.tar",
 }
 """URLs of pre-trained models (backbones)"""
 
