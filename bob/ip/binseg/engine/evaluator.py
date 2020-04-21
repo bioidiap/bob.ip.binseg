@@ -179,7 +179,9 @@ def _sample_analysis(
 
     if overlay:
         img = VF.to_pil_image(img)  # PIL Image
-        tp_pil_colored = PIL.Image.blend(img, tp_pil_colored, 0.4)
+        # using blend here, to fade original image being overlayed, or
+        # its brightness may obfuscate colors from the vessel map
+        tp_pil_colored = PIL.Image.blend(img, tp_pil_colored, 0.5)
 
     return tp_pil_colored
 
