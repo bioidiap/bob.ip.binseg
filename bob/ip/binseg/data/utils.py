@@ -54,9 +54,9 @@ def overlayed_image(
         An RGB PIL image that represents the original image for analysis
 
     label : PIL.Image.Image
-        A PIL image in mode "1" or "L" that represents the labelled elements in
-        the image.  White pixels represent the labelled object.  Black pixels
-        represent background.
+        A PIL image in any mode that represents the labelled elements in the
+        image.  In case of images in mode "L" or "1", white pixels represent
+        the labelled object.  Black-er pixels represent background.
 
     mask : py:class:`PIL.Image.Image`, Optional
         A PIL image in mode "1" that represents the mask for the image.  White
@@ -65,7 +65,7 @@ def overlayed_image(
 
     label_color : py:class:`tuple`, Optional
         A tuple with three integer entries indicating the RGB color to be used
-        for labels
+        for labels.  Only used if ``label.mode`` is "1" or "L".
 
     mask_color : py:class:`tuple`, Optional
         A tuple with three integer entries indicating the RGB color to be used
@@ -86,21 +86,23 @@ def overlayed_image(
 
     """
 
-    # creates a representation of labels with the right color
-    label_colored = PIL.ImageOps.colorize(
-        label.convert("L"), (0, 0, 0), label_color
-    )
+    # creates a representation of labels, in RGB format, with the right color
+    if label.mode in ("1", "L"):
+        label_colored = PIL.ImageOps.colorize(
+            label.convert("L"), (0, 0, 0), label_color
+        )
+    else:
+        # user has already passed an RGB version of the labels, just compose
+        label_colored = label
 
     # blend image and label together - first blend to get vessels drawn with a
-    # slight "label_color" tone on top, then composite with original image, not
-    # to loose brightness.
+    # slight "label_color" tone on top, then composite with original image, to
+    # avoid loosing brightness.
     retval = PIL.Image.blend(img, label_colored, alpha)
     if label.mode == "1":
         composite_mask = invert_mode1_image(label)
-    elif label.mode == "L":
-        composite_mask = PIL.ImageOps.invert(label)
     else:
-        raise TypeError(f"Label image mode {label.mode} != ('1', 'L')")
+        composite_mask = PIL.ImageOps.invert(label.convert("L"))
     retval = PIL.Image.composite(img, retval, composite_mask)
 
     # creates a representation of the mask negative with the right color
