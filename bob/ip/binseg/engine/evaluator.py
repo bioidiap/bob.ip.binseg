@@ -13,7 +13,7 @@ from tqdm import tqdm
 import torch
 import torchvision.transforms.functional as VF
 
-import bob.io.base
+import h5py
 
 from ..utils.metric import base_metrics
 from ..utils.plot import precision_recall_f1iso_confintval
@@ -231,7 +231,8 @@ def run(data_loader, predictions_folder, output_folder, overlayed_folder=None,
         image = sample[1].to("cpu")
         gt = sample[2].to("cpu")
         pred_fullpath = os.path.join(predictions_folder, stem + ".hdf5")
-        pred = bob.io.base.load(pred_fullpath).astype("float32")
+        with h5py.File(pred_fullpath, "r") as f:
+            pred = f["array"][:]
         pred = torch.from_numpy(pred)
         if stem in data:
             raise RuntimeError(f"{stem} entry already exists in data. "

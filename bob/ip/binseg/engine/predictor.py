@@ -12,7 +12,7 @@ from tqdm import tqdm
 import torch
 import torchvision.transforms.functional as VF
 
-import bob.io.base
+import h5py
 
 from ..utils.summary import summary
 
@@ -44,8 +44,10 @@ def _save_hdf5(stem, prob, output_folder):
     if not os.path.exists(fulldir):
         tqdm.write(f"Creating directory {fulldir}...")
         os.makedirs(fulldir, exist_ok=True)
-    bob.io.base.save(prob.cpu().squeeze(0).numpy(), fullpath)
-
+    with h5py.File(fullpath, 'w') as f:
+        data = prob.cpu().squeeze(0).numpy()
+        f.create_dataset("array", data=data, compression="gzip",
+                compression_opts=9)
 
 def _save_image(stem, extension, data, output_folder):
     """Saves a PIL image into a file
