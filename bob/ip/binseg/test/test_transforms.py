@@ -4,7 +4,10 @@
 import random
 
 import nose.tools
+import pkg_resources
+
 import numpy
+import PIL.Image
 import torch
 import torchvision.transforms.functional
 
@@ -93,7 +96,7 @@ def test_pad_default():
     # checks that the border introduced with padding is all about "fill"
     img_t = numpy.array(img_t)
     img_t[idx] = 0
-    border_size_plane = (img_t[:,:,0].size - numpy.array(img)[:,:,0].size)
+    border_size_plane = img_t[:, :, 0].size - numpy.array(img)[:, :, 0].size
     nose.tools.eq_(img_t.sum(), 0)
 
     gt_t = numpy.array(gt_t)
@@ -131,8 +134,8 @@ def test_pad_2tuple():
     # checks that the border introduced with padding is all about "fill"
     img_t = numpy.array(img_t)
     img_t[idx] = 0
-    border_size_plane = (img_t[:,:,0].size - numpy.array(img)[:,:,0].size)
-    expected_sum = sum((fill[k]*border_size_plane) for k in range(3))
+    border_size_plane = img_t[:, :, 0].size - numpy.array(img)[:, :, 0].size
+    expected_sum = sum((fill[k] * border_size_plane) for k in range(3))
     nose.tools.eq_(img_t.sum(), expected_sum)
 
     gt_t = numpy.array(gt_t)
@@ -170,8 +173,8 @@ def test_pad_4tuple():
     # checks that the border introduced with padding is all about "fill"
     img_t = numpy.array(img_t)
     img_t[idx] = 0
-    border_size_plane = (img_t[:,:,0].size - numpy.array(img)[:,:,0].size)
-    expected_sum = sum((fill[k]*border_size_plane) for k in range(3))
+    border_size_plane = img_t[:, :, 0].size - numpy.array(img)[:, :, 0].size
+    expected_sum = sum((fill[k] * border_size_plane) for k in range(3))
     nose.tools.eq_(img_t.sum(), expected_sum)
 
     gt_t = numpy.array(gt_t)
@@ -194,7 +197,7 @@ def test_resize_downscale_w():
     img, gt, mask = [_create_img(im_size) for i in range(3)]
     nose.tools.eq_(img.size, (im_size[2], im_size[1]))  # confirms the above
     img_t, gt_t, mask_t = transforms(img, gt, mask)
-    new_size = (new_size, (new_size*im_size[1])/im_size[2])
+    new_size = (new_size, (new_size * im_size[1]) / im_size[2])
     nose.tools.eq_(img_t.size, new_size)
     nose.tools.eq_(gt_t.size, new_size)
     nose.tools.eq_(mask_t.size, new_size)
@@ -224,8 +227,8 @@ def test_crop():
 
     # test
     idx = (
-        slice(crop_size[0], crop_size[0]+crop_size[2]),
-        slice(crop_size[1], crop_size[1]+crop_size[3]),
+        slice(crop_size[0], crop_size[0] + crop_size[2]),
+        slice(crop_size[1], crop_size[1] + crop_size[3]),
         slice(0, im_size[0]),
     )
     transforms = Crop(*crop_size)
@@ -297,7 +300,7 @@ def test_rotation():
     assert numpy.any(numpy.array(img1_t) != numpy.array(img))
 
     # asserts two random transforms are not the same
-    img_t2, = transforms(img)
+    (img_t2,) = transforms(img)
     assert numpy.any(numpy.array(img_t2) != numpy.array(img1_t))
 
 
@@ -327,15 +330,40 @@ def test_color_jitter():
 
 def test_compose():
 
-    transforms = Compose([
-                RandomVerticalFlip(p=1),
-                RandomHorizontalFlip(p=1),
-                RandomVerticalFlip(p=1),
-                RandomHorizontalFlip(p=1),
-                ])
+    transforms = Compose(
+        [
+            RandomVerticalFlip(p=1),
+            RandomHorizontalFlip(p=1),
+            RandomVerticalFlip(p=1),
+            RandomHorizontalFlip(p=1),
+        ]
+    )
 
     img, gt, mask = [_create_img((3, 24, 42)) for i in range(3)]
     img_t, gt_t, mask_t = transforms(img, gt, mask)
     assert numpy.all(numpy.array(img_t) == numpy.array(img))
     assert numpy.all(numpy.array(gt_t) == numpy.array(gt))
     assert numpy.all(numpy.array(mask_t) == numpy.array(mask))
+
+
+def test_16bit_autolevel():
+
+    test_image_path = pkg_resources.resource_filename(
+        __name__, "testimg-16bit.png"
+    )
+    # the way to load a 16-bit PNG image correctly, according to:
+    # https://stackoverflow.com/questions/32622658/read-16-bit-png-image-file-using-python
+    # https://github.com/python-pillow/Pillow/issues/3011
+    img = PIL.Image.fromarray(
+        numpy.array(
+            PIL.Image.open("bob/ip/binseg/test/testimg-16bit.png")
+        ).astype("uint16")
+    )
+    nose.tools.eq_(img.mode, "I;16")
+    nose.tools.eq_(img.getextrema(), (0, 65281))
+
+    timg = SingleAutoLevel16to8()(img)
+    nose.tools.eq_(timg.mode, "L")
+    nose.tools.eq_(timg.getextrema(), (0, 255))
+    #timg.show()
+    #import ipdb; ipdb.set_trace()

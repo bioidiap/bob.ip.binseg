@@ -1,9 +1,8 @@
-bob.core
 bob.extension
-bob.io.base
 matplotlib
 numpy
 pandas
+h5py
 pillow
 setuptools
 tabulate

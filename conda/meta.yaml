@@ -25,21 +25,21 @@ requirements:
   host:
     - python {{ python }}
     - setuptools {{ setuptools }}
-    - torchvision  {{ torchvision }} # [linux]
-    - pytorch {{ pytorch }} # [linux]
     - numpy {{ numpy }}
+    - h5py {{ h5py }}
+    - pytorch {{ pytorch }} # [linux]
+    - torchvision  {{ torchvision }} # [linux]
     - bob.extension
-    - bob.core
-    - bob.io.base
   run:
     - python
     - setuptools
+    - {{ pin_compatible('numpy') }}
+    - {{ pin_compatible('pillow') }}
+    - {{ pin_compatible('pandas') }}
+    - {{ pin_compatible('matplotlib') }}
     - {{ pin_compatible('pytorch') }} # [linux]
     - {{ pin_compatible('torchvision') }} # [linux]
-    - {{ pin_compatible('numpy') }}
-    - pandas
-    - pillow
-    - matplotlib
+    - {{ pin_compatible('h5py') }}
     - tqdm
     - tabulate
 

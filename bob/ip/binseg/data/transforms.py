@@ -18,8 +18,6 @@ import PIL.Image
 import torchvision.transforms
 import torchvision.transforms.functional
 
-import bob.core
-
 
 class TupleMixin:
     """Adds support to work with tuples of objects to torchvision transforms"""
@@ -104,12 +102,17 @@ class SingleAutoLevel16to8:
     To auto-level, we calculate the maximum and the minimum of the image, and
     consider such a range should be mapped to the [0,255] range of the
     destination image.
+
     """
 
     def __call__(self, img):
+        imin, imax = img.getextrema()
+        irange = imax - imin
         return PIL.Image.fromarray(
-            bob.core.convert(img, "uint8", (0, 255), img.getextrema())
-        )
+            numpy.round(
+                255.0 * (numpy.array(img).astype(float) - imin) / irange
+            ).astype("uint8"),
+        ).convert("L")
 
 
 class AutoLevel16to8(TupleMixin, SingleAutoLevel16to8):
@@ -121,6 +124,7 @@ class AutoLevel16to8(TupleMixin, SingleAutoLevel16to8):
     consider such a range should be mapped to the [0,255] range of the
     destination image.
     """
+
     pass
 
 
@@ -132,6 +136,7 @@ class SingleToRGB:
     defaults.  This may be aggressive if applied to 16-bit images without
     further considerations.
     """
+
     def __call__(self, img):
         return img.convert(mode="RGB")
 
@@ -195,8 +200,8 @@ class RandomRotation(torchvision.transforms.RandomRotation):
     """
 
     def __init__(self, p=0.5, **kwargs):
-        kwargs.setdefault('degrees', 15)
-        kwargs.setdefault('resample', PIL.Image.BILINEAR)
+        kwargs.setdefault("degrees", 15)
+        kwargs.setdefault("resample", PIL.Image.BILINEAR)
         super(RandomRotation, self).__init__(**kwargs)
         self.p = p
 
@@ -205,16 +210,17 @@ class RandomRotation(torchvision.transforms.RandomRotation):
         if random.random() < self.p:
             angle = self.get_params(self.degrees)
             return [
-                torchvision.transforms.functional.rotate(img, angle,
-                    self.resample, self.expand, self.center)
+                torchvision.transforms.functional.rotate(
+                    img, angle, self.resample, self.expand, self.center
+                )
                 for img in args
-                ]
+            ]
         else:
             return args
 
     def __repr__(self):
         retval = super(RandomRotation, self).__repr__()
-        return retval.replace('(', f'(p={self.p},', 1)
+        return retval.replace("(", f"(p={self.p},", 1)
 
 
 class ColorJitter(torchvision.transforms.ColorJitter):
@@ -243,10 +249,10 @@ class ColorJitter(torchvision.transforms.ColorJitter):
     """
 
     def __init__(self, p=0.5, **kwargs):
-        kwargs.setdefault('brightness', 0.3)
-        kwargs.setdefault('contrast', 0.3)
-        kwargs.setdefault('saturation', 0.02)
-        kwargs.setdefault('hue', 0.02)
+        kwargs.setdefault("brightness", 0.3)
+        kwargs.setdefault("contrast", 0.3)
+        kwargs.setdefault("saturation", 0.02)
+        kwargs.setdefault("hue", 0.02)
         super(ColorJitter, self).__init__(**kwargs)
         self.p = p
 
@@ -259,4 +265,4 @@ class ColorJitter(torchvision.transforms.ColorJitter):
 
     def __repr__(self):
         retval = super(ColorJitter, self).__repr__()
-        return retval.replace('(', f'(p={self.p},', 1)
+        return retval.replace("(", f"(p={self.p},", 1)
