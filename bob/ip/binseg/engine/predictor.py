@@ -100,7 +100,7 @@ def _save_overlayed_png(stem, image, prob, output_folder):
     """
 
     image = VF.to_pil_image(image)
-    prob = VF.to_pil_image(prob.cpu().squeeze(0))
+    prob = VF.to_pil_image(prob.cpu())
 
     # color and overlay
     prob_green = PIL.ImageOps.colorize(prob, (0, 0, 0), (0, 255, 0))
