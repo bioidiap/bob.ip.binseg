@@ -8,8 +8,6 @@ import contextlib
 
 from click.testing import CliRunner
 
-from nose.plugins.attrib import attr
-
 ## special trick for CI builds
 from . import mock_dataset
 _, rc_variable_set = mock_dataset()
@@ -32,11 +30,17 @@ def stdout_logging():
     logger.removeHandler(ch)
 
 
+def _assert_exit_0(result):
+
+    assert result.exit_code == 0, (
+            f"Exit code != 0 ({result.exit_code}); Output:\n{result.output}"
+            )
+
 def _check_help(entry_point):
 
     runner = CliRunner()
     result = runner.invoke(entry_point, ["--help"])
-    assert result.exit_code == 0
+    _assert_exit_0(result)
     assert result.output.startswith("Usage:")
 
 
@@ -64,7 +68,7 @@ def test_experiment_stare():
     with runner.isolated_filesystem(), stdout_logging() as buf:
         result = runner.invoke(experiment, ["m2unet", "stare", "-vv",
             "--epochs=1", "--batch-size=1", "--overlayed"])
-        assert result.exit_code == 0
+        _assert_exit_0(result)
         keywords = {  #from different logging systems
             "Started training": 1,  #logging
             "epoch: 1|total-time": 1,  #logging
@@ -137,7 +141,7 @@ def test_config_list():
 
     runner = CliRunner()
     result = runner.invoke(list)
-    assert result.exit_code == 0
+    _assert_exit_0(result)
     assert "module: bob.ip.binseg.configs.datasets" in result.output
     assert "module: bob.ip.binseg.configs.models" in result.output
 
@@ -147,7 +151,7 @@ def test_config_list_v():
 
     runner = CliRunner()
     result = runner.invoke(list, ["--verbose"])
-    assert result.exit_code == 0
+    _assert_exit_0(result)
     assert "module: bob.ip.binseg.configs.datasets" in result.output
     assert "module: bob.ip.binseg.configs.models" in result.output
 
@@ -163,7 +167,7 @@ def test_config_describe_drive():
 
     runner = CliRunner()
     result = runner.invoke(describe, ["drive"])
-    assert result.exit_code == 0
+    _assert_exit_0(result)
     assert "[DRIVE-2004]" in result.output
 
 
@@ -179,7 +183,7 @@ def test_config_copy():
     runner = CliRunner()
     with runner.isolated_filesystem():
         result = runner.invoke(copy, ["drive", "test.py"])
-        assert result.exit_code == 0
+        _assert_exit_0(result)
         with open("test.py") as f:
             data = f.read()
         assert "[DRIVE-2004]" in data
@@ -202,7 +206,7 @@ def test_dataset_list():
 
     runner = CliRunner()
     result = runner.invoke(list)
-    assert result.exit_code == 0
+    _assert_exit_0(result)
     assert result.output.startswith("Supported datasets:")
 
 
@@ -212,10 +216,9 @@ def test_dataset_check_help():
     _check_help(check)
 
 
-@attr('slow')
 def test_dataset_check():
     from ..script.dataset import check
 
     runner = CliRunner()
-    result = runner.invoke(check, ["--verbose", "--verbose"])
-    assert result.exit_code == 0
+    result = runner.invoke(check, ["--verbose", "--verbose", "--limit=2"])
+    _assert_exit_0(result)
