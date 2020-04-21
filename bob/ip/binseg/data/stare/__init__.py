@@ -43,7 +43,8 @@ _root_path = bob.extension.rc.get(
     "bob.ip.binseg.stare.datadir", os.path.realpath(os.curdir)
 )
 
-def _make_dataset(root_path):
+
+def _make_loader(root_path):
 
     def _loader(context, sample):
         # "context" is ignore in this case - database is homogeneous
@@ -52,10 +53,15 @@ def _make_dataset(root_path):
             label=load_pil_1(os.path.join(root_path, sample["label"])),
         )
 
+    return _loader
+
+
+def _make_dataset(root_path):
+
     return JSONDataset(
         protocols=_protocols,
         fieldnames=_fieldnames,
-        loader=_loader,
+        loader=_make_loader(root_path),
         keymaker=data_path_keymaker,
     )
 

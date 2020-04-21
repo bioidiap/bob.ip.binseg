@@ -13,7 +13,7 @@ from ..data import stare
 ## special trick for CI builds
 from . import mock_dataset, TESTDB_TMPDIR
 
-json_dataset, rc_variable_set = mock_dataset()
+datadir, json_dataset, rc_variable_set = mock_dataset()
 
 
 ## definition of stare subsets for "default" protocol
@@ -50,17 +50,10 @@ stare-images/im0324.ppm,labels-ah/im0324.ah.ppm"""
 @rc_variable_set("bob.ip.binseg.stare.datadir")
 def test_compare_to_json():
 
-    if TESTDB_TMPDIR is not None:
-        stare_dir = TESTDB_TMPDIR.name
-    else:
-        import bob.extension
-
-        stare_dir = bob.extension.rc.get("bob.ip.binseg.stare.datadir")
-
     test_dataset = CSVDataset(
         default,
         stare._fieldnames,
-        stare._make_loader(stare_dir),
+        stare._make_loader(datadir),
         stare.data_path_keymaker,
     )
 
