@@ -54,8 +54,8 @@ def overlayed_image(
         An RGB PIL image that represents the original image for analysis
 
     label : PIL.Image.Image
-        A PIL image in mode "1" that represents the labelled elements in the
-        image.  White pixels represent the labelled object.  Black pixels
+        A PIL image in mode "1" or "L" that represents the labelled elements in
+        the image.  White pixels represent the labelled object.  Black pixels
         represent background.
 
     mask : py:class:`PIL.Image.Image`, Optional
@@ -95,7 +95,13 @@ def overlayed_image(
     # slight "label_color" tone on top, then composite with original image, not
     # to loose brightness.
     retval = PIL.Image.blend(img, label_colored, alpha)
-    retval = PIL.Image.composite(img, retval, invert_mode1_image(label))
+    if label.mode == "1":
+        composite_mask = invert_mode1_image(label)
+    elif label.mode == "L":
+        composite_mask = PIL.ImageOps.invert(label)
+    else:
+        raise TypeError(f"Label image mode {label.mode} != ('1', 'L')")
+    retval = PIL.Image.composite(img, retval, composite_mask)
 
     # creates a representation of the mask negative with the right color
     if mask is not None:

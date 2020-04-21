@@ -15,6 +15,7 @@ import torchvision.transforms.functional as VF
 import h5py
 
 from ..utils.summary import summary
+from ..data.utils import overlayed_image
 
 import logging
 logger = logging.getLogger(__name__)
@@ -34,7 +35,7 @@ def _save_hdf5(stem, prob, output_folder):
         Monochrome Image with prediction maps
 
     output_folder : str
-        path where to store overlayed results
+        path where to store predictions
 
     """
 
@@ -101,11 +102,7 @@ def _save_overlayed_png(stem, image, prob, output_folder):
 
     image = VF.to_pil_image(image)
     prob = VF.to_pil_image(prob.cpu())
-
-    # color and overlay
-    prob_green = PIL.ImageOps.colorize(prob, (0, 0, 0), (0, 255, 0))
-    overlayed = PIL.Image.blend(image, prob_green, 0.4)
-    _save_image(stem, '.png', overlayed, output_folder)
+    _save_image(stem, '.png', overlayed_image(image, prob), output_folder)
 
 
 def run(model, data_loader, device, output_folder, overlayed_folder):
