@@ -348,17 +348,11 @@ def test_compose():
 
 def test_16bit_autolevel():
 
-    test_image_path = pkg_resources.resource_filename(
-        __name__, "testimg-16bit.png"
-    )
+    path = pkg_resources.resource_filename(__name__, "testimg-16bit.png")
     # the way to load a 16-bit PNG image correctly, according to:
     # https://stackoverflow.com/questions/32622658/read-16-bit-png-image-file-using-python
     # https://github.com/python-pillow/Pillow/issues/3011
-    img = PIL.Image.fromarray(
-        numpy.array(
-            PIL.Image.open("bob/ip/binseg/test/testimg-16bit.png")
-        ).astype("uint16")
-    )
+    img = PIL.Image.fromarray(numpy.array(PIL.Image.open(path)).astype("uint16"))
     nose.tools.eq_(img.mode, "I;16")
     nose.tools.eq_(img.getextrema(), (0, 65281))
 
