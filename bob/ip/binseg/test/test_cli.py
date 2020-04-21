@@ -67,7 +67,7 @@ def test_experiment_stare():
     runner = CliRunner()
     with runner.isolated_filesystem(), stdout_logging() as buf:
         result = runner.invoke(experiment, ["m2unet", "stare", "-vv",
-            "--epochs=1", "--batch-size=1"])
+            "--epochs=1", "--batch-size=1", "--overlayed"])
         _assert_exit_0(result)
         keywords = {  #from different logging systems
             "Started training": 1,  #logging
