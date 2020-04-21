@@ -104,8 +104,17 @@ def list(**kwargs):
         'dataset',
         nargs=-1,
         )
+@click.option(
+    "--limit",
+    "-l",
+    help="Limit check to the first N samples in each dataset, making the "
+            "check sensibly faster.  Set it to zero to check everything.",
+    required=True,
+    type=click.IntRange(0),
+    default=0,
+)
 @verbosity_option()
-def check(dataset, **kwargs):
+def check(dataset, limit, **kwargs):
     """Checks file access on one or more datasets"""
 
     to_check = _get_installed_datasets()
@@ -123,6 +132,6 @@ def check(dataset, **kwargs):
             click.echo(f"Checking \"{k.group('name')}\" dataset...")
             module = importlib.import_module(f"...data.{k.group('name')}",
                     __name__)
-            errors += module.dataset.check()
+            errors += module.dataset.check(limit)
         if not errors:
             click.echo(f"No errors reported")

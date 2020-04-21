@@ -87,8 +87,18 @@ class JSONDataset:
         self.loader = loader
         self.keymaker = keymaker
 
-    def check(self):
+    def check(self, limit=0):
         """For each protocol, check if all data can be correctly accessed
+
+
+        Parameters
+        ----------
+
+        limit : int
+            Maximum number of samples to check (in each protocol/subset
+            combination) in this dataset.  If set to zero, then check
+            everything.
+
 
         Returns
         -------
@@ -104,6 +114,9 @@ class JSONDataset:
             logger.info(f"Checking protocol '{proto}'...")
             for name, samples in self.subsets(proto).items():
                 logger.info(f"Checking subset '{name}'...")
+                if limit:
+                    logger.info(f"Checking at most first '{limit}' samples...")
+                    samples = samples[:limit]
                 for sample in samples:
                     try:
                         sample.data  # triggers loading
@@ -230,8 +243,18 @@ class CSVDataset:
         self.loader = loader
         self.keymaker = keymaker
 
-    def check(self):
+    def check(self, limit=0):
         """For each subset, check if all data can be correctly accessed
+
+
+        Parameters
+        ----------
+
+        limit : int
+            Maximum number of samples to check (in each protocol/subset
+            combination) in this dataset.  If set to zero, then check
+            everything.
+
 
         Returns
         -------
@@ -245,7 +268,11 @@ class CSVDataset:
         errors = 0
         for name in self._subsets.keys():
             logger.info(f"Checking subset '{name}'...")
-            for sample in self.samples(name):
+            samples = self.samples(name)
+            if limit:
+                logger.info(f"Checking at most first '{limit}' samples...")
+                samples = samples[:limit]
+            for sample in samples:
                 try:
                     sample.data  # triggers loading
                     logger.info(f"{sample.key}: OK")
