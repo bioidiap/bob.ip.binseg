@@ -60,6 +60,17 @@ logger = logging.getLogger(__name__)
     cls=ResourceOption,
 )
 @click.option(
+    "--second-annotator",
+    "-S",
+    help="A dataset or dictionary, like in --dataset, with the same "
+    "sample keys, but with annotations from a different annotator that is "
+    "going to be compared to the one in --dataset",
+    required=False,
+    default=None,
+    cls=ResourceOption,
+    show_default=True,
+)
+@click.option(
     "--optimizer",
     help="A torch.optim.Optimizer that will be used to train the network",
     required=True,
@@ -205,6 +216,7 @@ def experiment(
     drop_incomplete_batch,
     criterion,
     dataset,
+    second_annotator,
     checkpoint_period,
     device,
     seed,
@@ -301,11 +313,14 @@ def experiment(
     )
 
     analysis_folder = os.path.join(output_folder, "analysis")
+    second_annotator_folder = os.path.join(analysis_folder, "second-annotator")
     ctx.invoke(
         evaluate,
         output_folder=analysis_folder,
         predictions_folder=predictions_folder,
         dataset=dataset,
+        second_annotator=second_annotator,
+        second_annotator_folder=second_annotator_folder,
         overlayed=overlayed_folder,
         overlay_threshold=0.5,
         verbose=verbose,
@@ -321,7 +336,11 @@ def experiment(
 
     systems = []
     for k, v in dataset.items():
-        systems += [k, os.path.join(output_folder, "analysis", k, "metrics.csv")]
+        systems += [k, os.path.join(analysis_folder, k, "metrics.csv")]
+    if second_annotator is not None:
+        for k, v in second_annotator.items():
+            systems += [f"{k} (2nd. annot.)",
+                    os.path.join(second_annotator_folder, k, "metrics.csv")]
     output_pdf = os.path.join(output_folder, "comparison.pdf")
     ctx.invoke(compare, label_path=systems, output=output_pdf, verbose=verbose)
 

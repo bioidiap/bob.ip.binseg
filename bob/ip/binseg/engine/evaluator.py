@@ -186,7 +186,7 @@ def _sample_analysis(
     return tp_pil_colored
 
 
-def run(data_loader, predictions_folder, output_folder, overlayed_folder=None,
+def run(dataset, predictions_folder, output_folder, overlayed_folder=None,
         overlay_threshold=None):
     """
     Runs inference and calculates metrics
@@ -195,8 +195,8 @@ def run(data_loader, predictions_folder, output_folder, overlayed_folder=None,
     Parameters
     ---------
 
-    data_loader : py:class:`torch.torch.utils.data.DataLoader`
-        an iterable over the transformed input dataset, containing ground-truth
+    dataset : py:class:`torch.utils.data.Dataset`
+        a dataset to iterate on
 
     predictions_folder : str
         folder where predictions for the dataset images has been previously
@@ -216,6 +216,13 @@ def run(data_loader, predictions_folder, output_folder, overlayed_folder=None,
         the training set or a separate validation set.  Using a test set value
         may bias your analysis.
 
+
+    Returns
+    -------
+
+    threshold : float
+        Threshold to achieve the highest possible F1-score for this dataset
+
     """
 
     logger.info(f"Output folder: {output_folder}")
@@ -227,11 +234,10 @@ def run(data_loader, predictions_folder, output_folder, overlayed_folder=None,
     # Collect overall metrics
     data = {}
 
-    for sample in tqdm(data_loader):
-        name = sample[0]
-        stem = os.path.splitext(name)[0]
-        image = sample[1].to("cpu")
-        gt = sample[2].to("cpu")
+    for sample in tqdm(dataset):
+        stem = sample[0]
+        image = sample[1]
+        gt = sample[2]
         pred_fullpath = os.path.join(predictions_folder, stem + ".hdf5")
         with h5py.File(pred_fullpath, "r") as f:
             pred = f["array"][:]
@@ -299,3 +305,99 @@ def run(data_loader, predictions_folder, output_folder, overlayed_folder=None,
         ["data"],
     )
     fig.savefig(figure_path)
+
+    return optimal_f1_threshold
+
+
+def compare_annotators(baseline, other, output_folder, overlayed_folder=None):
+    """
+    Compares annotations on the **same** dataset
+
+
+    Parameters
+    ---------
+
+    baseline : py:class:`torch.utils.data.Dataset`
+        a dataset to iterate on, containing the baseline annotations
+
+    other : py:class:`torch.utils.data.Dataset`
+        a second dataset, with the same samples as ``baseline``, but annotated
+        by a different annotator than in the first dataset.
+
+    output_folder : str
+        folder where to store results
+
+    overlayed_folder : :py:class:`str`, Optional
+        if not ``None``, then it should be the name of a folder where to store
+        overlayed versions of the images and ground-truths
+
+    overlay_threshold : :py:class:`float`, Optional
+        if ``overlayed_folder``, then this should be threshold (floating point)
+        to apply to prediction maps to decide on positives and negatives for
+        overlaying analysis (graphical output).  This number should come from
+        the training set or a separate validation set.  Using a test set value
+        may bias your analysis.
+
+    """
+
+    logger.info(f"Output folder: {output_folder}")
+
+    if not os.path.exists(output_folder):
+        logger.info(f"Creating {output_folder}...")
+        os.makedirs(output_folder, exist_ok=True)
+
+    # Collect overall metrics
+    data = {}
+
+    for baseline_sample, other_sample in tqdm(zip(baseline, other)):
+        stem = baseline_sample[0]
+        image = baseline_sample[1]
+        gt = baseline_sample[2]
+        pred = other_sample[2]  #works as a prediction
+        if stem in data:
+            raise RuntimeError(f"{stem} entry already exists in data. "
+                    f"Cannot overwrite.")
+        data[stem] = _sample_metrics(pred, gt)
+
+        if overlayed_folder is not None:
+            overlay_image = _sample_analysis(image, pred, gt, threshold=0.5,
+                    overlay=True)
+            fullpath = os.path.join(overlayed_folder, f"{stem}.png")
+            tqdm.write(f"Saving {fullpath}...")
+            fulldir = os.path.dirname(fullpath)
+            if not os.path.exists(fulldir):
+                tqdm.write(f"Creating directory {fulldir}...")
+                os.makedirs(fulldir, exist_ok=True)
+            overlay_image.save(fullpath)
+
+    # Merges all dataframes together
+    df_metrics = pandas.concat(data.values())
+
+    # Report and Averages
+    avg_metrics = df_metrics.groupby("threshold").mean()
+    std_metrics = df_metrics.groupby("threshold").std()
+
+    # Uncomment below for F1-score calculation based on average precision and
+    # metrics instead of F1-scores of individual images. This method is in line
+    # with Maninis et. al. (2016)
+    #
+    # avg_metrics["f1_score"] = \
+    #         (2* avg_metrics["precision"]*avg_metrics["recall"])/ \
+    #         (avg_metrics["precision"]+avg_metrics["recall"])
+
+    avg_metrics["std_pr"] = std_metrics["precision"]
+    avg_metrics["pr_upper"] = avg_metrics["precision"] + avg_metrics["std_pr"]
+    avg_metrics["pr_lower"] = avg_metrics["precision"] - avg_metrics["std_pr"]
+    avg_metrics["std_re"] = std_metrics["recall"]
+    avg_metrics["re_upper"] = avg_metrics["recall"] + avg_metrics["std_re"]
+    avg_metrics["re_lower"] = avg_metrics["recall"] - avg_metrics["std_re"]
+    avg_metrics["std_f1"] = std_metrics["f1_score"]
+
+    metrics_path = os.path.join(output_folder, "metrics.csv")
+    logger.info(f"Saving averages over all input images at {metrics_path}...")
+    avg_metrics.to_csv(metrics_path)
+
+    maxf1 = avg_metrics["f1_score"].max()
+    optimal_f1_threshold = avg_metrics["f1_score"].idxmax()
+
+    logger.info(f"Highest F1-score of {maxf1:.5f} (second annotator)")

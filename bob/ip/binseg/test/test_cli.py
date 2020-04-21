@@ -79,6 +79,7 @@ def test_experiment_stare():
             "from bob.ip.binseg.configs.datasets.stare import _maker\n"
         )
         config.write("dataset = _maker('ah', _raw)\n")
+        config.write("second_annotator = _maker('vk', _raw)\n")
         config.flush()
 
         result = runner.invoke(
@@ -97,12 +98,12 @@ def test_experiment_stare():
             # "Saving results/overlayed/probabilities": 1,  #tqdm.write
             "Ended prediction": 1,  # logging
             "Started evaluation": 1,  # logging
-            "Highest F1-score of": 2,  # logging
+            "Highest F1-score of": 4,  # logging
             "Saving overall precision-recall plot": 2,  # logging
             # "Saving results/overlayed/analysis": 1,  #tqdm.write
             "Ended evaluation": 1,  # logging
             "Started comparison": 1,  # logging
-            "Loading metrics from results/analysis": 2,  # logging
+            "Loading metrics from results/analysis": 4,  # logging
             "Ended comparison": 1,  # logging
         }
         buf.seek(0)
@@ -114,7 +115,7 @@ def test_experiment_stare():
             #        f"instead of the expected {v}")
             assert _str_counter(k, logging_output) == v, (
                 f"Count for string '{k}' appeared "
-                f"({_str_counter(k, result.output)}) "
+                f"({_str_counter(k, logging_output)}) "
                 f"instead of the expected {v}"
             )
 

@@ -28,7 +28,7 @@ logger = logging.getLogger(__name__)
 \b
     1. Runs prediction on an existing dataset configuration:
 \b
-       $ bob binseg predict -vv m2unet drive-test --weight=path/to/model_final.pth --output-folder=path/to/predictions
+       $ bob binseg predict -vv m2unet drive --weight=path/to/model_final.pth --output-folder=path/to/predictions
 \b
     2. To run prediction on a folder with your own images, you must first
        specify resizing, cropping, etc, so that the image can be correctly

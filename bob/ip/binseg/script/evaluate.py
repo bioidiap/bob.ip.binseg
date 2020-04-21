@@ -3,7 +3,6 @@
 
 import os
 import click
-from torch.utils.data import DataLoader
 
 from bob.extension.scripts.click_helper import (
     verbosity_option,
@@ -11,9 +10,10 @@ from bob.extension.scripts.click_helper import (
     ResourceOption,
 )
 
-from ..engine.evaluator import run
+from ..engine.evaluator import run, compare_annotators
 
 import logging
+
 logger = logging.getLogger(__name__)
 
 
@@ -25,7 +25,7 @@ logger = logging.getLogger(__name__)
 \b
     1. Runs evaluation on an existing dataset configuration:
 \b
-       $ bob binseg evaluate -vv m2unet drive-test --predictions-folder=path/to/predictions --output-folder=path/to/results
+       $ bob binseg evaluate -vv m2unet drive --predictions-folder=path/to/predictions --output-folder=path/to/results
 \b
     2. To run evaluation on a folder with your own images and annotations, you
        must first specify resizing, cropping, etc, so that the image can be
@@ -70,6 +70,27 @@ logger = logging.getLogger(__name__)
     cls=ResourceOption,
 )
 @click.option(
+    "--second-annotator",
+    "-S",
+    help="A dataset or dictionary, like in --dataset, with the same "
+    "sample keys, but with annotations from a different annotator that is "
+    "going to be compared to the one in --dataset",
+    required=False,
+    default=None,
+    cls=ResourceOption,
+    show_default=True,
+)
+@click.option(
+    "--second-annotator-folder",
+    "-O",
+    help="Path where to store the analysis result for second annotator "
+    "comparisons (only used if --second-annotator is also passed)",
+    required=True,
+    default="second-annotator",
+    type=click.Path(),
+    cls=ResourceOption,
+)
+@click.option(
     "--overlayed",
     "-O",
     help="Creates overlayed representations of the output probability maps, "
@@ -99,15 +120,51 @@ logger = logging.getLogger(__name__)
     cls=ResourceOption,
 )
 @verbosity_option(cls=ResourceOption)
-def evaluate(output_folder, predictions_folder, dataset, overlayed,
-        overlay_threshold, **kwargs):
+def evaluate(
+    output_folder,
+    predictions_folder,
+    dataset,
+    second_annotator,
+    second_annotator_folder,
+    overlayed,
+    overlay_threshold,
+    **kwargs,
+):
     """Evaluates an FCN on a binary segmentation task.
     """
-    if isinstance(dataset, dict):
-        for k,v in dataset.items():
-            analysis_folder = os.path.join(output_folder, k)
-            with v.not_augmented() as d:
-                data_loader = DataLoader(dataset=d, batch_size=1,
-                        shuffle=False, pin_memory=False)
-                run(d, predictions_folder, analysis_folder, overlayed,
-                    overlay_threshold)
+
+    # if we work with dictionaries of datasets, then output evaluation
+    # information into sub-directories of the output_folder
+    config = {}
+    if not isinstance(dataset, dict):
+        config["test"] = {
+            "dataset": dataset,
+            "output_folder": output_folder,
+            "second_annotator": second_annotator,
+            "second_annotator_folder": second_annotator_folder,
+        }
+    else:
+        for k, v in dataset.items():
+            config[k] = {
+                "dataset": v,
+                "output_folder": os.path.join(output_folder, k),
+                "second_annotator": second_annotator.get(k),
+                "second_annotator_folder": os.path.join(
+                    second_annotator_folder, k
+                ),
+            }
+
+    for k, v in config.items():
+        with v["dataset"].not_augmented() as d:
+            run(
+                d,
+                predictions_folder,
+                v["output_folder"],
+                overlayed,
+                overlay_threshold,
+            )
+            if v["second_annotator"] is not None:
+                with v["second_annotator"].not_augmented() as d2:
+                    compare_annotators(
+                        d, d2, v["second_annotator_folder"], overlayed
+                    )

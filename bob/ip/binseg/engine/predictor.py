@@ -168,8 +168,7 @@ def run(model, data_loader, device, output_folder, overlayed_folder):
             times.append(batch_time)
             len_samples.append(len(images))
 
-            for name, img, prob in zip(names, images, predictions):
-                stem = os.path.splitext(name)[0]
+            for stem, img, prob in zip(names, images, predictions):
                 _save_hdf5(stem, prob, output_folder)
                 if overlayed_folder is not None:
                     _save_overlayed_png(stem, img, prob, overlayed_folder)
