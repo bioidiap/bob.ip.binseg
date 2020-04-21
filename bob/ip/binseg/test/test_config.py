@@ -6,7 +6,7 @@ import nose.tools
 import torch
 
 from . import mock_dataset
-stare_dataset, stare_variable_set = mock_dataset()
+stare_datadir, stare_dataset, stare_variable_set = mock_dataset()
 from .utils import rc_variable_set
 
 # we only iterate over the first N elements at most - dataset loading has
@@ -50,9 +50,9 @@ def test_stare_augmentation_manipulation():
     # some tests to check our context management for dataset augmentation works
     # adequately, with one example dataset
 
-    from ..configs.datasets.stare.ah import dataset
     # hack to allow testing on the CI
-    dataset["train"]._samples = stare_dataset.subsets("ah")["train"]
+    from ..configs.datasets.stare import _maker
+    dataset = _maker("ah", stare_dataset)
 
     nose.tools.eq_(dataset["train"].augmented, True)
     nose.tools.eq_(dataset["test"].augmented, False)
@@ -74,9 +74,9 @@ def test_stare_augmentation_manipulation():
 @stare_variable_set("bob.ip.binseg.stare.datadir")
 def test_stare_ah():
 
-    from ..configs.datasets.stare.ah import dataset
     # hack to allow testing on the CI
-    dataset["train"]._samples = stare_dataset.subsets("ah")["train"]
+    from ..configs.datasets.stare import _maker
+    dataset = _maker("ah", stare_dataset)
 
     nose.tools.eq_(len(dataset["train"]), 10)
     nose.tools.eq_(dataset["train"].augmented, True)
@@ -87,9 +87,6 @@ def test_stare_ah():
         nose.tools.eq_(sample[1].dtype, torch.float32)
         nose.tools.eq_(sample[2].shape, (1, 608, 704)) #planes, height, width
         nose.tools.eq_(sample[2].dtype, torch.float32)
-
-    # hack to allow testing on the CI
-    dataset["test"]._samples = stare_dataset.subsets("ah")["test"]
 
     nose.tools.eq_(len(dataset["test"]), 10)
     nose.tools.eq_(dataset["test"].augmented, False)
@@ -105,9 +102,9 @@ def test_stare_ah():
 @stare_variable_set("bob.ip.binseg.stare.datadir")
 def test_stare_vk():
 
-    from ..configs.datasets.stare.vk import dataset
     # hack to allow testing on the CI
-    dataset["train"]._samples = stare_dataset.subsets("vk")["train"]
+    from ..configs.datasets.stare import _maker
+    dataset = _maker("vk", stare_dataset)
 
     nose.tools.eq_(len(dataset["train"]), 10)
     nose.tools.eq_(dataset["train"].augmented, True)
@@ -118,9 +115,6 @@ def test_stare_vk():
         nose.tools.eq_(sample[1].dtype, torch.float32)
         nose.tools.eq_(sample[2].shape, (1, 608, 704)) #planes, height, width
         nose.tools.eq_(sample[2].dtype, torch.float32)
-
-    # hack to allow testing on the CI
-    dataset["test"]._samples = stare_dataset.subsets("vk")["test"]
 
     nose.tools.eq_(len(dataset["test"]), 10)
     nose.tools.eq_(dataset["test"].augmented, False)

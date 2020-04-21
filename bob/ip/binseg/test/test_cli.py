@@ -4,13 +4,14 @@
 """Tests for our CLI applications"""
 
 import re
+import tempfile
 import contextlib
 
 from click.testing import CliRunner
 
-## special trick for CI builds
 from . import mock_dataset
-_, rc_variable_set = mock_dataset()
+
+stare_datadir, stare_dataset, rc_variable_set = mock_dataset()
 
 
 @contextlib.contextmanager
@@ -20,11 +21,12 @@ def stdout_logging():
     import sys
     import logging
     import io
+
     buf = io.StringIO()
     ch = logging.StreamHandler(buf)
-    ch.setFormatter(logging.Formatter('%(message)s'))
+    ch.setFormatter(logging.Formatter("%(message)s"))
     ch.setLevel(logging.INFO)
-    logger = logging.getLogger('bob')
+    logger = logging.getLogger("bob")
     logger.addHandler(ch)
     yield buf
     logger.removeHandler(ch)
@@ -32,9 +34,10 @@ def stdout_logging():
 
 def _assert_exit_0(result):
 
-    assert result.exit_code == 0, (
-            f"Exit code != 0 ({result.exit_code}); Output:\n{result.output}"
-            )
+    assert (
+        result.exit_code == 0
+    ), f"Exit code != 0 ({result.exit_code}); Output:\n{result.output}"
+
 
 def _check_help(entry_point):
 
@@ -57,7 +60,7 @@ def test_experiment_help():
 
 
 def _str_counter(substr, s):
-    return sum(1 for _ in re.finditer(r'\b%s\b' % re.escape(substr), s))
+    return sum(1 for _ in re.finditer(r"\b%s\b" % re.escape(substr), s))
 
 
 @rc_variable_set("bob.ip.binseg.stare.datadir")
@@ -65,39 +68,55 @@ def test_experiment_stare():
     from ..script.experiment import experiment
 
     runner = CliRunner()
-    with runner.isolated_filesystem(), stdout_logging() as buf:
-        result = runner.invoke(experiment, ["m2unet", "stare", "-vv",
-            "--epochs=1", "--batch-size=1", "--overlayed"])
+    with runner.isolated_filesystem(), \
+            stdout_logging() as buf, \
+            tempfile.NamedTemporaryFile(mode="wt") as config:
+
+        # re-write STARE dataset configuration for test
+        config.write("from bob.ip.binseg.data.stare import _make_dataset\n")
+        config.write(f"_raw = _make_dataset('{stare_datadir}')\n")
+        config.write(
+            "from bob.ip.binseg.configs.datasets.stare import _maker\n"
+        )
+        config.write("dataset = _maker('ah', _raw)\n")
+        config.flush()
+
+        result = runner.invoke(
+            experiment,
+            ["m2unet", config.name, "-vv", "--epochs=1", "--batch-size=1",
+                "--overlayed"],
+        )
         _assert_exit_0(result)
-        keywords = {  #from different logging systems
-            "Started training": 1,  #logging
-            "epoch: 1|total-time": 1,  #logging
-            "Saving checkpoint to results/model/model_final.pth": 1,  #logging
-            "Ended training": 1,  #logging
-            "Started prediction": 1,  #logging
-            "Loading checkpoint from": 2,  #logging
-            #"Saving results/overlayed/probabilities": 1,  #tqdm.write
-            "Ended prediction": 1,  #logging
-            "Started evaluation": 1,  #logging
-            "Highest F1-score of": 2,  #logging
-            "Saving overall precision-recall plot": 2,  #logging
-            #"Saving results/overlayed/analysis": 1,  #tqdm.write
-            "Ended evaluation": 1,  #logging
-            "Started comparison": 1,  #logging
-            "Loading metrics from results/analysis": 2,  #logging
-            "Ended comparison": 1,  #logging
-            }
+        keywords = {  # from different logging systems
+            "Started training": 1,  # logging
+            "epoch: 1|total-time": 1,  # logging
+            "Saving checkpoint to results/model/model_final.pth": 1,  # logging
+            "Ended training": 1,  # logging
+            "Started prediction": 1,  # logging
+            "Loading checkpoint from": 2,  # logging
+            # "Saving results/overlayed/probabilities": 1,  #tqdm.write
+            "Ended prediction": 1,  # logging
+            "Started evaluation": 1,  # logging
+            "Highest F1-score of": 2,  # logging
+            "Saving overall precision-recall plot": 2,  # logging
+            # "Saving results/overlayed/analysis": 1,  #tqdm.write
+            "Ended evaluation": 1,  # logging
+            "Started comparison": 1,  # logging
+            "Loading metrics from results/analysis": 2,  # logging
+            "Ended comparison": 1,  # logging
+        }
         buf.seek(0)
         logging_output = buf.read()
-        for k,v in keywords.items():
-            #if _str_counter(k, logging_output) != v:
+        for k, v in keywords.items():
+            # if _str_counter(k, logging_output) != v:
             #    print(f"Count for string '{k}' appeared " \
             #        f"({_str_counter(k, result.output)}) " \
             #        f"instead of the expected {v}")
-            assert _str_counter(k, logging_output) == v, \
-                    f"Count for string '{k}' appeared " \
-                    f"({_str_counter(k, result.output)}) " \
-                    f"instead of the expected {v}"
+            assert _str_counter(k, logging_output) == v, (
+                f"Count for string '{k}' appeared "
+                f"({_str_counter(k, result.output)}) "
+                f"instead of the expected {v}"
+            )
 
 
 def test_train_help():

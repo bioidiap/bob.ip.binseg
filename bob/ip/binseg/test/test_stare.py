@@ -11,7 +11,7 @@ import nose.tools
 
 ## special trick for CI builds
 from . import mock_dataset
-dataset, rc_variable_set = mock_dataset()
+datadir, dataset, rc_variable_set = mock_dataset()
 
 from .utils import count_bw
 

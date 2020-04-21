@@ -66,15 +66,11 @@ def mock_dataset():
         # if the user has the STARE directory ready, then we do a normal return
         from .utils import rc_variable_set
 
-        return stare.dataset, rc_variable_set
+        return rc["bob.ip.binseg.stare.datadir"], stare.dataset, rc_variable_set
 
     # else, we do a "mock" return
     return (
-        stare.JSONDataset(
-            stare._protocols,
-            stare._fieldnames,
-            stare._make_loader(TESTDB_TMPDIR.name),
-            stare.data_path_keymaker,
-        ),
+        TESTDB_TMPDIR.name,
+        stare._make_dataset(TESTDB_TMPDIR.name),
         _mock_test_skipper,
     )
