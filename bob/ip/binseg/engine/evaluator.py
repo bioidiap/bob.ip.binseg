@@ -19,6 +19,7 @@ from ..utils.metric import base_metrics
 from ..utils.plot import precision_recall_f1iso_confintval
 
 import logging
+
 logger = logging.getLogger(__name__)
 
 
@@ -86,40 +87,60 @@ def _sample_metrics(pred, gt):
 
     for threshold in numpy.arange(0.0, 1.0, step_size):
 
-        tp_tensor, fp_tensor, tn_tensor, fn_tensor = _posneg(pred, gt, threshold)
+        tp_tensor, fp_tensor, tn_tensor, fn_tensor = _posneg(
+            pred, gt, threshold
+        )
 
         # calc metrics from scalars
         tp_count = torch.sum(tp_tensor).item()
         fp_count = torch.sum(fp_tensor).item()
         tn_count = torch.sum(tn_tensor).item()
         fn_count = torch.sum(fn_tensor).item()
-        precision, recall, specificity, accuracy, jaccard, f1_score = \
-                base_metrics(tp_count, fp_count, tn_count, fn_count)
+        (
+            precision,
+            recall,
+            specificity,
+            accuracy,
+            jaccard,
+            f1_score,
+        ) = base_metrics(tp_count, fp_count, tn_count, fn_count)
 
-        data.append([threshold, precision, recall, specificity,
-            accuracy, jaccard, f1_score])
+        data.append(
+            [
+                threshold,
+                precision,
+                recall,
+                specificity,
+                accuracy,
+                jaccard,
+                f1_score,
+            ]
+        )
 
-    return pandas.DataFrame(data, columns=(
-        "threshold",
-        "precision",
-        "recall",
-        "specificity",
-        "accuracy",
-        "jaccard",
-        "f1_score",
-        ))
+    return pandas.DataFrame(
+        data,
+        columns=(
+            "threshold",
+            "precision",
+            "recall",
+            "specificity",
+            "accuracy",
+            "jaccard",
+            "f1_score",
+        ),
+    )
 
 
 def _sample_analysis(
-        img,
-        pred,
-        gt,
-        threshold,
-        tp_color=(0, 255, 0),  # (128,128,128) Gray
-        fp_color=(0, 0, 255),  # (70, 240, 240) Cyan
-        fn_color=(255, 0, 0),  # (245, 130, 48) Orange
-        overlay=True,
-        ):
+    img,
+    pred,
+    gt,
+    threshold,
+    tp_color=(0, 255, 0),  # (128,128,128) Gray
+    fp_color=(0, 0, 255),  # (70, 240, 240) Cyan
+    fn_color=(255, 0, 0),  # (245, 130, 48) Orange
+    overlay=True,
+):
     """Visualizes true positives, false positives and false negatives
 
 
@@ -186,8 +207,13 @@ def _sample_analysis(
     return tp_pil_colored
 
 
-def run(dataset, predictions_folder, output_folder, overlayed_folder=None,
-        overlay_threshold=None):
+def run(
+    dataset,
+    predictions_folder,
+    output_folder=None,
+    overlayed_folder=None,
+    threshold=None,
+):
     """
     Runs inference and calculates metrics
 
@@ -202,19 +228,21 @@ def run(dataset, predictions_folder, output_folder, overlayed_folder=None,
         folder where predictions for the dataset images has been previously
         stored
 
-    output_folder : str
-        folder where to store results
+    output_folder : :py:class:`str`, Optional
+        folder where to store results.  If not provided, then do not store any
+        analysis (useful for quickly calculating overlay thresholds)
 
     overlayed_folder : :py:class:`str`, Optional
         if not ``None``, then it should be the name of a folder where to store
         overlayed versions of the images and ground-truths
 
-    overlay_threshold : :py:class:`float`, Optional
+    threshold : :py:class:`float`, Optional
         if ``overlayed_folder``, then this should be threshold (floating point)
         to apply to prediction maps to decide on positives and negatives for
         overlaying analysis (graphical output).  This number should come from
         the training set or a separate validation set.  Using a test set value
-        may bias your analysis.
+        may bias your analysis.  This number is also used to print the a priori
+        F1-score on the evaluated set.
 
 
     Returns
@@ -224,12 +252,6 @@ def run(dataset, predictions_folder, output_folder, overlayed_folder=None,
         Threshold to achieve the highest possible F1-score for this dataset
 
     """
-
-    logger.info(f"Output folder: {output_folder}")
-
-    if not os.path.exists(output_folder):
-        logger.info(f"Creating {output_folder}...")
-        os.makedirs(output_folder, exist_ok=True)
 
     # Collect overall metrics
     data = {}
@@ -243,13 +265,15 @@ def run(dataset, predictions_folder, output_folder, overlayed_folder=None,
             pred = f["array"][:]
         pred = torch.from_numpy(pred)
         if stem in data:
-            raise RuntimeError(f"{stem} entry already exists in data. "
-                    f"Cannot overwrite.")
+            raise RuntimeError(
+                f"{stem} entry already exists in data. Cannot overwrite."
+            )
         data[stem] = _sample_metrics(pred, gt)
 
         if overlayed_folder is not None:
-            overlay_image = _sample_analysis(image, pred, gt,
-                    threshold=overlay_threshold, overlay=True)
+            overlay_image = _sample_analysis(
+                image, pred, gt, threshold=threshold, overlay=True
+            )
             fullpath = os.path.join(overlayed_folder, f"{stem}.png")
             tqdm.write(f"Saving {fullpath}...")
             fulldir = os.path.dirname(fullpath)
@@ -281,30 +305,49 @@ def run(dataset, predictions_folder, output_folder, overlayed_folder=None,
     avg_metrics["re_lower"] = avg_metrics["recall"] - avg_metrics["std_re"]
     avg_metrics["std_f1"] = std_metrics["f1_score"]
 
-    metrics_path = os.path.join(output_folder, "metrics.csv")
-    logger.info(f"Saving averages over all input images at {metrics_path}...")
-    avg_metrics.to_csv(metrics_path)
-
     maxf1 = avg_metrics["f1_score"].max()
     optimal_f1_threshold = avg_metrics["f1_score"].idxmax()
 
-    logger.info(f"Highest F1-score of {maxf1:.5f}, achieved at "
-            f"threshold {optimal_f1_threshold:.2f}")
-
-    # Plotting
-    np_avg_metrics = avg_metrics.to_numpy().T
-    figure_path = os.path.join(output_folder, "precision-recall.pdf")
-    logger.info(f"Saving overall precision-recall plot at {figure_path}...")
-    fig = precision_recall_f1iso_confintval(
-        [np_avg_metrics[0]],
-        [np_avg_metrics[1]],
-        [np_avg_metrics[7]],
-        [np_avg_metrics[8]],
-        [np_avg_metrics[10]],
-        [np_avg_metrics[11]],
-        ["data"],
+    logger.info(
+        f"Highest (a posteriori) F1-score of {maxf1:.5f}, achieved at "
+        f"threshold {optimal_f1_threshold:.2f}"
     )
-    fig.savefig(figure_path)
+
+    if threshold is not None:
+        f1_apriori = avg_metrics["f1_score"][threshold]
+
+        logger.info(
+                f"F1-score (a priori) is {f1_apriori:.5f}, at "
+                f"threshold={threshold:.5f}"
+        )
+
+    if output_folder is not None:
+        logger.info(f"Output folder: {output_folder}")
+
+        if not os.path.exists(output_folder):
+            logger.info(f"Creating {output_folder}...")
+            os.makedirs(output_folder, exist_ok=True)
+
+        metrics_path = os.path.join(output_folder, "metrics.csv")
+        logger.info(
+            f"Saving averages over all input images at {metrics_path}..."
+        )
+        avg_metrics.to_csv(metrics_path)
+
+        # Plotting
+        np_avg_metrics = avg_metrics.to_numpy().T
+        figure_path = os.path.join(output_folder, "precision-recall.pdf")
+        logger.info(f"Saving overall precision-recall plot at {figure_path}...")
+        fig = precision_recall_f1iso_confintval(
+            [np_avg_metrics[0]],
+            [np_avg_metrics[1]],
+            [np_avg_metrics[7]],
+            [np_avg_metrics[8]],
+            [np_avg_metrics[10]],
+            [np_avg_metrics[11]],
+            ["data"],
+        )
+        fig.savefig(figure_path)
 
     return optimal_f1_threshold
 
@@ -331,13 +374,6 @@ def compare_annotators(baseline, other, output_folder, overlayed_folder=None):
         if not ``None``, then it should be the name of a folder where to store
         overlayed versions of the images and ground-truths
 
-    overlay_threshold : :py:class:`float`, Optional
-        if ``overlayed_folder``, then this should be threshold (floating point)
-        to apply to prediction maps to decide on positives and negatives for
-        overlaying analysis (graphical output).  This number should come from
-        the training set or a separate validation set.  Using a test set value
-        may bias your analysis.
-
     """
 
     logger.info(f"Output folder: {output_folder}")
@@ -349,19 +385,21 @@ def compare_annotators(baseline, other, output_folder, overlayed_folder=None):
     # Collect overall metrics
     data = {}
 
-    for baseline_sample, other_sample in tqdm(zip(baseline, other)):
+    for baseline_sample, other_sample in tqdm(list(zip(baseline, other))):
         stem = baseline_sample[0]
         image = baseline_sample[1]
         gt = baseline_sample[2]
-        pred = other_sample[2]  #works as a prediction
+        pred = other_sample[2]  # works as a prediction
         if stem in data:
-            raise RuntimeError(f"{stem} entry already exists in data. "
-                    f"Cannot overwrite.")
+            raise RuntimeError(
+                f"{stem} entry already exists in data. " f"Cannot overwrite."
+            )
         data[stem] = _sample_metrics(pred, gt)
 
         if overlayed_folder is not None:
-            overlay_image = _sample_analysis(image, pred, gt, threshold=0.5,
-                    overlay=True)
+            overlay_image = _sample_analysis(
+                image, pred, gt, threshold=0.5, overlay=True
+            )
             fullpath = os.path.join(overlayed_folder, f"{stem}.png")
             tqdm.write(f"Saving {fullpath}...")
             fulldir = os.path.dirname(fullpath)

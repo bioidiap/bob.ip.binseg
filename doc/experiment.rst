@@ -8,9 +8,9 @@
 
 We provide an :ref:`aggregator command called "experiment"
 <bob.ip.binseg.cli.experiment>` that runs training, followed by prediction,
-evaluation and comparison.  After running, you will be able to find results
-from model fitting, prediction, evaluation and comparison under a single output
-directory.
+evaluation and comparison.  After running, you
+will be able to find results from model fitting, prediction, evaluation and
+comparison under a single output directory.
 
 For example, to train a Mobile V2 U-Net architecture on the STARE dataset,
 evaluate both train and test set performances, output prediction maps and

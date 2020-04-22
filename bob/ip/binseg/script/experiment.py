@@ -270,6 +270,12 @@ def experiment(
           ├── model/  #the generated model will be here
           ├── predictions/  #the prediction outputs for the train/test set
           ├── overlayed/  #the overlayed outputs for the train/test set
+             ├── predictions/  #predictions overlayed on the input images
+             ├── analysis/  #predictions overlayed on the input images
+             ├              #including analysis of false positives, negatives
+             ├              #and true positives
+             └── second-annotator/  #if set, store overlayed images for the
+                                    #second annotator here
           └── analysis /  #the outputs of the analysis of both train/test sets
 
     Training is performed for a configurable number of epochs, and generates at
@@ -278,6 +284,23 @@ def experiment(
     during the training and useful to resume the procedure in case it stops
     abruptly.
 
+    N.B.: The tool is designed to prevent analysis bias and allows one to
+    provide separate subsets for training and evaluation.  Instead of using
+    simple datasets, datasets for full experiment running should be
+    dictionaries with specific subset names:
+
+    * ``__train__``: dataset used for training, prioritarily.  It is typically
+      the dataset containing data augmentation pipelines.
+    * ``train`` (optional): a copy of the ``__train__`` dataset, without data
+      augmentation, that will be evaluated alongside other sets available
+    * ``*``: any other name, not starting with an underscore character (``_``),
+      will be considered a test set for evaluation.
+
+    N.B.2: The threshold used for calculating the F1-score on the test set, or
+    overlay analysis (false positives, negatives and true positives overprinted
+    on the original image) will be automatically calculated from a
+    ``validation`` set, if one is provided, otherwise, from the ``train`` set.
+    If none of those is provided, a fixed threshold value at 0.5 will be used.
     """
 
     _save_sh_command(os.path.join(output_folder, "command.sh"))
@@ -347,6 +370,15 @@ def experiment(
         else None
     )
 
+    # choosing the overlayed_threshold
+    if "validation" in dataset:
+        threshold = "validation"
+    elif "train" in dataset:
+        threshold = "train"
+    else:
+        threshold = 0.5
+    logger.info(f"Setting --threshold={threshold}...")
+
     analysis_folder = os.path.join(output_folder, "analysis")
     second_annotator_folder = os.path.join(analysis_folder, "second-annotator")
     ctx.invoke(
@@ -357,7 +389,7 @@ def experiment(
         second_annotator=second_annotator,
         second_annotator_folder=second_annotator_folder,
         overlayed=overlayed_folder,
-        overlay_threshold=0.5,
+        threshold=threshold,
         verbose=verbose,
     )
 

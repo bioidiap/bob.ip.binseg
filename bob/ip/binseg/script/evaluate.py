@@ -17,6 +17,34 @@ import logging
 logger = logging.getLogger(__name__)
 
 
+def _validate_threshold(t, dataset):
+    """Validates the user threshold selection.  Returns parsed threshold."""
+
+    if t is None:
+        return 0.5
+
+    try:
+        # we try to convert it to float first
+        t = float(t)
+        if t < 0.0 or t > 1.0:
+            raise ValueError("Float thresholds must be within range [0.0, 1.0]")
+    except ValueError:
+        # it is a bit of text - assert dataset with name is available
+        if not isinstance(dataset, dict):
+            raise ValueError(
+                "Threshold should be a floating-point number "
+                "if your provide only a single dataset for evaluation"
+            )
+        if t not in dataset:
+            raise ValueError(
+                f"Text thresholds should match dataset names, "
+                f"but {t} is not available among the datasets provided ("
+                f"({', '.join(dataset.keys())})"
+            )
+
+    return t
+
+
 @click.command(
     entry_point_group="bob.ip.binseg.config",
     cls=ConfigCommand,
@@ -104,17 +132,20 @@ logger = logging.getLogger(__name__)
     cls=ResourceOption,
 )
 @click.option(
-    "--overlay-threshold",
+    "--threshold",
     "-T",
     help="If you set --overlayed, then you can provide a value to be used as "
     "threshold to be applied on probability maps and decide for positives and "
     "negatives.  This binary output will be used to define true and false "
     "positives, and false negatives for the overlay analysis.  This number "
     "should either come from the training set or a separate validation set "
-    "to avoid biasing the analysis",
-    default=0.5,
-    type=click.FloatRange(min=0.0, max=1.0),
-    show_default=True,
+    "to avoid biasing the analysis.  Optionally, if you provide a multi-set "
+    "dataset as input, this may also be the name of an existing set from "
+    "which the threshold will be estimated (highest F1-score) and then "
+    "applied to the subsequent sets.  This number is also used to print "
+    "the test set F1-score a priori performance (default: 0.5)",
+    default=None,
+    show_default=False,
     required=False,
     cls=ResourceOption,
 )
@@ -126,11 +157,13 @@ def evaluate(
     second_annotator,
     second_annotator_folder,
     overlayed,
-    overlay_threshold,
+    threshold,
     **kwargs,
 ):
     """Evaluates an FCN on a binary segmentation task.
     """
+
+    threshold = _validate_threshold(threshold, dataset)
 
     # if we work with dictionaries of datasets, then output evaluation
     # information into sub-directories of the output_folder
@@ -156,18 +189,28 @@ def evaluate(
                 ),
             }
 
+    if isinstance(threshold, str):
+        # first run evaluation for reference dataset, do not save overlays
+        logger.info(f"Evaluating threshold on '{threshold}' set")
+        threshold = run(dataset[threshold], predictions_folder)
+        logger.info(f"Set --threshold={threshold:.5f}")
+
+    # now run with the
     for k, v in config.items():
+        logger.info(f"Analyzing '{k}' set...")
         run(
             v["dataset"],
             predictions_folder,
             v["output_folder"],
             overlayed,
-            overlay_threshold,
+            threshold,
         )
         if v["second_annotator"] is not None:
             compare_annotators(
                 v["dataset"],
                 v["second_annotator"],
                 v["second_annotator_folder"],
-                os.path.join(overlayed, "second-annotator"),
+                os.path.join(overlayed, "second-annotator")
+                if overlayed
+                else None,
             )
