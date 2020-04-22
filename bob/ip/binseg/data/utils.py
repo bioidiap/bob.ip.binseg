@@ -116,20 +116,13 @@ def overlayed_image(
     return retval
 
 
-class SampleList2TorchDataset(torch.utils.data.Dataset):
+class SampleListDataset(torch.utils.data.Dataset):
     """PyTorch dataset wrapper around Sample lists
 
     A transform object can be passed that will be applied to the image, ground
     truth and mask (if present).
 
     It supports indexing such that dataset[i] can be used to get ith sample.
-
-
-    Attributes
-    ----------
-
-    augmented : bool
-        Tells if this set has data augmentation prefixes or suffixes installed.
 
 
     Parameters
@@ -143,28 +136,12 @@ class SampleList2TorchDataset(torch.utils.data.Dataset):
         ground-truth data.  Notice a last transform
         (:py:class:`bob.ip.binseg.data.transforms.ToTensor`) is always applied.
 
-    prefixes : :py:class:`list`, Optional
-        a list of data augmentation transformations to be applied to **both**
-        image and ground-truth data and **before** ``transforms`` above.
-        Notice that transforms like
-        :py:class:`bob.ip.binseg.data.transforms.ColorJitter` are only applied
-        to the input image.
-
-    suffixes : :py:class:`list`, Optional
-        a list of data augmentation transformations to be applied to **both**
-        image and ground-truth data and **after** ``transforms`` above.
-        Notice that transforms like
-        :py:class:`bob.ip.binseg.data.transforms.ColorJitter` are only applied
-        to the input image.
-
     """
 
-    def __init__(self, samples, transforms=[], prefixes=[], suffixes=[]):
+    def __init__(self, samples, transforms=[]):
 
         self._samples = samples
-        self._middle = transforms
-        self._transforms = Compose(prefixes + transforms + suffixes + [ToTensor()])
-        self.augmented = bool(prefixes or suffixes)
+        self._transforms = Compose(transforms + [ToTensor()])
 
     def __len__(self):
         """
@@ -177,18 +154,6 @@ class SampleList2TorchDataset(torch.utils.data.Dataset):
 
         """
         return len(self._samples)
-
-    @contextlib.contextmanager
-    def not_augmented(self):
-        """Context to avoid data augmentation to be applied to self"""
-
-        backup = (self.augmented, self._transforms)
-        self.augmented = False
-        self._transforms = Compose(self._middle + [ToTensor()])
-        try:
-            yield self
-        finally:
-            self.augmented, self._transforms = backup
 
     def __getitem__(self, key):
         """

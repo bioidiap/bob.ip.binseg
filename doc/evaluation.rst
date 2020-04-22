@@ -24,8 +24,8 @@ point numbers indicating the vessel probability (``[0.0,1.0]``) for each pixel
 in the input image.
 
 
-Inference on an existing datasets
-=================================
+Inference on an existing dataset
+================================
 
 To run inference, use the sub-command :ref:`predict
 <bob.ip.binseg.cli.predict>` to run prediction on an existing dataset:
@@ -66,9 +66,9 @@ Evaluation
 
 In evaluation, we input an **annotated** dataset and predictions to generate
 performance figures that can help analysis of a trained model.  Evaluation is
-done using ``bob binseg evaluate`` followed by the model and the annotated
-dataset configuration, and the path to the pretrained model via the
-``--weight`` argument.
+done using the :ref:`evaluate command `<bob.ip.binseg.cli.evaluate>` followed
+by the model and the annotated dataset configuration, and the path to the
+pretrained weights via the ``--weight`` argument.
 
 Use ``bob binseg evaluate --help`` for more information.
 
@@ -79,12 +79,15 @@ E.g. run inference on predictions from the DRIVE test set, do the following:
     # Point directly to saved model via -w argument:
     bob binseg evaluate -vv drive-test -p /predictions/folder -o /eval/results/folder
 
+If available, you may use the option ``--second-annotator`` to
+
 
 Comparing Systems
 =================
 
 To compare multiple systems together and generate combined plots and tables,
-use ``bob binseg compare``.  Use ``--help`` for a quick guide.
+use the :ref:`compare command <bob.ip.binseg.cli.compare>`.  Use ``--help`` for
+a quick guide.
 
 .. code-block:: bash
 

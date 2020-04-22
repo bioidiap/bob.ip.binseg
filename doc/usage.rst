@@ -49,6 +49,7 @@ modifying one of our configuration resources.
    training
    models
    evaluation
+   experiment
 
 
 .. include:: links.rst

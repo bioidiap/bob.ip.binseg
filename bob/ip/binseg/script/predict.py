@@ -61,13 +61,11 @@ logger = logging.getLogger(__name__)
 @click.option(
     "--dataset",
     "-d",
-    help="A bob.ip.binseg.data.utils.SampleList2TorchDataset instance "
-    "implementing a dataset to be used for running prediction, possibly "
-    "including all pre-processing pipelines required or, optionally, a "
-    "dictionary mapping string keys to "
-    "bob.ip.binseg.data.utils.SampleList2TorchDataset's.  In such a case, "
-    "all datasets will be used for running prediction.  Data augmentation "
-    "operations are excluded automatically for prediction purposes",
+    help="A torch.utils.data.dataset.Dataset instance implementing a dataset "
+    "to be used for running prediction, possibly including all pre-processing "
+    "pipelines required or, optionally, a dictionary mapping string keys to "
+    "torch.utils.data.dataset.Dataset instances.  All keys that do not start "
+    "with an underscore (_) will be processed.",
     required=True,
     cls=ResourceOption,
 )
@@ -129,11 +127,15 @@ def predict(output_folder, model, dataset, batch_size, device, weight,
         overlayed = overlayed.strip()
 
     for k,v in dataset.items():
-        with v.not_augmented() as d:  # we remove any data augmentation
-            data_loader = DataLoader(
-                dataset=d,
-                batch_size=batch_size,
-                shuffle=False,
-                pin_memory=torch.cuda.is_available(),
-            )
-            run(model, data_loader, device, output_folder, overlayed)
+
+        if k.startswith("_"):
+            logger.info(f"Skipping dataset '{k}' (not to be evaluated)")
+            continue
+
+        data_loader = DataLoader(
+            dataset=v,
+            batch_size=batch_size,
+            shuffle=False,
+            pin_memory=torch.cuda.is_available(),
+        )
+        run(model, data_loader, device, output_folder, overlayed)

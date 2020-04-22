@@ -137,4 +137,15 @@ combined figures and tables that compare results of multiple systems.
 .. command-output:: bob binseg compare --help
 
 
+.. _bob.ip.binseg.cli.experiment:
+
+Running Complete Experiments
+----------------------------
+
+This command can run training, prediction, evaluation and comparison from a
+single, multi-step application.
+
+.. command-output:: bob binseg experiment --help
+
+
 .. include:: links.rst

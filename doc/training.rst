@@ -7,14 +7,10 @@
 ==========
 
 To train a new FCN, use the command-line interface (CLI) application ``bob
-binseg train``, available on your prompt.  To use this CLI, you must define
-the input dataset that will be used to train the FCN, as well as the type of
-model that will be trained.  You may issue ``bob binseg train --help`` for a
-help message containing more detailed instructions.
-
-To replicate our results, use our main application ``bob binseg train``
-followed by the model configuration, and dataset configuration files, and/or
-command-line options.  Use ``bob binseg train --help`` for more information.
+binseg train``, available on your prompt.  To use this CLI, you must define the
+input dataset that will be used to train the FCN, as well as the type of model
+that will be trained.  You may issue ``bob binseg train --help`` for a help
+message containing more detailed instructions.
 
 .. tip::
 
@@ -75,14 +71,14 @@ card, for supervised training of baselines.  Use it like this:
    customized dataset and model files.  You may :ref:`copy any of the existing
    configuration resources <bob.ip.binseg.cli.config.copy>` and change them
    locally.  Once you're happy, you may use the newly created files directly on
-   your training command line.  For example, suppose you wanted to slightly
-   change the drive pre-processing pipeline.  You could do the following:
+   your command line.  For example, suppose you wanted to slightly change the
+   DRIVE pre-processing pipeline.  You could do the following:
 
    .. code-block:: bash
 
       $ bob binseg config copy drive my_drive_remix.py
       # edit my_drive_remix.py to your needs
-      $ bob binseg train -vv <model> ./my_drive_remix.py --batch-size=<see-table> --device="cuda:0"
+      $ bob binseg train -vv <model> ./my_drive_remix.py
 
 
 .. _bob.ip.binseg.gridtk-tip:
@@ -94,14 +90,14 @@ card, for supervised training of baselines.  Use it like this:
 
    .. code-block:: sh
 
-      $ jman submit --queue=gpu --memory=24G --name=m2unet-drive -- bob binseg train --device='cuda:0' ... #paste the rest of the command-line
+      $ jman submit --queue=gpu --memory=24G --name=myjob -- bob binseg train --device='cuda:0' ... #paste the rest of the command-line
 
 
 Combined Vessel Dataset (COVD)
 ==============================
 
-The following table describes recommended batch sizes for 24Gb of RAM GPU
-card, for supervised training of COVD- systems.  Use it like this:
+The following table describes recommended batch sizes for 24Gb of RAM GPU card,
+for supervised training of COVD- systems.  Use it like this:
 
 .. code-block:: sh
 
@@ -167,11 +163,11 @@ Using your own dataset
 ======================
 
 To use your own dataset, we recommend you read our instructions at
-:py:mod:`bob.ip.binseg.configs.datasets.csv`, and setup a CSV file describing
-input data and ground-truth (segmentation maps).  Then, prepare a configuration
-file by copying our configuration example and edit it to apply the required
-transforms to your input data.  Once you are happy with the result, use it in
-place of one of our datasets:
+:py:mod:`bob.ip.binseg.configs.datasets.csv`, and setup one or more CSV file
+describing input data and ground-truth (segmentation maps).  Then, prepare a
+configuration file by copying our configuration example and edit it to apply
+the required transforms to your input data.  Once you are happy with the
+result, use it in place of one of our datasets:
 
 .. code-block:: sh
 

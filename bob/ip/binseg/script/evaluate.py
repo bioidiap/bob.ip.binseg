@@ -59,13 +59,11 @@ logger = logging.getLogger(__name__)
 @click.option(
     "--dataset",
     "-d",
-    help="A bob.ip.binseg.data.utils.SampleList2TorchDataset instance "
-    "implementing a dataset to be used for evaluation purposes, possibly "
-    "including all pre-processing pipelines required or, optionally, a "
-    "dictionary mapping string keys to "
-    "bob.ip.binseg.data.utils.SampleList2TorchDataset's.  In such a case, "
-    "all datasets will be used for evaluation.  Data augmentation "
-    "operations are excluded automatically in this case",
+    help="A torch.utils.data.dataset.Dataset instance implementing a dataset "
+    "to be used for evaluation purposes, possibly including all pre-processing "
+    "pipelines required or, optionally, a dictionary mapping string keys to "
+    "torch.utils.data.dataset.Dataset instances.  All keys that do not start "
+    "with an underscore (_) will be processed.",
     required=True,
     cls=ResourceOption,
 )
@@ -74,7 +72,8 @@ logger = logging.getLogger(__name__)
     "-S",
     help="A dataset or dictionary, like in --dataset, with the same "
     "sample keys, but with annotations from a different annotator that is "
-    "going to be compared to the one in --dataset",
+    "going to be compared to the one in --dataset.  The same rules regarding "
+    "dataset naming conventions apply",
     required=False,
     default=None,
     cls=ResourceOption,
@@ -145,6 +144,9 @@ def evaluate(
         }
     else:
         for k, v in dataset.items():
+            if k.startswith("_"):
+                logger.info(f"Skipping dataset '{k}' (not to be evaluated)")
+                continue
             config[k] = {
                 "dataset": v,
                 "output_folder": os.path.join(output_folder, k),
@@ -155,16 +157,17 @@ def evaluate(
             }
 
     for k, v in config.items():
-        with v["dataset"].not_augmented() as d:
-            run(
-                d,
-                predictions_folder,
-                v["output_folder"],
-                overlayed,
-                overlay_threshold,
+        run(
+            v["dataset"],
+            predictions_folder,
+            v["output_folder"],
+            overlayed,
+            overlay_threshold,
+        )
+        if v["second_annotator"] is not None:
+            compare_annotators(
+                v["dataset"],
+                v["second_annotator"],
+                v["second_annotator_folder"],
+                os.path.join(overlayed, "second-annotator"),
             )
-            if v["second_annotator"] is not None:
-                with v["second_annotator"].not_augmented() as d2:
-                    compare_annotators(
-                        d, d2, v["second_annotator_folder"], overlayed
-                    )

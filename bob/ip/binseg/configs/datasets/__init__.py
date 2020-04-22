@@ -20,8 +20,16 @@ RANDOM_FLIP_JITTER = [_hflip(), _vflip(), _jitter()]
 """Shared data augmentation transforms without random rotation"""
 
 
-def make_subset(l, transforms, prefixes, suffixes):
+def make_subset(l, transforms, prefixes=[], suffixes=[]):
     """Creates a new data set, applying transforms
+
+    .. note::
+
+       This is a convenience function for our own dataset definitions inside
+       this module, guaranteeting homogenity between dataset definitions
+       provided in this package.  It assumes certain strategies for data
+       augmentation that may not be translatable to other applications.
+
 
     Parameters
     ----------
@@ -44,23 +52,30 @@ def make_subset(l, transforms, prefixes, suffixes):
     Returns
     -------
 
-    subset : :py:class:`torch.utils.data.Dataset`
+    subset : :py:class:`bob.ip.binseg.data.utils.SampleListDataset`
         A pre-formatted dataset that can be fed to one of our engines
 
     """
 
-    from ...data.utils import SampleList2TorchDataset as wrapper
+    from ...data.utils import SampleListDataset as wrapper
 
-    return wrapper(l, transforms, prefixes, suffixes)
+    return wrapper(l, prefixes + transforms + suffixes)
 
 
 def make_trainset(l, transforms, rotation_before=False):
-    """Creates a new training set, with data augmentation
+    """Creates a new training set, **with data augmentation**
 
     Typically, the transforms are chained to a default set of data augmentation
     operations (random rotation, horizontal and vertical flips, and color
     jitter), but flag allows prefixing the rotation specially (useful for some
     COVD training sets).
+
+    .. note::
+
+       This is a convenience function for our own dataset definitions inside
+       this module, guaranteeting homogenity between dataset definitions
+       provided in this package.  It assumes certain strategies for data
+       augmentation that may not be translatable to other applications.
 
 
     Parameters
@@ -76,7 +91,7 @@ def make_trainset(l, transforms, rotation_before=False):
     Returns
     -------
 
-    subset : :py:class:`torch.utils.data.Dataset`
+    subset : :py:class:`bob.ip.binseg.data.utils.SampleListDataset`
         A pre-formatted dataset that can be fed to one of our engines
 
     """
@@ -91,8 +106,7 @@ def make_trainset(l, transforms, rotation_before=False):
 
     return make_subset(
         l,
-        transforms,
-        prefixes=[],
+        transforms=transforms,
         suffixes=(RANDOM_ROTATION + RANDOM_FLIP_JITTER),
     )
 
@@ -101,12 +115,31 @@ def make_dataset(subsets, transforms):
     """Creates a new configuration dataset from dictionary and transforms
 
     This function takes as input a dictionary as those that can be returned by
-    :py:meth:`bob.ip.binseg.data.dataset.JSONDataset.subsets`, mapping protocol
+    :py:meth:`bob.ip.binseg.data.dataset.JSONDataset.subsets`,  or
+    :py:meth:`bob.ip.binseg.data.dataset.CSVDataset.subsets`, mapping protocol
     names (such as ``train``, ``dev`` and ``test``) to
     :py:class:`bob.ip.binseg.data.sample.DelayedSample` lists, and a set of
     transforms, and returns a dictionary applying
-    :py:class:`bob.ip.binseg.data.utils.SampleList2TorchDataset` to these
+    :py:class:`bob.ip.binseg.data.utils.SampleListDataset` to these
     lists, and our standard data augmentation if a ``train`` set exists.
+
+    For example, if ``subsets`` is composed of two sets named ``train`` and
+    ``test``, this function will yield a dictionary with the following entries:
+
+    * ``__train__``: Wraps the ``train`` subset, includes data augmentation
+      (note: datasets with names starting with ``_`` (underscore) are excluded
+      from prediction and evaluation by default, as they contain data
+      augmentation transformations.)
+    * ``train``: Wraps the ``train`` subset, **without** data augmentation
+    * ``train``: Wraps the ``test`` subset, **without** data augmentation
+
+    .. note::
+
+       This is a convenience function for our own dataset definitions inside
+       this module, guaranteeting homogenity between dataset definitions
+       provided in this package.  It assumes certain strategies for data
+       augmentation that may not be translatable to other applications.
+
 
     Parameters
     ----------
@@ -126,20 +159,18 @@ def make_dataset(subsets, transforms):
 
     dataset : dict
         A pre-formatted dataset that can be fed to one of our engines. It maps
-        string names to :py:class:`torch.utils.data.Dataset`'s.
+        string names to
+        :py:class:`bob.ip.binseg.data.utils.SampleListDataset`'s.
 
     """
 
     retval = {}
 
     for key in subsets.keys():
+        retval[key] = make_subset(subsets[key], transforms=transforms)
         if key == "train":
-            retval[key] = make_trainset(
+            retval["__train__"] = make_trainset(
                 subsets[key], transforms=transforms, rotation_before=False
-            )
-        else:
-            retval[key] = make_subset(
-                subsets[key], transforms=transforms, prefixes=[], suffixes=[]
             )
 
     return retval

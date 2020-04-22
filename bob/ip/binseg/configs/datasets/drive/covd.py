@@ -20,34 +20,33 @@ from bob.ip.binseg.data.transforms import Resize, Pad, Crop
 from bob.ip.binseg.configs.datasets import make_trainset as _maker
 
 from bob.ip.binseg.data.stare import dataset as _raw_stare
+
 _stare = _maker(
-        _raw_stare.subsets("ah")["train"],
-        [Resize(471), Pad((0, 37, 0, 36))],
-        rotation_before=True,
-        )
+    _raw_stare.subsets("ah")["train"],
+    [Resize(471), Pad((0, 37, 0, 36))],
+    rotation_before=True,
+)
 
 from bob.ip.binseg.data.chasedb1 import dataset as _raw_chase
+
 _chase = _maker(
-        _raw_chase.subsets("first-annotator")["train"],
-        [Resize(544), Crop(0, 12, 544, 544)],
-        )
+    _raw_chase.subsets("first-annotator")["train"],
+    [Resize(544), Crop(0, 12, 544, 544)],
+)
 
 from bob.ip.binseg.data.iostar import dataset as _raw_iostar
-_iostar = _maker(
-        _raw_iostar.subsets("vessel")["train"],
-        [Resize(544)],
-        )
+
+_iostar = _maker(_raw_iostar.subsets("vessel")["train"], [Resize(544)],)
 
 from bob.ip.binseg.data.hrf import dataset as _raw_hrf
+
 _hrf = _maker(
-        _raw_hrf.subsets("default")["train"],
-        [Resize((363)), Pad((0, 90, 0, 91))],
-        )
+    _raw_hrf.subsets("default")["train"], [Resize((363)), Pad((0, 90, 0, 91))],
+)
 
 from torch.utils.data import ConcatDataset
-from bob.ip.binseg.configs.datasets.drive.default import dataset as _baselines
+from bob.ip.binseg.configs.datasets.drive.default import dataset as _baseline
 
-dataset = {
-        "train": ConcatDataset([_stare, _chase, _iostar, _hrf]),
-        "test": _baselines["test"],  #use the same test set always
-        }
+# copy dictionary and replace only the augmented train dataset
+dataset = dict(**_baseline)
+dataset["__train__"] = ConcatDataset([_stare, _chase, _iostar, _hrf])

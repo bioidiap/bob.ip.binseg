@@ -335,7 +335,6 @@ def run(
             logwriter.writerow(dict(k for k in logdata))
             logger.info("|".join([f"{k}: {v}" for (k, v) in logdata]))
 
-        logger.info("End of training")
         total_training_time = time.time() - start_training_time
         logger.info(
             f"Total training time: {datetime.timedelta(seconds=total_training_time)} ({(total_training_time/max_epoch):.4f}s in average per epoch)"

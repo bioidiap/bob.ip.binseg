@@ -18,11 +18,10 @@ For details on datasets, consult:
 * :py:mod:`bob.ip.binseg.data.hrf`
 """
 
-from bob.ip.binseg.configs.datasets.drive.covd import dataset as _labelled
-from bob.ip.binseg.configs.datasets.drive.default import dataset as _baselines
+from bob.ip.binseg.configs.datasets.drive.covd import dataset as _covd
+from bob.ip.binseg.configs.datasets.drive.default import dataset as _baseline
 from bob.ip.binseg.data.utils import SSLDataset
 
-dataset = {
-        "train": SSLDataset(_labelled["train"], _baselines["train"]),
-        "test": _baselines["test"],  #use always the same test set
-        }
+# copy dictionary and replace only the augmented train dataset
+dataset = dict(**_covd)
+dataset["__train__"] = SSLDataset(_covd["__train__"], _baseline["__train__"])

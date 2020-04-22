@@ -16,6 +16,38 @@ import logging
 logger = logging.getLogger(__name__)
 
 
+def _save_sh_command(destfile):
+    """Records command-line to reproduce this experiment"""
+
+    import sys
+    import time
+    import pkg_resources
+
+    dirname = os.path.dirname(destfile)
+
+    if not os.path.exists(dirname):
+        os.makedirs(dirname)
+
+    logger.info(f"Writing command-line for reproduction at '{destfile}'...")
+
+    with open(destfile, "wt") as f:
+        f.write("#!/usr/bin/env sh\n")
+        f.write(f"# date: {time.asctime()}\n")
+        version = pkg_resources.require('bob.ip.binseg')[0].version
+        f.write(f"# version: {version} (bob.ip.binseg)\n")
+        f.write(f"# platform: {sys.platform}\n")
+        f.write("\n")
+        args = []
+        for k in sys.argv:
+            if " " in k: args.append(f'"{k}"')
+            else: args.append(k)
+        if os.environ.get('CONDA_DEFAULT_ENV') is not None:
+            f.write(f"#conda activate {os.environ['CONDA_DEFAULT_ENV']}\n")
+        f.write(f"#cd {os.path.realpath(os.curdir)}\n")
+        f.write(" ".join(args) + "\n")
+    os.chmod(destfile, 0o755)
+
+
 @click.command(
     entry_point_group="bob.ip.binseg.config",
     cls=ConfigCommand,
@@ -248,12 +280,15 @@ def experiment(
 
     """
 
+    _save_sh_command(os.path.join(output_folder, "command.sh"))
+
     ## Training
     logger.info("Started training")
 
     from .train import train
 
     train_output_folder = os.path.join(output_folder, "model")
+
     ctx.invoke(
         train,
         model=model,
@@ -283,7 +318,7 @@ def experiment(
     model_file = os.path.join(train_output_folder, "model_final.pth")
     predictions_folder = os.path.join(output_folder, "predictions")
     overlayed_folder = (
-        os.path.join(output_folder, "overlayed", "probabilities")
+        os.path.join(output_folder, "overlayed", "predictions")
         if overlayed
         else None
     )
@@ -336,9 +371,15 @@ def experiment(
 
     systems = []
     for k, v in dataset.items():
+        if k.startswith("_"):
+            logger.info(f"Skipping dataset '{k}' (not to be compared)")
+            continue
         systems += [k, os.path.join(analysis_folder, k, "metrics.csv")]
     if second_annotator is not None:
         for k, v in second_annotator.items():
+            if k.startswith("_"):
+                logger.info(f"Skipping dataset '{k}' (not to be compared)")
+                continue
             systems += [f"{k} (2nd. annot.)",
                     os.path.join(second_annotator_folder, k, "metrics.csv")]
     output_pdf = os.path.join(output_folder, "comparison.pdf")

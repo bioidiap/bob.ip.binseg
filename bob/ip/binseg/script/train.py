@@ -66,10 +66,12 @@ logger = logging.getLogger(__name__)
     help="A torch.utils.data.dataset.Dataset instance implementing a dataset "
     "to be used for training the model, possibly including all pre-processing "
     "pipelines required or, optionally, a dictionary mapping string keys to "
-    "bob.ip.binseg.data.utils.SampleList2TorchDataset's.  At least one key "
-    "named 'train' must be available.  This dataset will be used for training "
-    "the network model.  The dataset description include all required "
-    "pre-processing, including eventual data augmentation",
+    "torch.utils.data.dataset.Dataset instances.  At least one key "
+    "named ``train`` must be available.  This dataset will be used for "
+    "training the network model.  The dataset description must include all "
+    "required pre-processing, including eventual data augmentation.  If a "
+    "dataset named ``__train__`` is available, it is used prioritarily for "
+    "training instead of ``train``.",
     required=True,
     cls=ResourceOption,
 )
@@ -224,9 +226,17 @@ def train(
 
     torch.manual_seed(seed)
 
+    use_dataset = dataset
+    if isinstance(dataset, dict):
+        if "__train__" in dataset:
+            logger.info("Found (dedicated) '__train__' set for training")
+            use_dataset = dataset["__train__"]
+        else:
+            use_dataset = dataset["train"]
+
     # PyTorch dataloader
     data_loader = DataLoader(
-        dataset=dataset["train"] if isinstance(dataset, dict) else dataset,
+        dataset=use_dataset,
         batch_size=batch_size,
         shuffle=True,
         drop_last=drop_incomplete_batch,
