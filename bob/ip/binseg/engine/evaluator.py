@@ -309,16 +309,17 @@ def run(
     optimal_f1_threshold = avg_metrics["f1_score"].idxmax()
 
     logger.info(
-        f"Highest (a posteriori) F1-score of {maxf1:.5f}, achieved at "
-        f"threshold {optimal_f1_threshold:.2f}"
+        f"Maximum F1-score of {maxf1:.5f}, achieved at "
+        f"threshold {optimal_f1_threshold:.2f} (chosen *a posteriori*)"
     )
 
     if threshold is not None:
-        f1_apriori = avg_metrics["f1_score"][threshold]
+
+        f1_a_priori = avg_metrics["f1_score"][threshold]
 
         logger.info(
-                f"F1-score (a priori) is {f1_apriori:.5f}, at "
-                f"threshold={threshold:.5f}"
+                f"F1-score of {f1_a_priori:.5f}, at threshold {threshold:.5f} "
+                f"(chosen *a priori*)"
         )
 
     if output_folder is not None:
@@ -436,6 +437,4 @@ def compare_annotators(baseline, other, output_folder, overlayed_folder=None):
     avg_metrics.to_csv(metrics_path)
 
     maxf1 = avg_metrics["f1_score"].max()
-    optimal_f1_threshold = avg_metrics["f1_score"].idxmax()
-
-    logger.info(f"Highest F1-score of {maxf1:.5f} (second annotator)")
+    logger.info(f"Maximum F1-score of {maxf1:.5f} (second annotator)")
