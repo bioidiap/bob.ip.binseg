@@ -65,7 +65,7 @@ Evaluation
 ----------
 
 In evaluation, we input an **annotated** dataset and predictions to generate
-performance figures that can help analysis of a trained model.  Evaluation is
+performance summaries that help analysis of a trained model.  Evaluation is
 done using the :ref:`evaluate command `<bob.ip.binseg.cli.evaluate>` followed
 by the model and the annotated dataset configuration, and the path to the
 pretrained weights via the ``--weight`` argument.

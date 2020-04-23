@@ -380,14 +380,12 @@ def experiment(
     logger.info(f"Setting --threshold={threshold}...")
 
     analysis_folder = os.path.join(output_folder, "analysis")
-    second_annotator_folder = os.path.join(analysis_folder, "second-annotator")
     ctx.invoke(
         evaluate,
         output_folder=analysis_folder,
         predictions_folder=predictions_folder,
         dataset=dataset,
         second_annotator=second_annotator,
-        second_annotator_folder=second_annotator_folder,
         overlayed=overlayed_folder,
         threshold=threshold,
         verbose=verbose,
@@ -412,8 +410,8 @@ def experiment(
             if k.startswith("_"):
                 logger.info(f"Skipping dataset '{k}' (not to be compared)")
                 continue
-            systems += [f"{k} (2nd. annot.)",
-                    os.path.join(second_annotator_folder, k, "metrics.csv")]
+            systems += [f"{k} (2nd. annot.)", os.path.join(analysis_folder, k,
+                "metrics-second-annotator.csv")]
     output_pdf = os.path.join(output_folder, "comparison.pdf")
     ctx.invoke(compare, label_path=systems, output=output_pdf, verbose=verbose)
 

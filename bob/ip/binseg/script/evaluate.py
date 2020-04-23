@@ -108,16 +108,6 @@ def _validate_threshold(t, dataset):
     show_default=True,
 )
 @click.option(
-    "--second-annotator-folder",
-    "-O",
-    help="Path where to store the analysis result for second annotator "
-    "comparisons (only used if --second-annotator is also passed)",
-    required=True,
-    default="second-annotator",
-    type=click.Path(),
-    cls=ResourceOption,
-)
-@click.option(
     "--overlayed",
     "-O",
     help="Creates overlayed representations of the output probability maps, "
@@ -133,11 +123,9 @@ def _validate_threshold(t, dataset):
 )
 @click.option(
     "--threshold",
-    "-T",
-    help="If you set --overlayed, then you can provide a value to be used as "
-    "threshold to be applied on probability maps and decide for positives and "
-    "negatives.  This binary output will be used to define true and false "
-    "positives, and false negatives for the overlay analysis.  This number "
+    "-t",
+    help="This number is used to define positives and negatives from "
+    "probability maps, and report F1-scores (a priori). It "
     "should either come from the training set or a separate validation set "
     "to avoid biasing the analysis.  Optionally, if you provide a multi-set "
     "dataset as input, this may also be the name of an existing set from "
@@ -155,7 +143,6 @@ def evaluate(
     predictions_folder,
     dataset,
     second_annotator,
-    second_annotator_folder,
     overlayed,
     threshold,
     **kwargs,
@@ -173,7 +160,6 @@ def evaluate(
             "dataset": dataset,
             "output_folder": output_folder,
             "second_annotator": second_annotator,
-            "second_annotator_folder": second_annotator_folder,
         }
     else:
         for k, v in dataset.items():
@@ -184,9 +170,6 @@ def evaluate(
                 "dataset": v,
                 "output_folder": os.path.join(output_folder, k),
                 "second_annotator": second_annotator.get(k),
-                "second_annotator_folder": os.path.join(
-                    second_annotator_folder, k
-                ),
             }
 
     if isinstance(threshold, str):
@@ -209,7 +192,7 @@ def evaluate(
             compare_annotators(
                 v["dataset"],
                 v["second_annotator"],
-                v["second_annotator_folder"],
+                v["output_folder"],
                 os.path.join(overlayed, "second-annotator")
                 if overlayed
                 else None,

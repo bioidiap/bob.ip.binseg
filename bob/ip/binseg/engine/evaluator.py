@@ -16,7 +16,6 @@ import torchvision.transforms.functional as VF
 import h5py
 
 from ..utils.metric import base_metrics
-from ..utils.plot import precision_recall_f1iso_confintval
 
 import logging
 
@@ -50,7 +49,7 @@ def _posneg(pred, gt, threshold):
     return tp_tensor, fp_tensor, tn_tensor, fn_tensor
 
 
-def _sample_metrics(pred, gt):
+def _sample_metrics(pred, gt, bins):
     """
     Calculates metrics on one single sample and saves it to disk
 
@@ -63,6 +62,10 @@ def _sample_metrics(pred, gt):
 
     gt : torch.Tensor
         ground-truth (annotations)
+
+    bins : int
+        number of bins to use for threshold analysis.  The step size is
+        calculated from this by dividing ``1.0/bins``.
 
 
     Returns
@@ -82,10 +85,10 @@ def _sample_metrics(pred, gt):
 
     """
 
-    step_size = 0.01
+    step_size = 1.0/bins
     data = []
 
-    for threshold in numpy.arange(0.0, 1.0, step_size):
+    for index, threshold in enumerate(numpy.arange(0.0, 1.0, step_size)):
 
         tp_tensor, fp_tensor, tn_tensor, fn_tensor = _posneg(
             pred, gt, threshold
@@ -107,6 +110,7 @@ def _sample_metrics(pred, gt):
 
         data.append(
             [
+                index,
                 threshold,
                 precision,
                 recall,
@@ -120,6 +124,7 @@ def _sample_metrics(pred, gt):
     return pandas.DataFrame(
         data,
         columns=(
+            "index",
             "threshold",
             "precision",
             "recall",
@@ -254,6 +259,7 @@ def run(
     """
 
     # Collect overall metrics
+    bins = 100 #number of thresholds to analyse for
     data = {}
 
     for sample in tqdm(dataset):
@@ -268,7 +274,7 @@ def run(
             raise RuntimeError(
                 f"{stem} entry already exists in data. Cannot overwrite."
             )
-        data[stem] = _sample_metrics(pred, gt)
+        data[stem] = _sample_metrics(pred, gt, bins)
 
         if overlayed_folder is not None:
             overlay_image = _sample_analysis(
@@ -286,8 +292,8 @@ def run(
     df_metrics = pandas.concat(data.values())
 
     # Report and Averages
-    avg_metrics = df_metrics.groupby("threshold").mean()
-    std_metrics = df_metrics.groupby("threshold").std()
+    avg_metrics = df_metrics.groupby("index").mean()
+    std_metrics = df_metrics.groupby("index").std()
 
     # Uncomment below for F1-score calculation based on average precision and
     # metrics instead of F1-scores of individual images. This method is in line
@@ -306,20 +312,24 @@ def run(
     avg_metrics["std_f1"] = std_metrics["f1_score"]
 
     maxf1 = avg_metrics["f1_score"].max()
-    optimal_f1_threshold = avg_metrics["f1_score"].idxmax()
+    maxf1_index = avg_metrics["f1_score"].idxmax()
+    maxf1_threshold = avg_metrics["threshold"][maxf1_index]
 
     logger.info(
         f"Maximum F1-score of {maxf1:.5f}, achieved at "
-        f"threshold {optimal_f1_threshold:.2f} (chosen *a posteriori*)"
+        f"threshold {maxf1_threshold:.3f} (chosen *a posteriori*)"
     )
 
     if threshold is not None:
 
-        f1_a_priori = avg_metrics["f1_score"][threshold]
+        # get the closest possible threshold we have
+        index = int(round(bins*threshold))
+        f1_a_priori = avg_metrics["f1_score"][index]
+        actual_threshold = avg_metrics["threshold"][index]
 
         logger.info(
-                f"F1-score of {f1_a_priori:.5f}, at threshold {threshold:.5f} "
-                f"(chosen *a priori*)"
+                f"F1-score of {f1_a_priori:.5f}, at threshold "
+                f"{actual_threshold:.3f} (chosen *a priori*)"
         )
 
     if output_folder is not None:
@@ -335,22 +345,7 @@ def run(
         )
         avg_metrics.to_csv(metrics_path)
 
-        # Plotting
-        np_avg_metrics = avg_metrics.to_numpy().T
-        figure_path = os.path.join(output_folder, "precision-recall.pdf")
-        logger.info(f"Saving overall precision-recall plot at {figure_path}...")
-        fig = precision_recall_f1iso_confintval(
-            [np_avg_metrics[0]],
-            [np_avg_metrics[1]],
-            [np_avg_metrics[7]],
-            [np_avg_metrics[8]],
-            [np_avg_metrics[10]],
-            [np_avg_metrics[11]],
-            ["data"],
-        )
-        fig.savefig(figure_path)
-
-    return optimal_f1_threshold
+    return maxf1_threshold
 
 
 def compare_annotators(baseline, other, output_folder, overlayed_folder=None):
@@ -395,7 +390,7 @@ def compare_annotators(baseline, other, output_folder, overlayed_folder=None):
             raise RuntimeError(
                 f"{stem} entry already exists in data. " f"Cannot overwrite."
             )
-        data[stem] = _sample_metrics(pred, gt)
+        data[stem] = _sample_metrics(pred, gt, 2)
 
         if overlayed_folder is not None:
             overlay_image = _sample_analysis(
@@ -413,8 +408,8 @@ def compare_annotators(baseline, other, output_folder, overlayed_folder=None):
     df_metrics = pandas.concat(data.values())
 
     # Report and Averages
-    avg_metrics = df_metrics.groupby("threshold").mean()
-    std_metrics = df_metrics.groupby("threshold").std()
+    avg_metrics = df_metrics.groupby("index").mean()
+    std_metrics = df_metrics.groupby("index").std()
 
     # Uncomment below for F1-score calculation based on average precision and
     # metrics instead of F1-scores of individual images. This method is in line
@@ -432,9 +427,13 @@ def compare_annotators(baseline, other, output_folder, overlayed_folder=None):
     avg_metrics["re_lower"] = avg_metrics["recall"] - avg_metrics["std_re"]
     avg_metrics["std_f1"] = std_metrics["f1_score"]
 
-    metrics_path = os.path.join(output_folder, "metrics.csv")
+    # we actually only need to keep the second row of the pandas dataframe
+    # with threshold == 0.5 - the first row is redundant
+    avg_metrics.drop(0, inplace=True)
+
+    metrics_path = os.path.join(output_folder, "metrics-second-annotator.csv")
     logger.info(f"Saving averages over all input images at {metrics_path}...")
     avg_metrics.to_csv(metrics_path)
 
     maxf1 = avg_metrics["f1_score"].max()
-    logger.info(f"Maximum F1-score of {maxf1:.5f} (second annotator)")
+    logger.info(f"F1-score of {maxf1:.5f} (second annotator; threshold=0.5)")

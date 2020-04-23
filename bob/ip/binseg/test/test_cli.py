@@ -127,14 +127,13 @@ def _check_experiment_stare(overlay):
 
         # check evaluation outputs
         eval_folder = os.path.join(output_folder, "analysis")
-        second_folder = os.path.join(eval_folder, "second-annotator")
         assert os.path.exists(os.path.join(eval_folder, "train", "metrics.csv"))
         assert os.path.exists(os.path.join(eval_folder, "test", "metrics.csv"))
         assert os.path.exists(
-            os.path.join(second_folder, "train", "metrics.csv")
+            os.path.join(eval_folder, "train", "metrics-second-annotator.csv")
         )
         assert os.path.exists(
-            os.path.join(second_folder, "test", "metrics.csv")
+            os.path.join(eval_folder, "test", "metrics-second-annotator.csv")
         )
 
         overlay_folder = os.path.join(output_folder, "overlayed", "analysis")
@@ -172,8 +171,7 @@ def _check_experiment_stare(overlay):
             r"^Started evaluation$": 1,
             r"^Maximum F1-score of.*\(chosen \*a posteriori\*\)$": 3,
             r"^F1-score of.*\(chosen \*a priori\*\)$": 2,
-            r"^Maximum F1-score of .* \(second annotator\)$": 2,
-            r"^Saving overall precision-recall plot at .*$": 2,
+            r"^F1-score of.*\(second annotator; threshold=0.5\)$": 2,
             r"^Ended evaluation$": 1,
             r"^Started comparison$": 1,
             r"^Loading metrics from": 4,
@@ -341,7 +339,6 @@ def _check_evaluate(runner):
         config.flush()
 
         output_folder = "evaluations"
-        second_folder = "evaluations-2nd"
         overlay_folder = os.path.join("overlayed", "analysis")
         result = runner.invoke(
             evaluate,
@@ -351,13 +348,13 @@ def _check_evaluate(runner):
                 f"--output-folder={output_folder}",
                 "--predictions-folder=predictions",
                 f"--overlayed={overlay_folder}",
-                f"--second-annotator-folder={second_folder}",
             ],
         )
         _assert_exit_0(result)
 
         assert os.path.exists(os.path.join(output_folder, "metrics.csv"))
-        assert os.path.exists(os.path.join(second_folder, "metrics.csv"))
+        assert os.path.exists(os.path.join(output_folder,
+            "metrics-second-annotator.csv"))
 
         # check overlayed images are there (since we requested them)
         basedir = os.path.join(overlay_folder, "stare-images")
@@ -369,7 +366,7 @@ def _check_evaluate(runner):
             r"^Saving averages over all input images.*$": 2,
             r"^Maximum F1-score of.*\(chosen \*a posteriori\*\)$": 1,
             r"^F1-score of.*\(chosen \*a priori\*\)$": 1,
-            r"^Maximum F1-score of .* \(second annotator\)$": 1,
+            r"^F1-score of.*\(second annotator; threshold=0.5\)$": 1,
         }
         buf.seek(0)
         logging_output = buf.read()
@@ -393,7 +390,6 @@ def _check_compare(runner):
     with stdout_logging() as buf:
 
         output_folder = "evaluations"
-        second_folder = "evaluations-2nd"
         result = runner.invoke(
             compare,
             [
@@ -402,7 +398,7 @@ def _check_compare(runner):
                 "test",
                 os.path.join(output_folder, "metrics.csv"),
                 "test (2nd. human)",
-                os.path.join(second_folder, "metrics.csv"),
+                os.path.join(output_folder, "metrics-second-annotator.csv"),
             ],
         )
         _assert_exit_0(result)
