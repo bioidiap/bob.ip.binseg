@@ -64,11 +64,10 @@ def test_experiment_help():
 
 
 def _str_counter(substr, s):
-    return sum(1 for _ in re.finditer(r"%s" % re.escape(substr), s))
+    return sum(1 for _ in re.finditer(substr, s, re.MULTILINE))
 
 
-@rc_variable_set("bob.ip.binseg.stare.datadir")
-def test_experiment_stare():
+def _check_experiment_stare(overlay):
 
     from ..script.experiment import experiment
 
@@ -88,18 +87,17 @@ def test_experiment_stare():
         config.flush()
 
         output_folder = "results"
-        result = runner.invoke(
-            experiment,
-            [
+        options = [
                 "m2unet",
                 config.name,
                 "-vv",
                 "--epochs=1",
                 "--batch-size=1",
-                "--overlayed",
                 f"--output-folder={output_folder}",
-            ],
-        )
+                ]
+        if overlay:
+            options += ["--overlayed"]
+        result = runner.invoke(experiment, options)
         _assert_exit_0(result)
 
         # check command-line
@@ -118,55 +116,68 @@ def test_experiment_stare():
         assert os.path.exists(basedir)
         nose.tools.eq_(len(fnmatch.filter(os.listdir(basedir), "*.hdf5")), 20)
 
-        # check overlayed images are there (since we requested them)
         overlay_folder = os.path.join(output_folder, "overlayed", "predictions")
         basedir = os.path.join(overlay_folder, "stare-images")
-        assert os.path.exists(basedir)
-        nose.tools.eq_(len(fnmatch.filter(os.listdir(basedir), "*.png")), 20)
+        if overlay:
+            # check overlayed images are there (since we requested them)
+            assert os.path.exists(basedir)
+            nose.tools.eq_(len(fnmatch.filter(os.listdir(basedir), "*.png")), 20)
+        else:
+            assert not os.path.exists(basedir)
 
         # check evaluation outputs
         eval_folder = os.path.join(output_folder, "analysis")
         second_folder = os.path.join(eval_folder, "second-annotator")
         assert os.path.exists(os.path.join(eval_folder, "train", "metrics.csv"))
         assert os.path.exists(os.path.join(eval_folder, "test", "metrics.csv"))
-        assert os.path.exists(os.path.join(second_folder, "train", "metrics.csv"))
-        assert os.path.exists(os.path.join(second_folder, "test", "metrics.csv"))
+        assert os.path.exists(
+            os.path.join(second_folder, "train", "metrics.csv")
+        )
+        assert os.path.exists(
+            os.path.join(second_folder, "test", "metrics.csv")
+        )
 
-        # check overlayed images are there (since we requested them)
         overlay_folder = os.path.join(output_folder, "overlayed", "analysis")
         basedir = os.path.join(overlay_folder, "stare-images")
-        assert os.path.exists(basedir)
-        nose.tools.eq_(len(fnmatch.filter(os.listdir(basedir), "*.png")), 20)
+        if overlay:
+            # check overlayed images are there (since we requested them)
+            assert os.path.exists(basedir)
+            nose.tools.eq_(len(fnmatch.filter(os.listdir(basedir), "*.png")), 20)
+        else:
+            assert not os.path.exists(basedir)
 
-        # check overlayed images from first-to-second annotator comparisons are
-        # there (since we requested them)
+        # check overlayed images from first-to-second annotator comparisons
+        # are there (since we requested them)
         overlay_folder = os.path.join(output_folder, "overlayed", "analysis",
                 "second-annotator")
         basedir = os.path.join(overlay_folder, "stare-images")
-        assert os.path.exists(basedir)
-        nose.tools.eq_(len(fnmatch.filter(os.listdir(basedir), "*.png")), 20)
+        if overlay:
+            assert os.path.exists(basedir)
+            nose.tools.eq_(len(fnmatch.filter(os.listdir(basedir), "*.png")), 20)
+        else:
+            assert not os.path.exists(basedir)
 
         # check outcomes of the comparison phase
         assert os.path.exists(os.path.join(output_folder, "comparison.pdf"))
 
-        keywords = {  # from different logging systems
-            "Started training": 1,  # logging
-            "Found (dedicated) '__train__' set for training": 1,  # logging
-            "epoch: 1|total-time": 1,  # logging
-            "Saving checkpoint": 1,  # logging
-            "Ended training": 1,  # logging
-            "Started prediction": 1,  # logging
-            "Loading checkpoint from": 2,  # logging
-            # "Saving results/overlayed/probabilities": 1,  #tqdm.write
-            "Ended prediction": 1,  # logging
-            "Started evaluation": 1,  # logging
-            "Highest F1-score of": 4,  # logging
-            "Saving overall precision-recall plot": 2,  # logging
-            # "Saving results/overlayed/analysis": 1,  #tqdm.write
-            "Ended evaluation": 1,  # logging
-            "Started comparison": 1,  # logging
-            "Loading metrics from": 4,  # logging
-            "Ended comparison": 1,  # logging
+        keywords = {
+            r"^Started training$": 1,
+            r"^Found \(dedicated\) '__train__' set for training$": 1,
+            r"^epoch: \d+\|total-time": 1,
+            r"^Saving checkpoint": 1,
+            r"^Ended training$": 1,
+            r"^Started prediction$": 1,
+            r"^Loading checkpoint from": 2,
+            r"^Ended prediction$": 1,
+            r"^Started evaluation$": 1,
+            r"^Maximum F1-score of.*\(chosen \*a posteriori\*\)$": 3,
+            r"^F1-score of.*\(chosen \*a priori\*\)$": 2,
+            r"^Maximum F1-score of .* \(second annotator\)$": 2,
+            r"^Saving overall precision-recall plot at .*$": 2,
+            r"^Ended evaluation$": 1,
+            r"^Started comparison$": 1,
+            r"^Loading metrics from": 4,
+            r"^Ended comparison.*$": 1,
         }
         buf.seek(0)
         logging_output = buf.read()
@@ -180,6 +191,16 @@ def test_experiment_stare():
                 f"({_str_counter(k, logging_output)}) "
                 f"instead of the expected {v}"
             )
+
+
+@rc_variable_set("bob.ip.binseg.stare.datadir")
+def test_experiment_stare_with_overlay():
+    _check_experiment_stare(overlay=True)
+
+
+@rc_variable_set("bob.ip.binseg.stare.datadir")
+def test_experiment_stare_without_overlay():
+    _check_experiment_stare(overlay=False)
 
 
 def _check_train(runner):
@@ -202,8 +223,14 @@ def _check_train(runner):
         output_folder = "results"
         result = runner.invoke(
             train,
-            ["m2unet", config.name, "-vv", "--epochs=1", "--batch-size=1",
-                f"--output-folder={output_folder}"],
+            [
+                "m2unet",
+                config.name,
+                "-vv",
+                "--epochs=1",
+                "--batch-size=1",
+                f"--output-folder={output_folder}",
+            ],
         )
         _assert_exit_0(result)
 
@@ -211,11 +238,11 @@ def _check_train(runner):
         assert os.path.exists(os.path.join(output_folder, "last_checkpoint"))
         assert os.path.exists(os.path.join(output_folder, "trainlog.csv"))
 
-        keywords = {  # from different logging systems
-            "Continuing from epoch 0": 1,  # logging
-            "epoch: 1|total-time": 1,  # logging
-            f"Saving checkpoint to {output_folder}/model_final.pth": 1,  # logging
-            "Total training time:": 1,  # logging
+        keywords = {
+            r"^Continuing from epoch 0$": 1,
+            r"^epoch: \d+\|total-time": 1,
+            rf"^Saving checkpoint to {output_folder}/model_final.pth$": 1,
+            r"^Total training time:": 1,
         }
         buf.seek(0)
         logging_output = buf.read()
@@ -276,9 +303,9 @@ def _check_predict(runner):
         assert os.path.exists(basedir)
         nose.tools.eq_(len(fnmatch.filter(os.listdir(basedir), "*.png")), 10)
 
-        keywords = {  # from different logging systems
-            "Loading checkpoint from": 1,  # logging
-            "Total time:": 1,  # logging
+        keywords = {
+            r"^Loading checkpoint from.*$": 1,
+            r"^Total time:.*$": 1,
         }
         buf.seek(0)
         logging_output = buf.read()
@@ -337,10 +364,12 @@ def _check_evaluate(runner):
         assert os.path.exists(basedir)
         nose.tools.eq_(len(fnmatch.filter(os.listdir(basedir), "*.png")), 10)
 
-        keywords = {  # from different logging systems
-            "Skipping dataset '__train__'": 0,  # logging
-            "Saving averages over all input images": 2,  # logging
-            "Highest F1-score": 2,  # logging
+        keywords = {
+            r"^Skipping dataset '__train__'": 0,
+            r"^Saving averages over all input images.*$": 2,
+            r"^Maximum F1-score of.*\(chosen \*a posteriori\*\)$": 1,
+            r"^F1-score of.*\(chosen \*a priori\*\)$": 1,
+            r"^Maximum F1-score of .* \(second annotator\)$": 1,
         }
         buf.seek(0)
         logging_output = buf.read()
@@ -370,16 +399,18 @@ def _check_compare(runner):
             [
                 "-vv",
                 # label - path to metrics
-                "test", os.path.join(output_folder, "metrics.csv"),
-                "test (2nd. human)", os.path.join(second_folder, "metrics.csv"),
+                "test",
+                os.path.join(output_folder, "metrics.csv"),
+                "test (2nd. human)",
+                os.path.join(second_folder, "metrics.csv"),
             ],
         )
         _assert_exit_0(result)
 
         assert os.path.exists("comparison.pdf")
 
-        keywords = {  # from different logging systems
-            "Loading metrics from": 2,  # logging
+        keywords = {
+            r"^Loading metrics from": 2,
         }
         buf.seek(0)
         logging_output = buf.read()
