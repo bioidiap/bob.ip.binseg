@@ -32,7 +32,7 @@ class Tester(unittest.TestCase):
     def test_batch_metrics(self):
         dfs = []
         for pred, gt in zip(self.predictions, self.ground_truths):
-            dfs.append(_sample_metrics(pred, gt))
+            dfs.append(_sample_metrics(pred, gt, 100))
         bm = pandas.concat(dfs)
 
         self.assertEqual(len(bm), 2 * 100)
