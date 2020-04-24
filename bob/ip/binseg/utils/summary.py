@@ -9,7 +9,7 @@ from torch.nn.modules.module import _addindent
 
 
 def summary(model):
-    """Counts the number of paramters in each model layer
+    """Counts the number of parameters in each model layer
 
     Parameters
     ----------

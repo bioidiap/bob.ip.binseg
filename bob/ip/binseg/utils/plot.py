@@ -97,35 +97,41 @@ def _precision_recall_canvas(title=None):
     plt.tight_layout()
 
 
-def precision_recall_f1iso(label, df, threshold, confidence=True):
+def precision_recall_f1iso(data, confidence=True):
     """Creates a precision-recall plot with confidence intervals
 
     This function creates and returns a Matplotlib figure with a
-    precision-recall plot containing shaded confidence intervals.  The plot
-    will be annotated with F1-score iso-lines (in which the F1-score maintains
-    the same value).
+    precision-recall plot containing shaded confidence intervals (standard
+    deviation on the precision-recall measurements).  The plot will be
+    annotated with F1-score iso-lines (in which the F1-score maintains the same
+    value).
+
+    This function specially supports "second-annotator" entries by plotting a
+    line showing the comparison between the default annotator being analyzed
+    and a second "opinion".  Second annotator dataframes contain a single
+    entry (threshold=0.5), given the nature of the binary map comparisons.
 
 
     Parameters
     ----------
 
-    label : :py:class:`list`
-        A list of names to be associated to each line
+    data : dict
+        A dictionary in which keys are strings defining plot labels and values
+        are dictionaries with two entries:
 
-    df : :py:class:`pandas.DataFrame`
-        A dataframe that is produced by our evaluator engine, indexed by
-        integer "thresholds", containing the following columns: ``threshold``
-        (sorted ascending), ``precision``, ``recall``, ``pr_upper`` (upper
-        precision bounds), ``pr_lower`` (lower precision bounds), ``re_upper``
-        (upper recall bounds), ``re_lower`` (lower recall bounds).
+        * ``df``: :py:class:`pandas.DataFrame`
 
-        Dataframes with a single entry are treated specially as these are
-        considered "second-annotator" performances.  A single dot and a line
-        showing the variability is drawn in these cases.
+          A dataframe that is produced by our evaluator engine, indexed by
+          integer "thresholds", containing the following columns: ``threshold``
+          (sorted ascending), ``precision``, ``recall``, ``pr_upper`` (upper
+          precision bounds), ``pr_lower`` (lower precision bounds),
+          ``re_upper`` (upper recall bounds), ``re_lower`` (lower recall
+          bounds).
 
-    threshold : :py:class:`list`
-        A list of thresholds to graph with a dot for each set.  Specific
-        threshold values do not affect "second-annotator" dataframes.
+        * ``threshold``: :py:class:`list`
+
+          A threshold to graph with a dot for each set.    Specific
+          threshold values do not affect "second-annotator" dataframes.
 
     confidence : :py:class:`bool`, Optional
         If set, draw confidence intervals for each line, using ``*_upper`` and
@@ -160,32 +166,35 @@ def precision_recall_f1iso(label, df, threshold, confidence=True):
 
         legend = []
 
-        for kn, kdf, kt in zip(label, df, threshold):
+        for name, value in data.items():
+
+            df = value["df"]
+            threshold = value["threshold"]
 
             # plots only from the point where recall reaches its maximum,
             # otherwise, we don't see a curve...
-            max_recall = kdf["recall"].idxmax()
-            pi = kdf.precision[max_recall:]
-            ri = kdf.recall[max_recall:]
+            max_recall = df["recall"].idxmax()
+            pi = df.precision[max_recall:]
+            ri = df.recall[max_recall:]
 
             valid = (pi + ri) > 0
             f1 = 2 * (pi[valid] * ri[valid]) / (pi[valid] + ri[valid])
 
             # optimal point along the curve
-            bins = len(kdf)
-            index = int(round(bins*kt))
-            index = min(index, len(kdf)-1)  #avoids out of range indexing
+            bins = len(df)
+            index = int(round(bins*threshold))
+            index = min(index, len(df)-1)  #avoids out of range indexing
 
             # plots Recall/Precision as threshold changes
-            label = f"{kn} (F1={kdf.f1_score[index]:.4f})"
+            label = f"{name} (F1={df.f1_score[index]:.4f})"
             color = next(colorcycler)
 
-            if len(kdf) == 1:
+            if len(df) == 1:
                 # plot black dot for F1-score at select threshold
-                marker, = axes.plot(kdf.recall[index], kdf.precision[index],
+                marker, = axes.plot(df.recall[index], df.precision[index],
                         marker="*", markersize=6, color=color, alpha=0.8,
                         linestyle="None")
-                line, = axes.plot(kdf.recall[index], kdf.precision[index],
+                line, = axes.plot(df.recall[index], df.precision[index],
                         linestyle="None", color=color, alpha=0.2)
                 legend.append(([marker, line], label))
             else:
@@ -193,17 +202,17 @@ def precision_recall_f1iso(label, df, threshold, confidence=True):
                 style = next(linecycler)
                 line, = axes.plot(ri[pi > 0], pi[pi > 0], color=color,
                         linestyle=style)
-                marker, = axes.plot(kdf.recall[index], kdf.precision[index],
+                marker, = axes.plot(df.recall[index], df.precision[index],
                         marker="o", linestyle=style, markersize=4,
                         color=color, alpha=0.8)
                 legend.append(([marker, line], label))
 
             if confidence:
 
-                pui = kdf.pr_upper[max_recall:]
-                pli = kdf.pr_lower[max_recall:]
-                rui = kdf.re_upper[max_recall:]
-                rli = kdf.re_lower[max_recall:]
+                pui = df.pr_upper[max_recall:]
+                pli = df.pr_lower[max_recall:]
+                rui = df.re_upper[max_recall:]
+                rli = df.re_lower[max_recall:]
 
                 # Plot confidence
                 # Upper bound
@@ -212,7 +221,7 @@ def precision_recall_f1iso(label, df, threshold, confidence=True):
                 vert_y = numpy.concatenate((pui[pui > 0], pli[pli > 0][::-1]))
 
                 # hacky workaround to plot 2nd human
-                if len(kdf) == 1:  #binary system, very likely
+                if len(df) == 1:  #binary system, very likely
                     logger.warning("Found 2nd human annotator - patching...")
                     p, = axes.plot(vert_x, vert_y, color=color, alpha=0.1, lw=3)
                 else:

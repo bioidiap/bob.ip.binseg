@@ -88,6 +88,7 @@ Toolbox
    bob.ip.binseg.utils.model_serialization
    bob.ip.binseg.utils.model_zoo
    bob.ip.binseg.utils.plot
+   bob.ip.binseg.utils.table
    bob.ip.binseg.utils.summary
 
 

@@ -9,8 +9,10 @@ from bob.extension.scripts.click_helper import (
 )
 
 import pandas
+import tabulate
 
 from ..utils.plot import precision_recall_f1iso
+from ..utils.table import performance_table
 
 import logging
 logger = logging.getLogger(__name__)
@@ -44,7 +46,7 @@ def _validate_threshold(t, dataset):
     return t
 
 
-def _load_and_plot(data, threshold=None):
+def _load(data, threshold=None):
     """Plots comparison chart of all evaluated models
 
     Parameters
@@ -55,20 +57,26 @@ def _load_and_plot(data, threshold=None):
         paths to ``metrics.csv`` style files.
 
     threshold : :py:class:`float`, :py:class:`str`, Optional
-        A value indicating which threshold to choose for plotting a "F1-score"
-        (black) dot on the various curves.  If set to ``None``, then plot the
-        maximum F1-score on that curve.  If set to a floating-point value, then
-        plot the F1-score that is obtained on that particular threshold.  If
-        set to a string, it should match one of the keys in ``data``.  It then
-        first calculate the threshold reaching the maximum F1-score on that
-        particular dataset and then applies that threshold to all other sets.
+        A value indicating which threshold to choose for selecting a "F1-score"
+        If set to ``None``, then use the maximum F1-score on that metrics file.
+        If set to a floating-point value, then use the F1-score that is
+        obtained on that particular threshold.  If set to a string, it should
+        match one of the keys in ``data``.  It then first calculate the
+        threshold reaching the maximum F1-score on that particular dataset and
+        then applies that threshold to all other sets.
 
 
     Returns
     -------
 
-    figure : matplotlib.figure.Figure
-        A figure, with all systems combined into a single plot.
+    data : dict
+        A dict in which keys are the names of the systems and the values are
+        dictionaries that contain two keys:
+
+        * ``df``: A :py:class:`pandas.DataFrame` with the metrics data loaded
+          to
+        * ``threshold``: A threshold to be used for summarization, depending on
+          the ``threshold`` parameter set on the input
 
     """
 
@@ -78,8 +86,8 @@ def _load_and_plot(data, threshold=None):
         metrics_path = data[threshold]
         df = pandas.read_csv(metrics_path)
 
-        maxf1 = df["f1_score"].max()
-        use_threshold = df["threshold"][df["f1_score"].idxmax()]
+        maxf1 = df.f1_score.max()
+        use_threshold = df.threshold[df.f1_score.idxmax()]
         logger.info(f"Dataset '*': threshold = {use_threshold:.3f}'")
 
     elif isinstance(threshold, float):
@@ -91,20 +99,19 @@ def _load_and_plot(data, threshold=None):
     thresholds = []
 
     # loads all data
+    retval = {}
     for name, metrics_path in data.items():
 
         logger.info(f"Loading metrics from {metrics_path}...")
         df = pandas.read_csv(metrics_path)
 
         if threshold is None:
-            use_threshold = df["threshold"][df["f1_score"].idxmax()]
+            use_threshold = df.threshold[df.f1_score.idxmax()]
             logger.info(f"Dataset '{name}': threshold = {use_threshold:.3f}'")
 
-        names.append(name)
-        dfs.append(df)
-        thresholds.append(use_threshold)
+        retval[name] = dict(df=df, threshold=use_threshold)
 
-    return precision_recall_f1iso(names, dfs, thresholds, confidence=True)
+    return retval
 
 
 @click.command(
@@ -121,15 +128,32 @@ def _load_and_plot(data, threshold=None):
         nargs=-1,
         )
 @click.option(
-    "--output",
-    "-o",
-    help="Path where write the output figure (PDF format)",
+    "--output-figure",
+    "-f",
+    help="Path where write the output figure (any extension supported by "
+    "matplotlib is possible).  If not provided, does not produce a figure.",
+    required=False,
+    default=None,
+    type=click.Path(dir_okay=False, file_okay=True),
+)
+@click.option(
+    "--table-format",
+    "-T",
+    help="The format to use for the comparison table",
     show_default=True,
     required=True,
-    default="comparison.pdf",
-    type=click.Path(),
+    default="rst",
+    type=click.Choice(tabulate.tabulate_formats),
 )
-
+@click.option(
+    "--output-table",
+    "-u",
+    help="Path where write the output table. If not provided, does not write "
+    "write a table to file, only to stdout.",
+    required=False,
+    default=None,
+    type=click.Path(dir_okay=False, file_okay=True),
+)
 @click.option(
     "--threshold",
     "-t",
@@ -145,7 +169,8 @@ def _load_and_plot(data, threshold=None):
     required=False,
 )
 @verbosity_option()
-def compare(label_path, output, threshold, **kwargs):
+def compare(label_path, output_figure, table_format, output_table, threshold,
+        **kwargs):
     """Compares multiple systems together"""
 
     # hack to get a dictionary from arguments passed to input
@@ -156,9 +181,18 @@ def compare(label_path, output, threshold, **kwargs):
 
     threshold = _validate_threshold(threshold, data)
 
-    fig = _load_and_plot(data, threshold=threshold)
-    logger.info(f"Saving plot at {output}")
-    fig.savefig(output)
+    # load all data metrics
+    data = _load(data, threshold=threshold)
 
-    # TODO: print table with all results
-    pass
+    if output_figure is not None:
+        logger.info(f"Creating and saving plot at {output_figure}...")
+        fig = precision_recall_f1iso(data, confidence=True)
+        fig.savefig(output_figure)
+
+    logger.info("Tabulating performance summary...")
+    table = performance_table(data, table_format)
+    click.echo(table)
+    if output_table is not None:
+        logger.info(f"Saving table at {output_table}...")
+        with open(output_table, "wt") as f:
+            f.write(table)

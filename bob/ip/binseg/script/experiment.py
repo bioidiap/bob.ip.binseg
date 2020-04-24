@@ -412,7 +412,11 @@ def experiment(
                 continue
             systems += [f"{k} (2nd. annot.)", os.path.join(analysis_folder, k,
                 "metrics-second-annotator.csv")]
-    output_pdf = os.path.join(output_folder, "comparison.pdf")
-    ctx.invoke(compare, label_path=systems, output=output_pdf, verbose=verbose)
+
+    output_figure = os.path.join(output_folder, "comparison.pdf")
+    output_table = os.path.join(output_folder, "comparison.rst")
+
+    ctx.invoke(compare, label_path=systems, output_figure=output_figure,
+            output_table=output_table, verbose=verbose)
 
     logger.info("Ended comparison, and the experiment - bye.")

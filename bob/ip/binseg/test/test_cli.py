@@ -158,6 +158,7 @@ def _check_experiment_stare(overlay):
 
         # check outcomes of the comparison phase
         assert os.path.exists(os.path.join(output_folder, "comparison.pdf"))
+        assert os.path.exists(os.path.join(output_folder, "comparison.rst"))
 
         keywords = {
             r"^Started training$": 1,
@@ -175,6 +176,9 @@ def _check_experiment_stare(overlay):
             r"^Ended evaluation$": 1,
             r"^Started comparison$": 1,
             r"^Loading metrics from": 4,
+            r"^Creating and saving plot at": 1,
+            r"^Tabulating performance summary...": 1,
+            r"^Saving table at": 1,
             r"^Ended comparison.*$": 1,
         }
         buf.seek(0)
@@ -399,14 +403,20 @@ def _check_compare(runner):
                 os.path.join(output_folder, "metrics.csv"),
                 "test (2nd. human)",
                 os.path.join(output_folder, "metrics-second-annotator.csv"),
+                "--output-figure=comparison.pdf",
+                "--output-table=comparison.rst",
             ],
         )
         _assert_exit_0(result)
 
         assert os.path.exists("comparison.pdf")
+        assert os.path.exists("comparison.rst")
 
         keywords = {
             r"^Loading metrics from": 2,
+            r"^Creating and saving plot at": 1,
+            r"^Tabulating performance summary...": 1,
+            r"^Saving table at": 1,
         }
         buf.seek(0)
         logging_output = buf.read()
