@@ -32,7 +32,7 @@ def performance_table(data, fmt):
 
 
     fmt : str
-        One of the formats supported by tabulate_.
+        One of the formats supported by tabulate.
 
 
     Returns
