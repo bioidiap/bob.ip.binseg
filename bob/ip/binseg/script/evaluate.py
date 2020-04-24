@@ -169,7 +169,9 @@ def evaluate(
             config[k] = {
                 "dataset": v,
                 "output_folder": os.path.join(output_folder, k),
-                "second_annotator": second_annotator.get(k),
+                "second_annotator": second_annotator.get(k)
+                if second_annotator
+                else None,
             }
 
     if isinstance(threshold, str):
