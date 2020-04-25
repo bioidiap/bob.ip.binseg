@@ -4,6 +4,7 @@ numpy
 pandas
 h5py
 pillow
+psutil
 setuptools
 tabulate
 torch
