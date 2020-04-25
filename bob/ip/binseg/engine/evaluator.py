@@ -85,7 +85,7 @@ def _sample_metrics(pred, gt, bins):
 
     """
 
-    step_size = 1.0/bins
+    step_size = 1.0 / bins
     data = []
 
     for index, threshold in enumerate(numpy.arange(0.0, 1.0, step_size)):
@@ -259,7 +259,7 @@ def run(
     """
 
     # Collect overall metrics
-    bins = 100 #number of thresholds to analyse for
+    bins = 100  # number of thresholds to analyse for
     data = {}
 
     for sample in tqdm(dataset):
@@ -323,13 +323,13 @@ def run(
     if threshold is not None:
 
         # get the closest possible threshold we have
-        index = int(round(bins*threshold))
+        index = int(round(bins * threshold))
         f1_a_priori = avg_metrics["f1_score"][index]
         actual_threshold = avg_metrics["threshold"][index]
 
         logger.info(
-                f"F1-score of {f1_a_priori:.5f}, at threshold "
-                f"{actual_threshold:.3f} (chosen *a priori*)"
+            f"F1-score of {f1_a_priori:.5f}, at threshold "
+            f"{actual_threshold:.3f} (chosen *a priori*)"
         )
 
     if output_folder is not None:
@@ -381,7 +381,9 @@ def compare_annotators(baseline, other, output_folder, overlayed_folder=None):
     # Collect overall metrics
     data = {}
 
-    for baseline_sample, other_sample in tqdm(list(zip(baseline, other))):
+    for baseline_sample, other_sample in tqdm(
+        list(zip(baseline, other)), desc="samples", leave=False, disable=None,
+    ):
         stem = baseline_sample[0]
         image = baseline_sample[1]
         gt = baseline_sample[2]
