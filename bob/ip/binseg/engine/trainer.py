@@ -183,7 +183,8 @@ def run(
                 logdata += gpu_info()
 
             logwriter.writerow(dict(k for k in logdata))
-            tqdm.write("|".join([f"{k}: {v}" for (k, v) in logdata]))
+            logfile.flush()
+            tqdm.write("|".join([f"{k}: {v}" for (k, v) in logdata[:4]]))
 
         total_training_time = time.time() - start_training_time
         logger.info(
