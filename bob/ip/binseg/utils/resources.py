@@ -62,7 +62,7 @@ def gpu_info(query=_nvidia_query):
         )
         values = [k.strip() for k in values.split(",")]
         regexp = re.compile(r"(\.|_)")
-        fieldnames = [k.sub("-", k) for k in query]
+        fieldnames = [regexp.sub("-", k) for k in query]
         return tuple(zip(fieldnames, values))
 
 
