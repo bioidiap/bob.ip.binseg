@@ -163,7 +163,6 @@ def _check_experiment_stare(overlay):
         keywords = {
             r"^Started training$": 1,
             r"^Found \(dedicated\) '__train__' set for training$": 1,
-            r"^epoch: \d+\|total-time": 1,
             r"^Saving checkpoint": 1,
             r"^Ended training$": 1,
             r"^Started prediction$": 1,
@@ -242,7 +241,6 @@ def _check_train(runner):
 
         keywords = {
             r"^Continuing from epoch 0$": 1,
-            r"^epoch: \d+\|total-time": 1,
             rf"^Saving checkpoint to {output_folder}/model_final.pth$": 1,
             r"^Total training time:": 1,
         }
