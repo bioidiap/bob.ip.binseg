@@ -33,15 +33,17 @@ def _save_sh_command(destfile):
     with open(destfile, "wt") as f:
         f.write("#!/usr/bin/env sh\n")
         f.write(f"# date: {time.asctime()}\n")
-        version = pkg_resources.require('bob.ip.binseg')[0].version
+        version = pkg_resources.require("bob.ip.binseg")[0].version
         f.write(f"# version: {version} (bob.ip.binseg)\n")
         f.write(f"# platform: {sys.platform}\n")
         f.write("\n")
         args = []
         for k in sys.argv:
-            if " " in k: args.append(f'"{k}"')
-            else: args.append(k)
-        if os.environ.get('CONDA_DEFAULT_ENV') is not None:
+            if " " in k:
+                args.append(f'"{k}"')
+            else:
+                args.append(k)
+        if os.environ.get("CONDA_DEFAULT_ENV") is not None:
             f.write(f"#conda activate {os.environ['CONDA_DEFAULT_ENV']}\n")
         f.write(f"#cd {os.path.realpath(os.curdir)}\n")
         f.write(" ".join(args) + "\n")
@@ -410,13 +412,23 @@ def experiment(
             if k.startswith("_"):
                 logger.info(f"Skipping dataset '{k}' (not to be compared)")
                 continue
-            systems += [f"{k} (2nd. annot.)", os.path.join(analysis_folder, k,
-                "metrics-second-annotator.csv")]
+            systems += [
+                f"{k} (2nd. annot.)",
+                os.path.join(
+                    analysis_folder, k, "metrics-second-annotator.csv"
+                ),
+            ]
 
     output_figure = os.path.join(output_folder, "comparison.pdf")
     output_table = os.path.join(output_folder, "comparison.rst")
 
-    ctx.invoke(compare, label_path=systems, output_figure=output_figure,
-            output_table=output_table, verbose=verbose)
+    ctx.invoke(
+        compare,
+        label_path=systems,
+        output_figure=output_figure,
+        output_table=output_table,
+        threshold=threshold,
+        verbose=verbose,
+    )
 
     logger.info("Ended comparison, and the experiment - bye.")
