@@ -4,6 +4,7 @@
 import os
 import csv
 import time
+import shutil
 import datetime
 import distutils.version
 
@@ -11,7 +12,8 @@ import torch
 from tqdm import tqdm
 
 from ..utils.metric import SmoothedValue
-from ..utils.resources import gpu_info, cpu_info
+from ..utils.summary import summary
+from ..utils.resources import cpu_info, gpu_info, cpu_log, gpu_log
 
 import logging
 
@@ -75,31 +77,61 @@ def run(
     start_epoch = arguments["epoch"]
     max_epoch = arguments["max_epoch"]
 
+    if device != "cpu":
+        # asserts we do have a GPU
+        assert bool(gpu_info()), (
+            f"Device set to '{device}', but cannot "
+            f"find a GPU (maybe nvidia-smi is not installed?)"
+        )
+
     if not os.path.exists(output_folder):
         logger.debug(f"Creating output directory '{output_folder}'...")
         os.makedirs(output_folder)
 
-    # Log to file
+    # Save model summary
+    summary_path = os.path.join(output_folder, "model_summary.txt")
+    logger.info(f"Saving model summary at {summary_path}...")
+    with open(summary_path, "wt") as f:
+        r, n = summary(model)
+        logger.info(f"Model has {n} parameters...")
+        f.write(r)
+
+    # write static information to a CSV file
+    static_logfile_name = os.path.join(output_folder, "constants.csv")
+    if os.path.exists(static_logfile_name):
+        backup = static_logfile_name + "~"
+        if os.path.exists(backup):
+            os.unlink(backup)
+        shutil.move(static_logfile_name, backup)
+    with open(static_logfile_name, "w", newline="") as f:
+        logdata = cpu_info()
+        if device != "cpu":
+            logdata += gpu_info()
+        logdata = (("model_size", n),) + logdata
+        logwriter = csv.DictWriter(f, fieldnames=[k[0] for k in logdata])
+        logwriter.writeheader()
+        logwriter.writerow(dict(k for k in logdata))
+
+    # Log continous information to (another) file
     logfile_name = os.path.join(output_folder, "trainlog.csv")
 
     if arguments["epoch"] == 0 and os.path.exists(logfile_name):
-        logger.info(f"Truncating {logfile_name} - training is restarting...")
-        os.unlink(logfile_name)
+        backup = logfile_name + "~"
+        if os.path.exists(backup):
+            os.unlink(backup)
+        shutil.move(logfile_name, backup)
 
     logfile_fields = (
         "epoch",
-        "total-time",
+        "total_time",
         "eta",
-        "average-loss",
-        "median-loss",
-        "learning-rate",
+        "average_loss",
+        "median_loss",
+        "learning_rate",
     )
-    cpu_data = cpu_info()
-    logfile_fields += tuple([k[0] for k in cpu_data])
-    gpu_data = gpu_info()
-    if gpu_data is not None:  # CUDA is available on this platform
-        logfile_fields += tuple([k[0] for k in gpu_data])
-    gpu_is_available = bool(gpu_data)
+    logfile_fields += tuple([k[0] for k in cpu_log()])
+    if device != "cpu":
+        logfile_fields += tuple([k[0] for k in gpu_log()])
 
     with open(logfile_name, "a+", newline="") as logfile:
         logwriter = csv.DictWriter(logfile, fieldnames=logfile_fields)
@@ -132,7 +164,7 @@ def run(
 
             # progress bar only on interactive jobs
             for samples in tqdm(
-                data_loader, desc="batch", leave=False, disable=None,
+                data_loader, desc="batch", leave=False, disable=None
             ):
 
                 # data forwarding on the existing network
@@ -171,16 +203,16 @@ def run(
             logdata = (
                 ("epoch", f"{epoch}"),
                 (
-                    "total-time",
+                    "total_time",
                     f"{datetime.timedelta(seconds=int(current_time))}",
                 ),
                 ("eta", f"{datetime.timedelta(seconds=int(eta_seconds))}"),
-                ("average-loss", f"{losses.avg:.6f}"),
-                ("median-loss", f"{losses.median:.6f}"),
-                ("learning-rate", f"{optimizer.param_groups[0]['lr']:.6f}"),
-            ) + cpu_info()
-            if gpu_is_available:
-                logdata += gpu_info()
+                ("average_loss", f"{losses.avg:.6f}"),
+                ("median_loss", f"{losses.median:.6f}"),
+                ("learning_rate", f"{optimizer.param_groups[0]['lr']:.6f}"),
+            ) + cpu_log()
+            if device != 'cpu':
+                logdata += gpu_log()
 
             logwriter.writerow(dict(k for k in logdata))
             logfile.flush()

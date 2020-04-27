@@ -107,11 +107,12 @@ def _check_experiment_stare(overlay):
         train_folder = os.path.join(output_folder, "model")
         assert os.path.exists(os.path.join(train_folder, "model_final.pth"))
         assert os.path.exists(os.path.join(train_folder, "last_checkpoint"))
+        assert os.path.exists(os.path.join(train_folder, "constants.csv"))
         assert os.path.exists(os.path.join(train_folder, "trainlog.csv"))
+        assert os.path.exists(os.path.join(predict_folder, "model_summary.txt"))
 
         # check predictions are there
         predict_folder = os.path.join(output_folder, "predictions")
-        assert os.path.exists(os.path.join(predict_folder, "model-info.txt"))
         basedir = os.path.join(predict_folder, "stare-images")
         assert os.path.exists(basedir)
         nose.tools.eq_(len(fnmatch.filter(os.listdir(basedir), "*.hdf5")), 20)
@@ -237,7 +238,9 @@ def _check_train(runner):
 
         assert os.path.exists(os.path.join(output_folder, "model_final.pth"))
         assert os.path.exists(os.path.join(output_folder, "last_checkpoint"))
+        assert os.path.exists(os.path.join(output_folder, "constants.csv"))
         assert os.path.exists(os.path.join(output_folder, "trainlog.csv"))
+        assert os.path.exists(os.path.join(output_folder, "model_summary.txt"))
 
         keywords = {
             r"^Continuing from epoch 0$": 1,
@@ -293,7 +296,6 @@ def _check_predict(runner):
         _assert_exit_0(result)
 
         # check predictions are there
-        assert os.path.exists(os.path.join(output_folder, "model-info.txt"))
         basedir = os.path.join(output_folder, "stare-images")
         assert os.path.exists(basedir)
         nose.tools.eq_(len(fnmatch.filter(os.listdir(basedir), "*.hdf5")), 10)

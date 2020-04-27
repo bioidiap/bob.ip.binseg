@@ -14,7 +14,6 @@ import torchvision.transforms.functional as VF
 
 import h5py
 
-from ..utils.summary import summary
 from ..data.utils import overlayed_image
 
 import logging
@@ -182,11 +181,3 @@ def run(model, data_loader, device, output_folder, overlayed_folder):
 
     average_image_time = numpy.sum(numpy.array(times) * len_samples) / float(sum(len_samples))
     logger.info(f"Average image time: {average_image_time:g}s")
-
-    # Save model summary
-    summary_path = os.path.join(output_folder, "model-info.txt")
-    logger.info(f"Saving model summary at {summary_path}...")
-    with open(summary_path, "wt") as f:
-        r, n = summary(model)
-        logger.info(f"Model has {n} parameters...")
-        f.write(r)
