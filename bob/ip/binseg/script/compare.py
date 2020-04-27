@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # coding=utf-8
 
+import os
 import click
 
 from bob.extension.scripts.click_helper import (
@@ -185,7 +186,9 @@ def compare(label_path, output_figure, table_format, output_table, threshold,
     data = _load(data, threshold=threshold)
 
     if output_figure is not None:
+        output_figure = os.path.realpath(output_figure)
         logger.info(f"Creating and saving plot at {output_figure}...")
+        os.makedirs(os.path.dirname(output_figure), exist_ok=True)
         fig = precision_recall_f1iso(data, confidence=True)
         fig.savefig(output_figure)
 
@@ -193,6 +196,8 @@ def compare(label_path, output_figure, table_format, output_table, threshold,
     table = performance_table(data, table_format)
     click.echo(table)
     if output_table is not None:
+        output_table = os.path.realpath(output_table)
         logger.info(f"Saving table at {output_table}...")
+        os.makedirs(os.path.dirname(output_table), exist_ok=True)
         with open(output_table, "wt") as f:
             f.write(table)
