@@ -128,13 +128,13 @@ def _check_experiment_stare(overlay):
 
         # check evaluation outputs
         eval_folder = os.path.join(output_folder, "analysis")
-        assert os.path.exists(os.path.join(eval_folder, "train", "metrics.csv"))
-        assert os.path.exists(os.path.join(eval_folder, "test", "metrics.csv"))
+        assert os.path.exists(os.path.join(eval_folder, "train.csv"))
+        assert os.path.exists(os.path.join(eval_folder, "test.csv"))
         assert os.path.exists(
-            os.path.join(eval_folder, "train", "metrics-second-annotator.csv")
+            os.path.join(eval_folder, "second-annotator", "train.csv")
         )
         assert os.path.exists(
-            os.path.join(eval_folder, "test", "metrics-second-annotator.csv")
+            os.path.join(eval_folder, "second-annotator" , "test.csv")
         )
 
         overlay_folder = os.path.join(output_folder, "overlayed", "analysis")
@@ -164,6 +164,9 @@ def _check_experiment_stare(overlay):
         keywords = {
             r"^Started training$": 1,
             r"^Found \(dedicated\) '__train__' set for training$": 1,
+            r"^Continuing from epoch 0$": 1,
+            r"^Saving model summary at.*$": 1,
+            r"^Model has.*$": 1,
             r"^Saving checkpoint": 1,
             r"^Ended training$": 1,
             r"^Started prediction$": 1,
@@ -244,6 +247,8 @@ def _check_train(runner):
 
         keywords = {
             r"^Continuing from epoch 0$": 1,
+            r"^Saving model summary at.*$": 1,
+            r"^Model has.*$": 1,
             rf"^Saving checkpoint to {output_folder}/model_final.pth$": 1,
             r"^Total training time:": 1,
         }
@@ -356,9 +361,9 @@ def _check_evaluate(runner):
         )
         _assert_exit_0(result)
 
-        assert os.path.exists(os.path.join(output_folder, "metrics.csv"))
+        assert os.path.exists(os.path.join(output_folder, "test.csv"))
         assert os.path.exists(os.path.join(output_folder,
-            "metrics-second-annotator.csv"))
+            "second-annotator", "test.csv"))
 
         # check overlayed images are there (since we requested them)
         basedir = os.path.join(overlay_folder, "stare-images")
@@ -400,9 +405,9 @@ def _check_compare(runner):
                 "-vv",
                 # label - path to metrics
                 "test",
-                os.path.join(output_folder, "metrics.csv"),
+                os.path.join(output_folder, "test.csv"),
                 "test (2nd. human)",
-                os.path.join(output_folder, "metrics-second-annotator.csv"),
+                os.path.join(output_folder, "second-annotator", "test.csv"),
                 "--output-figure=comparison.pdf",
                 "--output-table=comparison.rst",
             ],
