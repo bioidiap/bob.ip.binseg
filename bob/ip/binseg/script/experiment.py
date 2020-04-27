@@ -2,6 +2,7 @@
 # coding=utf-8
 
 import os
+import shutil
 
 import click
 
@@ -11,43 +12,11 @@ from bob.extension.scripts.click_helper import (
     ResourceOption,
 )
 
+from .binseg import save_sh_command
+
 import logging
 
 logger = logging.getLogger(__name__)
-
-
-def _save_sh_command(destfile):
-    """Records command-line to reproduce this experiment"""
-
-    import sys
-    import time
-    import pkg_resources
-
-    dirname = os.path.dirname(destfile)
-
-    if not os.path.exists(dirname):
-        os.makedirs(dirname)
-
-    logger.info(f"Writing command-line for reproduction at '{destfile}'...")
-
-    with open(destfile, "wt") as f:
-        f.write("#!/usr/bin/env sh\n")
-        f.write(f"# date: {time.asctime()}\n")
-        version = pkg_resources.require("bob.ip.binseg")[0].version
-        f.write(f"# version: {version} (bob.ip.binseg)\n")
-        f.write(f"# platform: {sys.platform}\n")
-        f.write("\n")
-        args = []
-        for k in sys.argv:
-            if " " in k:
-                args.append(f'"{k}"')
-            else:
-                args.append(k)
-        if os.environ.get("CONDA_DEFAULT_ENV") is not None:
-            f.write(f"#conda activate {os.environ['CONDA_DEFAULT_ENV']}\n")
-        f.write(f"#cd {os.path.realpath(os.curdir)}\n")
-        f.write(" ".join(args) + "\n")
-    os.chmod(destfile, 0o755)
 
 
 @click.command(
@@ -56,9 +25,9 @@ def _save_sh_command(destfile):
     epilog="""Examples:
 
 \b
-    1. Trains a M2U-Net model (VGG-16 backbone) with DRIVE (vessel segmentation),
-       on the CPU, for only two epochs, then runs inference and evaluation on
-       results from its test set:
+    1. Trains an M2U-Net model (VGG-16 backbone) with DRIVE (vessel
+       segmentation), on the CPU, for only two epochs, then runs inference and
+       evaluation on stock datasets, report performance as a table and a figure:
 
        $ bob binseg experiment -vv m2unet drive --epochs=2
 
@@ -263,8 +232,8 @@ def experiment(
     """Runs a complete experiment, from training, to prediction and evaluation
 
     This script is just a wrapper around the individual scripts for training,
-    running prediction and evaluating FCN models.  It organises the output in a
-    preset way:
+    running prediction, evaluating and comparing FCN model performance.  It
+    organises the output in a preset way:
 
     .. code-block:: text
 
@@ -279,6 +248,8 @@ def experiment(
              └── second-annotator/  #if set, store overlayed images for the
                                     #second annotator here
           └── analysis /  #the outputs of the analysis of both train/test sets
+                          #includes second-annotator "metrics" as well, if
+                          # configured
 
     Training is performed for a configurable number of epochs, and generates at
     least a final_model.pth.  It may also generate a number of intermediate
@@ -300,12 +271,16 @@ def experiment(
 
     N.B.2: The threshold used for calculating the F1-score on the test set, or
     overlay analysis (false positives, negatives and true positives overprinted
-    on the original image) will be automatically calculated from a
-    ``validation`` set, if one is provided, otherwise, from the ``train`` set.
-    If none of those is provided, a fixed threshold value at 0.5 will be used.
+    on the original image) also follows the logic above.
     """
 
-    _save_sh_command(os.path.join(output_folder, "command.sh"))
+    command_sh = os.path.join(output_folder, "command.sh")
+    if os.path.exists(command_sh):
+        backup = command_sh + '~'
+        if os.path.exists(backup):
+            os.unlink(backup)
+        shutil.move(command_sh, backup)
+    save_sh_command(command_sh)
 
     ## Training
     logger.info("Started training")
@@ -335,100 +310,19 @@ def experiment(
     )
     logger.info("Ended training")
 
-    ## Prediction
-    logger.info("Started prediction")
-
-    from .predict import predict
+    from .analyze import analyze
 
     model_file = os.path.join(train_output_folder, "model_final.pth")
-    predictions_folder = os.path.join(output_folder, "predictions")
-    overlayed_folder = (
-        os.path.join(output_folder, "overlayed", "predictions")
-        if overlayed
-        else None
-    )
 
     ctx.invoke(
-        predict,
-        output_folder=predictions_folder,
-        model=model,
-        dataset=dataset,
-        batch_size=batch_size,
-        device=device,
-        weight=model_file,
-        overlayed=overlayed_folder,
-        verbose=verbose,
-    )
-    logger.info("Ended prediction")
-
-    ## Evaluation
-    logger.info("Started evaluation")
-
-    from .evaluate import evaluate
-
-    overlayed_folder = (
-        os.path.join(output_folder, "overlayed", "analysis")
-        if overlayed
-        else None
-    )
-
-    # choosing the overlayed_threshold
-    if "validation" in dataset:
-        threshold = "validation"
-    elif "train" in dataset:
-        threshold = "train"
-    else:
-        threshold = 0.5
-    logger.info(f"Setting --threshold={threshold}...")
-
-    analysis_folder = os.path.join(output_folder, "analysis")
-    ctx.invoke(
-        evaluate,
-        output_folder=analysis_folder,
-        predictions_folder=predictions_folder,
-        dataset=dataset,
-        second_annotator=second_annotator,
-        overlayed=overlayed_folder,
-        threshold=threshold,
-        verbose=verbose,
-    )
-
-    logger.info("Ended evaluation")
-
-    ## Comparison
-    logger.info("Started comparison")
-
-    # compare performances on the various sets
-    from .compare import compare
-
-    systems = []
-    for k, v in dataset.items():
-        if k.startswith("_"):
-            logger.info(f"Skipping dataset '{k}' (not to be compared)")
-            continue
-        systems += [k, os.path.join(analysis_folder, k, "metrics.csv")]
-    if second_annotator is not None:
-        for k, v in second_annotator.items():
-            if k.startswith("_"):
-                logger.info(f"Skipping dataset '{k}' (not to be compared)")
-                continue
-            systems += [
-                f"{k} (2nd. annot.)",
-                os.path.join(
-                    analysis_folder, k, "metrics-second-annotator.csv"
-                ),
-            ]
-
-    output_figure = os.path.join(output_folder, "comparison.pdf")
-    output_table = os.path.join(output_folder, "comparison.rst")
-
-    ctx.invoke(
-        compare,
-        label_path=systems,
-        output_figure=output_figure,
-        output_table=output_table,
-        threshold=threshold,
-        verbose=verbose,
-    )
-
-    logger.info("Ended comparison, and the experiment - bye.")
+            analyze,
+            model=model,
+            output_folder=output_folder,
+            batch_size=batch_size,
+            dataset=dataset,
+            second_annotator=second_annotator,
+            device=device,
+            overlayed=overlayed,
+            weight=model_file,
+            verbose=verbose,
+            )
