@@ -40,10 +40,7 @@ def _save_hdf5(stem, prob, output_folder):
 
     fullpath = os.path.join(output_folder, f"{stem}.hdf5")
     tqdm.write(f"Saving {fullpath}...")
-    fulldir = os.path.dirname(fullpath)
-    if not os.path.exists(fulldir):
-        tqdm.write(f"Creating directory {fulldir}...")
-        os.makedirs(fulldir, exist_ok=True)
+    os.makedirs(os.path.dirname(fullpath), exist_ok=True)
     with h5py.File(fullpath, 'w') as f:
         data = prob.cpu().squeeze(0).numpy()
         f.create_dataset("array", data=data, compression="gzip",
@@ -71,10 +68,7 @@ def _save_image(stem, extension, data, output_folder):
 
     fullpath = os.path.join(output_folder, stem + extension)
     tqdm.write(f"Saving {fullpath}...")
-    fulldir = os.path.dirname(fullpath)
-    if not os.path.exists(fulldir):
-        tqdm.write(f"Creating directory {fulldir}...")
-        os.makedirs(fulldir, exist_ok=True)
+    os.makedirs(os.path.dirname(fullpath), exist_ok=True)
     data.save(fullpath)
 
 
@@ -128,13 +122,9 @@ def run(model, data_loader, device, output_folder, overlayed_folder):
     """
 
     logger.info(f"Output folder: {output_folder}")
+    os.makedirs(output_folder, exist_ok=True)
+
     logger.info(f"Device: {device}")
-
-    if not os.path.exists(output_folder):
-        logger.debug(f"Creating output directory '{output_folder}'...")
-        # protect against concurrent access - exist_ok=True
-        os.makedirs(output_folder, exist_ok=True)
-
     model.eval().to(device)
     # Sigmoid for predictions
     sigmoid = torch.nn.Sigmoid()
