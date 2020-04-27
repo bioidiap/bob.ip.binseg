@@ -13,7 +13,7 @@ from tqdm import tqdm
 
 from ..utils.metric import SmoothedValue
 from ..utils.summary import summary
-from ..utils.resources import cpu_info, gpu_info, cpu_log, gpu_log
+from ..utils.resources import cpu_constants, gpu_constants, cpu_log, gpu_log
 
 import logging
 
@@ -79,7 +79,7 @@ def run(
 
     if device != "cpu":
         # asserts we do have a GPU
-        assert bool(gpu_info()), (
+        assert bool(gpu_constants()), (
             f"Device set to '{device}', but cannot "
             f"find a GPU (maybe nvidia-smi is not installed?)"
         )
@@ -104,10 +104,10 @@ def run(
             os.unlink(backup)
         shutil.move(static_logfile_name, backup)
     with open(static_logfile_name, "w", newline="") as f:
-        logdata = cpu_info()
+        logdata = cpu_constants()
         if device != "cpu":
-            logdata += gpu_info()
-        logdata = (("model_size", n),) + logdata
+            logdata += gpu_constants()
+        logdata += (("model_size", n),)
         logwriter = csv.DictWriter(f, fieldnames=[k[0] for k in logdata])
         logwriter.writeheader()
         logwriter.writerow(dict(k for k in logdata))

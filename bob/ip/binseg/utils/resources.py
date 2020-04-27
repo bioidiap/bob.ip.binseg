@@ -4,7 +4,6 @@
 """Tools for interacting with the running computer or GPU"""
 
 import os
-import re
 import subprocess
 import shutil
 
@@ -17,29 +16,13 @@ logger = logging.getLogger(__name__)
 _nvidia_smi = shutil.which("nvidia-smi")
 """Location of the nvidia-smi program, if one exists"""
 
-_nvidia_starter_query = (
-    # obtain possible values with ``nvidia-smi --help-query-gpu``
-    "gpu_name",
-    "driver_version",
-    "memory.total",
-)
-"""Query parameters for logging static GPU information"""
-
-_nvidia_log_query = (
-    # obtain possible values with ``nvidia-smi --help-query-gpu``
-    "memory.used",
-    "memory.free",
-    "utilization.memory",
-    "utilization.gpu",
-)
-"""Query parameters for logging performance of GPU"""
 
 GB = float(2 ** 30)
 """The number of bytes in a gigabyte"""
 
 
-def gpu_info(query=_nvidia_starter_query):
-    """Returns GPU (static) information using nvidia-smi
+def run_nvidia_smi(query, rename=None):
+    """Returns GPU information from query
 
     For a comprehensive list of options and help, execute ``nvidia-smi
     --help-query-gpu`` on a host with a GPU
@@ -51,56 +34,30 @@ def gpu_info(query=_nvidia_starter_query):
     query : list
         A list of query strings as defined by ``nvidia-smi --help-query-gpu``
 
-
-    Returns
-    -------
-
-    data : tuple
-        An ordered dictionary (organized as 2-tuples) containing the queried
-        parameters.  If ``nvidia-smi`` is not available, returns a list of
-        ``None`` objects.  Dots and underscores in the original NVIDIA naming
-        convention are normalized with dashes.
-
-  """
-
-    if _nvidia_smi is not None:
-        values = subprocess.getoutput(
-            "%s --query-gpu=%s --format=csv,noheader"
-            % (_nvidia_smi, ",".join(query))
-        )
-        values = [k.strip() for k in values.split(",")]
-        regexp = re.compile(r"(\.|-)")
-        fieldnames = [regexp.sub("_", k) for k in query]
-        return tuple(zip(fieldnames, values))
-
-
-def gpu_log(query=_nvidia_log_query):
-    """Returns GPU information about current non-static status using nvidia-smi
-
-    For a comprehensive list of options and help, execute ``nvidia-smi
-    --help-query-gpu`` on a host with a GPU
-
-
-    Parameters
-    ----------
-
-    query : list
-        A list of query strings as defined by ``nvidia-smi --help-query-gpu``
+    rename : :py:class:`list`, Optional
+        A list of keys to yield in the return value for each entry above.  It
+        gives you the opportunity to rewrite some key names for convenience.
+        This list, if provided, must be of the same length as ``query``.
 
 
     Returns
     -------
 
-    data : tuple
+    data : :py:class:`tuple`, None
         An ordered dictionary (organized as 2-tuples) containing the queried
-        parameters.  If ``nvidia-smi`` is not available, returns a list of
-        ``None`` objects.  Dots and underscores in the original NVIDIA naming
-        convention are normalized with dashes.  Percentage information is left
-        alone, memory information is transformed in to gigabytes.
+        parameters (``rename`` versions).  If ``nvidia-smi`` is not available,
+        returns ``None``.  Percentage information is left alone,
+        memory information is transformed to gigabytes (floating-point).
 
-  """
+    """
 
     if _nvidia_smi is not None:
+
+        if rename is None:
+            rename = query
+        else:
+            assert len(rename) == len(query)
+
         values = subprocess.getoutput(
             "%s --query-gpu=%s --format=csv,noheader"
             % (_nvidia_smi, ",".join(query))
@@ -108,18 +65,81 @@ def gpu_log(query=_nvidia_log_query):
         values = [k.strip() for k in values.split(",")]
         t_values = []
         for k in values:
-            if k.endswith('%'): t_values.append(k[:-1].strip())
-            elif k.endswith('MiB'): t_values.append(float(k[:-3].strip())/1024)
-        regexp = re.compile(r"(\.|-)")
-        fieldnames = [regexp.sub("_", k) for k in query]
-        return tuple(zip(fieldnames, values))
+            if k.endswith("%"):
+                t_values.append(float(k[:-1].strip()))
+            elif k.endswith("MiB"):
+                t_values.append(float(k[:-3].strip()) / 1024)
+            else:
+                t_values.append(k)  #unchanged
+        return tuple(zip(rename, t_values))
+
+
+def gpu_constants():
+    """Returns GPU (static) information using nvidia-smi
+
+    See :py:func:`run_nvidia_smi` for operational details.
+
+    Returns
+    -------
+
+    data : :py:class:`tuple`, None
+        If ``nvidia-smi`` is not available, returns ``None``, otherwise, we
+        return an ordered dictionary (organized as 2-tuples) containing the
+        following ``nvidia-smi`` query information:
+
+        * ``gpu_name``, as ``gpu_name`` (:py:class:`str`)
+        * ``driver_version``, as ``gpu_driver_version`` (:py:class:`str`)
+        * ``memory.total``, as ``gpu_memory_total`` (transformed to gigabytes,
+          :py:class:`float`)
+
+    """
+
+    return run_nvidia_smi(
+        ("gpu_name", "driver_version", "memory.total"),
+        ("gpu_name", "gpu_driver_version", "gpu_memory_total"),
+    )
+
+
+def gpu_log():
+    """Returns GPU information about current non-static status using nvidia-smi
+
+    See :py:func:`run_nvidia_smi` for operational details.
+
+    Returns
+    -------
+
+    data : :py:class:`tuple`, None
+        If ``nvidia-smi`` is not available, returns ``None``, otherwise, we
+        return an ordered dictionary (organized as 2-tuples) containing the
+        following ``nvidia-smi`` query information:
+
+        * ``memory.used``, as ``gpu_memory_used`` (transformed to gigabytes,
+          :py:class:`float`)
+        * ``memory.free``, as ``gpu_memory_free`` (transformed to gigabytes,
+          :py:class:`float`)
+        * ``utilization.memory``, as ``gpu_memory_percent``,
+          (:py:class:`float`, in percent)
+        * ``utilization.gpu``, as ``gpu_utilization``,
+          (:py:class:`float`, in percent)
+
+    """
+
+    return run_nvidia_smi(
+        ("memory.used", "memory.free", "utilization.memory", "utilization.gpu"),
+        (
+            "gpu_memory_used",
+            "gpu_memory_free",
+            "gpu_memory_percent",
+            "gpu_percent",
+        ),
+    )
 
 
 _CLUSTER = []
 """List of processes currently being monitored"""
 
 
-def cpu_info():
+def cpu_constants():
     """Returns static CPU information about the current system.
 
 
@@ -172,7 +192,7 @@ def cpu_log():
     """
 
     global _CLUSTER
-    if (not _CLUSTER) or (_CLUSTER[0] != psutil.Process()):  #initialization
+    if (not _CLUSTER) or (_CLUSTER[0] != psutil.Process()):  # initialization
         this = psutil.Process()
         _CLUSTER = [this] + this.children(recursive=True)
         # touch cpu_percent() at least once for all
