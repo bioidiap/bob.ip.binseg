@@ -109,7 +109,7 @@ def _check_experiment_stare(overlay):
         assert os.path.exists(os.path.join(train_folder, "last_checkpoint"))
         assert os.path.exists(os.path.join(train_folder, "constants.csv"))
         assert os.path.exists(os.path.join(train_folder, "trainlog.csv"))
-        assert os.path.exists(os.path.join(predict_folder, "model_summary.txt"))
+        assert os.path.exists(os.path.join(train_folder, "model_summary.txt"))
 
         # check predictions are there
         predict_folder = os.path.join(output_folder, "predictions")
