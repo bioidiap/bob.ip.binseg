@@ -214,6 +214,7 @@ def _sample_analysis(
 
 def run(
     dataset,
+    name,
     predictions_folder,
     output_folder=None,
     overlayed_folder=None,
@@ -228,6 +229,10 @@ def run(
 
     dataset : py:class:`torch.utils.data.Dataset`
         a dataset to iterate on
+
+    name : str
+        the local name of this dataset (e.g. ``train``, or ``test``), to be
+        used when saving metrics files.
 
     predictions_folder : str
         folder where predictions for the dataset images has been previously
@@ -282,10 +287,7 @@ def run(
             )
             fullpath = os.path.join(overlayed_folder, f"{stem}.png")
             tqdm.write(f"Saving {fullpath}...")
-            fulldir = os.path.dirname(fullpath)
-            if not os.path.exists(fulldir):
-                tqdm.write(f"Creating directory {fulldir}...")
-                os.makedirs(fulldir, exist_ok=True)
+            os.makedirs(os.path.dirname(fullpath), exist_ok=True)
             overlay_image.save(fullpath)
 
     # Merges all dataframes together
@@ -334,12 +336,8 @@ def run(
 
     if output_folder is not None:
         logger.info(f"Output folder: {output_folder}")
-
-        if not os.path.exists(output_folder):
-            logger.info(f"Creating {output_folder}...")
-            os.makedirs(output_folder, exist_ok=True)
-
-        metrics_path = os.path.join(output_folder, "metrics.csv")
+        os.makedirs(output_folder, exist_ok=True)
+        metrics_path = os.path.join(output_folder, f"{name}.csv")
         logger.info(
             f"Saving averages over all input images at {metrics_path}..."
         )
@@ -348,7 +346,8 @@ def run(
     return maxf1_threshold
 
 
-def compare_annotators(baseline, other, output_folder, overlayed_folder=None):
+def compare_annotators(baseline, other, name, output_folder,
+        overlayed_folder=None):
     """
     Compares annotations on the **same** dataset
 
@@ -363,6 +362,10 @@ def compare_annotators(baseline, other, output_folder, overlayed_folder=None):
         a second dataset, with the same samples as ``baseline``, but annotated
         by a different annotator than in the first dataset.
 
+    name : str
+        the local name of this dataset (e.g. ``train-second-annotator``, or
+        ``test-second-annotator``), to be used when saving metrics files.
+
     output_folder : str
         folder where to store results
 
@@ -373,10 +376,7 @@ def compare_annotators(baseline, other, output_folder, overlayed_folder=None):
     """
 
     logger.info(f"Output folder: {output_folder}")
-
-    if not os.path.exists(output_folder):
-        logger.info(f"Creating {output_folder}...")
-        os.makedirs(output_folder, exist_ok=True)
+    os.makedirs(output_folder, exist_ok=True)
 
     # Collect overall metrics
     data = {}
@@ -398,12 +398,10 @@ def compare_annotators(baseline, other, output_folder, overlayed_folder=None):
             overlay_image = _sample_analysis(
                 image, pred, gt, threshold=0.5, overlay=True
             )
-            fullpath = os.path.join(overlayed_folder, f"{stem}.png")
+            fullpath = os.path.join(overlayed_folder, "second-annotator",
+                    f"{stem}.png")
             tqdm.write(f"Saving {fullpath}...")
-            fulldir = os.path.dirname(fullpath)
-            if not os.path.exists(fulldir):
-                tqdm.write(f"Creating directory {fulldir}...")
-                os.makedirs(fulldir, exist_ok=True)
+            os.makedirs(os.path.dirname(fullpath), exist_ok=True)
             overlay_image.save(fullpath)
 
     # Merges all dataframes together
@@ -414,7 +412,7 @@ def compare_annotators(baseline, other, output_folder, overlayed_folder=None):
     std_metrics = df_metrics.groupby("index").std()
 
     # Uncomment below for F1-score calculation based on average precision and
-    # metrics instead of F1-scores of individual images. This method is in line
+    # {name} instead of F1-scores of individual images. This method is in line
     # with Maninis et. al. (2016)
     #
     # avg_metrics["f1_score"] = \
@@ -433,7 +431,8 @@ def compare_annotators(baseline, other, output_folder, overlayed_folder=None):
     # with threshold == 0.5 - the first row is redundant
     avg_metrics.drop(0, inplace=True)
 
-    metrics_path = os.path.join(output_folder, "metrics-second-annotator.csv")
+    metrics_path = os.path.join(output_folder, "second-annotator", f"{name}.csv")
+    os.makedirs(os.path.dirname(metrics_path), exist_ok=True)
     logger.info(f"Saving averages over all input images at {metrics_path}...")
     avg_metrics.to_csv(metrics_path)
 

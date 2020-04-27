@@ -84,9 +84,7 @@ def run(
             f"find a GPU (maybe nvidia-smi is not installed?)"
         )
 
-    if not os.path.exists(output_folder):
-        logger.debug(f"Creating output directory '{output_folder}'...")
-        os.makedirs(output_folder)
+    os.makedirs(output_folder, exist_ok=True)
 
     # Save model summary
     summary_path = os.path.join(output_folder, "model_summary.txt")
