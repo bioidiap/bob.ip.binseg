@@ -152,50 +152,25 @@ def evaluate(
 
     threshold = _validate_threshold(threshold, dataset)
 
-    # if we work with dictionaries of datasets, then output evaluation
-    # information into sub-directories of the output_folder
-    config = {}
     if not isinstance(dataset, dict):
-        config["test"] = {
-            "dataset": dataset,
-            "output_folder": output_folder,
-            "second_annotator": second_annotator,
-        }
-    else:
-        for k, v in dataset.items():
-            if k.startswith("_"):
-                logger.info(f"Skipping dataset '{k}' (not to be evaluated)")
-                continue
-            config[k] = {
-                "dataset": v,
-                "output_folder": os.path.join(output_folder, k),
-                "second_annotator": second_annotator.get(k)
-                if second_annotator
-                else None,
-            }
+        dataset = {"test": dataset}
+    if second_annotator is not None:
+        if not isinstance(second_annotator, dict):
+            second_annotator = {"test": second_annotator}
 
     if isinstance(threshold, str):
         # first run evaluation for reference dataset, do not save overlays
         logger.info(f"Evaluating threshold on '{threshold}' set")
-        threshold = run(dataset[threshold], predictions_folder)
+        threshold = run(dataset[threshold], threshold, predictions_folder)
         logger.info(f"Set --threshold={threshold:.5f}")
 
     # now run with the
-    for k, v in config.items():
+    for k, v in dataset.items():
+        if k.startswith("_"):
+            logger.info(f"Skipping dataset '{k}' (not to be evaluated)")
+            continue
         logger.info(f"Analyzing '{k}' set...")
-        run(
-            v["dataset"],
-            predictions_folder,
-            v["output_folder"],
-            overlayed,
-            threshold,
-        )
-        if v["second_annotator"] is not None:
-            compare_annotators(
-                v["dataset"],
-                v["second_annotator"],
-                v["output_folder"],
-                os.path.join(overlayed, "second-annotator")
-                if overlayed
-                else None,
-            )
+        run(v, k, predictions_folder, output_folder, overlayed, threshold)
+        second = second_annotator.get(k)
+        if second is not None:
+            compare_annotators(v, second, k, output_folder, overlayed)
