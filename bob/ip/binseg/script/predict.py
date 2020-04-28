@@ -140,6 +140,8 @@ def predict(output_folder, model, dataset, batch_size, device, weight,
             logger.info(f"Skipping dataset '{k}' (not to be evaluated)")
             continue
 
+        logger.info(f"Running inference on '{k}' set...")
+
         data_loader = DataLoader(
             dataset=v,
             batch_size=batch_size,

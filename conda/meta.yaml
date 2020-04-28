@@ -60,6 +60,7 @@ test:
     - sphinx
     - sphinx_rtd_theme
     - sphinxcontrib-programoutput
+    - graphviz
 
 about:
   summary: Binary Segmentation Benchmark Package for Bob

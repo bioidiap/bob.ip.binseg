@@ -78,38 +78,40 @@ M2U-Net Precision vs. Recall Curves
 Precision vs. recall curves for each evaluated dataset.  Note that here the
 F1-score is calculated on a macro level (see paper for more details).
 
-.. figure:: img/pr_CHASEDB1.png
+.. figure:: pr_CHASEDB1.png
    :scale: 50 %
    :align: center
    :alt: model comparisons
 
    CHASE_DB1: Precision vs Recall curve and F1 scores
 
-.. figure:: img/pr_DRIVE.png
+.. figure:: pr_DRIVE.png
    :scale: 50 %
    :align: center
    :alt: model comparisons
 
    DRIVE: Precision vs Recall curve and F1 scores
 
-.. figure:: img/pr_HRF.png
+.. figure:: pr_HRF.png
    :scale: 50 %
    :align: center
    :alt: model comparisons
 
    HRF: Precision vs Recall curve and F1 scores
 
-.. figure:: img/pr_IOSTARVESSEL.png
+.. figure:: pr_IOSTARVESSEL.png
    :scale: 50 %
    :align: center
    :alt: model comparisons
 
    IOSTAR: Precision vs Recall curve and F1 scores
 
-.. figure:: img/pr_STARE.png
+.. figure:: pr_STARE.png
    :scale: 50 %
    :align: center
    :alt: model comparisons
 
    STARE: Precision vs Recall curve and F1 scores
 
+
+.. include:: ../../links.rst

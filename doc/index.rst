@@ -43,7 +43,7 @@ User Guide
 
    setup
    usage
-   results
+   results/index
    acknowledgements
    references
    datasets

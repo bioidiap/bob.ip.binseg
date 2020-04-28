@@ -136,10 +136,9 @@ def analyze(
 
     This script is just a wrapper around the individual scripts for running
     prediction and evaluating FCN models.  It organises the output in a
-    preset way:
+    preset way::
 
-    .. code-block:: text
-
+\b
        └─ <output-folder>/
           ├── predictions/  #the prediction outputs for the train/test set
           ├── overlayed/  #the overlayed outputs for the train/test set

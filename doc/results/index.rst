@@ -15,8 +15,9 @@ strategy.
 .. toctree::
    :maxdepth: 2
 
-   baselines
-   covd
+   baselines/index
+   xtest/index
+   covd/index
 
 
-.. include:: links.rst
+.. include:: ../links.rst

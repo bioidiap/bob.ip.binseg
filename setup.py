@@ -61,23 +61,27 @@ setup(
             # drive dataset
             "drive = bob.ip.binseg.configs.datasets.drive.default",
             "drive-2nd = bob.ip.binseg.configs.datasets.drive.second_annotator",
+            "drive-xtest = bob.ip.binseg.configs.datasets.drive.xtest",
             "drive-covd = bob.ip.binseg.configs.datasets.drive.covd",
             "drive-ssl = bob.ip.binseg.configs.datasets.drive.ssl",
 
             # stare dataset
             "stare = bob.ip.binseg.configs.datasets.stare.ah",
             "stare-2nd = bob.ip.binseg.configs.datasets.stare.vk",
+            "stare-xtest = bob.ip.binseg.configs.datasets.stare.xtest",
             "stare-covd = bob.ip.binseg.configs.datasets.stare.covd",
             "stare-ssl = bob.ip.binseg.configs.datasets.stare.ssl",
 
             # iostar
             "iostar-vessel = bob.ip.binseg.configs.datasets.iostar.vessel",
+            "iostar-vessel-xtest = bob.ip.binseg.configs.datasets.iostar.vessel_xtest",
             "iostar-disc = bob.ip.binseg.configs.datasets.iostar.optic_disc",
             "iostar-vessel-covd = bob.ip.binseg.configs.datasets.iostar.covd",
             "iostar-vessel-ssl = bob.ip.binseg.configs.datasets.iostar.ssl",
 
             # hrf
             "hrf = bob.ip.binseg.configs.datasets.hrf.default",
+            "hrf-xtest = bob.ip.binseg.configs.datasets.hrf.xtest",
             "hrf-highres = bob.ip.binseg.configs.datasets.hrf.default_fullres",
             "hrf-covd = bob.ip.binseg.configs.datasets.hrf.covd",
             "hrf-ssl = bob.ip.binseg.configs.datasets.hrf.ssl",
@@ -85,6 +89,7 @@ setup(
             # chase-db1
             "chasedb1 = bob.ip.binseg.configs.datasets.chasedb1.first_annotator",
             "chasedb1-2nd = bob.ip.binseg.configs.datasets.chasedb1.second_annotator",
+            "chasedb1-xtest = bob.ip.binseg.configs.datasets.chasedb1.xtest",
             "chasedb1-covd = bob.ip.binseg.configs.datasets.chasedb1.covd",
             "chasedb1-ssl = bob.ip.binseg.configs.datasets.chasedb1.ssl",
 

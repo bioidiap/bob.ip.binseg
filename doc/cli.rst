@@ -91,10 +91,52 @@ You may use this command to locally copy a resource file so you can change it.
 .. command-output:: bob binseg config copy --help
 
 
+.. _bob.ip.binseg.cli.combined:
+
+Running and Analyzing Experiments
+---------------------------------
+
+These applications run a combined set of steps in one go.  They work well with
+our preset :ref:`configuration resources <bob.ip.binseg.cli.config.list.all>`.
+
+
+.. _bob.ip.binseg.cli.experiment:
+
+Running a Full Experiment Cycle
+===============================
+
+This command can run training, prediction, evaluation and comparison from a
+single, multi-step application.
+
+.. command-output:: bob binseg experiment --help
+
+
+.. _bob.ip.binseg.cli.analyze:
+
+Running Complete Experiment Analysis
+====================================
+
+This command can run prediction, evaluation and comparison from a
+single, multi-step application.
+
+.. command-output:: bob binseg analyze --help
+
+
+.. _bob.ip.binseg.cli.single:
+
+Single-Step Applications
+------------------------
+
+These applications allow finer control over the experiment cycle.  They also
+work well with our preset :ref:`configuration resources
+<bob.ip.binseg.cli.config.list.all>`, but allow finer control on the input
+datasets.
+
+
 .. _bob.ip.binseg.cli.train:
 
 Training FCNs
--------------
+=============
 
 Training creates of a new PyTorch_ model.  This model can be used for
 evaluation tests or for inference.
@@ -104,8 +146,8 @@ evaluation tests or for inference.
 
 .. _bob.ip.binseg.cli.predict:
 
-FCN Inference
--------------
+Prediction with FCNs
+====================
 
 Inference takes as input a PyTorch_ model and generates output probabilities as
 HDF5 files.  The probability map has the same size as the input and indicates,
@@ -118,7 +160,7 @@ from less probable (0.0) to more probable (1.0).
 .. _bob.ip.binseg.cli.evaluate:
 
 FCN Performance Evaluation
---------------------------
+==========================
 
 Evaluation takes inference results and compares it to ground-truth, generating
 a series of analysis figures which are useful to understand model performance.
@@ -129,23 +171,12 @@ a series of analysis figures which are useful to understand model performance.
 .. _bob.ip.binseg.cli.compare:
 
 Performance Comparison
-----------------------
+======================
 
 Performance comparison takes the performance evaluation results and generate
 combined figures and tables that compare results of multiple systems.
 
 .. command-output:: bob binseg compare --help
-
-
-.. _bob.ip.binseg.cli.experiment:
-
-Running Complete Experiments
-----------------------------
-
-This command can run training, prediction, evaluation and comparison from a
-single, multi-step application.
-
-.. command-output:: bob binseg experiment --help
 
 
 .. include:: links.rst

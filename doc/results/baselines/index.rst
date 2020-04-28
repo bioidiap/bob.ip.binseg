@@ -1,0 +1,118 @@
+.. -*- coding: utf-8 -*-
+
+.. _bob.ip.binseg.results.baselines:
+
+===================
+ Baseline Results
+===================
+
+F1 Scores (micro-level)
+-----------------------
+
+* Benchmark results for models: DRIU, HED, M2U-Net and U-Net.
+* Models are trained and tested on the same dataset (numbers in parenthesis
+  indicate number of parameters per model)
+* Database and model resource configuration links (table top row and left
+  column) are linked to the originating configuration files used to obtain
+  these results.
+* Check `our paper`_ for details on the calculation of the F1 Score and standard
+  deviations (in parentheses).
+* Single performance numbers correspond to *a priori* performance indicators,
+  where the threshold is previously selected on the training set
+* You can cross check the analysis numbers provided in this table by
+  downloading this software package, the raw data, and running ``bob binseg
+  analyze`` providing the model URL as ``--weight`` parameter.  Otherwise, we
+  also provide `CSV files
+  <https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/baselines/>`_
+  with the estimated performance per threshold (100
+  steps) per subset.
+* For comparison purposes, we provide "second-annotator" performances on the
+  same test set, where available.
+
+
+.. list-table::
+   :header-rows: 1
+
+   * - Dataset
+     - 2nd. Annot.
+     - :py:mod:`driu (15M) <bob.ip.binseg.configs.models.driu>`
+     - :py:mod:`hed (14.7M) <bob.ip.binseg.configs.models.hed>`
+     - :py:mod:`m2unet (0.55M) <bob.ip.binseg.configs.models.m2unet>`
+     - :py:mod:`unet (25.8M) <bob.ip.binseg.configs.models.unet>`
+   * - :py:mod:`drive <bob.ip.binseg.configs.datasets.drive.default>`
+     - 0.788 (0.021)
+     - `0.819 (0.016) <https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/baselines/driu/drive/model.pth>`_
+     - `0.806 (0.015) <https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/baselines/hed/drive/model.pth>`_
+     - `0.804 (0.014) <https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/baselines/m2unet/drive/model.pth>`_
+     - `0.823 (0.015) <https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/baselines/unet/drive/model.pth>`_
+   * - :py:mod:`stare <bob.ip.binseg.configs.datasets.stare.ah>`
+     - 0.759 (0.028)
+     - `0.824 (0.037) <https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/baselines/driu/stare/model.pth>`_
+     - `0.810 (0.045) <https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/baselines/hed/stare/model.pth>`_
+     - `0.811 (0.039) <https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/baselines/m2unet/stare/model.pth>`_
+     - `0.828 (0.041) <https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/baselines/unet/stare/model.pth>`_
+   * - :py:mod:`chasedb1 <bob.ip.binseg.configs.datasets.chasedb1.first_annotator>`
+     - 0.768  0.023
+     - `0.811 (0.018) <https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/baselines/driu/chasedb1/model.pth>`_
+     - `0.806 (0.021) <https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/baselines/hed/chasedb1/model.pth>`_
+     - `0.801 (0.018) <https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/baselines/m2unet/chasedb1/model.pth>`_
+     - `0.802 (0.015) <https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/baselines/unet/chasedb1/model.pth>`_
+   * - :py:mod:`hrf <bob.ip.binseg.configs.datasets.hrf.default>`
+     -
+     - `0.802 (0.039) <https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/baselines/driu/hrf/model.pth>`_
+     - `0.793 (0.041) <https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/baselines/hed/hrf/model.pth>`_
+     - `0.796 (0.043) <https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/baselines/m2unet/hrf/model.pth>`_
+     - `0.798 (0.038) <https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/baselines/unet/hrf/model.pth>`_
+   * - :py:mod:`iostar-vessel <bob.ip.binseg.configs.datasets.iostar.vessel>`
+     -
+     - `0.825 (0.021) <https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/baselines/driu/iostar-vessel/model.pth>`_
+     - `0.822 (0.023) <https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/baselines/hed/iostar-vessel/model.pth>`_
+     - `0.817 (0.021) <https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/baselines/m2unet/iostar-vessel/model.pth>`_
+     - `0.818 (0.019) <https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/baselines/unet/iostar-vessel/model.pth>`_
+
+
+Precision-Recall (PR) Curves
+----------------------------
+
+Next, you will find the PR plots showing confidence intervals, for the various
+models explored, on a per dataset arrangement.  All curves correspond to test
+set performances.  Single performance figures (F1-micro scores) correspond to
+its average value across all test set images, for a fixed threshold set to
+``0.5``.
+
+.. figure:: drive.png
+   :align: center
+   :alt: Model comparisons for drive datasets
+
+   :py:mod:`drive <bob.ip.binseg.configs.datasets.drive.default>`: PR curve and F1 scores at T=0.5 (:download:`pdf <drive.pdf>`)
+
+
+.. figure:: stare.png
+   :align: center
+   :alt: Model comparisons for stare datasets
+
+   :py:mod:`stare <bob.ip.binseg.configs.datasets.stare.ah>`: PR curve and F1 scores at T=0.5 (:download:`pdf <stare.pdf>`)
+
+
+.. figure:: chasedb1.png
+   :align: center
+   :alt: Model comparisons for chasedb1 datasets
+
+   :py:mod:`chasedb1 <bob.ip.binseg.configs.datasets.chasedb1.first_annotator>`: PR curve and F1 scores at T=0.5 (:download:`pdf <chasedb1.pdf>`)
+
+
+.. figure:: hrf.png
+   :align: center
+   :alt: Model comparisons for hrf datasets
+
+   :py:mod:`hrf <bob.ip.binseg.configs.datasets.hrf.default>`: PR curve and F1 scores at T=0.5 (:download:`pdf <hrf.pdf>`)
+
+
+.. figure:: iostar-vessel.png
+   :align: center
+   :alt: Model comparisons for iostar-vessel datasets
+
+   :py:mod:`iostar-vessel <bob.ip.binseg.configs.datasets.iostar.vessel>`: PR curve and F1 scores at T=0.5 (:download:`pdf <iostar-vessel.pdf>`)
+
+
+.. include:: ../../links.rst

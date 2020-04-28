@@ -233,10 +233,9 @@ def experiment(
 
     This script is just a wrapper around the individual scripts for training,
     running prediction, evaluating and comparing FCN model performance.  It
-    organises the output in a preset way:
+    organises the output in a preset way::
 
-    .. code-block:: text
-
+\b
        └─ <output-folder>/
           ├── model/  #the generated model will be here
           ├── predictions/  #the prediction outputs for the train/test set
