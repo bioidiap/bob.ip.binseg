@@ -42,10 +42,6 @@ configuration.  **Copy it locally to make changes**:
    $ bob binseg config copy csv-dataset-example mydataset.py
    # edit mydataset.py as explained here, follow the comments
 
-Keep in mind that specific models require that you feed images respecting
-certain restrictions (input dimensions, image centering, etc.).  Check the
-configuration that was used to train models and try to match it.
-
 Finally, the only object this file needs to provide is one named ``dataset``,
 and it should contain a dictionary mapping a name, such as ``train``, ``dev``,
 or ``test``, to objects of type :py:class:`torch.utils.data.Dataset`.  As you
@@ -101,12 +97,16 @@ from bob.ip.binseg.data.dataset import CSVDataset
 
 _raw_dataset = CSVDataset(
     # path to the CSV file(s) - you may add as many subsets as you want:
-    # * "train" is used for training a model (stock data augmentation is
+    # * "__train__" is used for training a model (stock data augmentation is
     #    applied via our "make_dataset()" connector)
     # * anything else can be used for prediction and/or evaluation (if labels
     #   are also provided in such a set).  Data augmentation is NOT applied
     #   using our "make_dataset()" connector.
-    subsets={"train": "<path/to/train.csv>", "test": "<path/to/test.csv>"},
+    subsets={
+        "__train__": "<path/to/train.csv>",  #applies data augmentation
+        "train": "<path/to/train.csv>",  #no data augmentation, evaluate it
+        "test": "<path/to/test.csv>",  #no data augmentation, evaluate it
+        },
     fieldnames=("data", "label"),  # these are the column names
     loader=_loader,
     keymaker=data_path_keymaker,
