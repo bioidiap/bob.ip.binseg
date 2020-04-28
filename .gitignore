@@ -28,5 +28,4 @@ output
 */.ipynb_checkpoints/*
 submitted.sql3
 ./logs/
-./results/
 .coverage
