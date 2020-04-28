@@ -53,7 +53,7 @@ def _validate_threshold(t, dataset):
 \b
     1. Runs evaluation on an existing dataset configuration:
 \b
-       $ bob binseg evaluate -vv m2unet drive --predictions-folder=path/to/predictions --output-folder=path/to/results
+       $ bob binseg evaluate -vv drive --predictions-folder=path/to/predictions --output-folder=path/to/results
 \b
     2. To run evaluation on a folder with your own images and annotations, you
        must first specify resizing, cropping, etc, so that the image can be
@@ -64,7 +64,7 @@ def _validate_threshold(t, dataset):
 \b
        $ bob binseg config copy csv-dataset-example mydataset.py
        # modify "mydataset.py" to your liking
-       $ bob binseg evaluate -vv m2unet mydataset.py --predictions-folder=path/to/predictions --output-folder=path/to/results
+       $ bob binseg evaluate -vv mydataset.py --predictions-folder=path/to/predictions --output-folder=path/to/results
 """,
 )
 @click.option(
@@ -154,9 +154,12 @@ def evaluate(
 
     if not isinstance(dataset, dict):
         dataset = {"test": dataset}
-    if second_annotator is not None:
-        if not isinstance(second_annotator, dict):
-            second_annotator = {"test": second_annotator}
+
+    if second_annotator is None:
+        second_annotator = {}
+    elif not isinstance(second_annotator, dict):
+        second_annotator = {"test": second_annotator}
+    #else, second_annotator must be a dict
 
     if isinstance(threshold, str):
         # first run evaluation for reference dataset, do not save overlays
