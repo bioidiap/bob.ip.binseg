@@ -41,34 +41,34 @@ F1 Scores (micro-level)
      - :py:mod:`unet (25.8M) <bob.ip.binseg.configs.models.unet>`
    * - :py:mod:`drive <bob.ip.binseg.configs.datasets.drive.default>`
      - 0.788 (0.021)
-     - `0.819 (0.016) <https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/baselines/driu/drive/model.pth>`_
-     - `0.806 (0.015) <https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/baselines/hed/drive/model.pth>`_
-     - `0.804 (0.014) <https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/baselines/m2unet/drive/model.pth>`_
-     - `0.823 (0.015) <https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/baselines/unet/drive/model.pth>`_
+     - `0.819 (0.016) <baselines_driu_drive_>`_
+     - `0.806 (0.015) <baselines_hed_drive_>`_
+     - `0.804 (0.014) <baselines_m2unet_drive_>`_
+     - `0.823 (0.015) <baselines_unet_drive_>`_
    * - :py:mod:`stare <bob.ip.binseg.configs.datasets.stare.ah>`
      - 0.759 (0.028)
-     - `0.824 (0.037) <https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/baselines/driu/stare/model.pth>`_
-     - `0.810 (0.045) <https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/baselines/hed/stare/model.pth>`_
-     - `0.811 (0.039) <https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/baselines/m2unet/stare/model.pth>`_
-     - `0.828 (0.041) <https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/baselines/unet/stare/model.pth>`_
+     - `0.824 (0.037) <baselines_driu_stare_>`_
+     - `0.810 (0.045) <baselines_hed_stare_>`_
+     - `0.811 (0.039) <baselines_m2unet_stare_>`_
+     - `0.828 (0.041) <baselines_unet_stare_>`_
    * - :py:mod:`chasedb1 <bob.ip.binseg.configs.datasets.chasedb1.first_annotator>`
      - 0.768  0.023
-     - `0.811 (0.018) <https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/baselines/driu/chasedb1/model.pth>`_
-     - `0.806 (0.021) <https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/baselines/hed/chasedb1/model.pth>`_
-     - `0.801 (0.018) <https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/baselines/m2unet/chasedb1/model.pth>`_
-     - `0.802 (0.015) <https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/baselines/unet/chasedb1/model.pth>`_
+     - `0.811 (0.018) <baselines_driu_chase_>`_
+     - `0.806 (0.021) <baselines_hed_chase_>`_
+     - `0.801 (0.018) <baselines_m2unet_chase_>`_
+     - `0.802 (0.015) <baselines_unet_chase_>`_
    * - :py:mod:`hrf <bob.ip.binseg.configs.datasets.hrf.default>`
      -
-     - `0.802 (0.039) <https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/baselines/driu/hrf/model.pth>`_
-     - `0.793 (0.041) <https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/baselines/hed/hrf/model.pth>`_
-     - `0.796 (0.043) <https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/baselines/m2unet/hrf/model.pth>`_
-     - `0.798 (0.038) <https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/baselines/unet/hrf/model.pth>`_
+     - `0.802 (0.039) <baselines_driu_hrf_>`_
+     - `0.793 (0.041) <baselines_hed_hrf_>`_
+     - `0.796 (0.043) <baselines_m2unet_hrf_>`_
+     - `0.798 (0.038) <baselines_unet_hrf_>`_
    * - :py:mod:`iostar-vessel <bob.ip.binseg.configs.datasets.iostar.vessel>`
      -
-     - `0.825 (0.021) <https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/baselines/driu/iostar-vessel/model.pth>`_
-     - `0.822 (0.023) <https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/baselines/hed/iostar-vessel/model.pth>`_
-     - `0.817 (0.021) <https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/baselines/m2unet/iostar-vessel/model.pth>`_
-     - `0.818 (0.019) <https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/baselines/unet/iostar-vessel/model.pth>`_
+     - `0.825 (0.021) <baselines_driu_iostar_>`_
+     - `0.822 (0.023) <baselines_hed_iostar_>`_
+     - `0.817 (0.021) <baselines_m2unet_iostar_>`_
+     - `0.818 (0.019) <baselines_unet_iostar_>`_
 
 
 Precision-Recall (PR) Curves
