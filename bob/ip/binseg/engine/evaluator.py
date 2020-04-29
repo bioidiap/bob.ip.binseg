@@ -306,11 +306,11 @@ def run(
     #         (avg_metrics["precision"]+avg_metrics["recall"])
 
     avg_metrics["std_pr"] = std_metrics["precision"]
-    avg_metrics["pr_upper"] = avg_metrics["precision"] + avg_metrics["std_pr"]
-    avg_metrics["pr_lower"] = avg_metrics["precision"] - avg_metrics["std_pr"]
+    avg_metrics["pr_upper"] = avg_metrics["precision"] + std_metrics["precision"]
+    avg_metrics["pr_lower"] = avg_metrics["precision"] - std_metrics["precision"]
     avg_metrics["std_re"] = std_metrics["recall"]
-    avg_metrics["re_upper"] = avg_metrics["recall"] + avg_metrics["std_re"]
-    avg_metrics["re_lower"] = avg_metrics["recall"] - avg_metrics["std_re"]
+    avg_metrics["re_upper"] = avg_metrics["recall"] + std_metrics["recall"]
+    avg_metrics["re_lower"] = avg_metrics["recall"] - std_metrics["recall"]
     avg_metrics["std_f1"] = std_metrics["f1_score"]
 
     maxf1 = avg_metrics["f1_score"].max()
@@ -406,6 +406,7 @@ def compare_annotators(baseline, other, name, output_folder,
 
     # Merges all dataframes together
     df_metrics = pandas.concat(data.values())
+    df_metrics.drop(0, inplace=True)
 
     # Report and Averages
     avg_metrics = df_metrics.groupby("index").mean()
@@ -420,16 +421,12 @@ def compare_annotators(baseline, other, name, output_folder,
     #         (avg_metrics["precision"]+avg_metrics["recall"])
 
     avg_metrics["std_pr"] = std_metrics["precision"]
-    avg_metrics["pr_upper"] = avg_metrics["precision"] + avg_metrics["std_pr"]
-    avg_metrics["pr_lower"] = avg_metrics["precision"] - avg_metrics["std_pr"]
+    avg_metrics["pr_upper"] = avg_metrics["precision"] + std_metrics["precision"]
+    avg_metrics["pr_lower"] = avg_metrics["precision"] - std_metrics["precision"]
     avg_metrics["std_re"] = std_metrics["recall"]
-    avg_metrics["re_upper"] = avg_metrics["recall"] + avg_metrics["std_re"]
-    avg_metrics["re_lower"] = avg_metrics["recall"] - avg_metrics["std_re"]
+    avg_metrics["re_upper"] = avg_metrics["recall"] + std_metrics["recall"]
+    avg_metrics["re_lower"] = avg_metrics["recall"] - std_metrics["recall"]
     avg_metrics["std_f1"] = std_metrics["f1_score"]
-
-    # we actually only need to keep the second row of the pandas dataframe
-    # with threshold == 0.5 - the first row is redundant
-    avg_metrics.drop(0, inplace=True)
 
     metrics_path = os.path.join(output_folder, "second-annotator", f"{name}.csv")
     os.makedirs(os.path.dirname(metrics_path), exist_ok=True)
