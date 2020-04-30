@@ -45,7 +45,35 @@ def test_drive():
     _check_subset(dataset["test"], 20)
 
 
-@rc_variable_set("bob.ip.binseg.stare.datadir")
+@rc_variable_set("bob.ip.binseg.drive.datadir")
+@stare_variable_set("bob.ip.binseg.stare.datadir")
+@rc_variable_set("bob.ip.binseg.chasedb1.datadir")
+@rc_variable_set("bob.ip.binseg.hrf.datadir")
+@rc_variable_set("bob.ip.binseg.iostar.datadir")
+def test_drive_mtest():
+
+    from ..configs.datasets.drive.mtest import dataset
+    nose.tools.eq_(len(dataset), 6)
+
+    from ..configs.datasets.drive.default import dataset as baseline
+    nose.tools.eq_(dataset["train"], baseline["train"])
+    nose.tools.eq_(dataset["test"], baseline["test"])
+
+    for subset in dataset:
+        for sample in dataset[subset]:
+            assert 3 <= len(sample) <= 4
+            assert isinstance(sample[0], str)
+            nose.tools.eq_(sample[1].shape, (3, 544, 544)) #planes, height, width
+            nose.tools.eq_(sample[1].dtype, torch.float32)
+            nose.tools.eq_(sample[2].shape, (1, 544, 544))
+            nose.tools.eq_(sample[2].dtype, torch.float32)
+            if len(sample) == 4:
+                nose.tools.eq_(sample[3].shape, (1, 544, 544))
+                nose.tools.eq_(sample[3].dtype, torch.float32)
+
+
+@rc_variable_set("bob.ip.binseg.drive.datadir")
+@stare_variable_set("bob.ip.binseg.stare.datadir")
 @rc_variable_set("bob.ip.binseg.chasedb1.datadir")
 @rc_variable_set("bob.ip.binseg.hrf.datadir")
 @rc_variable_set("bob.ip.binseg.iostar.datadir")
@@ -74,7 +102,7 @@ def test_drive_covd():
 
 
 @rc_variable_set("bob.ip.binseg.drive.datadir")
-@rc_variable_set("bob.ip.binseg.stare.datadir")
+@stare_variable_set("bob.ip.binseg.stare.datadir")
 @rc_variable_set("bob.ip.binseg.chasedb1.datadir")
 @rc_variable_set("bob.ip.binseg.hrf.datadir")
 @rc_variable_set("bob.ip.binseg.iostar.datadir")
@@ -151,6 +179,34 @@ def test_stare():
 
 
 @rc_variable_set("bob.ip.binseg.drive.datadir")
+@stare_variable_set("bob.ip.binseg.stare.datadir")
+@rc_variable_set("bob.ip.binseg.chasedb1.datadir")
+@rc_variable_set("bob.ip.binseg.hrf.datadir")
+@rc_variable_set("bob.ip.binseg.iostar.datadir")
+def test_stare_mtest():
+
+    from ..configs.datasets.stare.mtest import dataset
+    nose.tools.eq_(len(dataset), 6)
+
+    from ..configs.datasets.stare.ah import dataset as baseline
+    nose.tools.eq_(dataset["train"], baseline["train"])
+    nose.tools.eq_(dataset["test"], baseline["test"])
+
+    for subset in dataset:
+        for sample in dataset[subset]:
+            assert 3 <= len(sample) <= 4
+            assert isinstance(sample[0], str)
+            nose.tools.eq_(sample[1].shape, (3, 608, 704)) #planes,height,width
+            nose.tools.eq_(sample[1].dtype, torch.float32)
+            nose.tools.eq_(sample[2].shape, (1, 608, 704)) #planes,height,width
+            nose.tools.eq_(sample[2].dtype, torch.float32)
+            if len(sample) == 4:
+                nose.tools.eq_(sample[3].shape, (1, 608, 704))
+                nose.tools.eq_(sample[3].dtype, torch.float32)
+
+
+@stare_variable_set("bob.ip.binseg.stare.datadir")
+@rc_variable_set("bob.ip.binseg.drive.datadir")
 @rc_variable_set("bob.ip.binseg.chasedb1.datadir")
 @rc_variable_set("bob.ip.binseg.hrf.datadir")
 @rc_variable_set("bob.ip.binseg.iostar.datadir")
@@ -200,7 +256,35 @@ def test_chasedb1():
 
 
 @rc_variable_set("bob.ip.binseg.drive.datadir")
-@rc_variable_set("bob.ip.binseg.stare.datadir")
+@stare_variable_set("bob.ip.binseg.stare.datadir")
+@rc_variable_set("bob.ip.binseg.chasedb1.datadir")
+@rc_variable_set("bob.ip.binseg.hrf.datadir")
+@rc_variable_set("bob.ip.binseg.iostar.datadir")
+def test_chasedb1_mtest():
+
+    from ..configs.datasets.chasedb1.mtest import dataset
+    nose.tools.eq_(len(dataset), 6)
+
+    from ..configs.datasets.chasedb1.first_annotator import dataset as baseline
+    nose.tools.eq_(dataset["train"], baseline["train"])
+    nose.tools.eq_(dataset["test"], baseline["test"])
+
+    for subset in dataset:
+        for sample in dataset[subset]:
+            assert 3 <= len(sample) <= 4
+            assert isinstance(sample[0], str)
+            nose.tools.eq_(sample[1].shape, (3, 960, 960)) #planes,height,width
+            nose.tools.eq_(sample[1].dtype, torch.float32)
+            nose.tools.eq_(sample[2].shape, (1, 960, 960)) #planes,height,width
+            nose.tools.eq_(sample[2].dtype, torch.float32)
+            if len(sample) == 4:
+                nose.tools.eq_(sample[3].shape, (1, 960, 960))
+                nose.tools.eq_(sample[3].dtype, torch.float32)
+
+
+@rc_variable_set("bob.ip.binseg.drive.datadir")
+@stare_variable_set("bob.ip.binseg.stare.datadir")
+@rc_variable_set("bob.ip.binseg.chasedb1.datadir")
 @rc_variable_set("bob.ip.binseg.hrf.datadir")
 @rc_variable_set("bob.ip.binseg.iostar.datadir")
 def test_chasedb1_covd():
@@ -249,8 +333,36 @@ def test_hrf():
 
 
 @rc_variable_set("bob.ip.binseg.drive.datadir")
-@rc_variable_set("bob.ip.binseg.stare.datadir")
+@stare_variable_set("bob.ip.binseg.stare.datadir")
 @rc_variable_set("bob.ip.binseg.chasedb1.datadir")
+@rc_variable_set("bob.ip.binseg.hrf.datadir")
+@rc_variable_set("bob.ip.binseg.iostar.datadir")
+def test_hrf_mtest():
+
+    from ..configs.datasets.hrf.mtest import dataset
+    nose.tools.eq_(len(dataset), 6)
+
+    from ..configs.datasets.hrf.default import dataset as baseline
+    nose.tools.eq_(dataset["train"], baseline["train"])
+    nose.tools.eq_(dataset["test"], baseline["test"])
+
+    for subset in dataset:
+        for sample in dataset[subset]:
+            assert 3 <= len(sample) <= 4
+            assert isinstance(sample[0], str)
+            nose.tools.eq_(sample[1].shape, (3, 1168, 1648)) #planes,height,width
+            nose.tools.eq_(sample[1].dtype, torch.float32)
+            nose.tools.eq_(sample[2].shape, (1, 1168, 1648)) #planes,height,width
+            nose.tools.eq_(sample[2].dtype, torch.float32)
+            if len(sample) == 4:
+                nose.tools.eq_(sample[3].shape, (1, 1168, 1648))
+                nose.tools.eq_(sample[3].dtype, torch.float32)
+
+
+@rc_variable_set("bob.ip.binseg.drive.datadir")
+@stare_variable_set("bob.ip.binseg.stare.datadir")
+@rc_variable_set("bob.ip.binseg.chasedb1.datadir")
+@rc_variable_set("bob.ip.binseg.hrf.datadir")
 @rc_variable_set("bob.ip.binseg.iostar.datadir")
 def test_hrf_covd():
 
@@ -300,9 +412,37 @@ def test_iostar():
 
 
 @rc_variable_set("bob.ip.binseg.drive.datadir")
-@rc_variable_set("bob.ip.binseg.stare.datadir")
+@stare_variable_set("bob.ip.binseg.stare.datadir")
 @rc_variable_set("bob.ip.binseg.chasedb1.datadir")
 @rc_variable_set("bob.ip.binseg.hrf.datadir")
+@rc_variable_set("bob.ip.binseg.iostar.datadir")
+def test_iostar_mtest():
+
+    from ..configs.datasets.iostar.vessel_mtest import dataset
+    nose.tools.eq_(len(dataset), 6)
+
+    from ..configs.datasets.iostar.vessel import dataset as baseline
+    nose.tools.eq_(dataset["train"], baseline["train"])
+    nose.tools.eq_(dataset["test"], baseline["test"])
+
+    for subset in dataset:
+        for sample in dataset[subset]:
+            assert 3 <= len(sample) <= 4
+            assert isinstance(sample[0], str)
+            nose.tools.eq_(sample[1].shape, (3, 1024, 1024)) #planes,height,width
+            nose.tools.eq_(sample[1].dtype, torch.float32)
+            nose.tools.eq_(sample[2].shape, (1, 1024, 1024)) #planes,height,width
+            nose.tools.eq_(sample[2].dtype, torch.float32)
+            if len(sample) == 4:
+                nose.tools.eq_(sample[3].shape, (1, 1024, 1024))
+                nose.tools.eq_(sample[3].dtype, torch.float32)
+
+
+@rc_variable_set("bob.ip.binseg.drive.datadir")
+@stare_variable_set("bob.ip.binseg.stare.datadir")
+@rc_variable_set("bob.ip.binseg.chasedb1.datadir")
+@rc_variable_set("bob.ip.binseg.hrf.datadir")
+@rc_variable_set("bob.ip.binseg.iostar.datadir")
 def test_iostar_covd():
 
     from ..configs.datasets.iostar.covd import dataset

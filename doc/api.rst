@@ -138,23 +138,27 @@ Datasets
    bob.ip.binseg.configs.datasets.chasedb1.first_annotator
    bob.ip.binseg.configs.datasets.chasedb1.second_annotator
    bob.ip.binseg.configs.datasets.chasedb1.xtest
+   bob.ip.binseg.configs.datasets.chasedb1.mtest
    bob.ip.binseg.configs.datasets.chasedb1.covd
    bob.ip.binseg.configs.datasets.chasedb1.ssl
 
    bob.ip.binseg.configs.datasets.drive.default
    bob.ip.binseg.configs.datasets.drive.second_annotator
    bob.ip.binseg.configs.datasets.drive.xtest
+   bob.ip.binseg.configs.datasets.drive.mtest
    bob.ip.binseg.configs.datasets.drive.covd
    bob.ip.binseg.configs.datasets.drive.ssl
 
    bob.ip.binseg.configs.datasets.hrf.default
    bob.ip.binseg.configs.datasets.hrf.xtest
+   bob.ip.binseg.configs.datasets.hrf.mtest
    bob.ip.binseg.configs.datasets.hrf.default_fullres
    bob.ip.binseg.configs.datasets.hrf.covd
    bob.ip.binseg.configs.datasets.hrf.ssl
 
    bob.ip.binseg.configs.datasets.iostar.vessel
    bob.ip.binseg.configs.datasets.iostar.vessel_xtest
+   bob.ip.binseg.configs.datasets.iostar.vessel_mtest
    bob.ip.binseg.configs.datasets.iostar.optic_disc
    bob.ip.binseg.configs.datasets.iostar.covd
    bob.ip.binseg.configs.datasets.iostar.ssl
@@ -162,6 +166,7 @@ Datasets
    bob.ip.binseg.configs.datasets.stare.ah
    bob.ip.binseg.configs.datasets.stare.vk
    bob.ip.binseg.configs.datasets.stare.xtest
+   bob.ip.binseg.configs.datasets.stare.mtest
    bob.ip.binseg.configs.datasets.stare.covd
    bob.ip.binseg.configs.datasets.stare.ssl
 

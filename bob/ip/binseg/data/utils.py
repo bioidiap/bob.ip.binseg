@@ -125,6 +125,16 @@ class SampleListDataset(torch.utils.data.Dataset):
     It supports indexing such that dataset[i] can be used to get ith sample.
 
 
+    Attributes
+    ----------
+
+    transforms : list
+        An accessor to the list of transforms to be applied (excluding the last
+        transform, which is fixed).  Notice that, after setting, a last transform
+        (:py:class:`bob.ip.binseg.data.transforms.ToTensor`) is always applied
+        - you do not need to add that.
+
+
     Parameters
     ----------
 
@@ -134,14 +144,36 @@ class SampleListDataset(torch.utils.data.Dataset):
     transforms : :py:class:`list`, Optional
         a list of transformations to be applied to **both** image and
         ground-truth data.  Notice a last transform
-        (:py:class:`bob.ip.binseg.data.transforms.ToTensor`) is always applied.
+        (:py:class:`bob.ip.binseg.data.transforms.ToTensor`) is always applied
+        - you do not need to add that.
 
     """
 
     def __init__(self, samples, transforms=[]):
 
         self._samples = samples
-        self._transforms = Compose(transforms + [ToTensor()])
+        self.transforms = transforms
+
+    @property
+    def transforms(self):
+        return self._transforms.transforms[:-1]
+
+    @transforms.setter
+    def transforms(self, l):
+        self._transforms = Compose(l + [ToTensor()])
+
+    def copy(self, transforms=None):
+        """Returns a deep copy of itself, optionally resetting transforms
+
+        Parameters
+        ----------
+
+        transforms : :py:class:`list`, Optional
+            An optional list of transforms to set in the copy.  If not
+            specified, use ``self.transforms``.
+        """
+
+        return SampleListDataset(self._samples, transforms or self.transforms)
 
     def __len__(self):
         """
