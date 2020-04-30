@@ -15,7 +15,7 @@ Please use the BibTeX reference below to cite this work:
 .. code:: bibtex
 
    @misc{laibacher_anjos_2019,
-      title         = {On the Evaluation and Real-World Usage Scenarios of Deep Vessel Segmentation for Funduscopy},
+      title         = {On the Evaluation and Real-World Usage Scenarios of Deep Vessel Segmentation for Retinography},
       author        = {Tim Laibacher and Andr\'e Anjos},
       year          = {2019},
       eprint        = {1909.03856},
@@ -26,30 +26,37 @@ Please use the BibTeX reference below to cite this work:
 
 
 Additional Material
-===================
+-------------------
 
 The additional material referred to in the paper can be found under
-:ref:`bob.ip.binseg.covdresults` and :download:`here </additionalresults.pdf>`
+:ref:`bob.ip.binseg.results` and :download:`here </additionalresults.pdf>`
 
 
-Users Guide
-===========
+.. todolist::
+
+
+User Guide
+----------
 
 .. toctree::
    :maxdepth: 2
 
    setup
-   datasets
-   training
-   evaluation
-   benchmarkresults
-   covdresults
-   configs
-   plotting
-   visualization
-   api
+   usage
+   results/index
    acknowledgements
+   references
+   datasets
+   cli
+   api
 
-.. todolist::
+
+Indices and tables
+------------------
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`
+
 
 .. include:: links.rst

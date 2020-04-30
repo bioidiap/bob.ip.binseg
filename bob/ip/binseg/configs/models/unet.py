@@ -1,10 +1,19 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+"""U-Net for Vessel Segmentation
+
+U-Net is a convolutional neural network that was developed for biomedical image
+segmentation at the Computer Science Department of the University of Freiburg,
+Germany.  The network is based on the fully convolutional network (FCN) and its
+architecture was modified and extended to work with fewer training images and
+to yield more precise segmentations.
+
+Reference: [RONNEBERGER-2015]_
+"""
+
 from torch.optim.lr_scheduler import MultiStepLR
 from bob.ip.binseg.modeling.unet import build_unet
-import torch.optim as optim
-from torch.nn import BCEWithLogitsLoss
 from bob.ip.binseg.utils.model_zoo import modelurls
 from bob.ip.binseg.modeling.losses import SoftJaccardBCELogitsLoss
 from bob.ip.binseg.engine.adabound import AdaBound
@@ -26,14 +35,24 @@ scheduler_gamma = 0.1
 model = build_unet()
 
 # pretrained backbone
-pretrained_backbone = modelurls['vgg16']
+pretrained_backbone = modelurls["vgg16"]
 
 # optimizer
-optimizer = AdaBound(model.parameters(), lr=lr, betas=betas, final_lr=final_lr, gamma=gamma,
-                 eps=eps, weight_decay=weight_decay, amsbound=amsbound) 
-    
+optimizer = AdaBound(
+    model.parameters(),
+    lr=lr,
+    betas=betas,
+    final_lr=final_lr,
+    gamma=gamma,
+    eps=eps,
+    weight_decay=weight_decay,
+    amsbound=amsbound,
+)
+
 # criterion
 criterion = SoftJaccardBCELogitsLoss(alpha=0.7)
 
 # scheduler
-scheduler = MultiStepLR(optimizer, milestones=scheduler_milestones, gamma=scheduler_gamma)
+scheduler = MultiStepLR(
+    optimizer, milestones=scheduler_milestones, gamma=scheduler_gamma
+)

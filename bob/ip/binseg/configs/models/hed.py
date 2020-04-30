@@ -1,9 +1,19 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+
+"""HED Network for Vessel Segmentation
+
+Holistically-nested edge detection (HED), turns pixel-wise edge classification
+into image-to-image prediction by means of a deep learning model that leverages
+fully convolutional neural networks and deeply-supervised nets.
+
+Reference: [XIE-2015]_
+"""
+
+
 from torch.optim.lr_scheduler import MultiStepLR
 from bob.ip.binseg.modeling.hed import build_hed
-import torch.optim as optim
 from bob.ip.binseg.modeling.losses import HEDSoftJaccardBCELogitsLoss
 from bob.ip.binseg.utils.model_zoo import modelurls
 from bob.ip.binseg.engine.adabound import AdaBound
@@ -27,13 +37,23 @@ scheduler_gamma = 0.1
 model = build_hed()
 
 # pretrained backbone
-pretrained_backbone = modelurls['vgg16']
+pretrained_backbone = modelurls["vgg16"]
 
 # optimizer
-optimizer = AdaBound(model.parameters(), lr=lr, betas=betas, final_lr=final_lr, gamma=gamma,
-                 eps=eps, weight_decay=weight_decay, amsbound=amsbound) 
+optimizer = AdaBound(
+    model.parameters(),
+    lr=lr,
+    betas=betas,
+    final_lr=final_lr,
+    gamma=gamma,
+    eps=eps,
+    weight_decay=weight_decay,
+    amsbound=amsbound,
+)
 # criterion
 criterion = HEDSoftJaccardBCELogitsLoss(alpha=0.7)
 
 # scheduler
-scheduler = MultiStepLR(optimizer, milestones=scheduler_milestones, gamma=scheduler_gamma)
+scheduler = MultiStepLR(
+    optimizer, milestones=scheduler_milestones, gamma=scheduler_gamma
+)

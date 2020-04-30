@@ -25,32 +25,30 @@ requirements:
   host:
     - python {{ python }}
     - setuptools {{ setuptools }}
-    - torchvision  {{ torchvision }} # [linux]
-    - pytorch {{ pytorch }} # [linux]
     - numpy {{ numpy }}
+    - h5py {{ h5py }}
+    - pytorch {{ pytorch }} # [linux]
+    - torchvision  {{ torchvision }} # [linux]
     - bob.extension
   run:
     - python
     - setuptools
+    - {{ pin_compatible('numpy') }}
     - {{ pin_compatible('pytorch') }} # [linux]
     - {{ pin_compatible('torchvision') }} # [linux]
-    - {{ pin_compatible('numpy') }}
-    - pandas
     - matplotlib
+    - pandas
+    - pillow
+    - psutil
+    - h5py
     - tqdm
     - tabulate
-    - bob.core
 
 test:
   imports:
     - {{ name }}
   commands:
-    # test commands ("script" entry-points) from your package here
-    - bob binseg --help
-    - bob binseg train --help
-    - bob binseg test --help
-    - bob binseg compare --help
-    - nosetests --with-coverage --cover-package={{ name }} -sv {{ name }}
+    - nosetests --with-coverage --cover-package={{ name }} --cover-erase --cover-html-dir={{ project_dir }}/sphinx/coverage --cover-html --cover-xml-file={{ project_dir }}/coverage.xml --cover-xml -sv {{ name }}
     - sphinx-build -aEW {{ project_dir }}/doc {{ project_dir }}/sphinx
     - sphinx-build -aEb doctest {{ project_dir }}/doc sphinx
     - conda inspect linkages -p $PREFIX {{ name }}  # [not win]
@@ -61,15 +59,8 @@ test:
     - coverage
     - sphinx
     - sphinx_rtd_theme
-    - bob.db.drive
-    - bob.db.stare
-    - bob.db.chasedb1
-    - bob.db.hrf
-    - bob.db.drionsdb
-    - bob.db.rimoner3
-    - bob.db.drishtigs1
-    - bob.db.refuge
-    - bob.db.iostar
+    - sphinxcontrib-programoutput
+    - graphviz
 
 about:
   summary: Binary Segmentation Benchmark Package for Bob

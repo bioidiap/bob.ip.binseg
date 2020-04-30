@@ -5,19 +5,15 @@
 # https://github.com/pytorch/pytorch/blob/master/torch/hub.py
 # https://github.com/facebookresearch/maskrcnn-benchmark/blob/master/maskrcnn_benchmark/utils/checkpoint.py
 
-import errno
 import hashlib
 import os
 import re
 import shutil
 import sys
 import tempfile
-import torch
-import warnings
-import zipfile
 from urllib.request import urlopen
 from urllib.parse import urlparse
-from tqdm import tqdm 
+from tqdm import tqdm
 
 modelurls = {
     "vgg11": "https://download.pytorch.org/models/vgg11-bbd30ac9.pth",
@@ -33,15 +29,19 @@ modelurls = {
     "resnet50": "https://download.pytorch.org/models/resnet50-19c8e357.pth",
     "resnet101": "https://download.pytorch.org/models/resnet101-5d3b4d8f.pth",
     "resnet152": "https://download.pytorch.org/models/resnet152-b121ed2d.pth",
-    "resnet50_SIN_IN": "https://bitbucket.org/robert_geirhos/texture-vs-shape-pretrained-models/raw/60b770e128fffcbd8562a3ab3546c1a735432d03/resnet50_finetune_60_epochs_lr_decay_after_30_start_resnet50_train_45_epochs_combined_IN_SF-ca06340c.pth.tar",
-    "mobilenetv2": "https://dl.dropboxusercontent.com/s/4nie4ygivq04p8y/mobilenet_v2.pth.tar",
-    }
+    #"resnet50_SIN_IN": "https://bitbucket.org/robert_geirhos/texture-vs-shape-pretrained-models/raw/60b770e128fffcbd8562a3ab3546c1a735432d03/resnet50_finetune_60_epochs_lr_decay_after_30_start_resnet50_train_45_epochs_combined_IN_SF-ca06340c.pth.tar",
+    "resnet50_SIN_IN": "http://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/resnet50_finetune_60_epochs_lr_decay_after_30_start_resnet50_train_45_epochs_combined_IN_SF-ca06340c.pth.tar",
+    #"mobilenetv2": "https://dl.dropboxusercontent.com/s/4nie4ygivq04p8y/mobilenet_v2.pth.tar",
+    "mobilenetv2": "http://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/mobilenet_v2.pth.tar",
+}
+"""URLs of pre-trained models (backbones)"""
 
-def _download_url_to_file(url, dst, hash_prefix, progress):
+
+def download_url_to_file(url, dst, hash_prefix, progress):
     file_size = None
     u = urlopen(url)
     meta = u.info()
-    if hasattr(meta, 'getheaders'):
+    if hasattr(meta, "getheaders"):
         content_length = meta.getheaders("Content-Length")
     else:
         content_length = meta.get_all("Content-Length")
@@ -65,16 +65,21 @@ def _download_url_to_file(url, dst, hash_prefix, progress):
         f.close()
         if hash_prefix is not None:
             digest = sha256.hexdigest()
-            if digest[:len(hash_prefix)] != hash_prefix:
-                raise RuntimeError('invalid hash value (expected "{}", got "{}")'
-                                   .format(hash_prefix, digest))
+            if digest[: len(hash_prefix)] != hash_prefix:
+                raise RuntimeError(
+                    'invalid hash value (expected "{}", got "{}")'.format(
+                        hash_prefix, digest
+                    )
+                )
         shutil.move(f.name, dst)
     finally:
         f.close()
         if os.path.exists(f.name):
             os.remove(f.name)
 
-HASH_REGEX = re.compile(r'-([a-f0-9]*)\.')
+
+HASH_REGEX = re.compile(r"-([a-f0-9]*)\.")
+
 
 def cache_url(url, model_dir=None, progress=True):
     r"""Loads the Torch serialized object at the given URL.
@@ -99,13 +104,13 @@ def cache_url(url, model_dir=None, progress=True):
         os.makedirs(model_dir)
     parts = urlparse(url)
     filename = os.path.basename(parts.path)
-    
+
     cached_file = os.path.join(model_dir, filename)
     if not os.path.exists(cached_file):
         sys.stderr.write('Downloading: "{}" to {}\n'.format(url, cached_file))
         hash_prefix = HASH_REGEX.search(filename)
         if hash_prefix is not None:
             hash_prefix = hash_prefix.group(1)
-        _download_url_to_file(url, cached_file, hash_prefix, progress=progress)
-    
+        download_url_to_file(url, cached_file, hash_prefix, progress=progress)
+
     return cached_file

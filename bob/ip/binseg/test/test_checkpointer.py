@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# https://github.com/facebookresearch/maskrcnn-benchmark/blob/master/maskrcnn_benchmark/engine/trainer.py 
-# Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
 from collections import OrderedDict
 from tempfile import TemporaryDirectory
 import unittest
@@ -41,9 +39,7 @@ class TestCheckpointer(unittest.TestCase):
         trained_model = self.create_model()
         fresh_model = self.create_model()
         with TemporaryDirectory() as f:
-            checkpointer = Checkpointer(
-                trained_model, save_dir=f, save_to_disk=True
-            )
+            checkpointer = Checkpointer(trained_model, save_dir=f, save_to_disk=True)
             checkpointer.save("checkpoint_file")
 
             # in the same folder
@@ -51,7 +47,7 @@ class TestCheckpointer(unittest.TestCase):
             self.assertTrue(fresh_checkpointer.has_checkpoint())
             self.assertEqual(
                 fresh_checkpointer.get_checkpoint_file(),
-                os.path.join(f, "checkpoint_file.pth"),
+                "checkpoint_file.pth",
             )
             _ = fresh_checkpointer.load()
 
@@ -68,9 +64,7 @@ class TestCheckpointer(unittest.TestCase):
         trained_model = self.create_model()
         fresh_model = self.create_model()
         with TemporaryDirectory() as f:
-            checkpointer = Checkpointer(
-                trained_model, save_dir=f, save_to_disk=True
-            )
+            checkpointer = Checkpointer(trained_model, save_dir=f, save_to_disk=True)
             checkpointer.save("checkpoint_file")
 
             # on different folders

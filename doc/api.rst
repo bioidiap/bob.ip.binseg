@@ -1,50 +1,187 @@
 .. -*- coding: utf-8 -*-
-.. _bob.ip.binseg.api:
 
-============
- Python API
-============
+=====================================
+ Application Program Interface (API)
+=====================================
 
-This section lists all the functionality available in this library allowing to
-run binary-segmentation benchmarks.
+.. To update these lists, run the following command on the root of the package:
+.. find bob -name '*.py' | sed -e 's#/#.#g;s#.py$##g;s#.__init__##g' | sort
+.. You may apply further filtering to update only one of the subsections below
 
 
-PyTorch bob.db Dataset
-======================
-.. automodule:: bob.ip.binseg.data.binsegdataset
+Data Manipulation
+-----------------
 
-PyTorch ImageFolder Dataset
-===========================
-.. automodule:: bob.ip.binseg.data.imagefolder
+.. autosummary::
+   :toctree: api/data
 
-.. automodule:: bob.ip.binseg.data.imagefolderinference
+   bob.ip.binseg.data.dataset
+   bob.ip.binseg.data.loader
+   bob.ip.binseg.data.sample
+   bob.ip.binseg.data.utils
+   bob.ip.binseg.data.transforms
 
-Transforms
-==========
-.. note::
-    All transforms work with :py:class:`PIL.Image.Image` objects. We make heavy use of the
-    `torchvision package`_
 
-.. automodule:: bob.ip.binseg.data.transforms
+Datasets
+--------
 
-Losses
+.. autosummary::
+   :toctree: api/dataset
+
+   bob.ip.binseg.data.drive
+   bob.ip.binseg.data.stare
+   bob.ip.binseg.data.chasedb1
+   bob.ip.binseg.data.hrf
+   bob.ip.binseg.data.iostar
+   bob.ip.binseg.data.refuge
+   bob.ip.binseg.data.drishtigs1
+   bob.ip.binseg.data.rimoner3
+   bob.ip.binseg.data.drionsdb
+
+
+Engines
+-------
+
+.. autosummary::
+   :toctree: api/engine
+
+   bob.ip.binseg.engine
+   bob.ip.binseg.engine.trainer
+   bob.ip.binseg.engine.ssltrainer
+   bob.ip.binseg.engine.predictor
+   bob.ip.binseg.engine.evaluator
+   bob.ip.binseg.engine.adabound
+
+
+Neural Network Models
+---------------------
+
+.. autosummary::
+   :toctree: api/modeling
+
+   bob.ip.binseg.modeling
+   bob.ip.binseg.modeling.backbones
+   bob.ip.binseg.modeling.backbones.mobilenetv2
+   bob.ip.binseg.modeling.backbones.resnet
+   bob.ip.binseg.modeling.backbones.vgg
+   bob.ip.binseg.modeling.driu
+   bob.ip.binseg.modeling.driubn
+   bob.ip.binseg.modeling.driuod
+   bob.ip.binseg.modeling.driupix
+   bob.ip.binseg.modeling.hed
+   bob.ip.binseg.modeling.losses
+   bob.ip.binseg.modeling.m2u
+   bob.ip.binseg.modeling.make_layers
+   bob.ip.binseg.modeling.resunet
+   bob.ip.binseg.modeling.unet
+
+
+Toolbox
+-------
+
+.. autosummary::
+   :toctree: api/utils
+
+   bob.ip.binseg.utils
+   bob.ip.binseg.utils.checkpointer
+   bob.ip.binseg.utils.metric
+   bob.ip.binseg.utils.model_serialization
+   bob.ip.binseg.utils.model_zoo
+   bob.ip.binseg.utils.plot
+   bob.ip.binseg.utils.table
+   bob.ip.binseg.utils.summary
+
+
+.. _bob.ip.binseg.configs:
+
+Preset Configurations
+---------------------
+
+Preset configurations for baseline systems
+
+This module contains preset configurations for baseline FCN architectures and
+datasets.
+
+
+Models
 ======
-.. automodule:: bob.ip.binseg.modeling.losses
 
-Training
+.. autosummary::
+   :toctree: api/configs/models
+   :template: config.rst
+
+   bob.ip.binseg.configs.models.driu
+   bob.ip.binseg.configs.models.driu_bn
+   bob.ip.binseg.configs.models.driu_bn_ssl
+   bob.ip.binseg.configs.models.driu_od
+   bob.ip.binseg.configs.models.driu_ssl
+   bob.ip.binseg.configs.models.hed
+   bob.ip.binseg.configs.models.m2unet
+   bob.ip.binseg.configs.models.m2unet_ssl
+   bob.ip.binseg.configs.models.resunet
+   bob.ip.binseg.configs.models.unet
+
+
+.. _bob.ip.binseg.configs.datasets:
+
+Datasets
 ========
-.. automodule:: bob.ip.binseg.engine.trainer
 
-Checkpointer
-============
-.. automodule:: bob.ip.binseg.utils.checkpointer
+.. automodule:: bob.ip.binseg.configs.datasets
 
-Inference and Evaluation
-========================
-.. automodule:: bob.ip.binseg.engine.inferencer
+.. autosummary::
+   :toctree: api/configs/datasets
+   :template: config.rst
 
-Plotting
-========
-.. automodule:: bob.ip.binseg.utils.plot
+   bob.ip.binseg.configs.datasets.csv
 
-.. include:: links.rst
+   bob.ip.binseg.configs.datasets.chasedb1.first_annotator
+   bob.ip.binseg.configs.datasets.chasedb1.second_annotator
+   bob.ip.binseg.configs.datasets.chasedb1.xtest
+   bob.ip.binseg.configs.datasets.chasedb1.mtest
+   bob.ip.binseg.configs.datasets.chasedb1.covd
+   bob.ip.binseg.configs.datasets.chasedb1.ssl
+
+   bob.ip.binseg.configs.datasets.drive.default
+   bob.ip.binseg.configs.datasets.drive.second_annotator
+   bob.ip.binseg.configs.datasets.drive.xtest
+   bob.ip.binseg.configs.datasets.drive.mtest
+   bob.ip.binseg.configs.datasets.drive.covd
+   bob.ip.binseg.configs.datasets.drive.ssl
+
+   bob.ip.binseg.configs.datasets.hrf.default
+   bob.ip.binseg.configs.datasets.hrf.xtest
+   bob.ip.binseg.configs.datasets.hrf.mtest
+   bob.ip.binseg.configs.datasets.hrf.default_fullres
+   bob.ip.binseg.configs.datasets.hrf.covd
+   bob.ip.binseg.configs.datasets.hrf.ssl
+
+   bob.ip.binseg.configs.datasets.iostar.vessel
+   bob.ip.binseg.configs.datasets.iostar.vessel_xtest
+   bob.ip.binseg.configs.datasets.iostar.vessel_mtest
+   bob.ip.binseg.configs.datasets.iostar.optic_disc
+   bob.ip.binseg.configs.datasets.iostar.covd
+   bob.ip.binseg.configs.datasets.iostar.ssl
+
+   bob.ip.binseg.configs.datasets.stare.ah
+   bob.ip.binseg.configs.datasets.stare.vk
+   bob.ip.binseg.configs.datasets.stare.xtest
+   bob.ip.binseg.configs.datasets.stare.mtest
+   bob.ip.binseg.configs.datasets.stare.covd
+   bob.ip.binseg.configs.datasets.stare.ssl
+
+   bob.ip.binseg.configs.datasets.refuge.cup
+   bob.ip.binseg.configs.datasets.refuge.disc
+
+   bob.ip.binseg.configs.datasets.rimoner3.cup_exp1
+   bob.ip.binseg.configs.datasets.rimoner3.cup_exp2
+   bob.ip.binseg.configs.datasets.rimoner3.disc_exp1
+   bob.ip.binseg.configs.datasets.rimoner3.disc_exp2
+
+   bob.ip.binseg.configs.datasets.drishtigs1.cup_all
+   bob.ip.binseg.configs.datasets.drishtigs1.cup_any
+   bob.ip.binseg.configs.datasets.drishtigs1.disc_all
+   bob.ip.binseg.configs.datasets.drishtigs1.disc_any
+
+   bob.ip.binseg.configs.datasets.drionsdb.expert1
+   bob.ip.binseg.configs.datasets.drionsdb.expert2

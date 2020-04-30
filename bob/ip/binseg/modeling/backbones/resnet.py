@@ -1,28 +1,25 @@
-# Adapted from https://github.com/pytorch/vision/blob/master/torchvision/models/resnet.py 
+# Adapted from https://github.com/pytorch/vision/blob/master/torchvision/models/resnet.py
 # resnet50_trained_on_SIN_and_IN_then_finetuned_on_IN : https://github.com/rgeirhos/texture-vs-shap
 
 import torch.nn as nn
 import torch.utils.model_zoo as model_zoo
 
 
-__all__ = ['ResNet', 'resnet18', 'resnet34', 'resnet50', 'resnet101',
-           'resnet152']
-
-
 model_urls = {
-    'resnet18': 'https://download.pytorch.org/models/resnet18-5c106cde.pth',
-    'resnet34': 'https://download.pytorch.org/models/resnet34-333f7ec4.pth',
-    'resnet50': 'https://download.pytorch.org/models/resnet50-19c8e357.pth',
-    'resnet101': 'https://download.pytorch.org/models/resnet101-5d3b4d8f.pth',
-    'resnet152': 'https://download.pytorch.org/models/resnet152-b121ed2d.pth',
-    'resnet50_trained_on_SIN_and_IN_then_finetuned_on_IN': 'https://bitbucket.org/robert_geirhos/texture-vs-shape-pretrained-models/raw/60b770e128fffcbd8562a3ab3546c1a735432d03/resnet50_finetune_60_epochs_lr_decay_after_30_start_resnet50_train_45_epochs_combined_IN_SF-ca06340c.pth.tar',
+    "resnet18": "https://download.pytorch.org/models/resnet18-5c106cde.pth",
+    "resnet34": "https://download.pytorch.org/models/resnet34-333f7ec4.pth",
+    "resnet50": "https://download.pytorch.org/models/resnet50-19c8e357.pth",
+    "resnet101": "https://download.pytorch.org/models/resnet101-5d3b4d8f.pth",
+    "resnet152": "https://download.pytorch.org/models/resnet152-b121ed2d.pth",
+    "resnet50_trained_on_SIN_and_IN_then_finetuned_on_IN": "https://bitbucket.org/robert_geirhos/texture-vs-shape-pretrained-models/raw/60b770e128fffcbd8562a3ab3546c1a735432d03/resnet50_finetune_60_epochs_lr_decay_after_30_start_resnet50_train_45_epochs_combined_IN_SF-ca06340c.pth.tar",
 }
 
 
 def conv3x3(in_planes, out_planes, stride=1):
     """3x3 convolution with padding"""
-    return nn.Conv2d(in_planes, out_planes, kernel_size=3, stride=stride,
-                     padding=1, bias=False)
+    return nn.Conv2d(
+        in_planes, out_planes, kernel_size=3, stride=stride, padding=1, bias=False,
+    )
 
 
 def conv1x1(in_planes, out_planes, stride=1):
@@ -101,20 +98,18 @@ class Bottleneck(nn.Module):
 
 
 class ResNet(nn.Module):
-
     def __init__(self, block, layers, return_features, zero_init_residual=False):
         """
         Generic ResNet network with layer return.
         Attributes
         ----------
         return_features: list of length 5
-            layers to return. 
+            layers to return.
         """
         super(ResNet, self).__init__()
         self.inplanes = 64
         self.return_features = return_features
-        self.conv1 = nn.Conv2d(3, 64, kernel_size=7, stride=2, padding=3,
-                               bias=False)
+        self.conv1 = nn.Conv2d(3, 64, kernel_size=7, stride=2, padding=3, bias=False)
         self.bn1 = nn.BatchNorm2d(64)
         self.relu = nn.ReLU(inplace=True)
         self.maxpool = nn.MaxPool2d(kernel_size=3, stride=2, padding=1)
@@ -123,13 +118,20 @@ class ResNet(nn.Module):
         self.layer3 = self._make_layer(block, 256, layers[2], stride=2)
         self.layer4 = self._make_layer(block, 512, layers[3], stride=2)
 
-        
-        self.features = [self.conv1, self.bn1, self.relu, self.maxpool
-                                    ,self.layer1,self.layer2,self.layer3,self.layer4]
+        self.features = [
+            self.conv1,
+            self.bn1,
+            self.relu,
+            self.maxpool,
+            self.layer1,
+            self.layer2,
+            self.layer3,
+            self.layer4,
+        ]
 
         for m in self.modules():
             if isinstance(m, nn.Conv2d):
-                nn.init.kaiming_normal_(m.weight, mode='fan_out', nonlinearity='relu')
+                nn.init.kaiming_normal_(m.weight, mode="fan_out", nonlinearity="relu")
             elif isinstance(m, nn.BatchNorm2d):
                 nn.init.constant_(m.weight, 1)
                 nn.init.constant_(m.bias, 0)
@@ -164,7 +166,7 @@ class ResNet(nn.Module):
         outputs = []
         # hw of input, needed for DRIU and HED
         outputs.append(x.shape[2:4])
-        for index,m in enumerate(self.features):
+        for index, m in enumerate(self.features):
             x = m(x)
             # extract layers
             if index in self.return_features:
@@ -179,7 +181,7 @@ def resnet18(pretrained=False, **kwargs):
     """
     model = ResNet(BasicBlock, [2, 2, 2, 2], **kwargs)
     if pretrained:
-        model.load_state_dict(model_zoo.load_url(model_urls['resnet18']))
+        model.load_state_dict(model_zoo.load_url(model_urls["resnet18"]))
     return model
 
 
@@ -190,7 +192,7 @@ def resnet34(pretrained=False, **kwargs):
     """
     model = ResNet(BasicBlock, [3, 4, 6, 3], **kwargs)
     if pretrained:
-        model.load_state_dict(model_zoo.load_url(model_urls['resnet34']))
+        model.load_state_dict(model_zoo.load_url(model_urls["resnet34"]))
     return model
 
 
@@ -201,8 +203,9 @@ def resnet50(pretrained=False, **kwargs):
     """
     model = ResNet(Bottleneck, [3, 4, 6, 3], **kwargs)
     if pretrained:
-        model.load_state_dict(model_zoo.load_url(model_urls['resnet50']))
+        model.load_state_dict(model_zoo.load_url(model_urls["resnet50"]))
     return model
+
 
 def shaperesnet50(pretrained=False, **kwargs):
     """Constructs a ResNet-50 model, pretrained on Stylized-ImageNe and ImageNet and fine-tuned on ImageNet.
@@ -211,8 +214,13 @@ def shaperesnet50(pretrained=False, **kwargs):
     """
     model = ResNet(Bottleneck, [3, 4, 6, 3], **kwargs)
     if pretrained:
-        model.load_state_dict(model_zoo.load_url(model_urls['resnet50_trained_on_SIN_and_IN_then_finetuned_on_IN']))
+        model.load_state_dict(
+            model_zoo.load_url(
+                model_urls["resnet50_trained_on_SIN_and_IN_then_finetuned_on_IN"]
+            )
+        )
     return model
+
 
 def resnet101(pretrained=False, **kwargs):
     """Constructs a ResNet-101 model.
@@ -221,8 +229,9 @@ def resnet101(pretrained=False, **kwargs):
     """
     model = ResNet(Bottleneck, [3, 4, 23, 3], **kwargs)
     if pretrained:
-        model.load_state_dict(model_zoo.load_url(model_urls['resnet101']))
+        model.load_state_dict(model_zoo.load_url(model_urls["resnet101"]))
     return model
+
 
 def resnet152(pretrained=False, **kwargs):
     """Constructs a ResNet-152 model.
@@ -231,5 +240,5 @@ def resnet152(pretrained=False, **kwargs):
     """
     model = ResNet(Bottleneck, [3, 8, 36, 3], **kwargs)
     if pretrained:
-        model.load_state_dict(model_zoo.load_url(model_urls['resnet152']))
+        model.load_state_dict(model_zoo.load_url(model_urls["resnet152"]))
     return model

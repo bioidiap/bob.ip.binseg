@@ -4,10 +4,10 @@
    :target: https://www.idiap.ch/software/bob/docs/bob/bob.ip.binseg/stable/index.html
 .. image:: https://img.shields.io/badge/docs-latest-orange.svg
    :target: https://www.idiap.ch/software/bob/docs/bob/bob.ip.binseg/master/index.html
-.. image:: https://gitlab.idiap.ch/bob/bob.ip.binseg/badges/master/build.svg
+.. image:: https://gitlab.idiap.ch/bob/bob.ip.binseg/badges/master/pipeline.svg
    :target: https://gitlab.idiap.ch/bob/bob.ip.binseg/commits/master
 .. image:: https://gitlab.idiap.ch/bob/bob.ip.binseg/badges/master/coverage.svg
-   :target: https://gitlab.idiap.ch/bob/bob.ip.binseg/commits/master
+   :target: https://www.idiap.ch/software/bob/docs/bob/bob.ip.binseg/master/coverage/index.html
 .. image:: https://img.shields.io/badge/gitlab-project-0000c0.svg
    :target: https://gitlab.idiap.ch/bob/bob.ip.binseg
 .. image:: https://img.shields.io/pypi/v/bob.ip.binseg.svg
@@ -38,7 +38,7 @@ If you use this software package in a publication, we would appreciate if you
 could cite our work::
 
    @misc{laibacher_anjos_2019,
-      title         = {On the Evaluation and Real-World Usage Scenarios of Deep Vessel Segmentation for Funduscopy},
+      title         = {On the Evaluation and Real-World Usage Scenarios of Deep Vessel Segmentation for Retinography},
       author        = {Tim Laibacher and Andr\'e Anjos},
       year          = {2019},
       eprint        = {1909.03856},

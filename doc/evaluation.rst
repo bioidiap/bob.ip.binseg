@@ -1,111 +1,97 @@
 .. -*- coding: utf-8 -*-
-.. _bob.ip.binseg.evaluation:
 
-==========
+.. _bob.ip.binseg.eval:
+
+==========================
+ Inference and Evaluation
+==========================
+
+This guides explains how to run inference or a complete evaluation using
+command-line tools.  Inference produces probability maps for input images,
+while evaluation will analyze such output against existing annotations and
+produce performance figures.
+
+
+Inference
+---------
+
+You may use one of your trained models (or :ref:`one of ours
+<bob.ip.binseg.models>` to run inference on existing datasets or your own
+dataset.  In inference (or prediction) mode, we input data, the trained model,
+and output HDF5 files containing the prediction outputs for every input image.
+Each HDF5 file contains a single object with a 2-dimensional matrix of floating
+point numbers indicating the vessel probability (``[0.0,1.0]``) for each pixel
+in the input image.
+
+
+Inference on an existing dataset
+================================
+
+To run inference, use the sub-command :ref:`predict
+<bob.ip.binseg.cli.predict>` to run prediction on an existing dataset:
+
+.. code-block:: sh
+
+   $ bob binseg predict -vv <model> -w <path/to/model.pth> <dataset>
+
+
+Replace ``<model>`` and ``<dataset>`` by the appropriate :ref:`configuration
+files <bob.ip.binseg.configs>`.  Replace ``<path/to/model.pth>`` to a path
+leading to the pre-trained model, or URL pointing to a pre-trained model (e.g.
+:ref:`one of ours <bob.ip.binseg.models>`).
+
+
+Inference on a custom dataset
+=============================
+
+If you would like to test your own data against one of the pre-trained models,
+you need to instantiate :py:mod:`A CSV-based configuration
+<bob.ip.binseg.configs.datasets.csv>`
+
+Read the appropriate module documentation for details.
+
+.. code-block:: bash
+
+   $ bob binseg config copy csv-dataset-example mydataset.py
+   # edit mydataset.py to your liking
+   $ bob binseg predict -vv <model> -w <path/to/model.pth> ./mydataset.py
+
+
+Inference typically consumes less resources than training, but you may speed
+things up using ``--device='cuda:0'`` in case you have a GPU.
+
+
 Evaluation
-==========
+----------
 
-To evaluate trained models use use ``bob binseg test`` followed by
-the model config, the dataset config and the path to the pretrained
-model via the argument ``-w``.
+In evaluation, we input an **annotated** dataset and predictions to generate
+performance summaries that help analysis of a trained model.  Evaluation is
+done using the :ref:`evaluate command `<bob.ip.binseg.cli.evaluate>` followed
+by the model and the annotated dataset configuration, and the path to the
+pretrained weights via the ``--weight`` argument.
 
-Alternatively point to the output folder used during training via
-the ``-o`` argument. The Checkpointer will load the model as indicated
-in the file: ``last_checkpoint``.
+Use ``bob binseg evaluate --help`` for more information.
 
-Use ``bob binseg test --help`` for more information.
-
-E.g. run inference on model M2U-Net on the DRIVE test set:
+E.g. run inference on predictions from the DRIVE test set, do the following:
 
 .. code-block:: bash
 
     # Point directly to saved model via -w argument:
-    bob binseg test M2UNet DRIVETEST -o /outputfolder/for/results -w /direct/path/to/weight/model_final.pth
+    bob binseg evaluate -vv drive-test -p /predictions/folder -o /eval/results/folder
 
-    # Use training output path (requries last_checkpoint file to be present)
-    # The evaluation results will be stored in the same folder
-    bob binseg test M2UNet DRIVETEST -o /DRIVE/M2UNet/output
+If available, you may use the option ``--second-annotator`` to
 
-Outputs
-========
-The inference run generates the following output files:
 
-.. code-block:: bash
-
-    .
-    ├── images  # the predicted probabilities as grayscale images in .png format 
-    ├── hdf5    # the predicted probabilties in hdf5 format
-    ├── last_checkpoint  # text file that keeps track of the last checkpoint 
-    ├── M2UNet_trainlog.csv # training log 
-    ├── M2UNet_trainlog.pdf # training log plot
-    ├── model_*.pth # model checkpoints
-    └── results
-        ├── image*.jpg.csv # evaluation metrics for each image
-        ├── Metrics.csv # average evaluation metrics
-        ├── ModelSummary.txt # model summary and parameter count
-        ├── precision_recall.pdf # precision vs recall plot
-        └── Times.txt # inference times
-
-Inference Only Mode
-====================
-
-If you wish to run inference only on a folder containing images, use the ``predict`` function in combination with a :ref:`bob.ip.binseg.configs.datasets.imagefolderinference` config. E.g.:
-
-.. code-block:: bash
-
-    bob binseg predict M2UNet /path/to/myinferencedatasetconfig.py -b 1 -d cpu -o /my/output/path -w /path/to/pretrained/weight/model_final.pth -vv
-
-Pretrained Models
+Comparing Systems
 =================
 
-Due to storage limitations we only provide weights of a subset
-of all evaluated models:
-
-
-
-+--------------------+--------------------+--------------------------------------------------------------------------------------------------------------------------------+
-|                    | DRIU               | M2UNet                                                                                                                         |
-+--------------------+--------------------+--------------------------------------------------------------------------------------------------------------------------------+
-| DRIVE              | `DRIU_DRIVE.pth`_  | `M2UNet_DRIVE.pth <m2unet_drive.pth_>`_                                                                                        |
-+--------------------+--------------------+--------------------------------------------------------------------------------------------------------------------------------+
-| COVD-DRIVE         |                    | `M2UNet_COVD-DRIVE.pth <https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/M2UNet_COVD-DRIVE.pth>`_               |
-+--------------------+--------------------+--------------------------------------------------------------------------------------------------------------------------------+
-| COVD-DRIVE SSL     |                    | `M2UNet_COVD-DRIVE_SSL.pth <https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/M2UNet_COVD-DRIVE_SSL.pth>`_       |
-+--------------------+--------------------+--------------------------------------------------------------------------------------------------------------------------------+
-| STARE              | DRIU_STARE.pth_    | `M2UNet_STARE.pth <https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/M2UNet_STARE.pth>`_                         |
-+--------------------+--------------------+--------------------------------------------------------------------------------------------------------------------------------+
-| COVD-STARE         |                    | `M2UNet_COVD-STARE.pth <https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/M2UNet_COVD-STARE.pth>`_               |
-+--------------------+--------------------+--------------------------------------------------------------------------------------------------------------------------------+
-| COVD-STARE SSL     |                    | `M2UNet_COVD-STARE_SSL.pth <https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/M2UNet_COVD-STARE_SSL.pth>`_       |
-+--------------------+--------------------+--------------------------------------------------------------------------------------------------------------------------------+
-| CHASE_DB1          | DRIU_CHASEDB1.pth_ | `M2UNet_CHASEDB1.pth <https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/M2UNet_CHASEDB1.pth>`_                   |
-+--------------------+--------------------+--------------------------------------------------------------------------------------------------------------------------------+
-| COVD-CHASE_DB1     |                    | `M2UNet_COVD-CHASEDB1.pth <https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/M2UNet_COVD-CHASEDB1.pth>`_         |
-+--------------------+--------------------+--------------------------------------------------------------------------------------------------------------------------------+
-| COVD-CHASE_DB1 SSL |                    | `M2UNet_COVD-CHASEDB1_SSL.pth <https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/M2UNet_COVD-CHASEDB1_SSL.pth>`_ |
-+--------------------+--------------------+--------------------------------------------------------------------------------------------------------------------------------+
-| IOSTARVESSEL       | DRIU_IOSTAR.pth_   | `M2UNet_IOSTARVESSEL.pth <https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/M2UNet_IOSTARVESSEL.pth>`_           |
-+--------------------+--------------------+--------------------------------------------------------------------------------------------------------------------------------+
-| COVD-IOSTAR        |                    | `M2UNet_COVD-IOSTAR.pth <https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/M2UNet_COVD-IOSTAR.pth>`_             |
-+--------------------+--------------------+--------------------------------------------------------------------------------------------------------------------------------+
-| COVD-IOSTAR SSL    |                    | `M2UNet_COVD-IOSTAR_SSL.pth <https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/M2UNet_COVD-IOSTAR_SSL.pth>`_     |
-+--------------------+--------------------+--------------------------------------------------------------------------------------------------------------------------------+
-| HRF                | DRIU_HRF.pth_      | `M2UNet_HRF1168.pth <https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/M2UNet_HRF1168.pth>`_                     |
-+--------------------+--------------------+--------------------------------------------------------------------------------------------------------------------------------+
-| COVD-HRF           |                    | `M2UNet_COVD-HRF.pth <https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/M2UNet_COVD-HRF.pth>`_                   |
-+--------------------+--------------------+--------------------------------------------------------------------------------------------------------------------------------+
-| COVD-HRF SSL       |                    | `M2UNet_COVD-HRF_SSL.pth <https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/M2UNet_COVD-HRF_SSL.pth>`_           |
-+--------------------+--------------------+--------------------------------------------------------------------------------------------------------------------------------+
-
-
-
-To run evaluation of pretrained models pass url as ``-w`` argument. E.g.:
+To compare multiple systems together and generate combined plots and tables,
+use the :ref:`compare command <bob.ip.binseg.cli.compare>`.  Use ``--help`` for
+a quick guide.
 
 .. code-block:: bash
 
-    bob binseg test DRIU DRIVETEST -o Evaluation_DRIU_DRIVE -w https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/DRIU_DRIVE.pth
-    bob binseg test M2UNet DRIVETEST -o Evaluation_M2UNet_DRIVE -w https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/M2UNet_DRIVE.pth
-
+   $ bob binseg compare -vv A A/metrics.csv B B/metrics.csv
 
 
 .. include:: links.rst

@@ -23,8 +23,14 @@ extensions = [
     'sphinx.ext.napoleon',
     'sphinx.ext.viewcode',
     'sphinx.ext.mathjax',
+    'sphinxcontrib.programoutput',
     #'matplotlib.sphinxext.plot_directive'
 ]
+
+# This allows sphinxcontrib-programoutput to work in buildout mode
+candidate_binpath = os.path.join(os.path.dirname(os.path.realpath(os.curdir)), 'bin')
+if os.path.exists(candidate_binpath):
+    os.environ['PATH'] = candidate_binpath + os.pathsep + os.environ.get('PATH', '')
 
 # Be picky about warnings
 nitpicky = True
@@ -96,7 +102,12 @@ release = distribution.version
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
-exclude_patterns = ['links.rst']
+exclude_patterns = [
+        'links.rst',
+        'api/modules.rst',
+        'api/bob.rst',
+        'api/bob.ip.rst',
+        ]
 
 # The reST default role (used for this markup: `text`) to use for all documents.
 #default_role = None
@@ -236,25 +247,12 @@ else:
 intersphinx_mapping['torch'] = ('https://pytorch.org/docs/stable/', None)
 intersphinx_mapping['PIL'] = ('http://pillow.readthedocs.io/en/stable', None)
 intersphinx_mapping['pandas'] = ('https://pandas.pydata.org/pandas-docs/stable/',None)
-# We want to remove all private (i.e. _. or __.__) members
-# that are not in the list of accepted functions
-accepted_private_functions = ['__array__']
 
+# Figures out the major click version we use
+import pkg_resources
+click_version = pkg_resources.require('click')[0].version.split('.')[0]
+click_version += '.x'
+intersphinx_mapping['click'] = ('https://click.palletsprojects.com/en/%s/' % (click_version,),None)
 
-def member_function_test(app, what, name, obj, skip, options):
-    # test if we have a private function
-    if len(name) > 1 and name[0] == '_':
-        # test if this private function should be allowed
-        if name not in accepted_private_functions:
-            # omit privat functions that are not in the list of accepted private functions
-            return skip
-        else:
-            # test if the method is documented
-            if not hasattr(obj, '__doc__') or not obj.__doc__:
-                return skip
-    return False
-
-
-def setup(app):
-    app.connect('autodoc-skip-member', member_function_test)
-    
+# Add our private index (for extras and fixes)
+intersphinx_mapping['extras'] = ('', 'extras.inv')
