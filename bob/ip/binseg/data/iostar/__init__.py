@@ -28,7 +28,7 @@ import pkg_resources
 import bob.extension
 
 from ..dataset import JSONDataset
-from ..loader import load_pil_rgb, load_pil_1, data_path_keymaker
+from ..loader import load_pil_rgb, load_pil_1, make_delayed
 from ..utils import invert_mode1_image, subtract_mode1_images
 
 _protocols = [
@@ -41,30 +41,36 @@ _root_path = bob.extension.rc.get(
 )
 
 
-def _loader(context, sample):
-    retval = dict(
+def _vessel_loader(sample):
+    return dict(
         data=load_pil_rgb(os.path.join(_root_path, sample["data"])),
         label=load_pil_1(os.path.join(_root_path, sample["label"])),
         mask=load_pil_1(os.path.join(_root_path, sample["mask"])),
     )
+
+
+def _disc_loader(sample):
+    # For optic-disc analysis, the label provided by IOSTAR raw data is the
+    # "inverted" (negative) label, and does not consider the mask region, which
+    # must be subtracted.  We do this special manipulation here.
+    data = load_pil_rgb(os.path.join(_root_path, sample["data"]))
+    label = load_pil_1(os.path.join(_root_path, sample["label"]))
+    mask = load_pil_1(os.path.join(_root_path, sample["mask"]))
+    label = subtract_mode1_images(
+        invert_mode1_image(label), invert_mode1_image(mask)
+    )
+    return dict(data=data, label=label, mask=mask)
+
+
+def _loader(context, sample):
     if context["protocol"] == "optic-disc":
-        # For optic-disc analysis, the label provided by IOSTAR raw data is the
-        # "inverted" (negative) label, and does not consider the mask region,
-        # which must be subtracted.  We do this special manipulation here.
-        retval["label"] = subtract_mode1_images(
-            invert_mode1_image(retval["label"]),
-            invert_mode1_image(retval["mask"]),
-        )
-        return retval
+        return make_delayed(sample, _disc_loader)
     elif context["protocol"] == "vessel":
-        return retval
+        return make_delayed(sample, _vessel_loader)
     raise RuntimeError(f"Unknown protocol {context['protocol']}")
 
 
 dataset = JSONDataset(
-    protocols=_protocols,
-    fieldnames=("data", "label", "mask"),
-    loader=_loader,
-    keymaker=data_path_keymaker,
+    protocols=_protocols, fieldnames=("data", "label", "mask"), loader=_loader,
 )
 """IOSTAR dataset object"""

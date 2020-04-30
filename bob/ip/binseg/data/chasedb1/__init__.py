@@ -37,23 +37,32 @@ import pkg_resources
 import bob.extension
 
 from ..dataset import JSONDataset
-from ..loader import load_pil_rgb, load_pil_1, data_path_keymaker
+from ..loader import load_pil_rgb, load_pil_1, make_delayed
 
 _protocols = [
-        pkg_resources.resource_filename(__name__, "first-annotator.json"),
-        pkg_resources.resource_filename(__name__, "second-annotator.json"),
-        ]
+    pkg_resources.resource_filename(__name__, "first-annotator.json"),
+    pkg_resources.resource_filename(__name__, "second-annotator.json"),
+]
 
-_root_path = bob.extension.rc.get('bob.ip.binseg.chasedb1.datadir',
-        os.path.realpath(os.curdir))
+_root_path = bob.extension.rc.get(
+    "bob.ip.binseg.chasedb1.datadir", os.path.realpath(os.curdir)
+)
+
+
+def _raw_data_loader(sample):
+    return dict(
+        data=load_pil_rgb(os.path.join(_root_path, sample["data"])),
+        label=load_pil_1(os.path.join(_root_path, sample["label"])),
+    )
+
 
 def _loader(context, sample):
-    #"context" is ignored in this case - database is homogeneous
-    return dict(
-            data=load_pil_rgb(os.path.join(_root_path, sample["data"])),
-            label=load_pil_1(os.path.join(_root_path, sample["label"])),
-            )
+    # "context" is ignored in this case - database is homogeneous
+    # we returned delayed samples to avoid loading all images at once
+    return make_delayed(sample, _raw_data_loader)
 
-dataset = JSONDataset(protocols=_protocols, fieldnames=("data", "label"),
-        loader=_loader, keymaker=data_path_keymaker)
+
+dataset = JSONDataset(
+    protocols=_protocols, fieldnames=("data", "label"), loader=_loader
+)
 """CHASE-DB1 dataset object"""

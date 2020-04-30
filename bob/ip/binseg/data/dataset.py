@@ -6,13 +6,10 @@ import csv
 import copy
 import json
 import pathlib
-import functools
 
 import logging
 
 logger = logging.getLogger(__name__)
-
-from .sample import DelayedSample
 
 
 class JSONDataset:
@@ -63,32 +60,32 @@ class JSONDataset:
     loader : object
         A function that receives as input, a context dictionary (with at least
         a "protocol" and "subset" keys indicating which protocol and subset are
-        being served), and a dictionary with ``{key: path}`` entries, and
-        returns a dictionary with the loaded data.
+        being served), and a dictionary with ``{fieldname: value}`` entries,
+        and returns an object with at least 2 attributes:
 
-    keymaker : object
-        A function that receives as input the same input from the ``loader``,
-        but outputs a single string that uniquely identifies a sample within
-        a given protocol.  It is typically the path, without extension, of one
-        of the file entries for the sample, but you can tune it as you like.
+        * ``key``: which must be a unique string for every sample across
+          subsets in a protocol, and
+        * ``data``: which contains the data associated witht this sample
 
     """
 
-    def __init__(self, protocols, fieldnames, loader, keymaker):
+    def __init__(self, protocols, fieldnames, loader):
 
         if isinstance(protocols, dict):
-            self.protocols = protocols
+            self._protocols = protocols
         else:
-            self.protocols = dict(
-                (os.path.splitext(os.path.basename(k))[0], k)
-                for k in protocols
+            self._protocols = dict(
+                (os.path.splitext(os.path.basename(k))[0], k) for k in protocols
             )
         self.fieldnames = fieldnames
-        self.loader = loader
-        self.keymaker = keymaker
+        self._loader = loader
 
     def check(self, limit=0):
         """For each protocol, check if all data can be correctly accessed
+
+        This function assumes each sample has a ``data`` and a ``key``
+        attribute.  The ``key`` attribute should be a string, or representable
+        as such.
 
 
         Parameters
@@ -110,43 +107,34 @@ class JSONDataset:
 
         logger.info(f"Checking dataset...")
         errors = 0
-        for proto in self.protocols:
+        for proto in self._protocols:
             logger.info(f"Checking protocol '{proto}'...")
             for name, samples in self.subsets(proto).items():
                 logger.info(f"Checking subset '{name}'...")
                 if limit:
                     logger.info(f"Checking at most first '{limit}' samples...")
                     samples = samples[:limit]
-                for sample in samples:
+                for pos, sample in enumerate(samples):
                     try:
-                        sample.data  # triggers loading
+                        assert len(sample) == len(self.fieldnames), (
+                            f"Entry {pos} in subset {name} of protocol "
+                            f"{proto} has {len(sample)} entries instead of "
+                            f"{len(self.fieldnames)} (expected). Fix file "
+                            f"'{self._protocols[proto]}'"
+                        )
+                        sample.data  # check data can be loaded
                         logger.info(f"{sample.key}: OK")
                     except Exception as e:
                         logger.error(f"{sample.key}: {e}")
                         errors += 1
         return errors
 
-    def _make_delayed(self, pos, sample, context):
-        """Checks consistence and builds a delayed loading sample
-        """
-        assert len(sample) == len(self.fieldnames), (
-            f"Entry {k} in subset {context['subset']} of protocol "
-            f"{context['protocol']} has {len(sample)} entries instead of "
-            f"{len(self.fieldnames)} (expected). Fix file "
-            f"{self.protocols[context['protocol']]}"
-        )
-        item = dict(zip(self.fieldnames, sample))
-        return DelayedSample(
-            functools.partial(self.loader, context, item),
-            key=self.keymaker(context, item),
-        )
-
     def subsets(self, protocol):
         """Returns all subsets in a protocol
 
         This method will load JSON information for a given protocol and return
-        all subsets of the given protocol after converting each entry into a
-        :py:class:`bob.ip.binseg.data.sample.DelayedSample`.
+        all subsets of the given protocol after converting each entry through
+        the loader function.
 
         Parameters
         ----------
@@ -159,19 +147,14 @@ class JSONDataset:
         -------
 
         subsets : dict
-            A dictionary mapping subset names to lists of
-            :py:class:`bob.ip.binseg.data.sample.DelayedSample` objects, with
-            the proper loading implemented.  Each delayed sample also carries a
-            ``key`` parameter, that contains the output of the sample
-            contextual data after passing through the ``keymaker``.  This
-            parameter can be used for recording sample transforms during
-            check-pointing.
+            A dictionary mapping subset names to lists of objects (respecting
+            the ``key``, ``data`` interface).
 
         """
 
-        fileobj = self.protocols[protocol]
+        fileobj = self._protocols[protocol]
         if isinstance(fileobj, (str, bytes, pathlib.Path)):
-            with open(self.protocols[protocol], "r") as f:
+            with open(self._protocols[protocol], "r") as f:
                 data = json.load(f)
         else:
             data = json.load(f)
@@ -179,16 +162,20 @@ class JSONDataset:
 
         retval = {}
         for subset, samples in data.items():
-            context = dict(protocol=protocol, subset=subset)
             retval[subset] = [
-                self._make_delayed(k, v, context) for (k, v) in enumerate(samples)
+                self._loader(
+                    dict(protocol=protocol, subset=subset, order=n),
+                    dict(zip(self.fieldnames, k))
+                )
+                for n, k in enumerate(samples)
             ]
+
         return retval
 
 
 class CSVDataset:
     """
-    Generic single subset filelist dataset that yields samples
+    Generic multi-subset filelist dataset that yields samples
 
     To create a new dataset, you only need to provide a CSV formatted filelist
     using any separator (e.g. comma, space, semi-colon) with the following
@@ -222,29 +209,25 @@ class CSVDataset:
         dictionary with ``{key: path}`` entries, and returns a dictionary with
         the loaded data.
 
-    keymaker : object
-        A function that receives as input the same input from the ``loader``,
-        but outputs a single string that uniquely identifies a sample within
-        a given protocol.  It is typically the path, without extension, of one
-        of the file entries for the sample, but you can tune it as you like.
-
     """
 
-    def __init__(self, subsets, fieldnames, loader, keymaker):
+    def __init__(self, subsets, fieldnames, loader):
 
         if isinstance(subsets, dict):
             self._subsets = subsets
         else:
             self._subsets = dict(
-                (os.path.splitext(os.path.basename(k))[0], k)
-                for k in subsets
+                (os.path.splitext(os.path.basename(k))[0], k) for k in subsets
             )
         self.fieldnames = fieldnames
-        self.loader = loader
-        self.keymaker = keymaker
+        self._loader = loader
 
     def check(self, limit=0):
         """For each subset, check if all data can be correctly accessed
+
+        This function assumes each sample has a ``data`` and a ``key``
+        attribute.  The ``key`` attribute should be a string, or representable
+        as such.
 
 
         Parameters
@@ -272,28 +255,19 @@ class CSVDataset:
             if limit:
                 logger.info(f"Checking at most first '{limit}' samples...")
                 samples = samples[:limit]
-            for sample in samples:
+            for pos, sample in enumerate(samples):
                 try:
+                    assert len(sample) == len(self.fieldnames), (
+                        f"Entry {pos} in subset {name} has {len(sample)} "
+                        f"entries instead of {len(self.fieldnames)} "
+                        f"(expected). Fix file '{self._subsets[name]}'"
+                    )
                     sample.data  # triggers loading
                     logger.info(f"{sample.key}: OK")
                 except Exception as e:
                     logger.error(f"{sample.key}: {e}")
                     errors += 1
         return errors
-
-    def _make_delayed(self, pos, sample, context):
-        """Checks consistence and builds a delayed loading sample
-        """
-        assert len(sample) == len(self.fieldnames), (
-            f"Entry {k} in subset {context['subset']} has {len(sample)} "
-            f"entries instead of {len(self.fieldnames)} (expected). Fix "
-            f"file {self._subsets[context['subset']]}"
-        )
-        item = dict(zip(self.fieldnames, sample))
-        return DelayedSample(
-            functools.partial(self.loader, context, item),
-            key=self.keymaker(context, item),
-        )
 
     def subsets(self):
         """Returns all available subsets at once
@@ -302,13 +276,8 @@ class CSVDataset:
         -------
 
         subsets : dict
-            A dictionary mapping subset names to lists of
-            :py:class:`bob.ip.binseg.data.sample.DelayedSample` objects, with
-            the proper loading implemented.  Each delayed sample also carries a
-            ``key`` parameter, that contains the output of the sample
-            contextual data after passing through the ``keymaker``.  This
-            parameter can be used for recording sample transforms during
-            check-pointing.
+            A dictionary mapping subset names to lists of objects (respecting
+            the ``key``, ``data`` interface).
 
         """
 
@@ -318,8 +287,8 @@ class CSVDataset:
         """Returns all samples in a subset
 
         This method will load CSV information for a given subset and return
-        all samples of the given subset after converting each entry into a
-        :py:class:`bob.ip.binseg.data.sample.DelayedSample`.
+        all samples of the given subset after passing each entry through the
+        loading function.
 
 
         Parameters
@@ -333,12 +302,7 @@ class CSVDataset:
         -------
 
         subset : list
-            A list of :py:class:`bob.ip.binseg.data.sample.DelayedSample`
-            objects, with the proper loading implemented.  Each delayed sample
-            also carries a ``key`` parameter, that contains the output of the
-            sample contextual data after passing through the ``keymaker``.
-            This parameter can be used for recording sample transforms during
-            check-pointing.
+            A lists of objects (respecting the ``key``, ``data`` interface).
 
         """
 
@@ -352,5 +316,9 @@ class CSVDataset:
             samples = [k for k in cf]
             fileobj.seek(0)
 
-        context = dict(subset=subset)
-        return [self._make_delayed(k, v, context) for (k, v) in enumerate(samples)]
+        return [
+            self._loader(
+                dict(subset=subset, order=n), dict(zip(self.fieldnames, k))
+            )
+            for n, k in enumerate(samples)
+        ]

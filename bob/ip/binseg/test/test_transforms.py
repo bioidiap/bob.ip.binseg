@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import os
 import random
 
 import nose.tools
@@ -348,7 +349,8 @@ def test_compose():
 
 def test_16bit_autolevel():
 
-    path = pkg_resources.resource_filename(__name__, "testimg-16bit.png")
+    path = pkg_resources.resource_filename(__name__, os.path.join("data",
+        "img-16bit.png"))
     # the way to load a 16-bit PNG image correctly, according to:
     # https://stackoverflow.com/questions/32622658/read-16-bit-png-image-file-using-python
     # https://github.com/python-pillow/Pillow/issues/3011

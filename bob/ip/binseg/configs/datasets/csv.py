@@ -58,14 +58,17 @@ More information:
 
 """
 
+import os
+
 # First, define how to access and load the raw data. Our package provides some
 # stock loaders we use for other datasets. You may have a look at the
 # documentation of that module for details.
 from bob.ip.binseg.data.loader import (
     load_pil_rgb,
     load_pil_1,
-    data_path_keymaker,
 )
+
+from bob.ip.binseg.data.sample import Sample
 
 # How we use the loaders - "sample" is a dictionary where keys are defined
 # below and map to the columns of the CSV files you input.  This one is
@@ -79,20 +82,23 @@ def _loader(context, sample):
     # the CSV file to contain only relative paths and is, therefore, more
     # compact.  Of course, you can make those paths absolute and then simplify
     # it here.
-    import os
-
     root_path = "/path/where/raw/files/sit"
 
-    return dict(
-        data=load_pil_rgb(os.path.join(root_path, sample["data"])),
-        label=load_pil_1(os.path.join(root_path, sample["label"])),
-    )
+    data=load_pil_rgb(os.path.join(root_path, sample["data"]))
+    label=load_pil_1(os.path.join(root_path, sample["label"]))
+
+    # You may also return DelayedSample to avoid data loading to take place
+    # as the sample object itself is created.  Take a look at our own datasets
+    # for examples.
+    return Sample(
+            key=os.path.splitext(sample["data"])[0],
+            data=dict(data=data, label=label),
+            )
 
 
 # This is just a class that puts everything together: the CSV file, how to load
-# each sample defined in the dataset, names for the various columns of the CSV
-# file and how to make unique keys for each sample (keymaker).  Once created,
-# this object can be called to generate sample lists.
+# each sample defined in the dataset, and names for the various columns of the
+# CSV file.  Once created, this object can be called to generate sample lists.
 from bob.ip.binseg.data.dataset import CSVDataset
 
 _raw_dataset = CSVDataset(
@@ -109,7 +115,6 @@ _raw_dataset = CSVDataset(
         },
     fieldnames=("data", "label"),  # these are the column names
     loader=_loader,
-    keymaker=data_path_keymaker,
 )
 
 # Finally, we build a connector to passes our dataset to the pytorch framework

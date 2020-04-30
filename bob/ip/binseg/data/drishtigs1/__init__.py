@@ -28,7 +28,7 @@ import pkg_resources
 import bob.extension
 
 from ..dataset import JSONDataset
-from ..loader import load_pil_rgb, data_path_keymaker
+from ..loader import load_pil_rgb, make_delayed
 
 _protocols = {
     "optic-disc-all": pkg_resources.resource_filename(
@@ -50,26 +50,40 @@ _root_path = bob.extension.rc.get(
 )
 
 
-def _loader(context, sample):
+def _raw_data_loader_all(sample):
     retval = dict(
         data=load_pil_rgb(os.path.join(_root_path, sample["data"])),
         label=load_pil_rgb(os.path.join(_root_path, sample["label"])).convert(
             "L"
         ),
     )
-    # Drishti-GS provides softmaps of multiple annotators
-    # we threshold to get gt where all/any of the annotators overlap
-    if context["protocol"].endswith("-all"):
-        retval["label"] = retval["label"].point(lambda p: p > 254, mode="1")
-    elif context["protocol"].endswith("-any"):
-        retval["label"] = retval["label"].point(lambda p: p > 0, mode="1")
-    else:
-        raise RuntimeError(f"Unknown protocol {context['protocol']}")
+    retval["label"] = retval["label"].point(lambda p: p > 254, mode="1")
     return retval
 
 
+def _raw_data_loader_any(sample):
+    retval = dict(
+        data=load_pil_rgb(os.path.join(_root_path, sample["data"])),
+        label=load_pil_rgb(os.path.join(_root_path, sample["label"])).convert(
+            "L"
+        ),
+    )
+    retval["label"] = retval["label"].point(lambda p: p > 0, mode="1")
+    return retval
+
+
+def _loader(context, sample):
+    # Drishti-GS provides softmaps of multiple annotators
+    # we threshold to get gt where all/any of the annotators overlap
+    if context["protocol"].endswith("-all"):
+        return make_delayed(sample, _raw_data_loader_all)
+    elif context["protocol"].endswith("-any"):
+        return make_delayed(sample, _raw_data_loader_any)
+    else:
+        raise RuntimeError(f"Unknown protocol {context['protocol']}")
+
+
 dataset = JSONDataset(
-    protocols=_protocols, fieldnames=("data", "label"), loader=_loader,
-    keymaker=data_path_keymaker
+    protocols=_protocols, fieldnames=("data", "label"), loader=_loader
 )
 """Drishti-GS1 dataset object"""

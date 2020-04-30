@@ -26,7 +26,7 @@ import pkg_resources
 import bob.extension
 
 from ..dataset import JSONDataset
-from ..loader import load_pil_rgb, load_pil_1, data_path_keymaker
+from ..loader import load_pil_rgb, load_pil_1, make_delayed
 
 _protocols = [
     pkg_resources.resource_filename(__name__, "optic-disc-exp1.json"),
@@ -42,7 +42,7 @@ _root_path = bob.extension.rc.get(
 )
 
 
-def _loader(context, sample):
+def _raw_data_loader(sample):
     # RIM-ONE r3 provides stereo images - we clip them here to get only the
     # left part of the image, which is also annotated
     return dict(
@@ -55,10 +55,15 @@ def _loader(context, sample):
     )
 
 
+def _loader(context, sample):
+    # "context" is ignored in this case - database is homogeneous
+    # we returned delayed samples to avoid loading all images at once
+    return make_delayed(sample, _raw_data_loader)
+
+
 dataset = JSONDataset(
     protocols=_protocols,
     fieldnames=("data", "label"),
     loader=_loader,
-    keymaker=data_path_keymaker,
 )
 """RIM-ONE r3 dataset object"""

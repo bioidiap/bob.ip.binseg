@@ -1,75 +1,96 @@
 #!/usr/bin/env python
 # coding=utf-8
 
-"""Unit tests for the CSV dataset"""
+"""Test code for datasets"""
 
-import io
-
+import os
+import pkg_resources
 import nose.tools
 
-from ..data.dataset import CSVDataset
-from ..data import stare
-
-## special trick for CI builds
-from . import mock_dataset, TESTDB_TMPDIR
-
-datadir, json_dataset, rc_variable_set = mock_dataset()
+from ..data.dataset import CSVDataset, JSONDataset
+from ..data.sample import Sample
 
 
-## definition of stare subsets for "default" protocol
-default = {
-    "train": io.StringIO(
-        """\
-stare-images/im0001.ppm,labels-ah/im0001.ah.ppm
-stare-images/im0002.ppm,labels-ah/im0002.ah.ppm
-stare-images/im0003.ppm,labels-ah/im0003.ah.ppm
-stare-images/im0004.ppm,labels-ah/im0004.ah.ppm
-stare-images/im0005.ppm,labels-ah/im0005.ah.ppm
-stare-images/im0044.ppm,labels-ah/im0044.ah.ppm
-stare-images/im0077.ppm,labels-ah/im0077.ah.ppm
-stare-images/im0081.ppm,labels-ah/im0081.ah.ppm
-stare-images/im0082.ppm,labels-ah/im0082.ah.ppm
-stare-images/im0139.ppm,labels-ah/im0139.ah.ppm"""
-    ),
-    "test": io.StringIO(
-        """\
-stare-images/im0162.ppm,labels-ah/im0162.ah.ppm
-stare-images/im0163.ppm,labels-ah/im0163.ah.ppm
-stare-images/im0235.ppm,labels-ah/im0235.ah.ppm
-stare-images/im0236.ppm,labels-ah/im0236.ah.ppm
-stare-images/im0239.ppm,labels-ah/im0239.ah.ppm
-stare-images/im0240.ppm,labels-ah/im0240.ah.ppm
-stare-images/im0255.ppm,labels-ah/im0255.ah.ppm
-stare-images/im0291.ppm,labels-ah/im0291.ah.ppm
-stare-images/im0319.ppm,labels-ah/im0319.ah.ppm
-stare-images/im0324.ppm,labels-ah/im0324.ah.ppm"""
-    ),
-}
+def _data_file(f):
+    return pkg_resources.resource_filename(__name__, os.path.join("data", f))
 
 
-@rc_variable_set("bob.ip.binseg.stare.datadir")
-def test_compare_to_json():
+def _raw_data_loader(context, d):
+    return Sample(
+            data=[
+                float(d["sepal_length"]),
+                float(d["sepal_width"]),
+                float(d["petal_length"]),
+                float(d["petal_width"]),
+                d["species"][5:],
+                ],
+            key=(context["subset"] + str(context["order"]))
+            )
 
-    test_dataset = CSVDataset(
-        default,
-        stare._fieldnames,
-        stare._make_loader(datadir),
-        stare.data_path_keymaker,
-    )
 
-    for subset in ("train", "test"):
-        for t1, t2 in zip(
-            test_dataset.samples(subset),
-            json_dataset.subsets("ah")[subset],
-        ):
-            nose.tools.eq_(t1.key, t2.key)
-            nose.tools.eq_(t1.data, t2.data)
+def test_csv_loading():
 
-    subsets = test_dataset.subsets()
-    for subset in subsets.keys():
-        for t1, t2 in zip(
-            subsets[subset],
-            json_dataset.subsets("ah")[subset],
-        ):
-            nose.tools.eq_(t1.key, t2.key)
-            nose.tools.eq_(t1.data, t2.data)
+    # tests if we can build a simple CSV loader for the Iris Flower dataset
+    subsets = {
+            "train": _data_file("iris-train.csv"),
+            "test": _data_file("iris-train.csv")
+            }
+
+    fieldnames = (
+            "sepal_length",
+            "sepal_width",
+            "petal_length",
+            "petal_width",
+            "species",
+            )
+
+    dataset = CSVDataset(subsets, fieldnames, _raw_data_loader)
+
+    data = dataset.subsets()
+
+    nose.tools.eq_(len(data["train"]), 75)
+    for k in data["train"]:
+        for f in range(4):
+            nose.tools.eq_(type(k.data[f]), float)
+        nose.tools.eq_(type(k.data[4]), str)
+        nose.tools.eq_(type(k.key), str)
+
+    nose.tools.eq_(len(data["test"]), 75)
+    for k in data["test"]:
+        for f in range(4):
+            nose.tools.eq_(type(k.data[f]), float)
+        nose.tools.eq_(type(k.data[4]), str)
+        assert k.data[4] in ("setosa", "versicolor", "virginica")
+        nose.tools.eq_(type(k.key), str)
+
+
+def test_json_loading():
+
+    # tests if we can build a simple JSON loader for the Iris Flower dataset
+    protocols = {"default": _data_file("iris.json")}
+
+    fieldnames = (
+            "sepal_length",
+            "sepal_width",
+            "petal_length",
+            "petal_width",
+            "species",
+            )
+
+    dataset = JSONDataset(protocols, fieldnames, _raw_data_loader)
+
+    data = dataset.subsets("default")
+
+    nose.tools.eq_(len(data["train"]), 75)
+    for k in data["train"]:
+        for f in range(4):
+            nose.tools.eq_(type(k.data[f]), float)
+        nose.tools.eq_(type(k.data[4]), str)
+        nose.tools.eq_(type(k.key), str)
+
+    nose.tools.eq_(len(data["test"]), 75)
+    for k in data["test"]:
+        for f in range(4):
+            nose.tools.eq_(type(k.data[f]), float)
+        nose.tools.eq_(type(k.data[4]), str)
+        nose.tools.eq_(type(k.key), str)

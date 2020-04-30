@@ -6,7 +6,11 @@
 
 
 import os
+import functools
+
 import PIL.Image
+
+from .sample import DelayedSample
 
 
 def load_pil_rgb(path):
@@ -51,32 +55,35 @@ def load_pil_1(path):
     return PIL.Image.open(path).convert(mode="1", dither=None)
 
 
-def data_path_keymaker(context, sample):
-    """Returns a path without extension as a key
-
-    This method assumes ``sample`` contains at least one entry named ``path``,
-    that contains a path to the sample raw data, without extension.  It will
-    return the said path without its extension.
-
+def make_delayed(sample, loader, key=None):
+    """Returns a delayed-loading Sample object
 
     Parameters
     ----------
 
-    context : dict
-        Context dictionary with entries (``protocol``, ``subset``), depending
-        on the context
-
     sample : dict
-        A dictionary that maps field names to sample entries from the original
-        dataset.
+        A dictionary that maps field names to sample data values (e.g. paths)
+
+    loader : object
+        A function that inputs ``sample`` dictionaries and returns the loaded
+        data.
+
+    key : str
+        A unique key identifier for this sample.  If not provided, assumes
+        ``sample`` is a dictionary with a ``data`` entry and uses its path as
+        key.
 
 
     Returns
     -------
 
-    key : str
-        A string that uniquely identifies the sample within a given context
+    sample : bob.ip.binseg.data.sample.DelayedSample
+        In which ``key`` is as provided and ``data`` can be accessed to trigger
+        sample loading.
 
     """
 
-    return os.path.splitext(sample["data"])[0]
+    return DelayedSample(
+            functools.partial(loader, sample),
+            key=key or os.path.splitext(sample["data"])[0],
+            )

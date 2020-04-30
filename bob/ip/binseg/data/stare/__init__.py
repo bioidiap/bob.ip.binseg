@@ -30,7 +30,7 @@ import pkg_resources
 import bob.extension
 
 from ..dataset import JSONDataset
-from ..loader import load_pil_rgb, load_pil_1, data_path_keymaker
+from ..loader import load_pil_rgb, load_pil_1, make_delayed
 
 _protocols = [
     pkg_resources.resource_filename(__name__, "ah.json"),
@@ -45,13 +45,18 @@ _root_path = bob.extension.rc.get(
 
 
 def _make_loader(root_path):
+    #hack to get testing on the CI working fine for this dataset
 
-    def _loader(context, sample):
-        # "context" is ignore in this case - database is homogeneous
+    def _raw_data_loader(sample):
         return dict(
             data=load_pil_rgb(os.path.join(root_path, sample["data"])),
             label=load_pil_1(os.path.join(root_path, sample["label"])),
         )
+
+    def _loader(context, sample):
+        # "context" is ignored in this case - database is homogeneous
+        # we returned delayed samples to avoid loading all images at once
+        return make_delayed(sample, _raw_data_loader)
 
     return _loader
 
@@ -62,7 +67,6 @@ def _make_dataset(root_path):
         protocols=_protocols,
         fieldnames=_fieldnames,
         loader=_make_loader(root_path),
-        keymaker=data_path_keymaker,
     )
 
 dataset = _make_dataset(_root_path)

@@ -25,7 +25,7 @@ import pkg_resources
 import bob.extension
 
 from ..dataset import JSONDataset
-from ..loader import load_pil_rgb, load_pil_1, data_path_keymaker
+from ..loader import load_pil_rgb, load_pil_1, make_delayed
 
 _protocols = [
     pkg_resources.resource_filename(__name__, "default.json"),
@@ -36,8 +36,7 @@ _root_path = bob.extension.rc.get(
 )
 
 
-def _loader(context, sample):
-    # "context" is ignore in this case - database is homogeneous
+def _raw_data_loader(sample):
     return dict(
         data=load_pil_rgb(os.path.join(_root_path, sample["data"])),
         label=load_pil_1(os.path.join(_root_path, sample["label"])),
@@ -45,10 +44,13 @@ def _loader(context, sample):
     )
 
 
+def _loader(context, sample):
+    # "context" is ignored in this case - database is homogeneous
+    # we returned delayed samples to avoid loading all images at once
+    return make_delayed(sample, _raw_data_loader)
+
+
 dataset = JSONDataset(
-    protocols=_protocols,
-    fieldnames=("data", "label", "mask"),
-    loader=_loader,
-    keymaker=data_path_keymaker,
+    protocols=_protocols, fieldnames=("data", "label", "mask"), loader=_loader,
 )
 """HRF dataset object"""
