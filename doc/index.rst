@@ -29,7 +29,7 @@ Additional Material
 -------------------
 
 The additional material referred to in the paper can be found under
-:ref:`bob.ip.binseg.covdresults` and :download:`here </additionalresults.pdf>`
+:ref:`bob.ip.binseg.results` and :download:`here </additionalresults.pdf>`
 
 
 .. todolist::

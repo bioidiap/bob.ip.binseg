@@ -1,6 +1,6 @@
 .. -*- coding: utf-8 -*-
 
-.. _bob.ip.binseg.covdresults:
+.. _bob.ip.binseg.results.covd:
 
 .. todo::
 
