@@ -2,6 +2,11 @@
 
 .. _bob.ip.binseg.covdresults:
 
+.. todo::
+
+   This section is outdated and needs re-factoring.
+
+
 ============================
  COVD- and COVD-SLL Results
 ============================
