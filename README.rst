@@ -1,17 +1,13 @@
 .. -*- coding: utf-8 -*-
 
-.. image:: https://img.shields.io/badge/docs-stable-yellow.svg
-   :target: https://www.idiap.ch/software/bob/docs/bob/bob.ip.binseg/stable/index.html
-.. image:: https://img.shields.io/badge/docs-latest-orange.svg
+.. image:: https://img.shields.io/badge/docs-available-orage.svg
    :target: https://www.idiap.ch/software/bob/docs/bob/bob.ip.binseg/master/index.html
 .. image:: https://gitlab.idiap.ch/bob/bob.ip.binseg/badges/master/pipeline.svg
    :target: https://gitlab.idiap.ch/bob/bob.ip.binseg/commits/master
 .. image:: https://gitlab.idiap.ch/bob/bob.ip.binseg/badges/master/coverage.svg
-   :target: https://www.idiap.ch/software/bob/docs/bob/bob.ip.binseg/master/coverage/index.html
+   :target: https://gitlab.idiap.ch/bob/bob.ip.binseg/commits/master
 .. image:: https://img.shields.io/badge/gitlab-project-0000c0.svg
    :target: https://gitlab.idiap.ch/bob/bob.ip.binseg
-.. image:: https://img.shields.io/pypi/v/bob.ip.binseg.svg
-   :target: https://pypi.python.org/pypi/bob.ip.binseg
 
 
 ===============================================
