@@ -45,6 +45,7 @@ def test_csv_loading():
             )
 
     dataset = CSVDataset(subsets, fieldnames, _raw_data_loader)
+    dataset.check()
 
     data = dataset.subsets()
 
@@ -78,6 +79,7 @@ def test_json_loading():
             )
 
     dataset = JSONDataset(protocols, fieldnames, _raw_data_loader)
+    dataset.check()
 
     data = dataset.subsets("default")
 
