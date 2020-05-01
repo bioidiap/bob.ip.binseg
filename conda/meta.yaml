@@ -61,6 +61,7 @@ test:
     - sphinx_rtd_theme
     - sphinxcontrib-programoutput
     - graphviz
+    - font-ttf-dejavu-sans-mono
 
 about:
   summary: Binary Segmentation Benchmark Package for Bob
