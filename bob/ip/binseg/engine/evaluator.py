@@ -264,7 +264,7 @@ def run(
     """
 
     # Collect overall metrics
-    bins = 100  # number of thresholds to analyse for
+    bins = 1000  # number of thresholds to analyse for
     data = {}
 
     for sample in tqdm(dataset):
