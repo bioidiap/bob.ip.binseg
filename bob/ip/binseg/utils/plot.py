@@ -8,12 +8,73 @@ import numpy
 import pandas
 
 import matplotlib
+
 matplotlib.use("agg")
 
 import matplotlib.pyplot as plt
+from matplotlib.patches import Ellipse
 
 import logging
+
 logger = logging.getLogger(__name__)
+
+
+def _concave_hull(x, y, hw, hh):
+    """Calculates a approximate (concave) hull from ellipse centers and sizes
+
+    Each ellipse is approximated as a number of discrete points distributed
+    over the ellipse border following an homogeneous angle distribution.
+
+
+    Parameters
+    ----------
+
+    x : numpy.ndarray
+        1D array with x coordinates of ellipse centers
+
+    y : numpy.ndarray
+        1D array with y coordinates of ellipse centers
+
+    hw : numpy.ndarray
+        1D array with half-widths for each ellipse
+
+    hh : numpy.ndarray
+        1D array with half-heights for each ellipse
+
+
+    Returns
+    -------
+
+    points : numpy.ndarray
+        2D array containing the ``(x, y)`` coordinates of the concave hull
+        encompassing all defined ellipses.
+
+    """
+
+    def _ellipse_points(_x, _y, _hw, _hh, steps=100):
+        """Generates border points for an ellipse
+
+        This functions distributes points according to a rotation angle rather
+        than uniformily with respect to a particular axis.  The result is a
+        more homogeneous border representation for the ellipse.
+        """
+        _hw = _hw or 1e-8
+        _hh = _hh or 1e-8
+        angles = numpy.arange(0, numpy.pi, step=numpy.pi / (steps / 2))
+        rx1 = _hw*numpy.cos(angles)
+        rx2 = _hw*numpy.cos(angles + numpy.pi)
+        ry1 = (_hh/_hw) * numpy.sqrt(numpy.square(_hw) - numpy.square(rx1))
+        ry2 = -(_hh/_hw) * numpy.sqrt(numpy.square(_hw) - numpy.square(rx2))
+        return numpy.vstack((
+                numpy.hstack((rx1+_x, rx2+_x)),
+                numpy.hstack((ry1+_y, ry2+_y)),
+                )).T
+
+    retval = numpy.ndarray((0,2))
+    for (k, l, m, n) in zip(x, y, hw, hh):
+        retval = numpy.vstack((retval, [numpy.nan, numpy.nan],
+            _ellipse_points(k, l, m, n)))
+    return retval
 
 
 @contextlib.contextmanager
@@ -148,17 +209,17 @@ def precision_recall_f1iso(data, confidence=True):
 
     lines = ["-", "--", "-.", ":"]
     colors = [
-            "#1f77b4",
-            "#ff7f0e",
-            "#2ca02c",
-            "#d62728",
-            "#9467bd",
-            "#8c564b",
-            "#e377c2",
-            "#7f7f7f",
-            "#bcbd22",
-            "#17becf",
-            ]
+        "#1f77b4",
+        "#ff7f0e",
+        "#2ca02c",
+        "#d62728",
+        "#9467bd",
+        "#8c564b",
+        "#e377c2",
+        "#7f7f7f",
+        "#bcbd22",
+        "#17becf",
+    ]
     colorcycler = cycle(colors)
     linecycler = cycle(lines)
 
@@ -182,8 +243,8 @@ def precision_recall_f1iso(data, confidence=True):
 
             # optimal point along the curve
             bins = len(df)
-            index = int(round(bins*threshold))
-            index = min(index, len(df)-1)  #avoids out of range indexing
+            index = int(round(bins * threshold))
+            index = min(index, len(df) - 1)  # avoids out of range indexing
 
             # plots Recall/Precision as threshold changes
             label = f"{name} (F1={df.f1_score[index]:.4f})"
@@ -191,53 +252,75 @@ def precision_recall_f1iso(data, confidence=True):
 
             if len(df) == 1:
                 # plot black dot for F1-score at select threshold
-                marker, = axes.plot(df.recall[index], df.precision[index],
-                        marker="*", markersize=6, color=color, alpha=0.8,
-                        linestyle="None")
-                line, = axes.plot(df.recall[index], df.precision[index],
-                        linestyle="None", color=color, alpha=0.2)
+                (marker,) = axes.plot(
+                    df.recall[index],
+                    df.precision[index],
+                    marker="*",
+                    markersize=6,
+                    color=color,
+                    alpha=0.8,
+                    linestyle="None",
+                )
+                (line,) = axes.plot(
+                    df.recall[index],
+                    df.precision[index],
+                    linestyle="None",
+                    color=color,
+                    alpha=0.2,
+                )
                 legend.append(([marker, line], label))
             else:
                 # line first, so marker gets on top
                 style = next(linecycler)
-                line, = axes.plot(ri[pi > 0], pi[pi > 0], color=color,
-                        linestyle=style)
-                marker, = axes.plot(df.recall[index], df.precision[index],
-                        marker="o", linestyle=style, markersize=4,
-                        color=color, alpha=0.8)
+                (line,) = axes.plot(
+                    ri[pi > 0], pi[pi > 0], color=color, linestyle=style
+                )
+                (marker,) = axes.plot(
+                    df.recall[index],
+                    df.precision[index],
+                    marker="o",
+                    linestyle=style,
+                    markersize=4,
+                    color=color,
+                    alpha=0.8,
+                )
                 legend.append(([marker, line], label))
 
             if confidence:
 
-                pui = df.pr_upper[max_recall:]
-                pli = df.pr_lower[max_recall:]
-                rui = df.re_upper[max_recall:]
-                rli = df.re_lower[max_recall:]
-
-                # Plot confidence
-                # Upper bound
-                # create the limiting polygon
-                vert_x = numpy.concatenate((rui[pui > 0], rli[pli > 0][::-1]))
-                vert_y = numpy.concatenate((pui[pui > 0], pli[pli > 0][::-1]))
-
                 # hacky workaround to plot 2nd human
-                if len(df) == 1:  #binary system, very likely
+                if len(df) == 1:  # binary system, very likely
                     logger.warning("Found 2nd human annotator - patching...")
-                    p, = axes.plot(vert_x, vert_y, color=color, alpha=0.1, lw=3)
+                    p = Ellipse(
+                        (df.recall.iloc[0], df.precision.iloc[0]),
+                        2 * df.std_re.iloc[0],
+                        2 * df.std_pr.iloc[0],
+                        angle=0,
+                        color=color,
+                        alpha=0.1,
+                        linewidth=0,
+                    )
                 else:
-                    p = plt.Polygon(
-                        numpy.column_stack((vert_x, vert_y)),
+                    hull = _concave_hull(
+                        df.recall, df.precision, df.std_re, df.std_pr
+                    )
+                    p = plt.Polygon(hull,
                         facecolor=color,
                         alpha=0.2,
                         edgecolor="none",
                         lw=0.2,
                     )
+                axes.add_patch(p)
                 legend[-1][0].append(p)
-                axes.add_artist(p)
 
         if len(label) > 1:
-            axes.legend([tuple(k[0]) for k in legend], [k[1] for k in legend],
-                    loc="lower left", fancybox=True, framealpha=0.7)
+            axes.legend(
+                [tuple(k[0]) for k in legend],
+                [k[1] for k in legend],
+                loc="lower left",
+                fancybox=True,
+                framealpha=0.7,
+            )
 
     return fig
 
