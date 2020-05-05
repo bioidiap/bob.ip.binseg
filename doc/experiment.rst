@@ -38,7 +38,7 @@ happy with the result, use it in place of one of our datasets:
 
    $ bob binseg config copy csv-dataset-example mydataset.py
    # edit mydataset following instructions
-   $ bob binseg train ... mydataset.py ...
+   $ bob binseg experiment ... mydataset.py ...
 
 
 Baseline Benchmarks
@@ -135,7 +135,7 @@ for supervised training of COVD- systems.  Use it like this:
 .. code-block:: sh
 
    # change <model> and <dataset> by one of items bellow
-   $ bob binseg train -vv <model> <dataset> --batch-size=<see-table> --device="cuda:0"
+   $ bob binseg experiment -vv <model> <dataset> --batch-size=<see-table> --device="cuda:0"
 
 .. list-table::
 
