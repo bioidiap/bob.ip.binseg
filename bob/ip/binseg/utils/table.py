@@ -3,6 +3,7 @@
 
 
 import tabulate
+from .metric import auc
 
 
 def performance_table(data, fmt):
@@ -53,6 +54,7 @@ def performance_table(data, fmt):
         "F1\nmax",
         "P\nmax",
         "R\nmax",
+        "AUC",
         ]
 
     table = []
@@ -73,6 +75,8 @@ def performance_table(data, fmt):
         f1max_idx = v["df"].f1_score.idxmax()
         entry.append(v["df"].precision[f1max_idx])
         entry.append(v["df"].recall[f1max_idx])
+        entry.append(auc(v["df"]["recall"].to_numpy(),
+            v["df"]["precision"].to_numpy()))
 
         table.append(entry)
 
