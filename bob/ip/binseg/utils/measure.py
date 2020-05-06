@@ -33,52 +33,51 @@ def base_measures(tp, fp, tn, fn):
     Calculates a bunch of measures from true/false positive and negative counts
 
     This function can return standard machine learning measures from true and
-    false positive counts of positives and negatives.
-
-    For a thorough look into these and alternate names for the returned values,
-    please check Wikipedia's entry on `Precision and Recall`_.
+    false positive counts of positives and negatives.  For a thorough look into
+    these and alternate names for the returned values, please check Wikipedia's
+    entry on `Precision and Recall`_.
 
 
     Parameters
     ----------
 
-    tp : int
-        True positive count, AKA "hit"
+        tp : int
+            True positive count, AKA "hit"
 
-    fp : int
-        False positive count, AKA, "correct rejection"
+        fp : int
+            False positive count, AKA, "correct rejection"
 
-    tn : int
-        True negative count, AKA "false alarm", or "Type I error"
+        tn : int
+            True negative count, AKA "false alarm", or "Type I error"
 
-    fn : int
-        False Negative count, AKA "miss", or "Type II error"
+        fn : int
+            False Negative count, AKA "miss", or "Type II error"
 
 
     Returns
     -------
 
-    precision : float
-        P, AKA positive predictive value (PPV)
-        :math:`\frac{tp}{tp+fp}`
+        precision : float
+            P, AKA positive predictive value (PPV)
+            :math:`\frac{tp}{tp+fp}`
 
-    recall : float
-        R, AKA sensitivity, hit rate, or true positive rate (TPR)
-        :math:`\frac{tp}{p} = \frac{tp}{tp+fn}`
+        recall : float
+            R, AKA sensitivity, hit rate, or true positive rate (TPR)
+            :math:`\frac{tp}{p} = \frac{tp}{tp+fn}`
 
-    specificity : float
-        S, AKA selectivity or true negative rate (TNR).
-        :math:`\frac{tn}{n} = \frac{tn}{tn+fp}`
+        specificity : float
+            S, AKA selectivity or true negative rate (TNR).
+            :math:`\frac{tn}{n} = \frac{tn}{tn+fp}`
 
-    accuracy : float
-        A, :math:`\frac{tp + tn}{p + n} = \frac{tp + tn}{tp + fp + tn + fn}`
+        accuracy : float
+            A, :math:`\frac{tp + tn}{p + n} = \frac{tp + tn}{tp + fp + tn + fn}`
 
-    jaccard : float
-        J, :math:`\frac{tp}{tp+fp+fn}`, see `Jaccard Index`_
+        jaccard : float
+            J, :math:`\frac{tp}{tp+fp+fn}`, see `Jaccard Index`_
 
-    f1_score : float
-        F1, :math:`\frac{2 P R}{P + R} = \frac{2tp}{2tp + fp + fn}`, see
-        `F1-score`_
+        f1_score : float
+            F1, :math:`\frac{2 P R}{P + R} = \frac{2tp}{2tp + fp + fn}`, see
+            `F1-score`_
 
     """
 
