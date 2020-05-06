@@ -12,7 +12,7 @@ import pandas
 import torch
 from tqdm import tqdm
 
-from ..utils.metric import SmoothedValue
+from ..utils.measure import SmoothedValue
 from ..utils.plot import loss_curve
 
 import logging

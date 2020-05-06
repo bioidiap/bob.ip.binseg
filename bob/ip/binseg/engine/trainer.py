@@ -11,7 +11,7 @@ import distutils.version
 import torch
 from tqdm import tqdm
 
-from ..utils.metric import SmoothedValue
+from ..utils.measure import SmoothedValue
 from ..utils.summary import summary
 from ..utils.resources import cpu_constants, gpu_constants, cpu_log, gpu_log
 

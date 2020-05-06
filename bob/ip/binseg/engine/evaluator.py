@@ -15,7 +15,7 @@ import torchvision.transforms.functional as VF
 
 import h5py
 
-from ..utils.metric import base_measures
+from ..utils.measure import base_measures
 
 import logging
 
@@ -49,9 +49,9 @@ def _posneg(pred, gt, threshold):
     return tp_tensor, fp_tensor, tn_tensor, fn_tensor
 
 
-def _sample_metrics(pred, gt, bins):
+def _sample_measures(pred, gt, bins):
     """
-    Calculates metrics on one single sample and saves it to disk
+    Calculates measures on one single sample and saves it to disk
 
 
     Parameters
@@ -71,7 +71,7 @@ def _sample_metrics(pred, gt, bins):
     Returns
     -------
 
-    metrics : pandas.DataFrame
+    measures : pandas.DataFrame
 
         A pandas dataframe with the following columns:
 
@@ -94,7 +94,7 @@ def _sample_metrics(pred, gt, bins):
             pred, gt, threshold
         )
 
-        # calc metrics from scalars
+        # calc measures from scalars
         tp_count = torch.sum(tp_tensor).item()
         fp_count = torch.sum(fp_tensor).item()
         tn_count = torch.sum(tn_tensor).item()
@@ -221,7 +221,7 @@ def run(
     threshold=None,
 ):
     """
-    Runs inference and calculates metrics
+    Runs inference and calculates measures
 
 
     Parameters
@@ -232,7 +232,7 @@ def run(
 
     name : str
         the local name of this dataset (e.g. ``train``, or ``test``), to be
-        used when saving metrics files.
+        used when saving measures files.
 
     predictions_folder : str
         folder where predictions for the dataset images has been previously
@@ -263,7 +263,7 @@ def run(
 
     """
 
-    # Collect overall metrics
+    # Collect overall measures
     bins = 1000  # number of thresholds to analyse for
     data = {}
 
@@ -279,7 +279,7 @@ def run(
             raise RuntimeError(
                 f"{stem} entry already exists in data. Cannot overwrite."
             )
-        data[stem] = _sample_metrics(pred, gt, bins)
+        data[stem] = _sample_measures(pred, gt, bins)
 
         if overlayed_folder is not None:
             overlay_image = _sample_analysis(
@@ -291,31 +291,31 @@ def run(
             overlay_image.save(fullpath)
 
     # Merges all dataframes together
-    df_metrics = pandas.concat(data.values())
+    df_measures = pandas.concat(data.values())
 
     # Report and Averages
-    avg_metrics = df_metrics.groupby("index").mean()
-    std_metrics = df_metrics.groupby("index").std()
+    avg_measures = df_measures.groupby("index").mean()
+    std_measures = df_measures.groupby("index").std()
 
     # Uncomment below for F1-score calculation based on average precision and
-    # metrics instead of F1-scores of individual images. This method is in line
+    # measures instead of F1-scores of individual images. This method is in line
     # with Maninis et. al. (2016)
     #
-    # avg_metrics["f1_score"] = \
-    #         (2* avg_metrics["precision"]*avg_metrics["recall"])/ \
-    #         (avg_metrics["precision"]+avg_metrics["recall"])
+    # avg_measures["f1_score"] = \
+    #         (2* avg_measures["precision"]*avg_measures["recall"])/ \
+    #         (avg_measures["precision"]+avg_measures["recall"])
 
-    avg_metrics["std_pr"] = std_metrics["precision"]
-    avg_metrics["pr_upper"] = avg_metrics["precision"] + std_metrics["precision"]
-    avg_metrics["pr_lower"] = avg_metrics["precision"] - std_metrics["precision"]
-    avg_metrics["std_re"] = std_metrics["recall"]
-    avg_metrics["re_upper"] = avg_metrics["recall"] + std_metrics["recall"]
-    avg_metrics["re_lower"] = avg_metrics["recall"] - std_metrics["recall"]
-    avg_metrics["std_f1"] = std_metrics["f1_score"]
+    avg_measures["std_pr"] = std_measures["precision"]
+    avg_measures["pr_upper"] = avg_measures["precision"] + std_measures["precision"]
+    avg_measures["pr_lower"] = avg_measures["precision"] - std_measures["precision"]
+    avg_measures["std_re"] = std_measures["recall"]
+    avg_measures["re_upper"] = avg_measures["recall"] + std_measures["recall"]
+    avg_measures["re_lower"] = avg_measures["recall"] - std_measures["recall"]
+    avg_measures["std_f1"] = std_measures["f1_score"]
 
-    maxf1 = avg_metrics["f1_score"].max()
-    maxf1_index = avg_metrics["f1_score"].idxmax()
-    maxf1_threshold = avg_metrics["threshold"][maxf1_index]
+    maxf1 = avg_measures["f1_score"].max()
+    maxf1_index = avg_measures["f1_score"].idxmax()
+    maxf1_threshold = avg_measures["threshold"][maxf1_index]
 
     logger.info(
         f"Maximum F1-score of {maxf1:.5f}, achieved at "
@@ -326,8 +326,8 @@ def run(
 
         # get the closest possible threshold we have
         index = int(round(bins * threshold))
-        f1_a_priori = avg_metrics["f1_score"][index]
-        actual_threshold = avg_metrics["threshold"][index]
+        f1_a_priori = avg_measures["f1_score"][index]
+        actual_threshold = avg_measures["threshold"][index]
 
         logger.info(
             f"F1-score of {f1_a_priori:.5f}, at threshold "
@@ -337,11 +337,11 @@ def run(
     if output_folder is not None:
         logger.info(f"Output folder: {output_folder}")
         os.makedirs(output_folder, exist_ok=True)
-        metrics_path = os.path.join(output_folder, f"{name}.csv")
+        measures_path = os.path.join(output_folder, f"{name}.csv")
         logger.info(
-            f"Saving averages over all input images at {metrics_path}..."
+            f"Saving averages over all input images at {measures_path}..."
         )
-        avg_metrics.to_csv(metrics_path)
+        avg_measures.to_csv(measures_path)
 
     return maxf1_threshold
 
@@ -364,7 +364,7 @@ def compare_annotators(baseline, other, name, output_folder,
 
     name : str
         the local name of this dataset (e.g. ``train-second-annotator``, or
-        ``test-second-annotator``), to be used when saving metrics files.
+        ``test-second-annotator``), to be used when saving measures files.
 
     output_folder : str
         folder where to store results
@@ -378,7 +378,7 @@ def compare_annotators(baseline, other, name, output_folder,
     logger.info(f"Output folder: {output_folder}")
     os.makedirs(output_folder, exist_ok=True)
 
-    # Collect overall metrics
+    # Collect overall measures
     data = {}
 
     for baseline_sample, other_sample in tqdm(
@@ -392,7 +392,7 @@ def compare_annotators(baseline, other, name, output_folder,
             raise RuntimeError(
                 f"{stem} entry already exists in data. " f"Cannot overwrite."
             )
-        data[stem] = _sample_metrics(pred, gt, 2)
+        data[stem] = _sample_measures(pred, gt, 2)
 
         if overlayed_folder is not None:
             overlay_image = _sample_analysis(
@@ -405,33 +405,33 @@ def compare_annotators(baseline, other, name, output_folder,
             overlay_image.save(fullpath)
 
     # Merges all dataframes together
-    df_metrics = pandas.concat(data.values())
-    df_metrics.drop(0, inplace=True)
+    df_measures = pandas.concat(data.values())
+    df_measures.drop(0, inplace=True)
 
     # Report and Averages
-    avg_metrics = df_metrics.groupby("index").mean()
-    std_metrics = df_metrics.groupby("index").std()
+    avg_measures = df_measures.groupby("index").mean()
+    std_measures = df_measures.groupby("index").std()
 
     # Uncomment below for F1-score calculation based on average precision and
     # {name} instead of F1-scores of individual images. This method is in line
     # with Maninis et. al. (2016)
     #
-    # avg_metrics["f1_score"] = \
-    #         (2* avg_metrics["precision"]*avg_metrics["recall"])/ \
-    #         (avg_metrics["precision"]+avg_metrics["recall"])
+    # avg_measures["f1_score"] = \
+    #         (2* avg_measures["precision"]*avg_measures["recall"])/ \
+    #         (avg_measures["precision"]+avg_measures["recall"])
 
-    avg_metrics["std_pr"] = std_metrics["precision"]
-    avg_metrics["pr_upper"] = avg_metrics["precision"] + std_metrics["precision"]
-    avg_metrics["pr_lower"] = avg_metrics["precision"] - std_metrics["precision"]
-    avg_metrics["std_re"] = std_metrics["recall"]
-    avg_metrics["re_upper"] = avg_metrics["recall"] + std_metrics["recall"]
-    avg_metrics["re_lower"] = avg_metrics["recall"] - std_metrics["recall"]
-    avg_metrics["std_f1"] = std_metrics["f1_score"]
+    avg_measures["std_pr"] = std_measures["precision"]
+    avg_measures["pr_upper"] = avg_measures["precision"] + std_measures["precision"]
+    avg_measures["pr_lower"] = avg_measures["precision"] - std_measures["precision"]
+    avg_measures["std_re"] = std_measures["recall"]
+    avg_measures["re_upper"] = avg_measures["recall"] + std_measures["recall"]
+    avg_measures["re_lower"] = avg_measures["recall"] - std_measures["recall"]
+    avg_measures["std_f1"] = std_measures["f1_score"]
 
-    metrics_path = os.path.join(output_folder, "second-annotator", f"{name}.csv")
-    os.makedirs(os.path.dirname(metrics_path), exist_ok=True)
-    logger.info(f"Saving averages over all input images at {metrics_path}...")
-    avg_metrics.to_csv(metrics_path)
+    measures_path = os.path.join(output_folder, "second-annotator", f"{name}.csv")
+    os.makedirs(os.path.dirname(measures_path), exist_ok=True)
+    logger.info(f"Saving averages over all input images at {measures_path}...")
+    avg_measures.to_csv(measures_path)
 
-    maxf1 = avg_metrics["f1_score"].max()
+    maxf1 = avg_measures["f1_score"].max()
     logger.info(f"F1-score of {maxf1:.5f} (second annotator; threshold=0.5)")

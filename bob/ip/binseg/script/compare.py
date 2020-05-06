@@ -55,11 +55,11 @@ def _load(data, threshold=None):
 
     data : dict
         A dict in which keys are the names of the systems and the values are
-        paths to ``metrics.csv`` style files.
+        paths to ``measures.csv`` style files.
 
     threshold : :py:class:`float`, :py:class:`str`, Optional
         A value indicating which threshold to choose for selecting a "F1-score"
-        If set to ``None``, then use the maximum F1-score on that metrics file.
+        If set to ``None``, then use the maximum F1-score on that measures file.
         If set to a floating-point value, then use the F1-score that is
         obtained on that particular threshold.  If set to a string, it should
         match one of the keys in ``data``.  It then first calculate the
@@ -74,7 +74,7 @@ def _load(data, threshold=None):
         A dict in which keys are the names of the systems and the values are
         dictionaries that contain two keys:
 
-        * ``df``: A :py:class:`pandas.DataFrame` with the metrics data loaded
+        * ``df``: A :py:class:`pandas.DataFrame` with the measures data loaded
           to
         * ``threshold``: A threshold to be used for summarization, depending on
           the ``threshold`` parameter set on the input
@@ -84,8 +84,8 @@ def _load(data, threshold=None):
     if isinstance(threshold, str):
         logger.info(f"Calculating threshold from maximum F1-score at "
                 f"'{threshold}' dataset...")
-        metrics_path = data[threshold]
-        df = pandas.read_csv(metrics_path)
+        measures_path = data[threshold]
+        df = pandas.read_csv(measures_path)
 
         maxf1 = df.f1_score.max()
         use_threshold = df.threshold[df.f1_score.idxmax()]
@@ -101,10 +101,10 @@ def _load(data, threshold=None):
 
     # loads all data
     retval = {}
-    for name, metrics_path in data.items():
+    for name, measures_path in data.items():
 
-        logger.info(f"Loading metrics from {metrics_path}...")
-        df = pandas.read_csv(metrics_path)
+        logger.info(f"Loading measures from {measures_path}...")
+        df = pandas.read_csv(measures_path)
 
         if threshold is None:
             use_threshold = df.threshold[df.f1_score.idxmax()]
@@ -119,9 +119,9 @@ def _load(data, threshold=None):
     epilog="""Examples:
 
 \b
-    1. Compares system A and B, with their own pre-computed metric files:
+    1. Compares system A and B, with their own pre-computed measure files:
 \b
-       $ bob binseg compare -vv A path/to/A/metrics.csv B path/to/B/metrics.csv
+       $ bob binseg compare -vv A path/to/A/train.csv B path/to/B/test.csv
 """,
 )
 @click.argument(
@@ -182,7 +182,7 @@ def compare(label_path, output_figure, table_format, output_table, threshold,
 
     threshold = _validate_threshold(threshold, data)
 
-    # load all data metrics
+    # load all data measures
     data = _load(data, threshold=threshold)
 
     if output_figure is not None:

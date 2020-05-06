@@ -149,7 +149,7 @@ def analyze(
              └── second-annotator/  #if set, store overlayed images for the
                                     #second annotator here
           └── analysis /  #the outputs of the analysis of both train/test sets
-                          #includes second-annotator "metrics" as well, if
+                          #includes second-annotator "mesures" as well, if
                           # configured
 
     N.B.: The tool is designed to prevent analysis bias and allows one to

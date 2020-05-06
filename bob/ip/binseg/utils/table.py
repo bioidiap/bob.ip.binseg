@@ -3,7 +3,7 @@
 
 
 import tabulate
-from .metric import auc
+from .measure import auc
 
 
 def performance_table(data, fmt):

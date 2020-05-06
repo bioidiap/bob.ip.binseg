@@ -247,7 +247,7 @@ def experiment(
              └── second-annotator/  #if set, store overlayed images for the
                                     #second annotator here
           └── analysis /  #the outputs of the analysis of both train/test sets
-                          #includes second-annotator "metrics" as well, if
+                          #includes second-annotator "mesures" as well, if
                           # configured
 
     Training is performed for a configurable number of epochs, and generates at

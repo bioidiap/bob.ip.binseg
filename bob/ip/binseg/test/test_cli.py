@@ -178,7 +178,7 @@ def _check_experiment_stare(overlay):
             r"^F1-score of.*\(second annotator; threshold=0.5\)$": 2,
             r"^Ended evaluation$": 1,
             r"^Started comparison$": 1,
-            r"^Loading metrics from": 4,
+            r"^Loading measures from": 4,
             r"^Creating and saving plot at": 1,
             r"^Tabulating performance summary...": 1,
             r"^Saving table at": 1,
@@ -403,7 +403,7 @@ def _check_compare(runner):
             compare,
             [
                 "-vv",
-                # label - path to metrics
+                # label - path to measures
                 "test",
                 os.path.join(output_folder, "test.csv"),
                 "test (2nd. human)",
@@ -418,7 +418,7 @@ def _check_compare(runner):
         assert os.path.exists("comparison.rst")
 
         keywords = {
-            r"^Loading metrics from": 2,
+            r"^Loading measures from": 2,
             r"^Creating and saving plot at": 1,
             r"^Tabulating performance summary...": 1,
             r"^Saving table at": 1,

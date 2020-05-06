@@ -9,7 +9,7 @@ import torch
 import pandas
 import numpy
 
-from ..engine.evaluator import _sample_metrics
+from ..engine.evaluator import _sample_measures
 
 import logging
 logger = logging.getLogger(__name__)
@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 
 class Tester(unittest.TestCase):
     """
-    Unit test for batch metrics
+    Unit test for batch measures
     """
 
     def setUp(self):
@@ -29,10 +29,10 @@ class Tester(unittest.TestCase):
         self.ground_truths = torch.randint(low=0, high=2, size=(2, 1, 420, 420))
         self.names = ["Bob", "Tim"]
 
-    def test_batch_metrics(self):
+    def test_batch_measures(self):
         dfs = []
         for pred, gt in zip(self.predictions, self.ground_truths):
-            dfs.append(_sample_metrics(pred, gt, 100))
+            dfs.append(_sample_measures(pred, gt, 100))
         bm = pandas.concat(dfs)
 
         self.assertEqual(len(bm), 2 * 100)
