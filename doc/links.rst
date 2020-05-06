@@ -9,9 +9,6 @@
 .. _pytorch: https://pytorch.org
 .. _tabulate: https://pypi.org/project/tabulate/
 .. _our paper: https://arxiv.org/abs/1909.03856
-.. _precision and recall: https://en.wikipedia.org/wiki/Precision_and_recall
-.. _f1-score: https://en.wikipedia.org/wiki/F1_score
-.. _jaccard index: https://en.wikipedia.org/wiki/Jaccard_index
 
 .. Raw data websites
 .. _drive: https://www.isi.uu.nl/Research/Databases/DRIVE/
