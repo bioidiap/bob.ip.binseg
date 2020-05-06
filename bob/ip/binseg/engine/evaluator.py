@@ -15,7 +15,7 @@ import torchvision.transforms.functional as VF
 
 import h5py
 
-from ..utils.metric import base_metrics
+from ..utils.metric import base_measures
 
 import logging
 
@@ -106,7 +106,7 @@ def _sample_metrics(pred, gt, bins):
             accuracy,
             jaccard,
             f1_score,
-        ) = base_metrics(tp_count, fp_count, tn_count, fn_count)
+        ) = base_measures(tp_count, fp_count, tn_count, fn_count)
 
         data.append(
             [

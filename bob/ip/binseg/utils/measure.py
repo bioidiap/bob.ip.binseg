@@ -28,33 +28,62 @@ class SmoothedValue:
         return d.mean().item()
 
 
-def base_metrics(tp, fp, tn, fn):
+def base_measures(tp, fp, tn, fn):
     """
-    Calculates Precision, Recall (=Sensitivity), Specificity, Accuracy, Jaccard and F1-score (Dice)
+    Calculates a bunch of measures from true/false positive and negative counts
+
+    This function can return standard machine learning measures from true and
+    false positive counts of positives and negatives.
+
+    For a thorough look into these and alternate names for the returned values,
+    please check Wikipedia's entry on `Precision and Recall`_.
 
 
     Parameters
     ----------
 
-    tp : float
-        True positives
+    tp : int
+        True positive count, AKA "hit"
 
-    fp : float
-        False positives
+    fp : int
+        False positive count, AKA, "correct rejection"
 
-    tn : float
-        True negatives
+    tn : int
+        True negative count, AKA "false alarm", or "Type I error"
 
-    fn : float
-        False Negatives
+    fn : int
+        False Negative count, AKA "miss", or "Type II error"
 
 
     Returns
     -------
 
-    metrics : list
+    precision : float
+        P, AKA positive predictive value (PPV)
+        :math:`\frac{tp}{tp+fp}`
+
+    recall : float
+        R, AKA sensitivity, hit rate, or true positive rate (TPR)
+        :math:`\frac{tp}{p} = \frac{tp}{tp+fn}`
+
+    specificity : float
+        S, AKA selectivity or true negative rate (TNR).
+        :math:`\frac{tn}{n} = \frac{tn}{tn+fp}`
+
+    accuracy : float
+        A, :math:`\frac{tp + tn}{p + n} = \frac{tp + tn}{tp + fp + tn + fn}`
+
+    jaccard : float
+        J, :math:`\frac{tp}{tp+fp+fn}`, see `Jaccard Index`_
+
+    f1_score : float
+        F1, :math:`\frac{2 P R}{P + R} = \frac{2tp}{2tp + fp + fn}`, see
+        `F1-score`_
 
     """
+
+    tp = float(tp)
+    tn = float(tn)
     precision = tp / (tp + fp + ((tp + fp) == 0))
     recall = tp / (tp + fn + ((tp + fn) == 0))
     specificity = tn / (fp + tn + ((fp + tn) == 0))
@@ -87,7 +116,10 @@ def auc(x, y):
 
     """
 
-    assert len(x) == len(y)
+    x = numpy.array(x)
+    y = numpy.array(y)
+
+    assert len(x) == len(y), "x and y sequences must have the same length"
 
     dx = numpy.diff(x)
     if numpy.any(dx < 0):
@@ -99,18 +131,11 @@ def auc(x, y):
             raise ValueError("x is neither increasing nor decreasing "
                              ": {}.".format(x))
 
-    # avoids repeated sums for every y
-    y_unique, y_unique_ndx = numpy.unique(y, return_index=True)
-    x_unique = x[y_unique_ndx]
-
-    if y_unique.shape[0] > 1:
-        x_interp = numpy.interp(
-            numpy.arange(0, 1, 0.001),
-            y_unique,
-            x_unique,
-            left=0.0,
-            right=0.0,
-        )
-        return x_interp.sum() * 0.001
-
-    return 0.0
+    y_interp = numpy.interp(
+        numpy.arange(0, 1, 0.001),
+        numpy.array(x),
+        numpy.array(y),
+        left=1.0,
+        right=0.0,
+    )
+    return y_interp.sum() * 0.001
