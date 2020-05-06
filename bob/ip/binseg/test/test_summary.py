@@ -3,12 +3,13 @@
 
 import os
 import unittest
-from bob.ip.binseg.modeling.driu import build_driu
-from bob.ip.binseg.modeling.driuod import build_driuod
-from bob.ip.binseg.modeling.hed import build_hed
-from bob.ip.binseg.modeling.unet import build_unet
-from bob.ip.binseg.modeling.resunet import build_res50unet
-from bob.ip.binseg.utils.summary import summary
+
+from ..modeling.driu import build_driu
+from ..modeling.driuod import build_driuod
+from ..modeling.hed import build_hed
+from ..modeling.unet import build_unet
+from ..modeling.resunet import build_res50unet
+from ..utils.summary import summary
 
 
 class Tester(unittest.TestCase):
@@ -45,7 +46,3 @@ class Tester(unittest.TestCase):
         s, param = summary(model)
         self.assertIsInstance(s, str)
         self.assertIsInstance(param, int)
-
-
-if __name__ == "__main__":
-    unittest.main()

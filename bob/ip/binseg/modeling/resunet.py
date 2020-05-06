@@ -3,13 +3,13 @@
 
 import torch.nn as nn
 from collections import OrderedDict
-from bob.ip.binseg.modeling.make_layers import (
+from .make_layers import (
     conv_with_kaiming_uniform,
     convtrans_with_kaiming_uniform,
     PixelShuffle_ICNR,
     UnetBlock,
 )
-from bob.ip.binseg.modeling.backbones.resnet import resnet50
+from .backbones.resnet import resnet50
 
 
 class ResUNet(nn.Module):

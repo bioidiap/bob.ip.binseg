@@ -4,8 +4,8 @@
 import torch
 import torch.nn
 from collections import OrderedDict
-from bob.ip.binseg.modeling.backbones.vgg import vgg16
-from bob.ip.binseg.modeling.make_layers import (
+from .backbones.vgg import vgg16
+from .make_layers import (
     conv_with_kaiming_uniform,
     convtrans_with_kaiming_uniform,
     UpsampleCropBlock,

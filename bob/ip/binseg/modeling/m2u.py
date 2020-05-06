@@ -6,7 +6,7 @@
 from collections import OrderedDict
 import torch
 import torch.nn
-from bob.ip.binseg.modeling.backbones.mobilenetv2 import MobileNetV2, InvertedResidual
+from .backbones.mobilenetv2 import MobileNetV2, InvertedResidual
 
 
 class DecoderBlock(torch.nn.Module):

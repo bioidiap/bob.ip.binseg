@@ -12,8 +12,8 @@ import pandas
 import torch
 from tqdm import tqdm
 
-from bob.ip.binseg.utils.metric import SmoothedValue
-from bob.ip.binseg.utils.plot import loss_curve
+from ..utils.metric import SmoothedValue
+from ..utils.plot import loss_curve
 
 import logging
 logger = logging.getLogger(__name__)

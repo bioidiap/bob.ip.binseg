@@ -9,7 +9,7 @@ import torch
 from torch import nn
 import os
 
-from bob.ip.binseg.utils.checkpointer import Checkpointer
+from ..utils.checkpointer import Checkpointer
 
 
 class TestCheckpointer(unittest.TestCase):
@@ -81,7 +81,3 @@ class TestCheckpointer(unittest.TestCase):
             self.assertFalse(id(trained_p) == id(loaded_p))
             # same content
             self.assertTrue(trained_p.equal(loaded_p))
-
-
-if __name__ == "__main__":
-    unittest.main()

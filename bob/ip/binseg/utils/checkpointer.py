@@ -5,8 +5,9 @@
 
 import torch
 import os
-from bob.ip.binseg.utils.model_serialization import load_state_dict
-from bob.ip.binseg.utils.model_zoo import cache_url
+
+from .model_serialization import load_state_dict
+from .model_zoo import cache_url
 
 import logging
 logger = logging.getLogger(__name__)
