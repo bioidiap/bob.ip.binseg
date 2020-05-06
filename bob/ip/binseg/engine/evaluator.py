@@ -49,7 +49,7 @@ def _posneg(pred, gt, threshold):
     return tp_tensor, fp_tensor, tn_tensor, fn_tensor
 
 
-def _sample_measures(pred, gt, bins):
+def _sample_measures(pred, gt, steps):
     """
     Calculates measures on one single sample and saves it to disk
 
@@ -63,9 +63,9 @@ def _sample_measures(pred, gt, bins):
     gt : torch.Tensor
         ground-truth (annotations)
 
-    bins : int
-        number of bins to use for threshold analysis.  The step size is
-        calculated from this by dividing ``1.0/bins``.
+    steps : int
+        number of steps to use for threshold analysis.  The step size is
+        calculated from this by dividing ``1.0/steps``.
 
 
     Returns
@@ -85,7 +85,7 @@ def _sample_measures(pred, gt, bins):
 
     """
 
-    step_size = 1.0 / bins
+    step_size = 1.0 / steps
     data = []
 
     for index, threshold in enumerate(numpy.arange(0.0, 1.0, step_size)):
@@ -219,6 +219,7 @@ def run(
     output_folder=None,
     overlayed_folder=None,
     threshold=None,
+    steps=1000,
 ):
     """
     Runs inference and calculates measures
@@ -254,6 +255,9 @@ def run(
         may bias your analysis.  This number is also used to print the a priori
         F1-score on the evaluated set.
 
+    steps : :py:class:`float`, Optional
+        number of threshold steps to consider when evaluating thresholds.
+
 
     Returns
     -------
@@ -264,7 +268,6 @@ def run(
     """
 
     # Collect overall measures
-    bins = 1000  # number of thresholds to analyse for
     data = {}
 
     for sample in tqdm(dataset):
@@ -279,7 +282,7 @@ def run(
             raise RuntimeError(
                 f"{stem} entry already exists in data. Cannot overwrite."
             )
-        data[stem] = _sample_measures(pred, gt, bins)
+        data[stem] = _sample_measures(pred, gt, steps)
 
         if overlayed_folder is not None:
             overlay_image = _sample_analysis(
@@ -325,7 +328,7 @@ def run(
     if threshold is not None:
 
         # get the closest possible threshold we have
-        index = int(round(bins * threshold))
+        index = int(round(steps * threshold))
         f1_a_priori = avg_measures["f1_score"][index]
         actual_threshold = avg_measures["threshold"][index]
 

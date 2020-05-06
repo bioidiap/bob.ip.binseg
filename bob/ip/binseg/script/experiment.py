@@ -205,6 +205,16 @@ logger = logging.getLogger(__name__)
     required=False,
     cls=ResourceOption,
 )
+@click.option(
+    "--steps",
+    "-S",
+    help="This number is used to define the number of threshold steps to "
+    "consider when evaluating the highest possible F1-score on test data.",
+    default=1000,
+    show_default=True,
+    required=True,
+    cls=ResourceOption,
+)
 @verbosity_option(cls=ResourceOption)
 @click.pass_context
 def experiment(
@@ -226,6 +236,7 @@ def experiment(
     ssl,
     rampup,
     overlayed,
+    steps,
     verbose,
     **kwargs,
 ):
@@ -323,5 +334,6 @@ def experiment(
             device=device,
             overlayed=overlayed,
             weight=model_file,
+            steps=steps,
             verbose=verbose,
             )

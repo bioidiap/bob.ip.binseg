@@ -117,6 +117,16 @@ logger = logging.getLogger(__name__)
     required=True,
     cls=ResourceOption,
 )
+@click.option(
+    "--steps",
+    "-S",
+    help="This number is used to define the number of threshold steps to "
+    "consider when evaluating the highest possible F1-score on test data.",
+    default=1000,
+    show_default=True,
+    required=True,
+    cls=ResourceOption,
+)
 @verbosity_option(cls=ResourceOption)
 @click.pass_context
 def analyze(
@@ -129,6 +139,7 @@ def analyze(
     device,
     overlayed,
     weight,
+    steps,
     verbose,
     **kwargs,
 ):
@@ -230,6 +241,7 @@ def analyze(
         second_annotator=second_annotator,
         overlayed=overlayed_folder,
         threshold=threshold,
+        steps=steps,
         verbose=verbose,
     )
 

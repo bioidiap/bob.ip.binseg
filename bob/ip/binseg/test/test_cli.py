@@ -93,6 +93,7 @@ def _check_experiment_stare(overlay):
                 "-vv",
                 "--epochs=1",
                 "--batch-size=1",
+                "--steps=10",
                 f"--output-folder={output_folder}",
                 ]
         if overlay:
@@ -354,6 +355,7 @@ def _check_evaluate(runner):
             [
                 config.name,
                 "-vv",
+                "--steps=10",
                 f"--output-folder={output_folder}",
                 "--predictions-folder=predictions",
                 f"--overlayed={overlay_folder}",

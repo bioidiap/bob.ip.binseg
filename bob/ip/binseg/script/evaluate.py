@@ -137,6 +137,16 @@ def _validate_threshold(t, dataset):
     required=False,
     cls=ResourceOption,
 )
+@click.option(
+    "--steps",
+    "-S",
+    help="This number is used to define the number of threshold steps to "
+    "consider when evaluating the highest possible F1-score on test data.",
+    default=1000,
+    show_default=True,
+    required=True,
+    cls=ResourceOption,
+)
 @verbosity_option(cls=ResourceOption)
 def evaluate(
     output_folder,
@@ -145,6 +155,7 @@ def evaluate(
     second_annotator,
     overlayed,
     threshold,
+    steps,
     **kwargs,
 ):
     """Evaluates an FCN on a binary segmentation task.
@@ -164,7 +175,8 @@ def evaluate(
     if isinstance(threshold, str):
         # first run evaluation for reference dataset, do not save overlays
         logger.info(f"Evaluating threshold on '{threshold}' set")
-        threshold = run(dataset[threshold], threshold, predictions_folder)
+        threshold = run(dataset[threshold], threshold, predictions_folder,
+                steps=steps)
         logger.info(f"Set --threshold={threshold:.5f}")
 
     # now run with the
@@ -173,7 +185,8 @@ def evaluate(
             logger.info(f"Skipping dataset '{k}' (not to be evaluated)")
             continue
         logger.info(f"Analyzing '{k}' set...")
-        run(v, k, predictions_folder, output_folder, overlayed, threshold)
+        run(v, k, predictions_folder, output_folder, overlayed, threshold,
+                steps=steps)
         second = second_annotator.get(k)
         if second is not None:
             compare_annotators(v, second, k, output_folder, overlayed)
