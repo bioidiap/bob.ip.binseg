@@ -44,34 +44,34 @@ F1 Scores (micro-level)
      - 0.55M
      - 25.8M
    * - :py:mod:`drive <bob.ip.binseg.configs.datasets.drive.default>`
-     - 0.788 (0.021)
-     - `0.819 (0.016) <baselines_driu_drive_>`_
-     - `0.806 (0.015) <baselines_hed_drive_>`_
-     - `0.804 (0.014) <baselines_m2unet_drive_>`_
-     - `0.823 (0.015) <baselines_unet_drive_>`_
+     - 0.788  (0.021)
+     - `0.819 (0.017) <baselines_driu_drive_>`_
+     - `0.806 (0.017) <baselines_hed_drive_>`_
+     - `0.803 (0.017) <baselines_m2unet_drive_>`_
+     - `0.823 (0.016) <baselines_unet_drive_>`_
    * - :py:mod:`stare <bob.ip.binseg.configs.datasets.stare.ah>`
      - 0.759 (0.028)
-     - `0.824 (0.037) <baselines_driu_stare_>`_
-     - `0.810 (0.045) <baselines_hed_stare_>`_
+     - `0.822 (0.037) <baselines_driu_stare_>`_
+     - `0.808 (0.046) <baselines_hed_stare_>`_
      - `0.811 (0.039) <baselines_m2unet_stare_>`_
-     - `0.828 (0.041) <baselines_unet_stare_>`_
+     - `0.827 (0.041) <baselines_unet_stare_>`_
    * - :py:mod:`chasedb1 <bob.ip.binseg.configs.datasets.chasedb1.first_annotator>`
      - 0.768 (0.023)
-     - `0.811 (0.018) <baselines_driu_chase_>`_
+     - `0.810 (0.017) <baselines_driu_chase_>`_
      - `0.806 (0.021) <baselines_hed_chase_>`_
-     - `0.801 (0.018) <baselines_m2unet_chase_>`_
-     - `0.802 (0.015) <baselines_unet_chase_>`_
+     - `0.798 (0.017) <baselines_m2unet_chase_>`_
+     - `0.803 (0.015) <baselines_unet_chase_>`_
    * - :py:mod:`hrf <bob.ip.binseg.configs.datasets.hrf.default>`
      -
      - `0.802 (0.039) <baselines_driu_hrf_>`_
      - `0.793 (0.041) <baselines_hed_hrf_>`_
-     - `0.796 (0.043) <baselines_m2unet_hrf_>`_
-     - `0.798 (0.038) <baselines_unet_hrf_>`_
+     - `0.785 (0.041) <baselines_m2unet_hrf_>`_
+     - `0.797 (0.038) <baselines_unet_hrf_>`_
    * - :py:mod:`iostar-vessel <bob.ip.binseg.configs.datasets.iostar.vessel>`
      -
-     - `0.825 (0.021) <baselines_driu_iostar_>`_
-     - `0.822 (0.023) <baselines_hed_iostar_>`_
-     - `0.817 (0.021) <baselines_m2unet_iostar_>`_
+     - `0.823 (0.021) <baselines_driu_iostar_>`_
+     - `0.821 (0.022) <baselines_hed_iostar_>`_
+     - `0.816 (0.021) <baselines_m2unet_iostar_>`_
      - `0.818 (0.019) <baselines_unet_iostar_>`_
 
 
