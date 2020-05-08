@@ -62,13 +62,13 @@ def make_subset(l, transforms, prefixes=[], suffixes=[]):
     return wrapper(l, prefixes + transforms + suffixes)
 
 
-def make_trainset(l, transforms, rotation_before=False):
-    """Creates a new training set, **with data augmentation**
+def augment_subset(s, rotation_before=False):
+    """Creates a new subset set, **with data augmentation**
 
     Typically, the transforms are chained to a default set of data augmentation
     operations (random rotation, horizontal and vertical flips, and color
-    jitter), but flag allows prefixing the rotation specially (useful for some
-    COVD training sets).
+    jitter), but a flag allows prefixing the rotation specially (useful for
+    some COVD training sets).
 
     .. note::
 
@@ -81,11 +81,13 @@ def make_trainset(l, transforms, rotation_before=False):
     Parameters
     ----------
 
-    l : list
-        List of delayed samples
+    s : bob.ip.binseg.data.utils.SampleListDataset
+        A dataset that will be augmented
 
-    transforms : list
-        A list of transforms that needs to be applied to all samples in the set
+    rotation_before : py:class:`bool`, Optional
+        A optional flag allowing you to do a rotation augmentation transform
+        **before** the sequence of transforms for this dataset, that will be
+        augmented.
 
 
     Returns
@@ -97,18 +99,9 @@ def make_trainset(l, transforms, rotation_before=False):
     """
 
     if rotation_before:
-        return make_subset(
-            l,
-            transforms=transforms,
-            prefixes=RANDOM_ROTATION,
-            suffixes=RANDOM_FLIP_JITTER,
-        )
+        return s.copy(RANDOM_ROTATION + s.transforms + RANDOM_FLIP_JITTER)
 
-    return make_subset(
-        l,
-        transforms=transforms,
-        suffixes=(RANDOM_ROTATION + RANDOM_FLIP_JITTER),
-    )
+    return s.copy(s.transforms + RANDOM_ROTATION + RANDOM_FLIP_JITTER)
 
 
 def make_dataset(subsets, transforms):
@@ -169,8 +162,9 @@ def make_dataset(subsets, transforms):
     for key in subsets.keys():
         retval[key] = make_subset(subsets[key], transforms=transforms)
         if key == "train":
-            retval["__train__"] = make_trainset(
-                subsets[key], transforms=transforms, rotation_before=False
-            )
+            retval["__train__"] = make_subset(subsets[key],
+                    transforms=transforms,
+                    suffixes=(RANDOM_ROTATION + RANDOM_FLIP_JITTER),
+                    )
 
     return retval
