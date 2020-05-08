@@ -104,3 +104,7 @@
 .. [SANDLER-2018] *M. Sandler, A. Howard, M. Zhu, A. Zhmoginov, L.-C.h Chen*,
    **MobileNetV2: Inverted Residuals and Linear Bottlenecks**, 2018.
    https://arxiv.org/abs/1801.04381
+
+.. [DAVIS-2006] *J. Davis and M. Goadrich*, **The relationship between
+   Precision-Recall and ROC curves**. 23rd international conference on Machine
+   learning (ICML’06), 2006. https://doi.org/10.1145/1143844.1143874

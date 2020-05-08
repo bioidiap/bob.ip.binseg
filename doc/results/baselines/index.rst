@@ -82,7 +82,25 @@ Next, you will find the PR plots showing confidence intervals, for the various
 models explored, on a per dataset arrangement.  All curves correspond to test
 set performances.  Single performance figures (F1-micro scores) correspond to
 its average value across all test set images, for a fixed threshold set to
-``0.5``.
+``0.5``, and using 1000 points for curve calculation.
+
+.. tip:: **Curve Intepretation**
+
+   PR curves behave differently than traditional ROC curves (using Specificity
+   versus Sensitivity) with respect to the overall shape.  You may have a look
+   at [DAVIS-2006]_ for details on the relationship between PR and ROC curves.
+   For example, PR curves are not guaranteed to be monotonically increasing or
+   decreasing with the scanned thresholds (e.g. see M2U-Net on STARE dataset).
+
+   Each evaluated threshold in a combination of trained models and datasets is
+   represented by a point in each curve.  Points are linearly interpolated to
+   created a line.  For each evaluated threshold and every trained model and
+   dataset, we assume that the standard deviation on both precision and recall
+   estimation represent good proxies for the uncertainty around that point.  We
+   therefore plot a transparent ellipse centered around each evaluated point in
+   which the width corresponds to twice the recall standard deviation and the
+   height, twice the precision standard deviation.
+
 
 .. list-table::
 
@@ -132,5 +150,6 @@ Remarks
   on par with such annotations.  One possible exception is for CHASE-DB1, where
   models show consistently less variability than the second annotator.
   Unfortunately, this cannot be conclusive.
+
 
 .. include:: ../../links.rst

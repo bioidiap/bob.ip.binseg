@@ -94,7 +94,7 @@ cross-tests explored, on a per cross-tested model arrangement.  All curves
 correspond to test set performances.  Single performance figures (F1-micro
 scores) correspond to its average value across all test set images, for a fixed
 threshold set *a priori* on the training set of dataset used for creating the
-model.
+model, and using 100 points for curve calculation.
 
 .. list-table::
 
