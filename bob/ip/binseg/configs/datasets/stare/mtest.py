@@ -7,7 +7,10 @@
 """
 
 from bob.ip.binseg.data.transforms import CenterCrop, Pad, Resize
-from bob.ip.binseg.configs.datasets.stare.xtest import dataset as _xt
+from bob.ip.binseg.configs.datasets.stare.xtest import (
+    dataset as _xt,
+    second_annotator,
+)
 
 dataset = {
     "train": _xt["train"],

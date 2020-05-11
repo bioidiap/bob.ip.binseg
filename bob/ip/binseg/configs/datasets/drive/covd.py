@@ -16,22 +16,23 @@ For details on those datasets, consult:
 * See :py:mod:`bob.ip.binseg.data.hrf`
 """
 
-
 from torch.utils.data import ConcatDataset
 from bob.ip.binseg.configs.datasets import augment_subset as _augment
 from bob.ip.binseg.configs.datasets.drive.mtest import dataset as _mtest
-from bob.ip.binseg.configs.datasets.drive.default import dataset as _baseline
+from bob.ip.binseg.configs.datasets.drive.default import (
+    dataset as _baseline,
+    second_annotator,
+)
 
 dataset = dict(**_baseline)
-dataset["__train__"] = ConcatDataset([
-    _augment(_mtest["stare"], rotation_before=True),
-    _augment(_mtest["chasedb1"], rotation_before=False),
-    _augment(_mtest["hrf"], rotation_before=False),
-    _augment(_mtest["iostar"], rotation_before=False),
-    ])
-dataset["train"] = ConcatDataset([
-    _mtest["stare"],
-    _mtest["chasedb1"],
-    _mtest["hrf"],
-    _mtest["iostar"],
-    ])
+dataset["__train__"] = ConcatDataset(
+    [
+        _augment(_mtest["stare"], rotation_before=True),
+        _augment(_mtest["chasedb1"], rotation_before=False),
+        _augment(_mtest["hrf"], rotation_before=False),
+        _augment(_mtest["iostar"], rotation_before=False),
+    ]
+)
+dataset["train"] = ConcatDataset(
+    [_mtest["stare"], _mtest["chasedb1"], _mtest["hrf"], _mtest["iostar"],]
+)
