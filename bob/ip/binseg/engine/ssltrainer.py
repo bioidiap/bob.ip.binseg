@@ -280,8 +280,8 @@ def run(
         "eta",
         "average_loss",
         "median_loss",
-        "median_labelled_loss",
-        "median_unlabelled_loss",
+        "labelled_median_loss",
+        "unlabelled_median_loss",
         "learning_rate",
     )
     if valid_loader is not None:
@@ -429,8 +429,8 @@ def run(
                 ("eta", f"{datetime.timedelta(seconds=int(eta_seconds))}"),
                 ("average_loss", f"{losses.avg:.6f}"),
                 ("median_loss", f"{losses.median:.6f}"),
-                ("median_labelled_loss", f"{labelled_loss.median:.6f}"),
-                ("median_unlabelled_loss", f"{unlabelled_loss.median:.6f}"),
+                ("labelled_median_loss", f"{labelled_loss.median:.6f}"),
+                ("unlabelled_median_loss", f"{unlabelled_loss.median:.6f}"),
                 ("learning_rate", f"{optimizer.param_groups[0]['lr']:.6f}"),
             )
             if valid_losses is not None:
