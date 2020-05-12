@@ -36,3 +36,4 @@ dataset["__train__"] = ConcatDataset(
 dataset["train"] = ConcatDataset(
     [_mtest["drive"], _mtest["chasedb1"], _mtest["hrf"], _mtest["iostar"],]
 )
+dataset["__valid__"] = dataset["train"]

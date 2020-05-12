@@ -22,15 +22,15 @@ from bob.ip.binseg.configs.datasets.iostar.vessel_mtest import dataset as _mtest
 from bob.ip.binseg.configs.datasets.iostar.vessel import dataset as _baseline
 
 dataset = dict(**_baseline)
-dataset["__train__"] = ConcatDataset([
-    _augment(_mtest["drive"], rotation_before=True),
-    _augment(_mtest["stare"], rotation_before=True),
-    _augment(_mtest["chasedb1"], rotation_before=True),
-    _augment(_mtest["hrf"], rotation_before=False),
-    ])
-dataset["train"] = ConcatDataset([
-    _mtest["drive"],
-    _mtest["stare"],
-    _mtest["chasedb1"],
-    _mtest["hrf"],
-    ])
+dataset["__train__"] = ConcatDataset(
+    [
+        _augment(_mtest["drive"], rotation_before=True),
+        _augment(_mtest["stare"], rotation_before=True),
+        _augment(_mtest["chasedb1"], rotation_before=True),
+        _augment(_mtest["hrf"], rotation_before=False),
+    ]
+)
+dataset["train"] = ConcatDataset(
+    [_mtest["drive"], _mtest["stare"], _mtest["chasedb1"], _mtest["hrf"],]
+)
+dataset["__valid__"] = dataset["train"]

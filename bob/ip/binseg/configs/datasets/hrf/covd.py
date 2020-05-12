@@ -22,15 +22,15 @@ from bob.ip.binseg.configs.datasets.hrf.mtest import dataset as _mtest
 from bob.ip.binseg.configs.datasets.hrf.default import dataset as _baseline
 
 dataset = dict(**_baseline)
-dataset["__train__"] = ConcatDataset([
-    _augment(_mtest["drive"], rotation_before=True),
-    _augment(_mtest["stare"], rotation_before=True),
-    _augment(_mtest["chasedb1"], rotation_before=True),
-    _augment(_mtest["iostar"], rotation_before=True),
-    ])
-dataset["train"] = ConcatDataset([
-    _mtest["drive"],
-    _mtest["stare"],
-    _mtest["chasedb1"],
-    _mtest["iostar"],
-    ])
+dataset["__train__"] = ConcatDataset(
+    [
+        _augment(_mtest["drive"], rotation_before=True),
+        _augment(_mtest["stare"], rotation_before=True),
+        _augment(_mtest["chasedb1"], rotation_before=True),
+        _augment(_mtest["iostar"], rotation_before=True),
+    ]
+)
+dataset["train"] = ConcatDataset(
+    [_mtest["drive"], _mtest["stare"], _mtest["chasedb1"], _mtest["iostar"],]
+)
+dataset["__valid__"] = dataset["train"]
