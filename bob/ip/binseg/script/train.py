@@ -71,7 +71,9 @@ logger = logging.getLogger(__name__)
     "training the network model.  The dataset description must include all "
     "required pre-processing, including eventual data augmentation.  If a "
     "dataset named ``__train__`` is available, it is used prioritarily for "
-    "training instead of ``train``.",
+    "training instead of ``train``.  If a dataset named ``__valid__`` is "
+    "available, it is used for model validation (and automatic check-pointing) "
+    "at each epoch.",
     required=True,
     cls=ResourceOption,
 )
@@ -227,12 +229,18 @@ def train(
     torch.manual_seed(seed)
 
     use_dataset = dataset
+    validation_dataset = None
     if isinstance(dataset, dict):
         if "__train__" in dataset:
             logger.info("Found (dedicated) '__train__' set for training")
             use_dataset = dataset["__train__"]
         else:
             use_dataset = dataset["train"]
+
+        if "__valid__" in dataset:
+            logger.info("Found (dedicated) '__valid__' set for validation")
+            logger.info("Will checkpoint lowest loss model on validation set")
+            validation_dataset = dataset["__valid__"]
 
     # PyTorch dataloader
     data_loader = DataLoader(
@@ -242,6 +250,16 @@ def train(
         drop_last=drop_incomplete_batch,
         pin_memory=torch.cuda.is_available(),
     )
+
+    valid_loader = None
+    if validation_dataset is not None:
+        valid_loader = DataLoader(
+                dataset=validation_dataset,
+                batch_size=batch_size,
+                shuffle=False,
+                drop_last=False,
+                pin_memory=torch.cuda.is_available(),
+                )
 
     # Checkpointer
     checkpointer = DetectronCheckpointer(
@@ -262,6 +280,7 @@ def train(
         run(
             model,
             data_loader,
+            valid_loader,
             optimizer,
             criterion,
             scheduler,
@@ -277,6 +296,7 @@ def train(
         run(
             model,
             data_loader,
+            valid_loader,
             optimizer,
             criterion,
             scheduler,

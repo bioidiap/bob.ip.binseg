@@ -88,14 +88,14 @@ def _check_experiment_stare(overlay):
 
         output_folder = "results"
         options = [
-                "m2unet",
-                config.name,
-                "-vv",
-                "--epochs=1",
-                "--batch-size=1",
-                "--steps=10",
-                f"--output-folder={output_folder}",
-                ]
+            "m2unet",
+            config.name,
+            "-vv",
+            "--epochs=1",
+            "--batch-size=1",
+            "--steps=10",
+            f"--output-folder={output_folder}",
+        ]
         if overlay:
             options += ["--overlayed"]
         result = runner.invoke(experiment, options)
@@ -107,6 +107,9 @@ def _check_experiment_stare(overlay):
         # check model was saved
         train_folder = os.path.join(output_folder, "model")
         assert os.path.exists(os.path.join(train_folder, "model_final.pth"))
+        assert os.path.exists(
+            os.path.join(train_folder, "model_lowest_valid_loss.pth")
+        )
         assert os.path.exists(os.path.join(train_folder, "last_checkpoint"))
         assert os.path.exists(os.path.join(train_folder, "constants.csv"))
         assert os.path.exists(os.path.join(train_folder, "trainlog.csv"))
@@ -123,7 +126,9 @@ def _check_experiment_stare(overlay):
         if overlay:
             # check overlayed images are there (since we requested them)
             assert os.path.exists(basedir)
-            nose.tools.eq_(len(fnmatch.filter(os.listdir(basedir), "*.png")), 20)
+            nose.tools.eq_(
+                len(fnmatch.filter(os.listdir(basedir), "*.png")), 20
+            )
         else:
             assert not os.path.exists(basedir)
 
@@ -135,7 +140,7 @@ def _check_experiment_stare(overlay):
             os.path.join(eval_folder, "second-annotator", "train.csv")
         )
         assert os.path.exists(
-            os.path.join(eval_folder, "second-annotator" , "test.csv")
+            os.path.join(eval_folder, "second-annotator", "test.csv")
         )
 
         overlay_folder = os.path.join(output_folder, "overlayed", "analysis")
@@ -143,18 +148,23 @@ def _check_experiment_stare(overlay):
         if overlay:
             # check overlayed images are there (since we requested them)
             assert os.path.exists(basedir)
-            nose.tools.eq_(len(fnmatch.filter(os.listdir(basedir), "*.png")), 20)
+            nose.tools.eq_(
+                len(fnmatch.filter(os.listdir(basedir), "*.png")), 20
+            )
         else:
             assert not os.path.exists(basedir)
 
         # check overlayed images from first-to-second annotator comparisons
         # are there (since we requested them)
-        overlay_folder = os.path.join(output_folder, "overlayed", "analysis",
-                "second-annotator")
+        overlay_folder = os.path.join(
+            output_folder, "overlayed", "analysis", "second-annotator"
+        )
         basedir = os.path.join(overlay_folder, "stare-images")
         if overlay:
             assert os.path.exists(basedir)
-            nose.tools.eq_(len(fnmatch.filter(os.listdir(basedir), "*.png")), 20)
+            nose.tools.eq_(
+                len(fnmatch.filter(os.listdir(basedir), "*.png")), 20
+            )
         else:
             assert not os.path.exists(basedir)
 
@@ -165,10 +175,13 @@ def _check_experiment_stare(overlay):
         keywords = {
             r"^Started training$": 1,
             r"^Found \(dedicated\) '__train__' set for training$": 1,
+            r"^Found \(dedicated\) '__valid__' set for validation$": 1,
+            r"^Will checkpoint lowest loss model on validation set$": 1,
             r"^Continuing from epoch 0$": 1,
             r"^Saving model summary at.*$": 1,
             r"^Model has.*$": 1,
-            r"^Saving checkpoint": 1,
+            r"^Found new low on validation set.*$": 1,
+            r"^Saving checkpoint": 2,
             r"^Ended training$": 1,
             r"^Started prediction$": 1,
             r"^Loading checkpoint from": 2,
@@ -223,7 +236,7 @@ def _check_train(runner):
         config.write(
             "from bob.ip.binseg.configs.datasets.stare import _maker\n"
         )
-        config.write("dataset = _maker('ah', _raw)['train']\n")
+        config.write("dataset = _maker('ah', _raw)\n")
         config.flush()
 
         output_folder = "results"
@@ -241,15 +254,21 @@ def _check_train(runner):
         _assert_exit_0(result)
 
         assert os.path.exists(os.path.join(output_folder, "model_final.pth"))
+        assert os.path.exists(
+            os.path.join(output_folder, "model_lowest_valid_loss.pth")
+        )
         assert os.path.exists(os.path.join(output_folder, "last_checkpoint"))
         assert os.path.exists(os.path.join(output_folder, "constants.csv"))
         assert os.path.exists(os.path.join(output_folder, "trainlog.csv"))
         assert os.path.exists(os.path.join(output_folder, "model_summary.txt"))
 
         keywords = {
+            r"^Found \(dedicated\) '__train__' set for training$": 1,
+            r"^Found \(dedicated\) '__valid__' set for validation$": 1,
             r"^Continuing from epoch 0$": 1,
             r"^Saving model summary at.*$": 1,
             r"^Model has.*$": 1,
+            rf"^Saving checkpoint to {output_folder}/model_lowest_valid_loss.pth$": 1,
             rf"^Saving checkpoint to {output_folder}/model_final.pth$": 1,
             r"^Total training time:": 1,
         }
@@ -364,8 +383,9 @@ def _check_evaluate(runner):
         _assert_exit_0(result)
 
         assert os.path.exists(os.path.join(output_folder, "test.csv"))
-        assert os.path.exists(os.path.join(output_folder,
-            "second-annotator", "test.csv"))
+        assert os.path.exists(
+            os.path.join(output_folder, "second-annotator", "test.csv")
+        )
 
         # check overlayed images are there (since we requested them)
         basedir = os.path.join(overlay_folder, "stare-images")

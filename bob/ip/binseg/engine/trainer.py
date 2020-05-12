@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import os
+import sys
 import csv
 import time
 import shutil
@@ -25,6 +26,7 @@ PYTORCH_GE_110 = distutils.version.StrictVersion(torch.__version__) >= "1.1.0"
 def run(
     model,
     data_loader,
+    valid_loader,
     optimizer,
     criterion,
     scheduler,
@@ -48,6 +50,11 @@ def run(
         Network (e.g. driu, hed, unet)
 
     data_loader : :py:class:`torch.utils.data.DataLoader`
+        To be used to train the model
+
+    valid_loader : :py:class:`torch.utils.data.DataLoader`
+        To be used to validate the model and enable automatic checkpointing.
+        If set to ``None``, then do not validate it.
 
     optimizer : :py:mod:`torch.optim`
 
@@ -127,9 +134,15 @@ def run(
         "median_loss",
         "learning_rate",
     )
+    if valid_loader is not None:
+        logfile_fields += ("validation_average_loss", "validation_median_loss")
     logfile_fields += tuple([k[0] for k in cpu_log()])
     if device != "cpu":
         logfile_fields += tuple([k[0] for k in gpu_log()])
+
+    # the lowest validation loss obtained so far - this value is updated only
+    # if a validation set is available
+    lowest_validation_loss = sys.float_info.max
 
     with open(logfile_name, "a+", newline="") as logfile:
         logwriter = csv.DictWriter(logfile, fieldnames=logfile_fields)
@@ -187,8 +200,38 @@ def run(
             if PYTORCH_GE_110:
                 scheduler.step()
 
+            # calculates the validation loss if necessary
+            valid_losses = None
+            if valid_loader is not None:
+                valid_losses = SmoothedValue(len(valid_loader))
+                for samples in tqdm(
+                    valid_loader, desc="valid", leave=False, disable=None
+                ):
+                    # data forwarding on the existing network
+                    images = samples[1].to(device)
+                    ground_truths = samples[2].to(device)
+                    masks = None
+                    if len(samples) == 4:
+                        masks = samples[-1].to(device)
+
+                    outputs = model(images)
+
+                    loss = criterion(outputs, ground_truths, masks)
+                    valid_losses.update(loss)
+
             if checkpoint_period and (epoch % checkpoint_period == 0):
                 checkpointer.save(f"model_{epoch:03d}", **arguments)
+
+            if (
+                valid_losses is not None
+                and valid_losses.avg < lowest_validation_loss
+            ):
+                lowest_validation_loss = valid_losses.avg
+                logger.info(
+                    f"Found new low on validation set:"
+                    f" {lowest_validation_loss:.6f}"
+                )
+                checkpointer.save(f"model_lowest_valid_loss", **arguments)
 
             if epoch >= max_epoch:
                 checkpointer.save("model_final", **arguments)
@@ -209,7 +252,13 @@ def run(
                 ("average_loss", f"{losses.avg:.6f}"),
                 ("median_loss", f"{losses.median:.6f}"),
                 ("learning_rate", f"{optimizer.param_groups[0]['lr']:.6f}"),
-            ) + cpu_log()
+            )
+            if valid_losses is not None:
+                logdata += (
+                    ("validation_average_loss", f"{valid_losses.avg:.6f}"),
+                    ("validation_median_loss", f"{valid_losses.median:.6f}"),
+                )
+            logdata += cpu_log()
             if device != "cpu":
                 logdata += gpu_log()
 

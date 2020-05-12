@@ -274,6 +274,10 @@ def experiment(
 
     * ``__train__``: dataset used for training, prioritarily.  It is typically
       the dataset containing data augmentation pipelines.
+    * ``__valid__``: dataset used for validation.  It is typically disjoint
+      from the training and test sets.  In such a case, we checkpoint the model
+      with the lowest loss on the validation set as well, throughout all the
+      training, besides the model at the end of training.
     * ``train`` (optional): a copy of the ``__train__`` dataset, without data
       augmentation, that will be evaluated alongside other sets available
     * ``*``: any other name, not starting with an underscore character (``_``),
