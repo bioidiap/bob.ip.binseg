@@ -24,13 +24,26 @@ from bob.ip.binseg.configs.datasets.hrf.default import dataset as _baseline
 dataset = dict(**_baseline)
 dataset["__train__"] = ConcatDataset(
     [
-        _augment(_mtest["drive"], rotation_before=True),
-        _augment(_mtest["stare"], rotation_before=True),
-        _augment(_mtest["chasedb1"], rotation_before=True),
-        _augment(_mtest["iostar"], rotation_before=True),
+        _augment(_mtest["drive (train)"], rotation_before=True),
+        _augment(_mtest["drive (test)"], rotation_before=True),
+        _augment(_mtest["stare (train)"], rotation_before=True),
+        _augment(_mtest["stare (test)"], rotation_before=True),
+        _augment(_mtest["chasedb1 (train)"], rotation_before=True),
+        _augment(_mtest["chasedb1 (test)"], rotation_before=True),
+        _augment(_mtest["iostar (train)"], rotation_before=True),
+        _augment(_mtest["iostar (test)"], rotation_before=True),
     ]
 )
 dataset["train"] = ConcatDataset(
-    [_mtest["drive"], _mtest["stare"], _mtest["chasedb1"], _mtest["iostar"],]
+    [
+        _mtest["drive (train)"],
+        _mtest["drive (test)"],
+        _mtest["stare (train)"],
+        _mtest["stare (test)"],
+        _mtest["chasedb1 (train)"],
+        _mtest["chasedb1 (test)"],
+        _mtest["iostar (train)"],
+        _mtest["iostar (test)"],
+    ]
 )
 dataset["__valid__"] = dataset["train"]

@@ -15,8 +15,20 @@ from bob.ip.binseg.configs.datasets.drive.xtest import (
 dataset = {
     "train": _xt["train"],
     "test": _xt["test"],
-    "stare": _xt["stare"].copy([Resize(471), Pad((0, 37, 0, 36))]),
-    "chasedb1": _xt["chasedb1"].copy([Resize(544), Crop(0, 12, 544, 544)]),
-    "hrf": _xt["hrf"].copy([Resize((363)), Pad((0, 90, 0, 91))]),
-    "iostar": _xt["iostar"].copy([Resize(544)]),
+    "stare (train)": _xt["stare (train)"].copy(
+        [Resize(471), Pad((0, 37, 0, 36))]
+    ),
+    "stare (test)": _xt["stare (test)"].copy(
+        [Resize(471), Pad((0, 37, 0, 36))]
+    ),
+    "chasedb1 (train)": _xt["chasedb1 (train)"].copy(
+        [Resize(544), Crop(0, 12, 544, 544)]
+    ),
+    "chasedb1 (test)": _xt["chasedb1 (test)"].copy(
+        [Resize(544), Crop(0, 12, 544, 544)]
+    ),
+    "hrf (train)": _xt["hrf (train)"].copy([Resize((363)), Pad((0, 90, 0, 91))]),
+    "hrf (test)": _xt["hrf (test)"].copy([Resize((363)), Pad((0, 90, 0, 91))]),
+    "iostar (train)": _xt["iostar (train)"].copy([Resize(544)]),
+    "iostar (test)": _xt["iostar (test)"].copy([Resize(544)]),
 }

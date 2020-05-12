@@ -15,8 +15,12 @@ from bob.ip.binseg.configs.datasets.iostar.vessel import dataset as _iostar
 dataset = {
         "train": _hrf["train"],
         "test": _hrf["test"],
-        "drive": _drive["test"],
-        "stare": _stare["test"],
-        "chasedb1": _chase["test"],
-        "iostar": _iostar["test"],
+        "drive (train)": _drive["train"],
+        "drive (test)": _drive["test"],
+        "stare (train)": _stare["train"],
+        "stare (test)": _stare["test"],
+        "chasedb1 (train)": _chase["train"],
+        "chasedb1 (test)": _chase["test"],
+        "iostar (train)": _iostar["train"],
+        "iostar (test)": _iostar["test"],
         }
