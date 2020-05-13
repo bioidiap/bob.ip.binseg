@@ -23,7 +23,6 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-
 def sharpen(x, T):
     temp = x ** (1 / T)
     return temp / temp.sum(dim=1, keepdim=True)
@@ -300,7 +299,7 @@ def run(
         if arguments["epoch"] == 0:
             logwriter.writeheader()
 
-        model.train()  #set training mode
+        model.train()  # set training mode
 
         model.to(device)  # set/cast parameters to device
         for state in optimizer.state.values():
@@ -336,9 +335,15 @@ def run(
                 # data forwarding on the existing network
 
                 # labelled
-                images = samples[1].to(device)
-                ground_truths = samples[2].to(device)
-                unlabelled_images = samples[4].to(device)
+                images = samples[1].to(
+                    device=device, non_blocking=torch.cuda.is_available()
+                )
+                ground_truths = samples[2].to(
+                    device=device, non_blocking=torch.cuda.is_available()
+                )
+                unlabelled_images = samples[4].to(
+                    device=device, non_blocking=torch.cuda.is_available()
+                )
                 # labelled outputs
                 outputs = model(images)
                 unlabelled_outputs = model(unlabelled_images)
@@ -382,9 +387,18 @@ def run(
                     ):
 
                         # labelled
-                        images = samples[1].to(device)
-                        ground_truths = samples[2].to(device)
-                        unlabelled_images = samples[4].to(device)
+                        images = samples[1].to(
+                            device=device,
+                            non_blocking=torch.cuda.is_available(),
+                        )
+                        ground_truths = samples[2].to(
+                            device=device,
+                            non_blocking=torch.cuda.is_available(),
+                        )
+                        unlabelled_images = samples[4].to(
+                            device=device,
+                            non_blocking=torch.cuda.is_available(),
+                        )
                         # labelled outputs
                         outputs = model(images)
                         unlabelled_outputs = model(unlabelled_images)

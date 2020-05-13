@@ -179,7 +179,7 @@ def run(
         if arguments["epoch"] == 0:
             logwriter.writeheader()
 
-        model.train()  #set training mode
+        model.train()  # set training mode
 
         model.to(device)  # set/cast parameters to device
         for state in optimizer.state.values():
@@ -211,11 +211,17 @@ def run(
             ):
 
                 # data forwarding on the existing network
-                images = samples[1].to(device)
-                ground_truths = samples[2].to(device)
+                images = samples[1].to(
+                    device=device, non_blocking=torch.cuda.is_available()
+                )
+                ground_truths = samples[2].to(
+                    device=device, non_blocking=torch.cuda.is_available()
+                )
                 masks = None
                 if len(samples) == 4:
-                    masks = samples[-1].to(device)
+                    masks = samples[-1].to(
+                        device=device, non_blocking=torch.cuda.is_available()
+                    )
 
                 outputs = model(images)
 
@@ -242,11 +248,20 @@ def run(
                         valid_loader, desc="valid", leave=False, disable=None
                     ):
                         # data forwarding on the existing network
-                        images = samples[1].to(device)
-                        ground_truths = samples[2].to(device)
+                        images = samples[1].to(
+                            device=device,
+                            non_blocking=torch.cuda.is_available(),
+                        )
+                        ground_truths = samples[2].to(
+                            device=device,
+                            non_blocking=torch.cuda.is_available(),
+                        )
                         masks = None
                         if len(samples) == 4:
-                            masks = samples[-1].to(device)
+                            masks = samples[-1].to(
+                                device=device,
+                                non_blocking=torch.cuda.is_available(),
+                            )
 
                         outputs = model(images)
 
