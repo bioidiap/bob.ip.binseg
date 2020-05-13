@@ -125,9 +125,10 @@ def run(model, data_loader, device, output_folder, overlayed_folder):
     os.makedirs(output_folder, exist_ok=True)
 
     logger.info(f"Device: {device}")
-    model.eval().to(device)
-    # Sigmoid for predictions
-    sigmoid = torch.nn.Sigmoid()
+
+    model.eval()  # set evaluation mode
+    model.to(device)  # set/cast parameters to device
+    sigmoid = torch.nn.Sigmoid()  # use sigmoid for predictions
 
     # Setup timers
     start_total_time = time.time()

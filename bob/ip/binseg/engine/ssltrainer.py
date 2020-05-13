@@ -300,7 +300,9 @@ def run(
         if arguments["epoch"] == 0:
             logwriter.writeheader()
 
-        model.train().to(device)
+        model.train()  #set training mode
+
+        model.to(device)  # set/cast parameters to device
         for state in optimizer.state.values():
             for k, v in state.items():
                 if isinstance(v, torch.Tensor):
