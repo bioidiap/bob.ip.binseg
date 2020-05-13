@@ -34,8 +34,9 @@ def test_drive():
 
     from ..configs.datasets.drive.default import dataset
 
-    nose.tools.eq_(len(dataset), 3)
+    nose.tools.eq_(len(dataset), 4)
     _check_subset(dataset["__train__"], 20)
+    _check_subset(dataset["__valid__"], 20)
     _check_subset(dataset["train"], 20)
     _check_subset(dataset["test"], 20)
 
@@ -53,7 +54,7 @@ def test_drive():
 def test_drive_mtest():
 
     from ..configs.datasets.drive.mtest import dataset
-    nose.tools.eq_(len(dataset), 6)
+    nose.tools.eq_(len(dataset), 10)
 
     from ..configs.datasets.drive.default import dataset as baseline
     nose.tools.eq_(dataset["train"], baseline["train"])
@@ -80,25 +81,24 @@ def test_drive_mtest():
 def test_drive_covd():
 
     from ..configs.datasets.drive.covd import dataset
-    nose.tools.eq_(len(dataset), 3)
+    nose.tools.eq_(len(dataset), 4)
 
     from ..configs.datasets.drive.default import dataset as baseline
-    nose.tools.eq_(dataset["train"], baseline["train"])
+    nose.tools.eq_(dataset["train"], dataset["__valid__"])
     nose.tools.eq_(dataset["test"], baseline["test"])
 
-    # this is the only different set from the baseline
-    nose.tools.eq_(len(dataset["__train__"]), 53)
-
-    for sample in dataset["__train__"]:
-        assert 3 <= len(sample) <= 4
-        assert isinstance(sample[0], str)
-        nose.tools.eq_(sample[1].shape, (3, 544, 544)) #planes, height, width
-        nose.tools.eq_(sample[1].dtype, torch.float32)
-        nose.tools.eq_(sample[2].shape, (1, 544, 544)) #planes, height, width
-        nose.tools.eq_(sample[2].dtype, torch.float32)
-        if len(sample) == 4:
-            nose.tools.eq_(sample[3].shape, (1, 544, 544)) #planes, height, width
-            nose.tools.eq_(sample[3].dtype, torch.float32)
+    for key in ("__train__", "train"):
+        nose.tools.eq_(len(dataset[key]), 123)
+        for sample in dataset["__train__"]:
+            assert 3 <= len(sample) <= 4
+            assert isinstance(sample[0], str)
+            nose.tools.eq_(sample[1].shape, (3, 544, 544)) #planes, height, width
+            nose.tools.eq_(sample[1].dtype, torch.float32)
+            nose.tools.eq_(sample[2].shape, (1, 544, 544)) #planes, height, width
+            nose.tools.eq_(sample[2].dtype, torch.float32)
+            if len(sample) == 4:
+                nose.tools.eq_(sample[3].shape, (1, 544, 544))
+                nose.tools.eq_(sample[3].dtype, torch.float32)
 
 
 @rc_variable_set("bob.ip.binseg.drive.datadir")
@@ -109,15 +109,16 @@ def test_drive_covd():
 def test_drive_ssl():
 
     from ..configs.datasets.drive.ssl import dataset
-    nose.tools.eq_(len(dataset), 3)
+    nose.tools.eq_(len(dataset), 4)
 
-    from ..configs.datasets.drive.default import dataset as baseline
-    nose.tools.eq_(dataset["train"], baseline["train"])
-    nose.tools.eq_(dataset["test"], baseline["test"])
+    from ..configs.datasets.drive.covd import dataset as covd
+    nose.tools.eq_(dataset["train"], covd["train"])
+    nose.tools.eq_(dataset["train"], dataset["__valid__"])
+    nose.tools.eq_(dataset["test"], covd["test"])
+    nose.tools.eq_(dataset["__valid__"], covd["__valid__"])
 
-    # this is the only different set from the baseline
-    nose.tools.eq_(len(dataset["__train__"]), 53)
-
+    # these are the only different from the baseline
+    nose.tools.eq_(len(dataset["__train__"]), 123)
     for sample in dataset["__train__"]:
         assert 5 <= len(sample) <= 6
         assert isinstance(sample[0], str)
@@ -172,7 +173,7 @@ def test_stare():
 
     for protocol in "ah", "vk":
         dataset = _maker(protocol, stare_dataset)
-        nose.tools.eq_(len(dataset), 3)
+        nose.tools.eq_(len(dataset), 4)
         _check_subset(dataset["__train__"], 10)
         _check_subset(dataset["train"], 10)
         _check_subset(dataset["test"], 10)
@@ -186,7 +187,7 @@ def test_stare():
 def test_stare_mtest():
 
     from ..configs.datasets.stare.mtest import dataset
-    nose.tools.eq_(len(dataset), 6)
+    nose.tools.eq_(len(dataset), 10)
 
     from ..configs.datasets.stare.ah import dataset as baseline
     nose.tools.eq_(dataset["train"], baseline["train"])
@@ -213,24 +214,25 @@ def test_stare_mtest():
 def test_stare_covd():
 
     from ..configs.datasets.stare.covd import dataset
-    nose.tools.eq_(len(dataset), 3)
+    nose.tools.eq_(len(dataset), 4)
 
     from ..configs.datasets.stare.ah import dataset as baseline
-    nose.tools.eq_(dataset["train"], baseline["train"])
+    nose.tools.eq_(dataset["train"], dataset["__valid__"])
     nose.tools.eq_(dataset["test"], baseline["test"])
 
-    # this is the only different set from the baseline
-    nose.tools.eq_(len(dataset["__train__"]), 63)
-    for sample in dataset["__train__"]:
-        assert 3 <= len(sample) <= 4
-        assert isinstance(sample[0], str)
-        nose.tools.eq_(sample[1].shape, (3, 608, 704)) #planes, height, width
-        nose.tools.eq_(sample[1].dtype, torch.float32)
-        nose.tools.eq_(sample[2].shape, (1, 608, 704)) #planes, height, width
-        nose.tools.eq_(sample[2].dtype, torch.float32)
-        if len(sample) == 4:
-            nose.tools.eq_(sample[3].shape, (1, 608, 704)) #planes, height, width
-            nose.tools.eq_(sample[3].dtype, torch.float32)
+    # these are the only different sets from the baseline
+    for key in ("__train__", "train"):
+        nose.tools.eq_(len(dataset[key]), 143)
+        for sample in dataset[key]:
+            assert 3 <= len(sample) <= 4
+            assert isinstance(sample[0], str)
+            nose.tools.eq_(sample[1].shape, (3, 608, 704)) #planes, height, width
+            nose.tools.eq_(sample[1].dtype, torch.float32)
+            nose.tools.eq_(sample[2].shape, (1, 608, 704)) #planes, height, width
+            nose.tools.eq_(sample[2].dtype, torch.float32)
+            if len(sample) == 4:
+                nose.tools.eq_(sample[3].shape, (1, 608, 704))
+                nose.tools.eq_(sample[3].dtype, torch.float32)
 
 
 @rc_variable_set("bob.ip.binseg.chasedb1.datadir")
@@ -249,8 +251,9 @@ def test_chasedb1():
     for m in ("first_annotator", "second_annotator"):
         d = importlib.import_module(f"...configs.datasets.chasedb1.{m}",
                 package=__name__).dataset
-        nose.tools.eq_(len(d), 3)
+        nose.tools.eq_(len(d), 4)
         _check_subset(d["__train__"], 8)
+        _check_subset(d["__valid__"], 8)
         _check_subset(d["train"], 8)
         _check_subset(d["test"], 20)
 
@@ -263,7 +266,7 @@ def test_chasedb1():
 def test_chasedb1_mtest():
 
     from ..configs.datasets.chasedb1.mtest import dataset
-    nose.tools.eq_(len(dataset), 6)
+    nose.tools.eq_(len(dataset), 10)
 
     from ..configs.datasets.chasedb1.first_annotator import dataset as baseline
     nose.tools.eq_(dataset["train"], baseline["train"])
@@ -290,24 +293,25 @@ def test_chasedb1_mtest():
 def test_chasedb1_covd():
 
     from ..configs.datasets.chasedb1.covd import dataset
-    nose.tools.eq_(len(dataset), 3)
+    nose.tools.eq_(len(dataset), 4)
 
     from ..configs.datasets.chasedb1.first_annotator import dataset as baseline
-    nose.tools.eq_(dataset["train"], baseline["train"])
+    nose.tools.eq_(dataset["train"], dataset["__valid__"])
     nose.tools.eq_(dataset["test"], baseline["test"])
 
-    # this is the only different set from the baseline
-    nose.tools.eq_(len(dataset["__train__"]), 65)
-    for sample in dataset["__train__"]:
-        assert 3 <= len(sample) <= 4
-        assert isinstance(sample[0], str)
-        nose.tools.eq_(sample[1].shape, (3, 960, 960)) #planes, height, width
-        nose.tools.eq_(sample[1].dtype, torch.float32)
-        nose.tools.eq_(sample[2].shape, (1, 960, 960)) #planes, height, width
-        nose.tools.eq_(sample[2].dtype, torch.float32)
-        if len(sample) == 4:
-            nose.tools.eq_(sample[3].shape, (1, 960, 960)) #planes, height, width
-            nose.tools.eq_(sample[3].dtype, torch.float32)
+    # these are the only different sets from the baseline
+    for key in ("__train__", "train"):
+        nose.tools.eq_(len(dataset[key]), 135)
+        for sample in dataset[key]:
+            assert 3 <= len(sample) <= 4
+            assert isinstance(sample[0], str)
+            nose.tools.eq_(sample[1].shape, (3, 960, 960)) #planes, height, width
+            nose.tools.eq_(sample[1].dtype, torch.float32)
+            nose.tools.eq_(sample[2].shape, (1, 960, 960)) #planes, height, width
+            nose.tools.eq_(sample[2].dtype, torch.float32)
+            if len(sample) == 4:
+                nose.tools.eq_(sample[3].shape, (1, 960, 960))
+                nose.tools.eq_(sample[3].dtype, torch.float32)
 
 
 @rc_variable_set("bob.ip.binseg.hrf.datadir")
@@ -326,7 +330,7 @@ def test_hrf():
             nose.tools.eq_(s[3].dtype, torch.float32)
 
     from ..configs.datasets.hrf.default import dataset
-    nose.tools.eq_(len(dataset), 3)
+    nose.tools.eq_(len(dataset), 4)
     _check_subset(dataset["__train__"], 15)
     _check_subset(dataset["train"], 15)
     _check_subset(dataset["test"], 30)
@@ -340,7 +344,7 @@ def test_hrf():
 def test_hrf_mtest():
 
     from ..configs.datasets.hrf.mtest import dataset
-    nose.tools.eq_(len(dataset), 6)
+    nose.tools.eq_(len(dataset), 10)
 
     from ..configs.datasets.hrf.default import dataset as baseline
     nose.tools.eq_(dataset["train"], baseline["train"])
@@ -367,24 +371,25 @@ def test_hrf_mtest():
 def test_hrf_covd():
 
     from ..configs.datasets.hrf.covd import dataset
-    nose.tools.eq_(len(dataset), 3)
+    nose.tools.eq_(len(dataset), 4)
 
     from ..configs.datasets.hrf.default import dataset as baseline
-    nose.tools.eq_(dataset["train"], baseline["train"])
+    nose.tools.eq_(dataset["train"], dataset["__valid__"])
     nose.tools.eq_(dataset["test"], baseline["test"])
 
-    # this is the only different set from the baseline
-    nose.tools.eq_(len(dataset["__train__"]), 58)
-    for sample in dataset["__train__"]:
-        assert 3 <= len(sample) <= 4
-        assert isinstance(sample[0], str)
-        nose.tools.eq_(sample[1].shape, (3, 1168, 1648)) #planes, height, width
-        nose.tools.eq_(sample[1].dtype, torch.float32)
-        nose.tools.eq_(sample[2].shape, (1, 1168, 1648)) #planes, height, width
-        nose.tools.eq_(sample[2].dtype, torch.float32)
-        if len(sample) == 4:
-            nose.tools.eq_(sample[3].shape, (1, 1168, 1648))
-            nose.tools.eq_(sample[3].dtype, torch.float32)
+    # these are the only different sets from the baseline
+    for key in ("__train__", "train"):
+        nose.tools.eq_(len(dataset[key]), 118)
+        for sample in dataset[key]:
+            assert 3 <= len(sample) <= 4
+            assert isinstance(sample[0], str)
+            nose.tools.eq_(sample[1].shape, (3, 1168, 1648))
+            nose.tools.eq_(sample[1].dtype, torch.float32)
+            nose.tools.eq_(sample[2].shape, (1, 1168, 1648))
+            nose.tools.eq_(sample[2].dtype, torch.float32)
+            if len(sample) == 4:
+                nose.tools.eq_(sample[3].shape, (1, 1168, 1648))
+                nose.tools.eq_(sample[3].dtype, torch.float32)
 
 
 @rc_variable_set("bob.ip.binseg.iostar.datadir")
@@ -405,7 +410,7 @@ def test_iostar():
     for m in ("vessel", "optic_disc"):
         d = importlib.import_module(f"...configs.datasets.iostar.{m}",
                 package=__name__).dataset
-        nose.tools.eq_(len(d), 3)
+        nose.tools.eq_(len(d), 4)
         _check_subset(d["__train__"], 20)
         _check_subset(d["train"], 20)
         _check_subset(d["test"], 10)
@@ -419,7 +424,7 @@ def test_iostar():
 def test_iostar_mtest():
 
     from ..configs.datasets.iostar.vessel_mtest import dataset
-    nose.tools.eq_(len(dataset), 6)
+    nose.tools.eq_(len(dataset), 10)
 
     from ..configs.datasets.iostar.vessel import dataset as baseline
     nose.tools.eq_(dataset["train"], baseline["train"])
@@ -446,24 +451,25 @@ def test_iostar_mtest():
 def test_iostar_covd():
 
     from ..configs.datasets.iostar.covd import dataset
-    nose.tools.eq_(len(dataset), 3)
+    nose.tools.eq_(len(dataset), 4)
 
     from ..configs.datasets.iostar.vessel import dataset as baseline
-    nose.tools.eq_(dataset["train"], baseline["train"])
+    nose.tools.eq_(dataset["train"], dataset["__valid__"])
     nose.tools.eq_(dataset["test"], baseline["test"])
 
-    # this is the only different set from the baseline
-    nose.tools.eq_(len(dataset["__train__"]), 53)
-    for sample in dataset["__train__"]:
-        assert 3 <= len(sample) <= 4
-        assert isinstance(sample[0], str)
-        nose.tools.eq_(sample[1].shape, (3, 1024, 1024)) #planes, height, width
-        nose.tools.eq_(sample[1].dtype, torch.float32)
-        nose.tools.eq_(sample[2].shape, (1, 1024, 1024)) #planes, height, width
-        nose.tools.eq_(sample[2].dtype, torch.float32)
-        if len(sample) == 4:
-            nose.tools.eq_(sample[3].shape, (1, 1024, 1024))
-            nose.tools.eq_(sample[3].dtype, torch.float32)
+    # these are the only different sets from the baseline
+    for key in ("__train__", "train"):
+        nose.tools.eq_(len(dataset[key]), 133)
+        for sample in dataset[key]:
+            assert 3 <= len(sample) <= 4
+            assert isinstance(sample[0], str)
+            nose.tools.eq_(sample[1].shape, (3, 1024, 1024))
+            nose.tools.eq_(sample[1].dtype, torch.float32)
+            nose.tools.eq_(sample[2].shape, (1, 1024, 1024))
+            nose.tools.eq_(sample[2].dtype, torch.float32)
+            if len(sample) == 4:
+                nose.tools.eq_(sample[3].shape, (1, 1024, 1024))
+                nose.tools.eq_(sample[3].dtype, torch.float32)
 
 
 @rc_variable_set("bob.ip.binseg.refuge.datadir")
@@ -482,7 +488,7 @@ def test_refuge():
     for m in ("disc", "cup"):
         d = importlib.import_module(f"...configs.datasets.refuge.{m}",
                 package=__name__).dataset
-        nose.tools.eq_(len(d), 4)
+        nose.tools.eq_(len(d), 5)
         _check_subset(d["__train__"], 400)
         _check_subset(d["train"], 400)
         _check_subset(d["validation"], 400)
@@ -505,7 +511,7 @@ def test_drishtigs1():
     for m in ("disc_all", "cup_all", "disc_any", "cup_any"):
         d = importlib.import_module(f"...configs.datasets.drishtigs1.{m}",
                 package=__name__).dataset
-        nose.tools.eq_(len(d), 3)
+        nose.tools.eq_(len(d), 4)
         _check_subset(d["__train__"], 50)
         _check_subset(d["train"], 50)
         _check_subset(d["test"], 51)
@@ -527,7 +533,7 @@ def test_rimoner3():
     for m in ("disc_exp1", "cup_exp1", "disc_exp2", "cup_exp2"):
         d = importlib.import_module(f"...configs.datasets.rimoner3.{m}",
                 package=__name__).dataset
-        nose.tools.eq_(len(d), 3)
+        nose.tools.eq_(len(d), 4)
         _check_subset(d["__train__"], 99)
         _check_subset(d["train"], 99)
         _check_subset(d["test"], 60)
@@ -549,7 +555,7 @@ def test_drionsdb():
     for m in ("expert1", "expert2"):
         d = importlib.import_module(f"...configs.datasets.drionsdb.{m}",
                 package=__name__).dataset
-        nose.tools.eq_(len(d), 3)
+        nose.tools.eq_(len(d), 4)
         _check_subset(d["__train__"], 60)
         _check_subset(d["train"], 60)
         _check_subset(d["test"], 50)
