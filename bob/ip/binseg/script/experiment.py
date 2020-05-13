@@ -326,7 +326,11 @@ def experiment(
 
     from .analyze import analyze
 
-    model_file = os.path.join(train_output_folder, "model_final.pth")
+    # preferably, we use the best model on the validation set
+    # otherwise, we get the last saved model
+    model_file = os.path.join(train_output_folder, "model_lowest_valid_loss.pth")
+    if not os.path.exists(model_file):
+        model_file = os.path.join(train_output_folder, "model_final.pth")
 
     ctx.invoke(
             analyze,
