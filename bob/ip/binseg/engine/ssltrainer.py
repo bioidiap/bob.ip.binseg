@@ -16,12 +16,12 @@ from tqdm import tqdm
 from ..utils.measure import SmoothedValue
 from ..utils.summary import summary
 from ..utils.resources import cpu_constants, gpu_constants, cpu_log, gpu_log
+from .trainer import PYTORCH_GE_110, torch_evaluation
 
 import logging
 
 logger = logging.getLogger(__name__)
 
-PYTORCH_GE_110 = distutils.version.StrictVersion(torch.__version__) >= "1.1.0"
 
 
 def sharpen(x, T):
@@ -371,31 +371,34 @@ def run(
             # calculates the validation loss if necessary
             valid_losses = None
             if valid_loader is not None:
-                valid_losses = SmoothedValue(len(valid_loader))
-                for samples in tqdm(
-                    valid_loader, desc="valid", leave=False, disable=None
-                ):
 
-                    # labelled
-                    images = samples[1].to(device)
-                    ground_truths = samples[2].to(device)
-                    unlabelled_images = samples[4].to(device)
-                    # labelled outputs
-                    outputs = model(images)
-                    unlabelled_outputs = model(unlabelled_images)
-                    # guessed unlabelled outputs
-                    unlabelled_ground_truths = guess_labels(
-                        unlabelled_images, model
-                    )
-                    loss, ll, ul = criterion(
-                        outputs,
-                        ground_truths,
-                        unlabelled_outputs,
-                        unlabelled_ground_truths,
-                        ramp_up_factor,
-                    )
+                with torch.no_grad(), torch_evaluation(model):
 
-                    valid_losses.update(loss)
+                    valid_losses = SmoothedValue(len(valid_loader))
+                    for samples in tqdm(
+                        valid_loader, desc="valid", leave=False, disable=None
+                    ):
+
+                        # labelled
+                        images = samples[1].to(device)
+                        ground_truths = samples[2].to(device)
+                        unlabelled_images = samples[4].to(device)
+                        # labelled outputs
+                        outputs = model(images)
+                        unlabelled_outputs = model(unlabelled_images)
+                        # guessed unlabelled outputs
+                        unlabelled_ground_truths = guess_labels(
+                            unlabelled_images, model
+                        )
+                        loss, ll, ul = criterion(
+                            outputs,
+                            ground_truths,
+                            unlabelled_outputs,
+                            unlabelled_ground_truths,
+                            ramp_up_factor,
+                        )
+
+                        valid_losses.update(loss)
 
             if checkpoint_period and (epoch % checkpoint_period == 0):
                 checkpointer.save(f"model_{epoch:03d}", **arguments)

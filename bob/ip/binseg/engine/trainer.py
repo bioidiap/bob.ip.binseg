@@ -7,6 +7,7 @@ import csv
 import time
 import shutil
 import datetime
+import contextlib
 import distutils.version
 
 import torch
@@ -21,6 +22,34 @@ import logging
 logger = logging.getLogger(__name__)
 
 PYTORCH_GE_110 = distutils.version.StrictVersion(torch.__version__) >= "1.1.0"
+
+
+@contextlib.contextmanager
+def torch_evaluation(model):
+    """Context manager to turn ON/OFF model evaluation
+
+    This context manager will turn evaluation mode ON on entry and turn it OFF
+    when exiting the ``with`` statement block.
+
+
+    Parameters
+    ----------
+
+    model : :py:class:`torch.nn.Module`
+        Network (e.g. driu, hed, unet)
+
+
+    Yields
+    ------
+
+    model : :py:class:`torch.nn.Module`
+        Network (e.g. driu, hed, unet)
+
+    """
+
+    model.eval()
+    yield model
+    model.train()
 
 
 def run(
@@ -203,21 +232,24 @@ def run(
             # calculates the validation loss if necessary
             valid_losses = None
             if valid_loader is not None:
-                valid_losses = SmoothedValue(len(valid_loader))
-                for samples in tqdm(
-                    valid_loader, desc="valid", leave=False, disable=None
-                ):
-                    # data forwarding on the existing network
-                    images = samples[1].to(device)
-                    ground_truths = samples[2].to(device)
-                    masks = None
-                    if len(samples) == 4:
-                        masks = samples[-1].to(device)
 
-                    outputs = model(images)
+                with torch.no_grad(), torch_evaluation(model):
 
-                    loss = criterion(outputs, ground_truths, masks)
-                    valid_losses.update(loss)
+                    valid_losses = SmoothedValue(len(valid_loader))
+                    for samples in tqdm(
+                        valid_loader, desc="valid", leave=False, disable=None
+                    ):
+                        # data forwarding on the existing network
+                        images = samples[1].to(device)
+                        ground_truths = samples[2].to(device)
+                        masks = None
+                        if len(samples) == 4:
+                            masks = samples[-1].to(device)
+
+                        outputs = model(images)
+
+                        loss = criterion(outputs, ground_truths, masks)
+                        valid_losses.update(loss)
 
             if checkpoint_period and (epoch % checkpoint_period == 0):
                 checkpointer.save(f"model_{epoch:03d}", **arguments)
