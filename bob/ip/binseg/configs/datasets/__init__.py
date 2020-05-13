@@ -142,10 +142,11 @@ def make_dataset(subsets, transforms):
         named lists.  If one of the keys is ``train``, our standard dataset
         augmentation transforms are appended to the definition of that subset.
         All other subsets remain un-augmented.  If one of the keys is
-        ``valid``, then this dataset will be also copied to the ``__valid__``
-        hidden dataset and will be used for validation during training.
-        Otherwise, if no ``valid`` subset is available, we set ``__valid__`` to
-        be the same as the unaugmented ``train`` subset, if one is available.
+        ``validation``, then this dataset will be also copied to the
+        ``__valid__`` hidden dataset and will be used for validation during
+        training.  Otherwise, if no ``valid`` subset is available, we set
+        ``__valid__`` to be the same as the unaugmented ``train`` subset, if
+        one is available.
 
     transforms : list
         A list of transforms that needs to be applied to all samples in the set
@@ -170,7 +171,7 @@ def make_dataset(subsets, transforms):
                     transforms=transforms,
                     suffixes=(RANDOM_ROTATION + RANDOM_FLIP_JITTER),
                     )
-        if key == "valid":
+        if key == "validation":
             # also use it for validation during training
             retval["__valid__"] = retval[key]
 
