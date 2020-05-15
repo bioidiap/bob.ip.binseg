@@ -31,6 +31,8 @@ def test_drive():
             nose.tools.eq_(s[2].dtype, torch.float32)
             nose.tools.eq_(s[3].shape, (1, 544, 544)) #planes, height, width
             nose.tools.eq_(s[3].dtype, torch.float32)
+            assert s[1].max() <= 1.0
+            assert s[1].min() >= 0.0
 
     from ..configs.datasets.drive.default import dataset
 
@@ -68,6 +70,8 @@ def test_drive_mtest():
             nose.tools.eq_(sample[1].dtype, torch.float32)
             nose.tools.eq_(sample[2].shape, (1, 544, 544))
             nose.tools.eq_(sample[2].dtype, torch.float32)
+            assert sample[1].max() <= 1.0
+            assert sample[1].min() >= 0.0
             if len(sample) == 4:
                 nose.tools.eq_(sample[3].shape, (1, 544, 544))
                 nose.tools.eq_(sample[3].dtype, torch.float32)
@@ -96,6 +100,8 @@ def test_drive_covd():
             nose.tools.eq_(sample[1].dtype, torch.float32)
             nose.tools.eq_(sample[2].shape, (1, 544, 544)) #planes, height, width
             nose.tools.eq_(sample[2].dtype, torch.float32)
+            assert sample[1].max() <= 1.0
+            assert sample[1].min() >= 0.0
             if len(sample) == 4:
                 nose.tools.eq_(sample[3].shape, (1, 544, 544))
                 nose.tools.eq_(sample[3].dtype, torch.float32)
@@ -126,6 +132,8 @@ def test_drive_ssl():
         nose.tools.eq_(sample[1].dtype, torch.float32)
         nose.tools.eq_(sample[2].shape, (1, 544, 544)) #planes, height, width
         nose.tools.eq_(sample[2].dtype, torch.float32)
+        assert sample[1].max() <= 1.0
+        assert sample[1].min() >= 0.0
         if len(sample) == 6:
             nose.tools.eq_(sample[3].shape, (1, 544, 544)) #planes, height, width
             nose.tools.eq_(sample[3].dtype, torch.float32)
@@ -167,6 +175,8 @@ def test_stare():
             nose.tools.eq_(s[1].dtype, torch.float32)
             nose.tools.eq_(s[2].shape, (1, 608, 704)) #planes, height, width
             nose.tools.eq_(s[2].dtype, torch.float32)
+            assert s[1].max() <= 1.0
+            assert s[1].min() >= 0.0
 
     # hack to allow testing on the CI
     from ..configs.datasets.stare import _maker
@@ -201,6 +211,8 @@ def test_stare_mtest():
             nose.tools.eq_(sample[1].dtype, torch.float32)
             nose.tools.eq_(sample[2].shape, (1, 608, 704)) #planes,height,width
             nose.tools.eq_(sample[2].dtype, torch.float32)
+            assert sample[1].max() <= 1.0
+            assert sample[1].min() >= 0.0
             if len(sample) == 4:
                 nose.tools.eq_(sample[3].shape, (1, 608, 704))
                 nose.tools.eq_(sample[3].dtype, torch.float32)
@@ -230,6 +242,8 @@ def test_stare_covd():
             nose.tools.eq_(sample[1].dtype, torch.float32)
             nose.tools.eq_(sample[2].shape, (1, 608, 704)) #planes, height, width
             nose.tools.eq_(sample[2].dtype, torch.float32)
+            assert sample[1].max() <= 1.0
+            assert sample[1].min() >= 0.0
             if len(sample) == 4:
                 nose.tools.eq_(sample[3].shape, (1, 608, 704))
                 nose.tools.eq_(sample[3].dtype, torch.float32)
@@ -247,6 +261,8 @@ def test_chasedb1():
             nose.tools.eq_(s[1].dtype, torch.float32)
             nose.tools.eq_(s[2].shape, (1, 960, 960)) #planes, height, width
             nose.tools.eq_(s[2].dtype, torch.float32)
+            assert s[1].max() <= 1.0
+            assert s[1].min() >= 0.0
 
     for m in ("first_annotator", "second_annotator"):
         d = importlib.import_module(f"...configs.datasets.chasedb1.{m}",
@@ -280,6 +296,8 @@ def test_chasedb1_mtest():
             nose.tools.eq_(sample[1].dtype, torch.float32)
             nose.tools.eq_(sample[2].shape, (1, 960, 960)) #planes,height,width
             nose.tools.eq_(sample[2].dtype, torch.float32)
+            assert sample[1].max() <= 1.0
+            assert sample[1].min() >= 0.0
             if len(sample) == 4:
                 nose.tools.eq_(sample[3].shape, (1, 960, 960))
                 nose.tools.eq_(sample[3].dtype, torch.float32)
@@ -309,6 +327,8 @@ def test_chasedb1_covd():
             nose.tools.eq_(sample[1].dtype, torch.float32)
             nose.tools.eq_(sample[2].shape, (1, 960, 960)) #planes, height, width
             nose.tools.eq_(sample[2].dtype, torch.float32)
+            assert sample[1].max() <= 1.0
+            assert sample[1].min() >= 0.0
             if len(sample) == 4:
                 nose.tools.eq_(sample[3].shape, (1, 960, 960))
                 nose.tools.eq_(sample[3].dtype, torch.float32)
@@ -328,6 +348,8 @@ def test_hrf():
             nose.tools.eq_(s[2].dtype, torch.float32)
             nose.tools.eq_(s[3].shape, (1, 1168, 1648)) #planes, height, width
             nose.tools.eq_(s[3].dtype, torch.float32)
+            assert s[1].max() <= 1.0
+            assert s[1].min() >= 0.0
 
     from ..configs.datasets.hrf.default import dataset
     nose.tools.eq_(len(dataset), 4)
@@ -358,6 +380,8 @@ def test_hrf_mtest():
             nose.tools.eq_(sample[1].dtype, torch.float32)
             nose.tools.eq_(sample[2].shape, (1, 1168, 1648)) #planes,height,width
             nose.tools.eq_(sample[2].dtype, torch.float32)
+            assert sample[1].max() <= 1.0
+            assert sample[1].min() >= 0.0
             if len(sample) == 4:
                 nose.tools.eq_(sample[3].shape, (1, 1168, 1648))
                 nose.tools.eq_(sample[3].dtype, torch.float32)
@@ -387,6 +411,8 @@ def test_hrf_covd():
             nose.tools.eq_(sample[1].dtype, torch.float32)
             nose.tools.eq_(sample[2].shape, (1, 1168, 1648))
             nose.tools.eq_(sample[2].dtype, torch.float32)
+            assert sample[1].max() <= 1.0
+            assert sample[1].min() >= 0.0
             if len(sample) == 4:
                 nose.tools.eq_(sample[3].shape, (1, 1168, 1648))
                 nose.tools.eq_(sample[3].dtype, torch.float32)
@@ -406,6 +432,8 @@ def test_iostar():
             nose.tools.eq_(s[2].dtype, torch.float32)
             nose.tools.eq_(s[3].shape, (1, 1024, 1024)) #planes, height, width
             nose.tools.eq_(s[3].dtype, torch.float32)
+            assert s[1].max() <= 1.0
+            assert s[1].min() >= 0.0
 
     for m in ("vessel", "optic_disc"):
         d = importlib.import_module(f"...configs.datasets.iostar.{m}",
@@ -438,6 +466,8 @@ def test_iostar_mtest():
             nose.tools.eq_(sample[1].dtype, torch.float32)
             nose.tools.eq_(sample[2].shape, (1, 1024, 1024)) #planes,height,width
             nose.tools.eq_(sample[2].dtype, torch.float32)
+            assert sample[1].max() <= 1.0
+            assert sample[1].min() >= 0.0
             if len(sample) == 4:
                 nose.tools.eq_(sample[3].shape, (1, 1024, 1024))
                 nose.tools.eq_(sample[3].dtype, torch.float32)
@@ -467,6 +497,8 @@ def test_iostar_covd():
             nose.tools.eq_(sample[1].dtype, torch.float32)
             nose.tools.eq_(sample[2].shape, (1, 1024, 1024))
             nose.tools.eq_(sample[2].dtype, torch.float32)
+            assert sample[1].max() <= 1.0
+            assert sample[1].min() >= 0.0
             if len(sample) == 4:
                 nose.tools.eq_(sample[3].shape, (1, 1024, 1024))
                 nose.tools.eq_(sample[3].dtype, torch.float32)
@@ -484,6 +516,8 @@ def test_refuge():
             nose.tools.eq_(s[1].dtype, torch.float32)
             nose.tools.eq_(s[2].shape, (1, 1632, 1632)) #planes, height, width
             nose.tools.eq_(s[2].dtype, torch.float32)
+            assert s[1].max() <= 1.0
+            assert s[1].min() >= 0.0
 
     for m in ("disc", "cup"):
         d = importlib.import_module(f"...configs.datasets.refuge.{m}",
@@ -507,6 +541,8 @@ def test_drishtigs1():
             nose.tools.eq_(s[1].dtype, torch.float32)
             nose.tools.eq_(s[2].shape, (1, 1760, 2048)) #planes, height, width
             nose.tools.eq_(s[2].dtype, torch.float32)
+            assert s[1].max() <= 1.0
+            assert s[1].min() >= 0.0
 
     for m in ("disc_all", "cup_all", "disc_any", "cup_any"):
         d = importlib.import_module(f"...configs.datasets.drishtigs1.{m}",
@@ -529,6 +565,8 @@ def test_rimoner3():
             nose.tools.eq_(s[1].dtype, torch.float32)
             nose.tools.eq_(s[2].shape, (1, 1440, 1088)) #planes, height, width
             nose.tools.eq_(s[2].dtype, torch.float32)
+            assert s[1].max() <= 1.0
+            assert s[1].min() >= 0.0
 
     for m in ("disc_exp1", "cup_exp1", "disc_exp2", "cup_exp2"):
         d = importlib.import_module(f"...configs.datasets.rimoner3.{m}",
@@ -551,6 +589,8 @@ def test_drionsdb():
             nose.tools.eq_(s[1].dtype, torch.float32)
             nose.tools.eq_(s[2].shape, (1, 416, 608)) #planes, height, width
             nose.tools.eq_(s[2].dtype, torch.float32)
+            assert s[1].max() <= 1.0
+            assert s[1].min() >= 0.0
 
     for m in ("expert1", "expert2"):
         d = importlib.import_module(f"...configs.datasets.drionsdb.{m}",
