@@ -5,8 +5,6 @@ import os
 
 import torch
 
-from .model_serialization import load_state_dict
-
 import logging
 
 logger = logging.getLogger(__name__)
@@ -84,7 +82,7 @@ class Checkpointer:
         checkpoint = torch.load(f, map_location=torch.device("cpu"))
 
         # converts model entry to model parameters
-        load_state_dict(self.model, checkpoint.pop("model"))
+        self.model.load_state_dict(checkpoint.pop("model"))
 
         if self.optimizer is not None:
             self.optimizer.load_state_dict(checkpoint.pop("optimizer"))

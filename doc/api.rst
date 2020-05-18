@@ -86,7 +86,6 @@ Toolbox
    bob.ip.binseg.utils
    bob.ip.binseg.utils.checkpointer
    bob.ip.binseg.utils.measure
-   bob.ip.binseg.utils.model_serialization
    bob.ip.binseg.utils.plot
    bob.ip.binseg.utils.table
    bob.ip.binseg.utils.summary
