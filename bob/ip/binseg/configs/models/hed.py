@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 
-"""HED Network for Vessel Segmentation
+"""HED Network for image segmentation
 
 Holistically-nested edge detection (HED), turns pixel-wise edge classification
 into image-to-image prediction by means of a deep learning model that leverages
@@ -13,9 +13,8 @@ Reference: [XIE-2015]_
 
 
 from torch.optim.lr_scheduler import MultiStepLR
-from bob.ip.binseg.modeling.hed import build_hed
-from bob.ip.binseg.modeling.losses import HEDSoftJaccardBCELogitsLoss
-from bob.ip.binseg.utils.model_zoo import modelurls
+from bob.ip.binseg.models.hed import hed
+from bob.ip.binseg.models.losses import HEDSoftJaccardBCELogitsLoss
 from bob.ip.binseg.engine.adabound import AdaBound
 
 
@@ -32,12 +31,7 @@ amsbound = False
 scheduler_milestones = [900]
 scheduler_gamma = 0.1
 
-
-# model
-model = build_hed()
-
-# pretrained backbone
-pretrained_backbone = modelurls["vgg16"]
+model = hed()
 
 # optimizer
 optimizer = AdaBound(

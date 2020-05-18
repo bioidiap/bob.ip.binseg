@@ -57,23 +57,24 @@ Neural Network Models
 ---------------------
 
 .. autosummary::
-   :toctree: api/modeling
+   :toctree: api/models
 
-   bob.ip.binseg.modeling
-   bob.ip.binseg.modeling.backbones
-   bob.ip.binseg.modeling.backbones.mobilenetv2
-   bob.ip.binseg.modeling.backbones.resnet
-   bob.ip.binseg.modeling.backbones.vgg
-   bob.ip.binseg.modeling.driu
-   bob.ip.binseg.modeling.driubn
-   bob.ip.binseg.modeling.driuod
-   bob.ip.binseg.modeling.driupix
-   bob.ip.binseg.modeling.hed
-   bob.ip.binseg.modeling.losses
-   bob.ip.binseg.modeling.m2u
-   bob.ip.binseg.modeling.make_layers
-   bob.ip.binseg.modeling.resunet
-   bob.ip.binseg.modeling.unet
+   bob.ip.binseg.models
+   bob.ip.binseg.models.backbones
+   bob.ip.binseg.models.backbones.mobilenetv2
+   bob.ip.binseg.models.backbones.resnet
+   bob.ip.binseg.models.backbones.vgg
+   bob.ip.binseg.models.normalizer
+   bob.ip.binseg.models.driu
+   bob.ip.binseg.models.driu_bn
+   bob.ip.binseg.models.driu_od
+   bob.ip.binseg.models.driu_pix
+   bob.ip.binseg.models.hed
+   bob.ip.binseg.models.m2unet
+   bob.ip.binseg.models.resunet
+   bob.ip.binseg.models.unet
+   bob.ip.binseg.models.losses
+   bob.ip.binseg.models.make_layers
 
 
 Toolbox
@@ -85,8 +86,6 @@ Toolbox
    bob.ip.binseg.utils
    bob.ip.binseg.utils.checkpointer
    bob.ip.binseg.utils.measure
-   bob.ip.binseg.utils.model_serialization
-   bob.ip.binseg.utils.model_zoo
    bob.ip.binseg.utils.plot
    bob.ip.binseg.utils.table
    bob.ip.binseg.utils.summary

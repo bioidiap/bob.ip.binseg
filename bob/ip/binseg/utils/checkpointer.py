@@ -1,43 +1,43 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
-
-import torch
 import os
 
-from .model_serialization import load_state_dict
-from .model_zoo import cache_url
+import torch
 
 import logging
+
 logger = logging.getLogger(__name__)
 
 
 class Checkpointer:
-    """Adapted from `maskrcnn-benchmark
-    <https://github.com/facebookresearch/maskrcnn-benchmark>`_ under MIT license
+    """A simple pytorch checkpointer
+
+    Parameters
+    ----------
+
+    model : torch.nn.Module
+        Network model, eventually loaded from a checkpointed file
+
+    optimizer : :py:mod:`torch.optim`, Optional
+        Optimizer
+
+    scheduler : :py:mod:`torch.optim`, Optional
+        Learning rate scheduler
+
+    path : :py:class:`str`, Optional
+        Directory where to save checkpoints.
+
     """
 
-    def __init__(
-        self,
-        model,
-        optimizer=None,
-        scheduler=None,
-        save_dir="",
-        save_to_disk=None,
-    ):
+    def __init__(self, model, optimizer=None, scheduler=None, path="."):
+
         self.model = model
         self.optimizer = optimizer
         self.scheduler = scheduler
-        self.save_dir = save_dir
-        self.save_to_disk = save_to_disk
+        self.path = os.path.realpath(path)
 
     def save(self, name, **kwargs):
-        if not self.save_dir:
-            return
-
-        if not self.save_to_disk:
-            return
 
         data = {}
         data["model"] = self.model.state_dict()
@@ -47,85 +47,59 @@ class Checkpointer:
             data["scheduler"] = self.scheduler.state_dict()
         data.update(kwargs)
 
-        dest_filename = f"{name}.pth"
-        save_file = os.path.join(self.save_dir, dest_filename)
-        logger.info(f"Saving checkpoint to {save_file}")
-        torch.save(data, save_file)
-        self.tag_last_checkpoint(dest_filename)
+        name = f"{name}.pth"
+        outf = os.path.join(self.path, name)
+        logger.info(f"Saving checkpoint to {outf}")
+        torch.save(data, outf)
+        with open(self._last_checkpoint_filename, "w") as f:
+            f.write(name)
 
     def load(self, f=None):
-        if self.has_checkpoint():
-            # override argument with existing checkpoint
-            f = self.get_checkpoint_file()
-        if not f:
+        """Loads model, optimizer and scheduler from file
+
+
+        Parameters
+        ==========
+
+        f : :py:class:`str`, Optional
+            Name of a file (absolute or relative to ``self.path``), that
+            contains the checkpoint data to load into the model, and optionally
+            into the optimizer and the scheduler.  If not specified, loads data
+            from current path.
+
+        """
+
+        if f is None:
+            f = self.last_checkpoint()
+
+        if f is None:
             # no checkpoint could be found
-            logger.warn("No checkpoint found. Initializing model from scratch")
+            logger.warn("No checkpoint found (and none passed)")
             return {}
-        checkpoint = self._load_file(f)
-        self._load_model(checkpoint)
-        actual_file = os.path.join(self.save_dir, f)
-        if "optimizer" in checkpoint and self.optimizer:
-            logger.info(f"Loading optimizer from {actual_file}")
+
+        # loads file data into memory
+        logger.info(f"Loading checkpoint from {f}...")
+        checkpoint = torch.load(f, map_location=torch.device("cpu"))
+
+        # converts model entry to model parameters
+        self.model.load_state_dict(checkpoint.pop("model"))
+
+        if self.optimizer is not None:
             self.optimizer.load_state_dict(checkpoint.pop("optimizer"))
-        if "scheduler" in checkpoint and self.scheduler:
-            logger.info(f"Loading scheduler from {actual_file}")
+        if self.scheduler is not None:
             self.scheduler.load_state_dict(checkpoint.pop("scheduler"))
 
-        # return any further checkpoint data
         return checkpoint
 
+    @property
+    def _last_checkpoint_filename(self):
+        return os.path.join(self.path, "last_checkpoint")
+
     def has_checkpoint(self):
-        save_file = os.path.join(self.save_dir, "last_checkpoint")
-        return os.path.exists(save_file)
+        return os.path.exists(self._last_checkpoint_filename)
 
-    def get_checkpoint_file(self):
-        save_file = os.path.join(self.save_dir, "last_checkpoint")
-        try:
-            with open(save_file, "r") as f:
-                last_saved = f.read()
-                last_saved = last_saved.strip()
-        except IOError:
-            # if file doesn't exist, maybe because it has just been
-            # deleted by a separate process
-            last_saved = ""
-        return last_saved
-
-    def tag_last_checkpoint(self, last_filename):
-        save_file = os.path.join(self.save_dir, "last_checkpoint")
-        with open(save_file, "w") as f:
-            f.write(last_filename)
-
-    def _load_file(self, f):
-        actual_file = os.path.join(self.save_dir, f)
-        logger.info(f"Loading checkpoint from {actual_file}")
-        return torch.load(actual_file, map_location=torch.device("cpu"))
-
-    def _load_model(self, checkpoint):
-        load_state_dict(self.model, checkpoint.pop("model"))
-
-
-class DetectronCheckpointer(Checkpointer):
-    def __init__(
-        self,
-        model,
-        optimizer=None,
-        scheduler=None,
-        save_dir="",
-        save_to_disk=None,
-    ):
-        super(DetectronCheckpointer, self).__init__(
-            model, optimizer, scheduler, save_dir, save_to_disk
-        )
-
-    def _load_file(self, f):
-        # download url files
-        if f.startswith("http"):
-            # if the file is a url path, download it and cache it
-            cached_f = cache_url(f)
-            logger.info(f"url {f} cached in {cached_f}")
-            f = cached_f
-        # load checkpoint
-        loaded = super(DetectronCheckpointer, self)._load_file(f)
-        if "model" not in loaded:
-            loaded = dict(model=loaded)
-        return loaded
+    def last_checkpoint(self):
+        if self.has_checkpoint():
+            with open(self._last_checkpoint_filename, "r") as fobj:
+                return os.path.join(self.path, fobj.read().strip())
+        return None

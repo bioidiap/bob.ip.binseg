@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""U-Net for Vessel Segmentation
+"""U-Net for image segmentation
 
 U-Net is a convolutional neural network that was developed for biomedical image
 segmentation at the Computer Science Department of the University of Freiburg,
@@ -13,9 +13,8 @@ Reference: [RONNEBERGER-2015]_
 """
 
 from torch.optim.lr_scheduler import MultiStepLR
-from bob.ip.binseg.modeling.unet import build_unet
-from bob.ip.binseg.utils.model_zoo import modelurls
-from bob.ip.binseg.modeling.losses import SoftJaccardBCELogitsLoss
+from bob.ip.binseg.models.unet import unet
+from bob.ip.binseg.models.losses import SoftJaccardBCELogitsLoss
 from bob.ip.binseg.engine.adabound import AdaBound
 
 ##### Config #####
@@ -31,11 +30,7 @@ amsbound = False
 scheduler_milestones = [900]
 scheduler_gamma = 0.1
 
-# model
-model = build_unet()
-
-# pretrained backbone
-pretrained_backbone = modelurls["vgg16"]
+model = unet()
 
 # optimizer
 optimizer = AdaBound(

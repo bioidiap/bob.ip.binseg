@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 
-"""MobileNetV2 U-Net Model for Vessel Segmentation using SSL
+"""MobileNetV2 U-Net model for image segmentation using SSL
 
 The MobileNetV2 architecture is based on an inverted residual structure where
 the input and output of the residual block are thin bottleneck layers opposite
@@ -18,9 +18,8 @@ References: [SANDLER-2018]_, [RONNEBERGER-2015]_
 """
 
 from torch.optim.lr_scheduler import MultiStepLR
-from bob.ip.binseg.modeling.m2u import build_m2unet
-from bob.ip.binseg.utils.model_zoo import modelurls
-from bob.ip.binseg.modeling.losses import MixJacLoss
+from bob.ip.binseg.models.m2unet import m2unet
+from bob.ip.binseg.models.losses import MixJacLoss
 from bob.ip.binseg.engine.adabound import AdaBound
 
 ##### Config #####
@@ -36,11 +35,7 @@ amsbound = False
 scheduler_milestones = [900]
 scheduler_gamma = 0.1
 
-# model
-model = build_m2unet()
-
-# pretrained backbone
-pretrained_backbone = modelurls["mobilenetv2"]
+model = m2unet()
 
 # optimizer
 optimizer = AdaBound(

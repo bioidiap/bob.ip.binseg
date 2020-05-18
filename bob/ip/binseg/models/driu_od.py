@@ -1,36 +1,20 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from collections import OrderedDict
+
 import torch
 import torch.nn
-from collections import OrderedDict
-from .backbones.vgg import vgg16
-from .make_layers import (
-    conv_with_kaiming_uniform,
-    convtrans_with_kaiming_uniform,
-    UpsampleCropBlock,
-)
 
+from .backbones.vgg import vgg16_for_segmentation
 
-class ConcatFuseBlock(torch.nn.Module):
-    """
-    Takes in four feature maps with 16 channels each, concatenates them
-    and applies a 1x1 convolution with 1 output channel.
-    """
-
-    def __init__(self):
-        super().__init__()
-        self.conv = conv_with_kaiming_uniform(4 * 16, 1, 1, 1, 0)
-
-    def forward(self, x1, x2, x3, x4):
-        x_cat = torch.cat([x1, x2, x3, x4], dim=1)
-        x = self.conv(x_cat)
-        return x
+from .make_layers import UpsampleCropBlock
+from .driu import ConcatFuseBlock
 
 
 class DRIUOD(torch.nn.Module):
     """
-    DRIU head module
+    DRIU for optic disc segmentation head module
 
     Parameters
     ----------
@@ -73,20 +57,42 @@ class DRIUOD(torch.nn.Module):
         return out
 
 
-def build_driuod():
-    """
-    Adds backbone and head together
+def driu_od(pretrained_backbone=True, progress=True):
+    """Builds DRIU for Optical Disc by adding backbone and head together
+
+    Parameters
+    ----------
+
+    pretrained_backbone : :py:class:`bool`, Optional
+        If set to ``True``, then loads a pre-trained version of the backbone
+        (not the head) for the DRIU network using VGG-16 trained for ImageNet
+        classification.
+
+    progress : :py:class:`bool`, Optional
+        If set to ``True``, and you decided to use a ``pretrained_backbone``,
+        then, shows a progress bar of the backbone model downloading if
+        download is necesssary.
+
 
     Returns
     -------
+
     module : :py:class:`torch.nn.Module`
+        Network model for DRIU (optic disc segmentation)
 
     """
-    backbone = vgg16(pretrained=False, return_features=[8, 14, 22, 29])
-    driu_head = DRIUOD([128, 256, 512, 512])
 
-    model = torch.nn.Sequential(
-        OrderedDict([("backbone", backbone), ("head", driu_head)])
+    backbone = vgg16_for_segmentation(
+        pretrained=pretrained_backbone, progress=progress,
+        return_features=[3, 8, 14, 22],
     )
+    head = DRIUOD([128, 256, 512, 512])
+
+    order = [("backbone", backbone), ("head", head)]
+    if pretrained_backbone:
+        from .normalizer import TorchVisionNormalizer
+        order = [("normalizer", TorchVisionNormalizer())] + order
+
+    model = torch.nn.Sequential(OrderedDict(order))
     model.name = "driu-od"
     return model

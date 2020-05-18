@@ -1,15 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from collections import OrderedDict
+
 import torch
 import torch.nn
-from collections import OrderedDict
-from .backbones.vgg import vgg16_bn
-from .make_layers import (
-    conv_with_kaiming_uniform,
-    convtrans_with_kaiming_uniform,
-    UpsampleCropBlock,
-)
+
+from .backbones.vgg import vgg16_for_segmentation
+
+from .make_layers import conv_with_kaiming_uniform, UpsampleCropBlock
 
 
 class ConcatFuseBlock(torch.nn.Module):
@@ -20,11 +19,10 @@ class ConcatFuseBlock(torch.nn.Module):
 
     def __init__(self):
         super().__init__()
-        self.conv = torch.nn.Sequential(
-            conv_with_kaiming_uniform(4 * 16, 1, 1, 1, 0), torch.nn.BatchNorm2d(1)
-        )
+        self.conv = conv_with_kaiming_uniform(4 * 16, 1, 1, 1, 0)
 
     def forward(self, x1, x2, x3, x4):
+
         x_cat = torch.cat([x1, x2, x3, x4], dim=1)
         x = self.conv(x_cat)
         return x
@@ -40,11 +38,17 @@ class DRIU(torch.nn.Module):
     ----------
     in_channels_list : list
         number of channels for each feature map that is returned from backbone
+
     """
 
     def __init__(self, in_channels_list=None):
         super(DRIU, self).__init__()
-        in_conv_1_2_16, in_upsample2, in_upsample_4, in_upsample_8 = in_channels_list
+        (
+            in_conv_1_2_16,
+            in_upsample2,
+            in_upsample_4,
+            in_upsample_8,
+        ) = in_channels_list
 
         self.conv1_2_16 = torch.nn.Conv2d(in_conv_1_2_16, 16, 3, 1, 1)
         # Upsample layers
@@ -57,16 +61,20 @@ class DRIU(torch.nn.Module):
 
     def forward(self, x):
         """
+
         Parameters
         ----------
+
         x : list
-            list of tensors as returned from the backbone network.
-            First element: height and width of input image.
-            Remaining elements: feature maps for each feature level.
+            list of tensors as returned from the backbone network.  First
+            element: height and width of input image.  Remaining elements:
+            feature maps for each feature level.
 
         Returns
         -------
-        :py:class:`torch.Tensor`
+
+        tensor : :py:class:`torch.Tensor`
+
         """
         hw = x[0]
         conv1_2_16 = self.conv1_2_16(x[1])  # conv1_2_16
@@ -77,21 +85,43 @@ class DRIU(torch.nn.Module):
         return out
 
 
-def build_driu():
-    """
-    Adds backbone and head together
+def driu(pretrained_backbone=True, progress=True):
+    """Builds DRIU for vessel segmentation by adding backbone and head together
+
+
+    Parameters
+    ----------
+
+    pretrained_backbone : :py:class:`bool`, Optional
+        If set to ``True``, then loads a pre-trained version of the backbone
+        (not the head) for the DRIU network using VGG-16 trained for ImageNet
+        classification.
+
+    progress : :py:class:`bool`, Optional
+        If set to ``True``, and you decided to use a ``pretrained_backbone``,
+        then, shows a progress bar of the backbone model downloading if
+        download is necesssary.
+
 
     Returns
     -------
 
     module : :py:class:`torch.nn.Module`
+        Network model for DRIU (vessel segmentation)
 
     """
-    backbone = vgg16_bn(pretrained=False, return_features=[5, 12, 19, 29])
-    driu_head = DRIU([64, 128, 256, 512])
 
-    model = torch.nn.Sequential(
-        OrderedDict([("backbone", backbone), ("head", driu_head)])
+    backbone = vgg16_for_segmentation(
+        pretrained=pretrained_backbone, progress=progress,
+        return_features=[3, 8, 14, 22],
     )
-    model.name = "driu-bn"
+    head = DRIU([64, 128, 256, 512])
+
+    order = [("backbone", backbone), ("head", head)]
+    if pretrained_backbone:
+        from .normalizer import TorchVisionNormalizer
+        order = [("normalizer", TorchVisionNormalizer())] + order
+
+    model = torch.nn.Sequential(OrderedDict(order))
+    model.name = "driu"
     return model

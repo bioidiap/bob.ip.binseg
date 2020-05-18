@@ -1,13 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import os
+import unittest
 from collections import OrderedDict
 from tempfile import TemporaryDirectory
-import unittest
 
 import torch
+import nose.tools
 from torch import nn
-import os
 
 from ..utils.checkpointer import Checkpointer
 
@@ -39,45 +40,43 @@ class TestCheckpointer(unittest.TestCase):
         trained_model = self.create_model()
         fresh_model = self.create_model()
         with TemporaryDirectory() as f:
-            checkpointer = Checkpointer(trained_model, save_dir=f, save_to_disk=True)
+            checkpointer = Checkpointer(trained_model, path=f)
             checkpointer.save("checkpoint_file")
 
             # in the same folder
-            fresh_checkpointer = Checkpointer(fresh_model, save_dir=f)
-            self.assertTrue(fresh_checkpointer.has_checkpoint())
-            self.assertEqual(
-                fresh_checkpointer.get_checkpoint_file(),
-                "checkpoint_file.pth",
-            )
+            fresh_checkpointer = Checkpointer(fresh_model, path=f)
+            assert fresh_checkpointer.has_checkpoint()
+            nose.tools.eq_(fresh_checkpointer.last_checkpoint(),
+                    os.path.realpath(os.path.join(f, "checkpoint_file.pth")))
             _ = fresh_checkpointer.load()
 
         for trained_p, loaded_p in zip(
             trained_model.parameters(), fresh_model.parameters()
         ):
             # different tensor references
-            self.assertFalse(id(trained_p) == id(loaded_p))
+            nose.tools.assert_not_equal(id(trained_p), id(loaded_p))
             # same content
-            self.assertTrue(trained_p.equal(loaded_p))
+            assert trained_p.equal(loaded_p)
 
     def test_from_name_file_model(self):
         # test that loading works even if they differ by a prefix
         trained_model = self.create_model()
         fresh_model = self.create_model()
         with TemporaryDirectory() as f:
-            checkpointer = Checkpointer(trained_model, save_dir=f, save_to_disk=True)
+            checkpointer = Checkpointer(trained_model, path=f)
             checkpointer.save("checkpoint_file")
 
             # on different folders
             with TemporaryDirectory() as g:
-                fresh_checkpointer = Checkpointer(fresh_model, save_dir=g)
-                self.assertFalse(fresh_checkpointer.has_checkpoint())
-                self.assertEqual(fresh_checkpointer.get_checkpoint_file(), "")
+                fresh_checkpointer = Checkpointer(fresh_model, path=g)
+                assert not fresh_checkpointer.has_checkpoint()
+                nose.tools.eq_(fresh_checkpointer.last_checkpoint(), None)
                 _ = fresh_checkpointer.load(os.path.join(f, "checkpoint_file.pth"))
 
         for trained_p, loaded_p in zip(
             trained_model.parameters(), fresh_model.parameters()
         ):
             # different tensor references
-            self.assertFalse(id(trained_p) == id(loaded_p))
+            nose.tools.assert_not_equal(id(trained_p), id(loaded_p))
             # same content
-            self.assertTrue(trained_p.equal(loaded_p))
+            assert trained_p.equal(loaded_p)

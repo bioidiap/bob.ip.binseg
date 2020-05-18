@@ -15,7 +15,7 @@ from bob.extension.scripts.click_helper import (
 )
 
 from ..engine.predictor import run
-from ..utils.checkpointer import DetectronCheckpointer
+from ..utils.checkpointer import Checkpointer
 
 from .binseg import download_to_tempfile
 
@@ -124,11 +124,8 @@ def predict(output_folder, model, dataset, batch_size, device, weight,
     else:
         weight_fullpath = os.path.abspath(weight)
 
-    weight_path = os.path.dirname(weight_fullpath)
-    weight_name = os.path.basename(weight_fullpath)
-    checkpointer = DetectronCheckpointer(model, save_dir=weight_path,
-            save_to_disk=False)
-    checkpointer.load(weight_name)
+    checkpointer = Checkpointer(model)
+    checkpointer.load(weight_fullpath)
 
     # clean-up the overlayed path
     if overlayed is not None:

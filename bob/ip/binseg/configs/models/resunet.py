@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""Residual U-Net for Vessel Segmentation
+"""Residual U-Net for image segmentation
 
 A semantic segmentation neural network which combines the strengths of residual
 learning and U-Net is proposed for road area extraction.  The network is built
@@ -15,9 +15,8 @@ Reference: [ZHANG-2017]_
 """
 
 from torch.optim.lr_scheduler import MultiStepLR
-from bob.ip.binseg.modeling.resunet import build_res50unet
-from bob.ip.binseg.utils.model_zoo import modelurls
-from bob.ip.binseg.modeling.losses import SoftJaccardBCELogitsLoss
+from bob.ip.binseg.models.resunet import resunet50
+from bob.ip.binseg.models.losses import SoftJaccardBCELogitsLoss
 from bob.ip.binseg.engine.adabound import AdaBound
 
 ##### Config #####
@@ -33,11 +32,7 @@ amsbound = False
 scheduler_milestones = [900]
 scheduler_gamma = 0.1
 
-# model
-model = build_res50unet()
-
-# pretrained backbone
-pretrained_backbone = modelurls["resnet50"]
+model = resunet50()
 
 # optimizer
 optimizer = AdaBound(
