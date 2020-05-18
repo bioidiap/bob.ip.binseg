@@ -1,15 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from collections import OrderedDict
+
 import torch
 import torch.nn
-from collections import OrderedDict
-from .backbones.vgg import vgg16
-from .make_layers import (
-    conv_with_kaiming_uniform,
-    convtrans_with_kaiming_uniform,
-    UpsampleCropBlock,
-)
+
+from .backbones.vgg import vgg16_for_segmentation
+
+from .make_layers import conv_with_kaiming_uniform, UpsampleCropBlock
 
 
 class ConcatFuseBlock(torch.nn.Module):
@@ -84,19 +83,44 @@ class HED(torch.nn.Module):
         return out
 
 
-def build_hed():
-    """
-    Adds backbone and head together
+def hed(pretrained_backbone=True, progress=True):
+    """Builds HED by adding backbone and head together
+
+    Parameters
+    ----------
+
+    pretrained_backbone : :py:class:`bool`, Optional
+        If set to ``True``, then loads a pre-trained version of the backbone
+        (not the head) for the DRIU network using VGG-16 trained for ImageNet
+        classification.
+
+    progress : :py:class:`bool`, Optional
+        If set to ``True``, and you decided to use a ``pretrained_backbone``,
+        then, shows a progress bar of the backbone model downloading if
+        download is necesssary.
+
 
     Returns
     -------
-    module : :py:class:`torch.nn.Module`
-    """
-    backbone = vgg16(pretrained=False, return_features=[3, 8, 14, 22, 29])
-    hed_head = HED([64, 128, 256, 512, 512])
 
-    model = torch.nn.Sequential(
-        OrderedDict([("backbone", backbone), ("head", hed_head)])
+    module : :py:class:`torch.nn.Module`
+        Network model for HED
+
+    """
+
+    backbone = vgg16_for_segmentation(
+        pretrained=pretrained_backbone,
+        progress=progress,
+        return_features=[3, 8, 14, 22, 29],
     )
+    head = HED([64, 128, 256, 512, 512])
+
+    order = [("backbone", backbone), ("head", head)]
+    if pretrained_backbone:
+        from .normalizer import TorchVisionNormalizer
+
+        order = [("normalizer", TorchVisionNormalizer())] + order
+
+    model = torch.nn.Sequential(OrderedDict(order))
     model.name = "hed"
     return model

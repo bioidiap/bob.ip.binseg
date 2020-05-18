@@ -1,12 +1,13 @@
 #!/usr/bin/env python
 # vim: set fileencoding=utf-8 :
 
-# https://github.com/laibe/M2U-Net
-
 from collections import OrderedDict
+
 import torch
 import torch.nn
-from .backbones.mobilenetv2 import MobileNetV2, InvertedResidual
+from torchvision.models.mobilenet import InvertedResidual
+
+from .backbones.mobilenetv2 import mobilenet_v2_for_segmentation
 
 
 class DecoderBlock(torch.nn.Module):
@@ -14,7 +15,9 @@ class DecoderBlock(torch.nn.Module):
     Decoder block: upsample and concatenate with features maps from the encoder part
     """
 
-    def __init__(self, up_in_c, x_in_c, upsamplemode="bilinear", expand_ratio=0.15):
+    def __init__(
+        self, up_in_c, x_in_c, upsamplemode="bilinear", expand_ratio=0.15
+    ):
         super().__init__()
         self.upsample = torch.nn.Upsample(
             scale_factor=2, mode=upsamplemode, align_corners=False
@@ -39,7 +42,9 @@ class LastDecoderBlock(torch.nn.Module):
         self.upsample = torch.nn.Upsample(
             scale_factor=2, mode=upsamplemode, align_corners=False
         )  # H, W -> 2H, 2W
-        self.ir1 = InvertedResidual(x_in_c, 1, stride=1, expand_ratio=expand_ratio)
+        self.ir1 = InvertedResidual(
+            x_in_c, 1, stride=1, expand_ratio=expand_ratio
+        )
 
     def forward(self, up_in, x_in):
         up_out = self.upsample(up_in)
@@ -48,7 +53,7 @@ class LastDecoderBlock(torch.nn.Module):
         return x
 
 
-class M2U(torch.nn.Module):
+class M2UNet(torch.nn.Module):
     """
     M2U-Net head module
 
@@ -61,7 +66,7 @@ class M2U(torch.nn.Module):
     def __init__(
         self, in_channels_list=None, upsamplemode="bilinear", expand_ratio=0.15
     ):
-        super(M2U, self).__init__()
+        super(M2UNet, self).__init__()
 
         # Decoder
         self.decode4 = DecoderBlock(96, 32, upsamplemode, expand_ratio)
@@ -102,19 +107,44 @@ class M2U(torch.nn.Module):
         return decode1
 
 
-def build_m2unet():
-    """
-    Adds backbone and head together
+def m2unet(pretrained_backbone=True, progress=True):
+    """Builds M2U-Net for segmentation by adding backbone and head together
+
+
+    Parameters
+    ----------
+
+    pretrained_backbone : :py:class:`bool`, Optional
+        If set to ``True``, then loads a pre-trained version of the backbone
+        (not the head) for the DRIU network using VGG-16 trained for ImageNet
+        classification.
+
+    progress : :py:class:`bool`, Optional
+        If set to ``True``, and you decided to use a ``pretrained_backbone``,
+        then, shows a progress bar of the backbone model downloading if
+        download is necesssary.
+
 
     Returns
     -------
-    module : :py:class:`torch.nn.Module`
-    """
-    backbone = MobileNetV2(return_features=[1, 3, 6, 13], m2u=True)
-    m2u_head = M2U(in_channels_list=[16, 24, 32, 96])
 
-    model = torch.nn.Sequential(
-        OrderedDict([("backbone", backbone), ("head", m2u_head)])
+    module : :py:class:`torch.nn.Module`
+        Network model for M2U-Net (segmentation)
+
+    """
+
+    backbone = mobilenet_v2_for_segmentation(
+        pretrained=pretrained_backbone,
+        progress=progress,
+        return_features=[1, 3, 6, 13],
     )
+    head = M2UNet(in_channels_list=[16, 24, 32, 96])
+
+    order = [("backbone", backbone), ("head", head)]
+    if pretrained_backbone:
+        from .normalizer import TorchVisionNormalizer
+        order = [("normalizer", TorchVisionNormalizer())] + order
+
+    model = torch.nn.Sequential(OrderedDict(order))
     model.name = "m2unet"
     return model

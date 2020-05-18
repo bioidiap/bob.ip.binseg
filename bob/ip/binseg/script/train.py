@@ -13,7 +13,7 @@ from bob.extension.scripts.click_helper import (
     ResourceOption,
 )
 
-from ..utils.checkpointer import DetectronCheckpointer
+from ..utils.checkpointer import Checkpointer
 
 import logging
 logger = logging.getLogger(__name__)
@@ -94,15 +94,6 @@ logger = logging.getLogger(__name__)
     "--scheduler",
     help="A learning rate scheduler that drives changes in the learning "
     "rate depending on the FCN state (see torch.optim.lr_scheduler)",
-    required=True,
-    cls=ResourceOption,
-)
-@click.option(
-    "--pretrained-backbone",
-    "-t",
-    help="URL of a pre-trained model file that will be used to preset "
-    "FCN weights (where relevant) before training starts "
-    "(e.g. vgg16, mobilenetv2)",
     required=True,
     cls=ResourceOption,
 )
@@ -204,7 +195,6 @@ def train(
     scheduler,
     output_folder,
     epochs,
-    pretrained_backbone,
     batch_size,
     drop_incomplete_batch,
     criterion,
@@ -261,14 +251,11 @@ def train(
                 pin_memory=torch.cuda.is_available(),
                 )
 
-    # Checkpointer
-    checkpointer = DetectronCheckpointer(
-        model, optimizer, scheduler, save_dir=output_folder, save_to_disk=True
-    )
+    checkpointer = Checkpointer(model, optimizer, scheduler, path=output_folder)
 
     arguments = {}
     arguments["epoch"] = 0
-    extra_checkpoint_data = checkpointer.load(pretrained_backbone)
+    extra_checkpoint_data = checkpointer.load()
     arguments.update(extra_checkpoint_data)
     arguments["max_epoch"] = epochs
 

@@ -12,9 +12,8 @@ Reference: [MANINIS-2016]_
 """
 
 from torch.optim.lr_scheduler import MultiStepLR
-from bob.ip.binseg.modeling.driu import build_driu
-from bob.ip.binseg.utils.model_zoo import modelurls
-from bob.ip.binseg.modeling.losses import MixJacLoss
+from bob.ip.binseg.models.driu import driu
+from bob.ip.binseg.models.losses import MixJacLoss
 from bob.ip.binseg.engine.adabound import AdaBound
 
 ##### Config #####
@@ -30,11 +29,7 @@ amsbound = False
 scheduler_milestones = [900]
 scheduler_gamma = 0.1
 
-# model
-model = build_driu()
-
-# pretrained backbone
-pretrained_backbone = modelurls["vgg16"]
+model = driu()
 
 # optimizer
 optimizer = AdaBound(

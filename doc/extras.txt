@@ -18,3 +18,6 @@ torchvision.transforms.transforms.Resize py:class 1 https://pytorch.org/docs/sta
 torchvision.transforms.transforms.Pad py:class 1 https://pytorch.org/docs/stable/torchvision/transforms.html#torchvision.transforms.Pad -
 torchvision.transforms.transforms.CenterCrop py:class 1 https://pytorch.org/docs/stable/torchvision/transforms.html#torchvision.transforms.CenterCrop -
 torchvision.transforms py:module 1 https://pytorch.org/docs/stable/torchvision/transforms.html -
+torchvision.models.mobilenet.MobileNetV2 py:class 1 https://pytorch.org/docs/stable/torchvision/models.html#mobilenet-v2 -
+torchvision.models.resnet.ResNet py:class 1 https://pytorch.org/docs/stable/torchvision/models.html#id10 -
+torchvision.models.vgg.VGG py:class 1 https://pytorch.org/docs/stable/torchvision/models.html#id2 -

@@ -27,14 +27,14 @@ requirements:
     - setuptools {{ setuptools }}
     - numpy {{ numpy }}
     - h5py {{ h5py }}
-    - pytorch {{ pytorch }} # [linux]
+    - pytorch {{ pytorch }}
     - torchvision  {{ torchvision }} # [linux]
     - bob.extension
   run:
     - python
     - setuptools
     - {{ pin_compatible('numpy') }}
-    - {{ pin_compatible('pytorch') }} # [linux]
+    - {{ pin_compatible('pytorch') }}
     - {{ pin_compatible('torchvision') }} # [linux]
     - matplotlib
     - pandas

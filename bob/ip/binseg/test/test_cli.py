@@ -184,7 +184,7 @@ def _check_experiment_stare(overlay):
             r"^Saving checkpoint": 2,
             r"^Ended training$": 1,
             r"^Started prediction$": 1,
-            r"^Loading checkpoint from": 2,
+            r"^Loading checkpoint from": 1,
             r"^Ended prediction$": 1,
             r"^Started evaluation$": 1,
             r"^Maximum F1-score of.*\(chosen \*a posteriori\*\)$": 3,
@@ -268,8 +268,8 @@ def _check_train(runner):
             r"^Continuing from epoch 0$": 1,
             r"^Saving model summary at.*$": 1,
             r"^Model has.*$": 1,
-            rf"^Saving checkpoint to {output_folder}/model_lowest_valid_loss.pth$": 1,
-            rf"^Saving checkpoint to {output_folder}/model_final.pth$": 1,
+            r"^Saving checkpoint to .*/model_lowest_valid_loss.pth$": 1,
+            r"^Saving checkpoint to .*/model_final.pth$": 1,
             r"^Total training time:": 1,
         }
         buf.seek(0)

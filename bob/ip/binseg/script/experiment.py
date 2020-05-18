@@ -94,15 +94,6 @@ logger = logging.getLogger(__name__)
     cls=ResourceOption,
 )
 @click.option(
-    "--pretrained-backbone",
-    "-t",
-    help="URL of a pre-trained model file that will be used to preset "
-    "FCN weights (where relevant) before training starts "
-    "(e.g. vgg16, mobilenetv2)",
-    required=True,
-    cls=ResourceOption,
-)
-@click.option(
     "--batch-size",
     "-b",
     help="Number of samples in every batch (this parameter affects "
@@ -224,7 +215,6 @@ def experiment(
     scheduler,
     output_folder,
     epochs,
-    pretrained_backbone,
     batch_size,
     drop_incomplete_batch,
     criterion,
@@ -310,7 +300,6 @@ def experiment(
         scheduler=scheduler,
         output_folder=train_output_folder,
         epochs=epochs,
-        pretrained_backbone=pretrained_backbone,
         batch_size=batch_size,
         drop_incomplete_batch=drop_incomplete_batch,
         criterion=criterion,
