@@ -42,7 +42,7 @@ class Tester(unittest.TestCase):
         self.assertIsInstance(param, int)
 
     def test_summary_resunet(self):
-        model = resunet()
+        model = resunet50()
         s, param = summary(model)
         self.assertIsInstance(s, str)
         self.assertIsInstance(param, int)
