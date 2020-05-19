@@ -122,7 +122,8 @@ class SampleListDataset(torch.utils.data.Dataset):
     A transform object can be passed that will be applied to the image, ground
     truth and mask (if present).
 
-    It supports indexing such that dataset[i] can be used to get ith sample.
+    It supports indexing such that dataset[i] can be used to get the i-th
+    sample.
 
 
     Attributes
@@ -174,6 +175,18 @@ class SampleListDataset(torch.utils.data.Dataset):
         """
 
         return SampleListDataset(self._samples, transforms or self.transforms)
+
+    def keys(self):
+        """Generator producing all keys for all samples"""
+        for k in self._samples:
+            yield k.key
+
+    def all_keys_match(self, other):
+        """Compares all keys to ``other``, return ``True`` if all match
+        """
+        return len(self) == len(other) and all(
+            [(ks == ko) for ks, ko in zip(self.keys(), other.keys())]
+        )
 
     def __len__(self):
         """
@@ -249,8 +262,20 @@ class SSLDataset(torch.utils.data.Dataset):
     """
 
     def __init__(self, labelled, unlabelled):
-        self.labelled = labelled
-        self.unlabelled = unlabelled
+        self._labelled = labelled
+        self._unlabelled = unlabelled
+
+    def keys(self):
+        """Generator producing all keys for all samples"""
+        for k in self._labelled + self._unlabelled:
+            yield k.key
+
+    def all_keys_match(self, other):
+        """Compares all keys to ``other``, return ``True`` if all match
+        """
+        return len(self) == len(other) and all(
+            [(ks == ko) for ks, ko in zip(self.keys(), other.keys())]
+        )
 
     def __len__(self):
         """
@@ -263,7 +288,7 @@ class SSLDataset(torch.utils.data.Dataset):
 
         """
 
-        return len(self.labelled)
+        return len(self._labelled)
 
     def __getitem__(self, index):
         """
@@ -281,8 +306,8 @@ class SSLDataset(torch.utils.data.Dataset):
 
         """
 
-        retval = self.labelled[index]
+        retval = self._labelled[index]
         # gets one an unlabelled sample randomly to follow the labelled sample
-        unlab = self.unlabelled[torch.randint(len(self.unlabelled), ())]
+        unlab = self._unlabelled[torch.randint(len(self._unlabelled), ())]
         # only interested in key and data
         return retval + unlab[:2]

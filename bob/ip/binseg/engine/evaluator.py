@@ -363,7 +363,8 @@ def compare_annotators(baseline, other, name, output_folder,
 
     other : py:class:`torch.utils.data.Dataset`
         a second dataset, with the same samples as ``baseline``, but annotated
-        by a different annotator than in the first dataset.
+        by a different annotator than in the first dataset.  The key values
+        must much between ``baseline`` and this dataset.
 
     name : str
         the local name of this dataset (e.g. ``train-second-annotator``, or
@@ -387,6 +388,12 @@ def compare_annotators(baseline, other, name, output_folder,
     for baseline_sample, other_sample in tqdm(
         list(zip(baseline, other)), desc="samples", leave=False, disable=None,
     ):
+        assert baseline_sample[0] == other_sample[0], f"Mismatch between " \
+                f"datasets for second-annotator analysis " \
+                f"({baseline_sample[0]} != {other_sample[0]}).  This " \
+                f"typically occurs when the second annotator (`other`) " \
+                f"comes from a different dataset than the `baseline` dataset"
+
         stem = baseline_sample[0]
         image = baseline_sample[1]
         gt = baseline_sample[2]
