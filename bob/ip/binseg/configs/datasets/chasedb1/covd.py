@@ -37,6 +37,7 @@ dataset["__train__"] = ConcatDataset(
         _augment(_mtest["iostar (test)"], rotation_before=False),
     ]
 )
+del second_annotator["train"]  #mismatch with used train set
 dataset["train"] = ConcatDataset(
     [
         _mtest["drive (train)"],
