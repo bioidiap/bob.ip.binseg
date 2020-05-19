@@ -12,6 +12,8 @@ from bob.ip.binseg.configs.datasets.hrf.xtest import dataset as _xt
 dataset = {
     "train": _xt["train"],
     "test": _xt["test"],
+    "train (full resolution)": _xt["train (full resolution)"],
+    "test (full resolution)": _xt["test (full resolution)"],
     "drive (train)": _xt["drive (train)"].copy(
         [Crop(75, 10, 416, 544), Pad((21, 0, 22, 0)), Resize(1168)]
     ),

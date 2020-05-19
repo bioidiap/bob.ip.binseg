@@ -9,4 +9,10 @@
 """
 
 from bob.ip.binseg.configs.datasets.hrf import _maker_1168
+
 dataset = _maker_1168("default")
+
+from bob.ip.binseg.configs.datasets.hrf.default_fullres import dataset as _fr
+
+dataset["train (full resolution)"] = _fr["train"]
+dataset["test (full resolution)"] = _fr["test"]
