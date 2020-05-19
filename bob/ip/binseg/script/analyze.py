@@ -258,18 +258,33 @@ def analyze(
         if k.startswith("_"):
             logger.info(f"Skipping dataset '{k}' (not to be compared)")
             continue
+        candidate = os.path.join(analysis_folder, f"{k}.csv")
+        if not os.path.exists(candidate):
+            logger.error(f"Skipping dataset '{k}' " \
+                    f"(candidate CSV file `{candidate}` does not exist!)")
+            continue
         systems += [k, os.path.join(analysis_folder, f"{k}.csv")]
     if second_annotator is not None:
         for k, v in second_annotator.items():
             if k.startswith("_"):
-                logger.info(f"Skipping dataset '{k}' (not to be compared)")
+                logger.info(f"Skipping second-annotator '{k}' " \
+                        f"(not to be compared)")
                 continue
-            systems += [
-                f"{k} (2nd. annot.)",
-                os.path.join(
-                    analysis_folder, "second-annotator", f"{k}.csv"
-                ),
-            ]
+            if k not in dataset:
+                logger.info(f"Skipping second-annotator '{k}' " \
+                        f"(no equivalent `dataset[{k}]`)")
+                continue
+            if not dataset[k].all_keys_match(v):
+                logger.info(f"Skipping second-annotator '{k}' " \
+                        f"(keys do not match `dataset[{k}]`?)")
+                continue
+            candidate = os.path.join(analysis_folder, "second-annotator",
+                    f"{k}.csv")
+            if not os.path.exists(candidate):
+                logger.error(f"Skipping second-annotator '{k}' " \
+                        f"(candidate CSV file `{candidate}` does not exist!)")
+                continue
+            systems += [f"{k} (2nd. annot.)", candidate]
 
     output_figure = os.path.join(output_folder, "comparison.pdf")
     output_table = os.path.join(output_folder, "comparison.rst")
