@@ -275,7 +275,7 @@ def analyze(
                         f"(no equivalent `dataset[{k}]`)")
                 continue
             if not dataset[k].all_keys_match(v):
-                logger.info(f"Skipping second-annotator '{k}' " \
+                logger.warning(f"Skipping second-annotator '{k}' " \
                         f"(keys do not match `dataset[{k}]`?)")
                 continue
             candidate = os.path.join(analysis_folder, "second-annotator",

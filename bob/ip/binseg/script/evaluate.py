@@ -190,7 +190,7 @@ def evaluate(
         second = second_annotator.get(k)
         if second is not None:
             if not second.all_keys_match(v):
-                logger.warn(f"Key mismatch between `dataset[{k}]` and " \
+                logger.warning(f"Key mismatch between `dataset[{k}]` and " \
                         f"`second_annotator[{k}]` - skipping " \
                         f"second-annotator comparisons for {k} subset")
             else:
