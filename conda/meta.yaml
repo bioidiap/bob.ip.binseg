@@ -25,15 +25,15 @@ requirements:
   host:
     - python {{ python }}
     - setuptools {{ setuptools }}
-    - torchvision  {{ torchvision }} # [linux]
-    - pytorch {{ pytorch }} # [linux]
+    - torchvision  {{ torchvision }}  # [linux]
+    - pytorch {{ pytorch }}
     - numpy {{ numpy }}
     - bob.extension
   run:
     - python
     - setuptools
-    - {{ pin_compatible('pytorch') }} # [linux]
-    - {{ pin_compatible('torchvision') }} # [linux]
+    - {{ pin_compatible('pytorch') }}
+    - {{ pin_compatible('torchvision') }}  # [linux]
     - {{ pin_compatible('numpy') }}
     - pandas
     - matplotlib
