@@ -343,12 +343,12 @@ def _check_predict(runner):
         _assert_exit_0(result)
 
         # check predictions are there
-        basedir = os.path.join(output_folder, "stare-images")
+        basedir = os.path.join(output_folder, "test", "stare-images")
         assert os.path.exists(basedir)
         nose.tools.eq_(len(fnmatch.filter(os.listdir(basedir), "*.hdf5")), 10)
 
         # check overlayed images are there (since we requested them)
-        basedir = os.path.join(overlay_folder, "stare-images")
+        basedir = os.path.join(overlay_folder, "test", "stare-images")
         assert os.path.exists(basedir)
         nose.tools.eq_(len(fnmatch.filter(os.listdir(basedir), "*.png")), 10)
 
