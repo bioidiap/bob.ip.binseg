@@ -101,7 +101,7 @@ def _save_overlayed_png(stem, image, prob, output_folder):
     _save_image(stem, ".png", overlayed_image(image, prob), output_folder)
 
 
-def run(model, data_loader, device, output_folder, overlayed_folder):
+def run(model, data_loader, name, device, output_folder, overlayed_folder):
     """
     Runs inference on input data, outputs HDF5 files with predictions
 
@@ -111,6 +111,10 @@ def run(model, data_loader, device, output_folder, overlayed_folder):
         neural network model (e.g. driu, hed, unet)
 
     data_loader : py:class:`torch.torch.utils.data.DataLoader`
+
+    name : str
+        the local name of this dataset (e.g. ``train``, or ``test``), to be
+        used when saving measures files.
 
     device : str
         device to use ``cpu`` or ``cuda:0``
@@ -138,9 +142,14 @@ def run(model, data_loader, device, output_folder, overlayed_folder):
     times = []
     len_samples = []
 
-    for samples in tqdm(
-        data_loader, desc="batches", leave=False, disable=None,
-    ):
+    output_folder = os.path.join(output_folder, name)
+    overlayed_folder = (
+        os.path.join(overlayed_folder, name)
+        if overlayed_folder is not None
+        else overlayed_folder
+    )
+
+    for samples in tqdm(data_loader, desc="batches", leave=False, disable=None):
 
         names = samples[0]
         images = samples[1].to(

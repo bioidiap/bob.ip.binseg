@@ -45,38 +45,6 @@ def _validate_threshold(t, dataset):
     return t
 
 
-def _get_folder(folder, name):
-    """Guesses the prediction folder to use based on the dataset name
-
-    This function will look for ``folder/name`` if it exists, and
-    return this.  Otherwise defaults to ``folder``.
-
-
-    Parameters
-    ==========
-
-    folder : str
-        Path to the root of the predictions folder
-
-    name : str
-        The name of the dataset for which we are trying to find the predictions
-        folder
-
-
-    Returns
-    =======
-
-    path : str
-        The best path to use as the root of the predictions folder for this
-        dataset.
-
-    """
-    candidate = os.path.join(folder, name)
-    if os.path.exists(candidate):
-        return candidate
-    return folder
-
-
 @click.command(
     entry_point_group="bob.ip.binseg.config",
     cls=ConfigCommand,
@@ -208,12 +176,13 @@ def evaluate(
         # first run evaluation for reference dataset, do not save overlays
         logger.info(f"Evaluating threshold on '{threshold}' set")
         threshold = run(
-            dataset[threshold],
-            threshold,
-            _get_folder(predictions_folder, threshold),
-            steps=steps,
+            dataset[threshold], threshold, predictions_folder, steps=steps
         )
         logger.info(f"Set --threshold={threshold:.5f}")
+
+    # clean-up the overlayed path
+    if overlayed is not None:
+        overlayed = overlayed.strip()
 
     # now run with the
     for k, v in dataset.items():
@@ -224,7 +193,7 @@ def evaluate(
         run(
             v,
             k,
-            _get_folder(predictions_folder, k),
+            predictions_folder,
             output_folder,
             overlayed,
             threshold,

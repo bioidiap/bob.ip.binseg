@@ -145,8 +145,4 @@ def predict(output_folder, model, dataset, batch_size, device, weight,
             shuffle=False,
             pin_memory=torch.cuda.is_available(),
         )
-        # this avoids collisions if we have, e.g., multi-resolution versions
-        # of the same dataset being evaluated, or datasets for which filenames
-        # may match.
-        use_output_folder = os.path.join(output_folder, k)
-        run(model, data_loader, device, use_output_folder, overlayed)
+        run(model, data_loader, k, device, output_folder, overlayed)

@@ -270,11 +270,15 @@ def run(
     # Collect overall measures
     data = {}
 
+    use_predictions_folder = os.path.join(predictions_folder, name)
+    if not os.path.exists(use_predictions_folder):
+        use_predictions_folder = predictions_folder
+
     for sample in tqdm(dataset):
         stem = sample[0]
         image = sample[1]
         gt = sample[2]
-        pred_fullpath = os.path.join(predictions_folder, stem + ".hdf5")
+        pred_fullpath = os.path.join(use_predictions_folder, stem + ".hdf5")
         with h5py.File(pred_fullpath, "r") as f:
             pred = f["array"][:]
         pred = torch.from_numpy(pred)
@@ -288,7 +292,7 @@ def run(
             overlay_image = _sample_analysis(
                 image, pred, gt, threshold=threshold, overlay=True
             )
-            fullpath = os.path.join(overlayed_folder, f"{stem}.png")
+            fullpath = os.path.join(overlayed_folder, name, f"{stem}.png")
             tqdm.write(f"Saving {fullpath}...")
             os.makedirs(os.path.dirname(fullpath), exist_ok=True)
             overlay_image.save(fullpath)
@@ -409,7 +413,7 @@ def compare_annotators(baseline, other, name, output_folder,
                 image, pred, gt, threshold=0.5, overlay=True
             )
             fullpath = os.path.join(overlayed_folder, "second-annotator",
-                    f"{stem}.png")
+                    name, f"{stem}.png")
             tqdm.write(f"Saving {fullpath}...")
             os.makedirs(os.path.dirname(fullpath), exist_ok=True)
             overlay_image.save(fullpath)
