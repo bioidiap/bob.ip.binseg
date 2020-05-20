@@ -4,6 +4,7 @@
 """The main entry for bob ip binseg (click-based) scripts."""
 
 import os
+import re
 import sys
 import time
 import tempfile
@@ -18,6 +19,30 @@ from bob.extension.scripts.click_helper import AliasedGroup
 
 import logging
 logger = logging.getLogger(__name__)
+
+
+def escape_name(v):
+    """Escapes a name so it contains filesystem friendly characters only
+
+    This function escapes every character that's not a letter, ``_``, ``-``,
+    ``.`` or space with an ``-``.
+
+
+    Parameters
+    ==========
+
+    v : str
+        String to be escaped
+
+
+    Returns
+    =======
+
+    s : str
+        Escaped string
+
+    """
+    return re.sub(r'[^\w\-_\. ]', '-', v)
 
 
 def save_sh_command(destfile):

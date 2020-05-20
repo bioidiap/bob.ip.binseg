@@ -45,6 +45,38 @@ def _validate_threshold(t, dataset):
     return t
 
 
+def _get_folder(folder, name):
+    """Guesses the prediction folder to use based on the dataset name
+
+    This function will look for ``folder/name`` if it exists, and
+    return this.  Otherwise defaults to ``folder``.
+
+
+    Parameters
+    ==========
+
+    folder : str
+        Path to the root of the predictions folder
+
+    name : str
+        The name of the dataset for which we are trying to find the predictions
+        folder
+
+
+    Returns
+    =======
+
+    path : str
+        The best path to use as the root of the predictions folder for this
+        dataset.
+
+    """
+    candidate = os.path.join(folder, name)
+    if os.path.exists(candidate):
+        return candidate
+    return folder
+
+
 @click.command(
     entry_point_group="bob.ip.binseg.config",
     cls=ConfigCommand,
@@ -170,13 +202,17 @@ def evaluate(
         second_annotator = {}
     elif not isinstance(second_annotator, dict):
         second_annotator = {"test": second_annotator}
-    #else, second_annotator must be a dict
+    # else, second_annotator must be a dict
 
     if isinstance(threshold, str):
         # first run evaluation for reference dataset, do not save overlays
         logger.info(f"Evaluating threshold on '{threshold}' set")
-        threshold = run(dataset[threshold], threshold, predictions_folder,
-                steps=steps)
+        threshold = run(
+            dataset[threshold],
+            threshold,
+            _get_folder(predictions_folder, threshold),
+            steps=steps,
+        )
         logger.info(f"Set --threshold={threshold:.5f}")
 
     # now run with the
@@ -185,13 +221,22 @@ def evaluate(
             logger.info(f"Skipping dataset '{k}' (not to be evaluated)")
             continue
         logger.info(f"Analyzing '{k}' set...")
-        run(v, k, predictions_folder, output_folder, overlayed, threshold,
-                steps=steps)
+        run(
+            v,
+            k,
+            _get_folder(predictions_folder, k),
+            output_folder,
+            overlayed,
+            threshold,
+            steps=steps,
+        )
         second = second_annotator.get(k)
         if second is not None:
             if not second.all_keys_match(v):
-                logger.warning(f"Key mismatch between `dataset[{k}]` and " \
-                        f"`second_annotator[{k}]` - skipping " \
-                        f"second-annotator comparisons for {k} subset")
+                logger.warning(
+                    f"Key mismatch between `dataset[{k}]` and "
+                    f"`second_annotator[{k}]` - skipping "
+                    f"second-annotator comparisons for {k} subset"
+                )
             else:
                 compare_annotators(v, second, k, output_folder, overlayed)
