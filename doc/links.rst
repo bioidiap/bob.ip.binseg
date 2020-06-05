@@ -27,27 +27,47 @@
 
 .. Pretrained models
 
-.. _baselines_driu_drive: https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/baselines/driu/drive/model.pth
-.. _baselines_hed_drive: https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/baselines/hed/drive/model.pth
-.. _baselines_m2unet_drive: https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/baselines/m2unet/drive/model.pth
-.. _baselines_unet_drive: https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/baselines/unet/drive/model.pth
-.. _baselines_driu_stare: https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/baselines/driu/stare/model.pth
-.. _baselines_hed_stare: https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/baselines/hed/stare/model.pth
-.. _baselines_m2unet_stare: https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/baselines/m2unet/stare/model.pth
-.. _baselines_unet_stare: https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/baselines/unet/stare/model.pth
-.. _baselines_driu_chase: https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/baselines/driu/chasedb1/model.pth
-.. _baselines_hed_chase: https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/baselines/hed/chasedb1/model.pth
-.. _baselines_m2unet_chase: https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/baselines/m2unet/chasedb1/model.pth
-.. _baselines_unet_chase: https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/baselines/unet/chasedb1/model.pth
-.. _baselines_driu_hrf: https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/baselines/driu/hrf/model.pth
-.. _baselines_hed_hrf: https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/baselines/hed/hrf/model.pth
-.. _baselines_m2unet_hrf: https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/baselines/m2unet/hrf/model.pth
-.. _baselines_unet_hrf: https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/baselines/unet/hrf/model.pth
-.. _baselines_driu_iostar: https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/baselines/driu/iostar-vessel/model.pth
-.. _baselines_hed_iostar: https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/baselines/hed/iostar-vessel/model.pth
-.. _baselines_m2unet_iostar: https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/baselines/m2unet/iostar-vessel/model.pth
-.. _baselines_unet_iostar: https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/baselines/unet/iostar-vessel/model.pth
+.. _baselines_driu_drive: https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/baselines/driu-drive-1947d9fa.pth
+.. _baselines_hed_drive: https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/baselines/hed-drive-c8b86082.pth
+.. _baselines_m2unet_drive: https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/baselines/m2unet-drive-ce4c7a53.pth
+.. _baselines_unet_drive: https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/baselines/unet-drive-0ac99e2e.pth
+.. _baselines_driu_stare: https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/baselines/driu-stare-79dec93a.pth
+.. _baselines_hed_stare: https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/baselines/hed-stare-fcdb7671.pth
+.. _baselines_m2unet_stare: https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/baselines/m2unet-stare-952778c2.pth
+.. _baselines_unet_stare: https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/baselines/unet-stare-49b6a6d0.pth
+.. _baselines_driu_chase: https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/baselines/driu-chasedb1-e7cf53c3.pth
+.. _baselines_hed_chase: https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/baselines/hed-chasedb1-55ec6d34.pth
+.. _baselines_m2unet_chase: https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/baselines/m2unet-chasedb1-0becbf29.pth
+.. _baselines_unet_chase: https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/baselines/unet-chasedb1-be41b5a5.pth
+.. _baselines_driu_hrf: https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/baselines/driu-hrf-c9e6a889.pth
+.. _baselines_hed_hrf: https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/baselines/hed-hrf-3f4ab1c4.pth
+.. _baselines_m2unet_hrf: https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/baselines/m2unet-hrf-2c3f2485.pth
+.. _baselines_unet_hrf: https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/baselines/unet-hrf-9a559821.pth
+.. _baselines_driu_iostar: https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/baselines/driu-iostar-vessel-ef8cc27b.pth
+.. _baselines_hed_iostar: https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/baselines/hed-iostar-vessel-37cfaee1.pth
+.. _baselines_m2unet_iostar: https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/baselines/m2unet-iostar-vessel-223b61ef.pth
+.. _baselines_unet_iostar: https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/baselines/unet-iostar-vessel-86c78e87.pth
 
+.. _covd_driu_drive: https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/covd/driu/drive/model.pth
+.. _covd_hed_drive: https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/covd/hed/drive/model.pth
+.. _covd_m2unet_drive: https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/covd/m2unet/drive/model.pth
+.. _covd_unet_drive: https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/covd/unet/drive/model.pth
+.. _covd_driu_stare: https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/covd/driu/stare/model.pth
+.. _covd_hed_stare: https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/covd/hed/stare/model.pth
+.. _covd_m2unet_stare: https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/covd/m2unet/stare/model.pth
+.. _covd_unet_stare: https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/covd/unet/stare/model.pth
+.. _covd_driu_chase: https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/covd/driu/chasedb1/model.pth
+.. _covd_hed_chase: https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/covd/hed/chasedb1/model.pth
+.. _covd_m2unet_chase: https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/covd/m2unet/chasedb1/model.pth
+.. _covd_unet_chase: https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/covd/unet/chasedb1/model.pth
+.. _covd_driu_hrf: https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/covd/driu/hrf/model.pth
+.. _covd_hed_hrf: https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/covd/hed/hrf/model.pth
+.. _covd_m2unet_hrf: https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/covd/m2unet/hrf/model.pth
+.. _covd_unet_hrf: https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/covd/unet/hrf/model.pth
+.. _covd_driu_iostar: https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/covd/driu/iostar-vessel/model.pth
+.. _covd_hed_iostar: https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/covd/hed/iostar-vessel/model.pth
+.. _covd_m2unet_iostar: https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/covd/m2unet/iostar-vessel/model.pth
+.. _covd_unet_iostar: https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/covd/unet/iostar-vessel/model.pth
 
 .. DRIVE
 .. _driu_drive.pth: https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/DRIU_DRIVE.pth

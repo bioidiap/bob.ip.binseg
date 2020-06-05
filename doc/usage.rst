@@ -61,7 +61,6 @@ modifying one of our configuration resources.
 
    experiment
    training
-   models
    evaluation
 
 

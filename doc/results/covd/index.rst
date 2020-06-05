@@ -2,121 +2,80 @@
 
 .. _bob.ip.binseg.results.covd:
 
-.. todo::
-
-   This section is outdated and needs re-factoring.
-
-
-============================
- COVD- and COVD-SLL Results
-============================
-
-In addition to the M2U-Net architecture, we also evaluated the larger DRIU
-network and a variation of it that contains batch normalization (DRIU+BN) on
-COVD- (Combined Vessel Dataset from all training data minus target test set)
-and COVD-SSL (COVD- and Semi-Supervised Learning). Perhaps surprisingly, for
-the majority of combinations, the performance of the DRIU variants are roughly
-equal or worse to the ones obtained with the much smaller M2U-Net.  We
-anticipate that one reason for this could be overparameterization of large
-VGG-16 models that are pretrained on ImageNet.
+========================================
+ Combined Vessel Dataset (COVD) Results
+========================================
 
 
-F1 Scores
----------
+F1 Scores (micro-level)
+-----------------------
 
-Comparison of F1 Scores (micro-level and standard deviation) of DRIU and
-M2U-Net on COVD- and COVD-SSL.  Standard deviation across test-images in
-brackets.
+* Benchmark results for models: DRIU, HED, M2U-Net and U-Net.
+* Models are trained on a COVD **excluding** the target dataset, and tested on
+  the target dataset (**numbers in bold** indicate number of parameters per
+  model).  Models are trained for a fixed number of 1000 epochs, with a
+  learning rate of 0.001 until epoch 900 and then 0.0001 until the end of the
+  training.
+* Database and model resource configuration links (table top row and left
+  column) are linked to the originating configuration files used to obtain
+  these results.
+* Check `our paper`_ for details on the calculation of the F1 Score and standard
+  deviations (in parentheses).
+* Single performance numbers correspond to *a priori* performance indicators,
+  where the threshold is previously selected on the training set (COVD
+  excluding the target dataset)
+* You can cross check the analysis numbers provided in this table by
+  downloading this software package, the raw data, and running ``bob binseg
+  analyze`` providing the model URL as ``--weight`` parameter.
+* For comparison purposes, we provide "second-annotator" performances on the
+  same test set, where available.
+
 
 .. list-table::
-   :header-rows: 1
+   :header-rows: 2
 
-   * - F1 score
-     - :py:mod:`DRIU <bob.ip.binseg.configs.models.driu>`/:py:mod:`DRIU@SSL <bob.ip.binseg.configs.models.driu_ssl>`
-     - :py:mod:`DRIU+BN <bob.ip.binseg.configs.models.driu_bn>`/:py:mod:`DRIU+BN@SSL <bob.ip.binseg.configs.models.driu_bn_ssl>`
-     - :py:mod:`M2U-Net <bob.ip.binseg.configs.models.m2unet>`/:py:mod:`M2U-Net@SSL <bob.ip.binseg.configs.models.m2unet_ssl>`
-   * - :py:mod:`COVD-DRIVE <bob.ip.binseg.configs.datasets.drive.covd>`
-     - 0.788 (0.018)
-     - 0.797 (0.019)
-     - `0.789 (0.018) <m2unet_covd-drive.pth>`_
-   * - :py:mod:`COVD-DRIVE+SSL <bob.ip.binseg.configs.datasets.drive.ssl>`
-     - 0.785 (0.018)
-     - 0.783 (0.019)
-     - `0.791 (0.014) <m2unet_covd-drive_ssl.pth>`_
-   * - :py:mod:`COVD-STARE <bob.ip.binseg.configs.datasets.stare.covd>`
-     - 0.778 (0.117)
-     - 0.778 (0.122)
-     - `0.812 (0.046) <m2unet_covd-stare.pth>`_
-   * - :py:mod:`COVD-STARE+SSL <bob.ip.binseg.configs.datasets.stare.ssl>`
-     - 0.788 (0.102)
-     - 0.811 (0.074)
-     - `0.820 (0.044) <m2unet_covd-stare_ssl.pth>`_
-   * - :py:mod:`COVD-CHASEDB1 <bob.ip.binseg.configs.datasets.chasedb1.covd>`
-     - 0.796 (0.027)
-     - 0.791 (0.025)
-     - `0.788 (0.024) <m2unet_covd-chasedb1.pth>`_
-   * - :py:mod:`COVD-CHASEDB1+SSL <bob.ip.binseg.configs.datasets.chasedb1.ssl>`
-     - 0.796 (0.024)
-     - 0.798 (0.025)
-     - `0.799 (0.026) <m2unet_covd-chasedb1_ssl.pth>`_
-   * - :py:mod:`COVD-HRF <bob.ip.binseg.configs.datasets.hrf.covd>`
-     - 0.799 (0.044)
-     - 0.800 (0.045)
-     - `0.802 (0.045) <m2unet_covd-hrf.pth>`_
-   * - :py:mod:`COVD-HRF+SSL <bob.ip.binseg.configs.datasets.hrf.ssl>`
-     - 0.799 (0.044)
-     - 0.784 (0.048)
-     - `0.797 (0.044) <m2unet_covd-hrf_ssl.pth>`_
-   * - :py:mod:`COVD-IOSTAR-VESSEL <bob.ip.binseg.configs.datasets.iostar.covd>`
-     - 0.791 (0.021)
-     - 0.777 (0.032)
-     - `0.793 (0.015) <m2unet_covd-iostar.pth>`_
-   * - :py:mod:`COVD-IOSTAR-VESSEL+SSL <bob.ip.binseg.configs.datasets.iostar.ssl>`
-     - 0.797 (0.017)
-     - 0.811 (0.074)
-     - `0.785 (0.018) <m2unet_covd-iostar_ssl.pth>`_
-
-
-M2U-Net Precision vs. Recall Curves
------------------------------------
-
-Precision vs. recall curves for each evaluated dataset.  Note that here the
-F1-score is calculated on a macro level (see paper for more details).
-
-.. figure:: pr_CHASEDB1.png
-   :scale: 50 %
-   :align: center
-   :alt: model comparisons
-
-   CHASE_DB1: Precision vs Recall curve and F1 scores
-
-.. figure:: pr_DRIVE.png
-   :scale: 50 %
-   :align: center
-   :alt: model comparisons
-
-   DRIVE: Precision vs Recall curve and F1 scores
-
-.. figure:: pr_HRF.png
-   :scale: 50 %
-   :align: center
-   :alt: model comparisons
-
-   HRF: Precision vs Recall curve and F1 scores
-
-.. figure:: pr_IOSTARVESSEL.png
-   :scale: 50 %
-   :align: center
-   :alt: model comparisons
-
-   IOSTAR: Precision vs Recall curve and F1 scores
-
-.. figure:: pr_STARE.png
-   :scale: 50 %
-   :align: center
-   :alt: model comparisons
-
-   STARE: Precision vs Recall curve and F1 scores
+   * -
+     -
+     - :py:mod:`driu <bob.ip.binseg.configs.models.driu>`
+     - :py:mod:`hed <bob.ip.binseg.configs.models.hed>`
+     - :py:mod:`m2unet <bob.ip.binseg.configs.models.m2unet>`
+     - :py:mod:`unet <bob.ip.binseg.configs.models.unet>`
+   * - Dataset
+     - 2nd. Annot.
+     - 15M
+     - 14.7M
+     - 0.55M
+     - 25.8M
+   * - :py:mod:`drive <bob.ip.binseg.configs.datasets.drive.covd>`
+     - 0.788 (0.021)
+     - `0.768 (0.031) <covd_driu_drive_>`_
+     - `0.750 (0.036) <covd_hed_drive_>`_
+     - `0.771 (0.027) <covd_m2unet_drive_>`_
+     - `0.775 (0.029) <covd_unet_drive_>`_
+   * - :py:mod:`stare <bob.ip.binseg.configs.datasets.stare.covd>`
+     - 0.759 (0.028)
+     - `0.786 (0.100) <covd_driu_stare_>`_
+     - `0.738 (0.193) <covd_hed_stare_>`_
+     - `0.800 (0.080) <covd_m2unet_stare_>`_
+     - `0.806 (0.072) <covd_unet_stare_>`_
+   * - :py:mod:`chasedb1 <bob.ip.binseg.configs.datasets.chasedb1.covd>`
+     - 0.768 (0.023)
+     - `0.778 (0.031) <covd_driu_chase_>`_
+     - `0.777 (0.028) <covd_hed_chase_>`_
+     - `0.776 (0.031) <covd_m2unet_chase_>`_
+     - `0.779 (0.028) <covd_unet_chase_>`_
+   * - :py:mod:`hrf <bob.ip.binseg.configs.datasets.hrf.covd>`
+     -
+     - `0.742 (0.049) <covd_driu_hrf_>`_
+     - `0.719 (0.047) <covd_hed_hrf_>`_
+     - `0.735 (0.045) <covd_m2unet_hrf_>`_
+     - `0.746 (0.046) <covd_unet_hrf_>`_
+   * - :py:mod:`iostar-vessel <bob.ip.binseg.configs.datasets.iostar.covd>`
+     -
+     - `0.790 (0.023) <covd_driu_iostar_>`_
+     - `0.792 (0.020) <covd_hed_iostar_>`_
+     - `0.788 (0.021) <covd_m2unet_iostar_>`_
+     - `0.783 (0.019) <covd_unet_iostar_>`_
 
 
 .. include:: ../../links.rst

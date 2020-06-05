@@ -15,14 +15,22 @@ function run() {
     cmd+=("-vv" "--device=${device}" ${1} ${2})
     cmd+=("--batch-size=${3}" "--output-folder=${OUTDIR}/${1}/${2}")
 
-    [ $# -gt 4 ] && cmd=(jman submit "--name=$(basename ${OUTDIR})-${1}-${2}" "--memory=24G" "--queue=${5}" -- "${cmd[@]}")
+    mkdir -pv ${OUTDIR}/${1}/${2}
 
-    "${cmd[@]}"
+    [ $# -gt 4 ] && cmd=(jman submit "--log-dir=${OUTDIR}/${1}/${2}" "--name=$(basename ${OUTDIR})-${1}-${2}" "--memory=24G" "--queue=${5}" -- "${cmd[@]}")
+
+    if [ $# -le 4 ]; then
+        # executing locally, capture stdout and stderr
+        ("${cmd[@]}" | tee "${OUTDIR}/${1}/${2}/stdout.log") 3>&1 1>&2 2>&3 | tee "${OUTDIR}/${1}/${2}/stderr.log"
+    else
+        "${cmd[@]}"
+    fi
 }
 
+
 # run/submit all baselines
-# comment out from "sgpu/gpu" to run locally
 # comment out from "cuda:0" to run on CPU
+# comment out from "sgpu/gpu" to run locally
 run m2unet drive         16 #cuda:0 #sgpu
 run hed    drive          8 #cuda:0 #sgpu
 run driu   drive          8 #cuda:0 #sgpu

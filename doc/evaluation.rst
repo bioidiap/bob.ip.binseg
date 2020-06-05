@@ -16,12 +16,12 @@ Inference
 ---------
 
 You may use one of your trained models (or :ref:`one of ours
-<bob.ip.binseg.models>` to run inference on existing datasets or your own
-dataset.  In inference (or prediction) mode, we input data, the trained model,
-and output HDF5 files containing the prediction outputs for every input image.
-Each HDF5 file contains a single object with a 2-dimensional matrix of floating
-point numbers indicating the vessel probability (``[0.0,1.0]``) for each pixel
-in the input image.
+<bob.ip.binseg.results.baselines>` to run inference on existing datasets or
+your own dataset.  In inference (or prediction) mode, we input data, the
+trained model, and output HDF5 files containing the prediction outputs for
+every input image.  Each HDF5 file contains a single object with a
+2-dimensional matrix of floating point numbers indicating the vessel
+probability (``[0.0,1.0]``) for each pixel in the input image.
 
 
 Inference on an existing dataset
@@ -38,7 +38,7 @@ To run inference, use the sub-command :ref:`predict
 Replace ``<model>`` and ``<dataset>`` by the appropriate :ref:`configuration
 files <bob.ip.binseg.configs>`.  Replace ``<path/to/model.pth>`` to a path
 leading to the pre-trained model, or URL pointing to a pre-trained model (e.g.
-:ref:`one of ours <bob.ip.binseg.models>`).
+:ref:`one of ours <bob.ip.binseg.results.baselines>`).
 
 
 Inference on a custom dataset

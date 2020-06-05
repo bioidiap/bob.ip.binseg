@@ -11,9 +11,13 @@ F1 Scores (micro-level)
 
 * Benchmark results for models: DRIU, HED, M2U-Net and U-Net.
 * Models are trained and tested on the same dataset (**numbers in bold**
-  indicate number of parameters per model).  Models are trained for a fixed
-  number of 1000 epochs, with a learning rate of 0.001 until epoch 900 and then
-  0.0001 until the end of the training.
+  indicate approximate number of parameters per model).  Models are trained for
+  a fixed number of 1000 epochs, with a learning rate of 0.001 until epoch 900
+  and then 0.0001 until the end of the training.
+* During the training session, an unaugmented copy of the training set is used
+  as validation set.  We keep checkpoints for the best performing networks
+  based on such validation set.  The best performing network during training is
+  used for evaluation.
 * Database and model resource configuration links (table top row and left
   column) are linked to the originating configuration files used to obtain
   these results.
@@ -26,6 +30,9 @@ F1 Scores (micro-level)
   analyze`` providing the model URL as ``--weight`` parameter.
 * For comparison purposes, we provide "second-annotator" performances on the
   same test set, where available.
+* :ref:`Our baseline script <bob.ip.binseg.baseline-script>` was used to
+  generate the results displayed here.
+* HRF models were trained using half the full resolution (1168x1648)
 
 
 .. list-table::
@@ -45,35 +52,40 @@ F1 Scores (micro-level)
      - 25.8M
    * - :py:mod:`drive <bob.ip.binseg.configs.datasets.drive.default>`
      - 0.788  (0.021)
-     - `0.819 (0.017) <baselines_driu_drive_>`_
-     - `0.806 (0.017) <baselines_hed_drive_>`_
-     - `0.803 (0.017) <baselines_m2unet_drive_>`_
-     - `0.823 (0.016) <baselines_unet_drive_>`_
+     - `0.821 (0.014) <baselines_driu_drive_>`_
+     - `0.813 (0.016) <baselines_hed_drive_>`_
+     - `0.802 (0.014) <baselines_m2unet_drive_>`_
+     - `0.825 (0.015) <baselines_unet_drive_>`_
    * - :py:mod:`stare <bob.ip.binseg.configs.datasets.stare.ah>`
      - 0.759 (0.028)
-     - `0.822 (0.037) <baselines_driu_stare_>`_
-     - `0.808 (0.046) <baselines_hed_stare_>`_
-     - `0.811 (0.039) <baselines_m2unet_stare_>`_
-     - `0.827 (0.041) <baselines_unet_stare_>`_
+     - `0.828 (0.039) <baselines_driu_stare_>`_
+     - `0.815 (0.047) <baselines_hed_stare_>`_
+     - `0.818 (0.035) <baselines_m2unet_stare_>`_
+     - `0.828 (0.050) <baselines_unet_stare_>`_
    * - :py:mod:`chasedb1 <bob.ip.binseg.configs.datasets.chasedb1.first_annotator>`
      - 0.768 (0.023)
-     - `0.810 (0.017) <baselines_driu_chase_>`_
-     - `0.806 (0.021) <baselines_hed_chase_>`_
-     - `0.798 (0.017) <baselines_m2unet_chase_>`_
-     - `0.803 (0.015) <baselines_unet_chase_>`_
-   * - :py:mod:`hrf <bob.ip.binseg.configs.datasets.hrf.default>`
+     - `0.812 (0.018) <baselines_driu_chase_>`_
+     - `0.806 (0.020) <baselines_hed_chase_>`_
+     - `0.798 (0.018) <baselines_m2unet_chase_>`_
+     - `0.807 (0.017) <baselines_unet_chase_>`_
+   * - :py:mod:`hrf <bob.ip.binseg.configs.datasets.hrf.default>` (1168x1648)
      -
-     - `0.802 (0.039) <baselines_driu_hrf_>`_
-     - `0.793 (0.041) <baselines_hed_hrf_>`_
-     - `0.785 (0.041) <baselines_m2unet_hrf_>`_
-     - `0.797 (0.038) <baselines_unet_hrf_>`_
+     - `0.808 (0.038) <baselines_driu_hrf_>`_
+     - `0.803 (0.040) <baselines_hed_hrf_>`_
+     - `0.796 (0.048) <baselines_m2unet_hrf_>`_
+     - `0.811 (0.039) <baselines_unet_hrf_>`_
+   * - :py:mod:`hrf <bob.ip.binseg.configs.datasets.hrf.default>` (2336x3296)
+     -
+     - `0.722 (0.073) <baselines_driu_hrf_>`_
+     - `0.703 (0.090) <baselines_hed_hrf_>`_
+     - `0.713 (0.143) <baselines_m2unet_hrf_>`_
+     - `0.756 (0.051) <baselines_unet_hrf_>`_
    * - :py:mod:`iostar-vessel <bob.ip.binseg.configs.datasets.iostar.vessel>`
      -
-     - `0.823 (0.021) <baselines_driu_iostar_>`_
-     - `0.821 (0.022) <baselines_hed_iostar_>`_
-     - `0.816 (0.021) <baselines_m2unet_iostar_>`_
-     - `0.818 (0.019) <baselines_unet_iostar_>`_
-
+     - `0.825 (0.020) <baselines_driu_iostar_>`_
+     - `0.827 (0.020) <baselines_hed_iostar_>`_
+     - `0.820 (0.018) <baselines_m2unet_iostar_>`_
+     - `0.818 (0.020) <baselines_unet_iostar_>`_
 
 Precision-Recall (PR) Curves
 ----------------------------
@@ -90,7 +102,7 @@ its average value across all test set images, for a fixed threshold set to
    versus Sensitivity) with respect to the overall shape.  You may have a look
    at [DAVIS-2006]_ for details on the relationship between PR and ROC curves.
    For example, PR curves are not guaranteed to be monotonically increasing or
-   decreasing with the scanned thresholds (e.g. see M2U-Net on STARE dataset).
+   decreasing with the scanned thresholds.
 
    Each evaluated threshold in a combination of trained models and datasets is
    represented by a point in each curve.  Points are linearly interpolated to
@@ -125,16 +137,21 @@ its average value across all test set images, for a fixed threshold set to
       - .. figure:: hrf.png
            :align: center
            :scale: 50%
-           :alt: Model comparisons for hrf datasets
+           :alt: Model comparisons for hrf datasets (matching training resolution: 1168x1648)
 
-           :py:mod:`hrf <bob.ip.binseg.configs.datasets.hrf.default>`: PR curve and F1 scores at T=0.5 (:download:`pdf <hrf.pdf>`)
+           :py:mod:`hrf <bob.ip.binseg.configs.datasets.hrf.default>` (1168x1648): PR curve and F1 scores at T=0.5 (:download:`pdf <hrf.pdf>`)
     * - .. figure:: iostar-vessel.png
            :align: center
            :scale: 50%
            :alt: Model comparisons for iostar-vessel datasets
 
            :py:mod:`iostar-vessel <bob.ip.binseg.configs.datasets.iostar.vessel>`: PR curve and F1 scores at T=0.5 (:download:`pdf <iostar-vessel.pdf>`)
-      -
+      - .. figure:: hrf-fullres.png
+           :align: center
+           :scale: 50%
+           :alt: Model comparisons for hrf datasets (double training resolution: 2336x3296)
+
+           :py:mod:`hrf <bob.ip.binseg.configs.datasets.hrf.default>` (2336x3296): PR curve and F1 scores at T=0.5 (:download:`pdf <hrf-fullres.pdf>`)
 
 
 Remarks
@@ -149,7 +166,9 @@ Remarks
 * Where second annotator labels exist, model performance and variability seems
   on par with such annotations.  One possible exception is for CHASE-DB1, where
   models show consistently less variability than the second annotator.
-  Unfortunately, this cannot be conclusive.
+  Unfortunately, this is not conclusive.
+* Training at half resolution for HRF shows a small loss in performance (10 to
+  15%) when the high-resolution version is used as evaluation set.
 
 
 .. include:: ../../links.rst

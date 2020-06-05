@@ -18,6 +18,7 @@ strategy.
    baselines/index
    xtest/index
    covd/index
+   old/index
 
 
 .. include:: ../links.rst
