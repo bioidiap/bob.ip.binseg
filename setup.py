@@ -37,6 +37,7 @@ setup(
             "predict = bob.ip.binseg.script.predict:predict",
             "evaluate = bob.ip.binseg.script.evaluate:evaluate",
             "compare =  bob.ip.binseg.script.compare:compare",
+            "significance =  bob.ip.binseg.script.significance:significance",
             "analyze =  bob.ip.binseg.script.analyze:analyze",
             "experiment =  bob.ip.binseg.script.experiment:experiment",
         ],

@@ -1,6 +1,7 @@
 bob.extension
 matplotlib
 numpy
+scipy
 pandas
 h5py
 pillow

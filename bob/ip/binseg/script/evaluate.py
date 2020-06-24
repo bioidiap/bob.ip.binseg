@@ -131,7 +131,7 @@ def _validate_threshold(t, dataset):
     "dataset as input, this may also be the name of an existing set from "
     "which the threshold will be estimated (highest F1-score) and then "
     "applied to the subsequent sets.  This number is also used to print "
-    "the test set F1-score a priori performance (default: 0.5)",
+    "the test set F1-score a priori performance",
     default=None,
     show_default=False,
     required=False,

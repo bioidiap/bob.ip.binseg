@@ -17,7 +17,9 @@ semantic binary segmentation with support for the following activities:
 * Evaluation: Vessel map predictions are used evaluate FCN performance against
   provided annotations, or visualize prediction results overlayed on
   the original raw images.
-* Comparison: Use evaluation results to compare performance as you like.
+* Comparison: Use evaluation results to compare performance as you like, or to
+  evaluate the significance between the results of two systems on the same
+  dataset.
 
 Whereas we provide :ref:`command-line interfaces (CLI)
 <bob.ip.binseg.cli.single>` that implement each of the phases above, we also

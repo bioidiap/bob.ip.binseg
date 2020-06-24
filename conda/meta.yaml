@@ -26,6 +26,7 @@ requirements:
     - python {{ python }}
     - setuptools {{ setuptools }}
     - numpy {{ numpy }}
+    - scipy {{ scipy }}
     - h5py {{ h5py }}
     - pytorch {{ pytorch }}
     - torchvision  {{ torchvision }} # [linux]
@@ -34,6 +35,7 @@ requirements:
     - python
     - setuptools
     - {{ pin_compatible('numpy') }}
+    - {{ pin_compatible('scipy') }}
     - {{ pin_compatible('pytorch') }}
     - {{ pin_compatible('torchvision') }} # [linux]
     - matplotlib

@@ -145,12 +145,40 @@ def _check_experiment_stare(overlay):
         # check evaluation outputs
         eval_folder = os.path.join(output_folder, "analysis")
         assert os.path.exists(os.path.join(eval_folder, "train.csv"))
+        # checks individual performance figures are there
+        traindir = os.path.join(eval_folder, "train", "stare-images")
+        assert os.path.exists(traindir)
+        nose.tools.eq_(
+            len(fnmatch.filter(os.listdir(traindir), "*.csv")), 10
+        )
+
         assert os.path.exists(os.path.join(eval_folder, "test.csv"))
+        # checks individual performance figures are there
+        testdir = os.path.join(eval_folder, "test", "stare-images")
+        assert os.path.exists(testdir)
+        nose.tools.eq_(
+            len(fnmatch.filter(os.listdir(testdir), "*.csv")), 10
+        )
+
         assert os.path.exists(
             os.path.join(eval_folder, "second-annotator", "train.csv")
         )
+        # checks individual performance figures are there
+        traindir_sa = os.path.join(eval_folder, "second-annotator", "train",
+                "stare-images")
+        assert os.path.exists(traindir_sa)
+        nose.tools.eq_(
+            len(fnmatch.filter(os.listdir(traindir_sa), "*.csv")), 10
+        )
+
         assert os.path.exists(
             os.path.join(eval_folder, "second-annotator", "test.csv")
+        )
+        testdir_sa = os.path.join(eval_folder, "second-annotator", "test",
+                "stare-images")
+        assert os.path.exists(testdir_sa)
+        nose.tools.eq_(
+            len(fnmatch.filter(os.listdir(testdir_sa), "*.csv")), 10
         )
 
         overlay_folder = os.path.join(output_folder, "overlayed", "analysis")
@@ -405,8 +433,22 @@ def _check_evaluate(runner):
         _assert_exit_0(result)
 
         assert os.path.exists(os.path.join(output_folder, "test.csv"))
+        # checks individual performance figures are there
+        testdir = os.path.join(output_folder, "test", "stare-images")
+        assert os.path.exists(testdir)
+        nose.tools.eq_(
+            len(fnmatch.filter(os.listdir(testdir), "*.csv")), 10
+        )
+
         assert os.path.exists(
             os.path.join(output_folder, "second-annotator", "test.csv")
+        )
+        # checks individual performance figures are there
+        testdir_sa = os.path.join(output_folder, "second-annotator", "test",
+                "stare-images")
+        assert os.path.exists(testdir_sa)
+        nose.tools.eq_(
+            len(fnmatch.filter(os.listdir(testdir_sa), "*.csv")), 10
         )
 
         # check overlayed images are there (since we requested them)

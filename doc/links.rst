@@ -24,6 +24,8 @@
 .. Software Tools
 .. _maskrcnn-benchmark: https://github.com/facebookresearch/maskrcnn-benchmark
 
+.. _wilcoxon test: https://en.wikipedia.org/wiki/Wilcoxon_signed-rank_test
+
 
 .. Pretrained models
 

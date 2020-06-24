@@ -288,6 +288,12 @@ def run(
             )
         data[stem] = _sample_measures(pred, gt, steps)
 
+        if output_folder is not None:
+            fullpath = os.path.join(output_folder, name, f"{stem}.csv")
+            tqdm.write(f"Saving {fullpath}...")
+            os.makedirs(os.path.dirname(fullpath), exist_ok=True)
+            data[stem].to_csv(fullpath)
+
         if overlayed_folder is not None:
             overlay_image = _sample_analysis(
                 image, pred, gt, threshold=threshold, overlay=True
@@ -296,6 +302,7 @@ def run(
             tqdm.write(f"Saving {fullpath}...")
             os.makedirs(os.path.dirname(fullpath), exist_ok=True)
             overlay_image.save(fullpath)
+
 
     # Merges all dataframes together
     df_measures = pandas.concat(data.values())
@@ -407,6 +414,13 @@ def compare_annotators(baseline, other, name, output_folder,
                 f"{stem} entry already exists in data. " f"Cannot overwrite."
             )
         data[stem] = _sample_measures(pred, gt, 2)
+
+        if output_folder is not None:
+            fullpath = os.path.join(output_folder, "second-annotator", name,
+                    f"{stem}.csv")
+            tqdm.write(f"Saving {fullpath}...")
+            os.makedirs(os.path.dirname(fullpath), exist_ok=True)
+            data[stem].to_csv(fullpath)
 
         if overlayed_folder is not None:
             overlay_image = _sample_analysis(

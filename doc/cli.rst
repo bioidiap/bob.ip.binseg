@@ -179,4 +179,15 @@ combined figures and tables that compare results of multiple systems.
 .. command-output:: bob binseg compare --help
 
 
+.. _bob.ip.binseg.cli.significance:
+
+Performance Difference Significance
+===================================
+
+Calculates the significance between results obtained through 2 systems on the
+same dataset.
+
+.. command-output:: bob binseg significance --help
+
+
 .. include:: links.rst

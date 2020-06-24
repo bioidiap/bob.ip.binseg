@@ -86,8 +86,6 @@ def _load(data, threshold=None):
                 f"'{threshold}' dataset...")
         measures_path = data[threshold]
         df = pandas.read_csv(measures_path)
-
-        maxf1 = df.f1_score.max()
         use_threshold = df.threshold[df.f1_score.idxmax()]
         logger.info(f"Dataset '*': threshold = {use_threshold:.3f}'")
 
