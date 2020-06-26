@@ -21,6 +21,9 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+_PATCH_CONFIG = (128, 128, 32)
+"""Stock configuration for patch analysis"""
+
 
 def _posneg(pred, gt, threshold):
     """Calculates true and false positives and negatives"""
@@ -51,7 +54,7 @@ def _posneg(pred, gt, threshold):
 
 def _sample_measures(pred, gt, steps):
     """
-    Calculates measures on one single sample and saves it to disk
+    Calculates measures on one single sample
 
 
     Parameters
@@ -65,7 +68,7 @@ def _sample_measures(pred, gt, steps):
 
     steps : int
         number of steps to use for threshold analysis.  The step size is
-        calculated from this by dividing ``1.0/steps``.
+        calculated from this by dividing ``1.0/steps``
 
 
     Returns
@@ -134,6 +137,62 @@ def _sample_measures(pred, gt, steps):
             "f1_score",
         ),
     )
+
+
+def _patch_measures(pred, gt, steps, size):
+    """
+    Calculates measures on patches of a single sample
+
+
+    Parameters
+    ----------
+
+    pred : torch.Tensor
+        pixel-wise predictions
+
+    gt : torch.Tensor
+        ground-truth (annotations)
+
+    steps : int
+        number of steps to use for threshold analysis.  The step size is
+        calculated from this by dividing ``1.0/steps``
+
+    size : :py:class:`tuple`
+        A tripplet with three integers indicating the height, width, and stride
+        of patches to break measure analysis into.  In this case, the input
+        image and ground-truth will be cut into blocks of the provided height
+        and width, overlapping by the total overlap size, starting on the top
+        left corner and then moving right and to the bottom.  Windows on the
+        left and bottom edge of the image may be incomplete.
+
+
+    Returns
+    -------
+
+    measures : pandas.DataFrame
+
+        A pandas dataframe with the following columns:
+
+        * patch: int
+        * threshold: float
+        * precision: float
+        * recall: float
+        * specificity: float
+        * accuracy: float
+        * jaccard: float
+        * f1_score: float
+
+    """
+
+    height, width, stride = window_size
+    pred_patches = pred.unfold(0, height, stride).unfold(1, width, stride)
+    gt_patches = unfold(0, height, stride).unfold(1, width, stride)
+
+    # add patch number for each set of measures
+    dfs = [_sample_measures(p, g, step) for p,g in zip(pred_patches, gt_patches)]
+    for i, k in enumerate(dfs): k['patch'] = i
+
+    return pandas.concat(dfs, ignore_index=True)
 
 
 def _sample_analysis(
@@ -294,6 +353,12 @@ def run(
             os.makedirs(os.path.dirname(fullpath), exist_ok=True)
             data[stem].to_csv(fullpath)
 
+            # saves patch analysis
+            fullpath = os.path.join(output_folder, name, "patches", f"{stem}.csv")
+            tqdm.write(f"Saving {fullpath}...")
+            os.makedirs(os.path.dirname(fullpath), exist_ok=True)
+            _patch_measures(pred, gt, steps, _PATCH_CONFIG).to_csv(fullpath)
+
         if overlayed_folder is not None:
             overlay_image = _sample_analysis(
                 image, pred, gt, threshold=threshold, overlay=True
@@ -421,6 +486,13 @@ def compare_annotators(baseline, other, name, output_folder,
             tqdm.write(f"Saving {fullpath}...")
             os.makedirs(os.path.dirname(fullpath), exist_ok=True)
             data[stem].to_csv(fullpath)
+
+            # saves patch analysis
+            fullpath = os.path.join(output_folder, "second-annotator", name,
+                    "patches", f"{stem}.csv")
+            tqdm.write(f"Saving {fullpath}...")
+            os.makedirs(os.path.dirname(fullpath), exist_ok=True)
+            _patch_measures(pred, gt, 2, _PATCH_CONFIG).to_csv(fullpath)
 
         if overlayed_folder is not None:
             overlay_image = _sample_analysis(

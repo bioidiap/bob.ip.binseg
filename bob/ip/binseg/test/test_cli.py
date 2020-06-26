@@ -151,10 +151,20 @@ def _check_experiment_stare(overlay):
         nose.tools.eq_(
             len(fnmatch.filter(os.listdir(traindir), "*.csv")), 10
         )
+        traindir = os.path.join(eval_folder, "train", "patches", "stare-images")
+        assert os.path.exists(traindir)
+        nose.tools.eq_(
+            len(fnmatch.filter(os.listdir(traindir), "*.csv")), 10
+        )
 
         assert os.path.exists(os.path.join(eval_folder, "test.csv"))
         # checks individual performance figures are there
         testdir = os.path.join(eval_folder, "test", "stare-images")
+        assert os.path.exists(testdir)
+        nose.tools.eq_(
+            len(fnmatch.filter(os.listdir(testdir), "*.csv")), 10
+        )
+        testdir = os.path.join(eval_folder, "test", "patches", "stare-images")
         assert os.path.exists(testdir)
         nose.tools.eq_(
             len(fnmatch.filter(os.listdir(testdir), "*.csv")), 10
@@ -170,12 +180,24 @@ def _check_experiment_stare(overlay):
         nose.tools.eq_(
             len(fnmatch.filter(os.listdir(traindir_sa), "*.csv")), 10
         )
+        traindir_sa = os.path.join(eval_folder, "second-annotator", "patches",
+                "train", "stare-images")
+        assert os.path.exists(traindir_sa)
+        nose.tools.eq_(
+            len(fnmatch.filter(os.listdir(traindir_sa), "*.csv")), 10
+        )
 
         assert os.path.exists(
             os.path.join(eval_folder, "second-annotator", "test.csv")
         )
         testdir_sa = os.path.join(eval_folder, "second-annotator", "test",
                 "stare-images")
+        assert os.path.exists(testdir_sa)
+        nose.tools.eq_(
+            len(fnmatch.filter(os.listdir(testdir_sa), "*.csv")), 10
+        )
+        testdir_sa = os.path.join(eval_folder, "second-annotator", "patches",
+                "test", "stare-images")
         assert os.path.exists(testdir_sa)
         nose.tools.eq_(
             len(fnmatch.filter(os.listdir(testdir_sa), "*.csv")), 10
@@ -439,6 +461,11 @@ def _check_evaluate(runner):
         nose.tools.eq_(
             len(fnmatch.filter(os.listdir(testdir), "*.csv")), 10
         )
+        testdir = os.path.join(output_folder, "test", "patches", "stare-images")
+        assert os.path.exists(testdir)
+        nose.tools.eq_(
+            len(fnmatch.filter(os.listdir(testdir), "*.csv")), 10
+        )
 
         assert os.path.exists(
             os.path.join(output_folder, "second-annotator", "test.csv")
@@ -446,6 +473,12 @@ def _check_evaluate(runner):
         # checks individual performance figures are there
         testdir_sa = os.path.join(output_folder, "second-annotator", "test",
                 "stare-images")
+        assert os.path.exists(testdir_sa)
+        nose.tools.eq_(
+            len(fnmatch.filter(os.listdir(testdir_sa), "*.csv")), 10
+        )
+        testdir_sa = os.path.join(output_folder, "second-annotator", "test",
+                "patches", "stare-images")
         assert os.path.exists(testdir_sa)
         nose.tools.eq_(
             len(fnmatch.filter(os.listdir(testdir_sa), "*.csv")), 10
