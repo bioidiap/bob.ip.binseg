@@ -4,7 +4,6 @@
 """Defines functionality for the evaluation of predictions"""
 
 import os
-import itertools
 
 import PIL
 import numpy
@@ -22,9 +21,6 @@ from ..utils.measure import base_measures
 import logging
 
 logger = logging.getLogger(__name__)
-
-_PATCH_CONFIG = (128, 128, 32)
-"""Stock configuration for patch analysis"""
 
 
 def _posneg(pred, gt, threshold):
@@ -139,81 +135,6 @@ def _sample_measures(pred, gt, steps):
             "f1_score",
         ),
     )
-
-
-def _patch_measures(pred, gt, steps, size):
-    """
-    Calculates measures on patches of a single sample
-
-
-    Parameters
-    ----------
-
-    pred : torch.Tensor
-        pixel-wise predictions
-
-    gt : torch.Tensor
-        ground-truth (annotations)
-
-    steps : int
-        number of steps to use for threshold analysis.  The step size is
-        calculated from this by dividing ``1.0/steps``
-
-    size : :py:class:`tuple`
-        A tripplet with three integers indicating the height, width, and stride
-        of patches to break measure analysis into.  In this case, the input
-        image and ground-truth will be cut into blocks of the provided height
-        and width, overlapping by the total overlap size, starting on the top
-        left corner and then moving right and to the bottom.  Windows on the
-        left and bottom edge of the image may be incomplete.
-
-
-    Returns
-    -------
-
-    measures : pandas.DataFrame
-
-        A pandas dataframe with the following columns:
-
-        * patch: int
-        * threshold: float
-        * precision: float
-        * recall: float
-        * specificity: float
-        * accuracy: float
-        * jaccard: float
-        * f1_score: float
-
-    """
-
-    height, width, stride = size
-
-    # we calculate the required padding so that the last windows on the left
-    # and bottom size of predictions/ground-truth data are zero padded, and
-    # torch unfolding works exactly.
-    padding = (0, 0)
-    rem = (pred.shape[1] - width) % stride
-    if rem != 0:
-        padding = (0, (stride-rem))
-    rem = (pred.shape[0] - height) % stride
-    if rem != 0:
-        padding += (0, (stride-rem))
-
-    pred_padded = torch.nn.functional.pad(pred, padding)
-    gt_padded = torch.nn.functional.pad(gt.squeeze(0), padding)
-
-    # this will create as many views as required
-    pred_patches = pred_padded.unfold(0, height, stride).unfold(1, width, stride)
-    gt_patches = gt_padded.unfold(0, height, stride).unfold(1, width, stride)
-    assert pred_patches.shape == gt_patches.shape
-    ylen, xlen, _, _ = pred_patches.shape
-
-    dfs = []
-    for j, i in itertools.product(range(ylen), range(xlen)):
-        dfs.append(_sample_measures(pred_patches[j,i,:,:], gt_patches[j,i,:,:], steps))
-        dfs[-1]['patch'] = i+(j*xlen)
-
-    return pandas.concat(dfs, ignore_index=True)
 
 
 def _sample_analysis(
@@ -374,12 +295,6 @@ def run(
             os.makedirs(os.path.dirname(fullpath), exist_ok=True)
             data[stem].to_csv(fullpath)
 
-            # saves patch analysis
-            fullpath = os.path.join(output_folder, name, "patches", f"{stem}.csv")
-            tqdm.write(f"Saving {fullpath}...")
-            os.makedirs(os.path.dirname(fullpath), exist_ok=True)
-            _patch_measures(pred, gt, steps, _PATCH_CONFIG).to_csv(fullpath)
-
         if overlayed_folder is not None:
             overlay_image = _sample_analysis(
                 image, pred, gt, threshold=threshold, overlay=True
@@ -507,13 +422,6 @@ def compare_annotators(baseline, other, name, output_folder,
             tqdm.write(f"Saving {fullpath}...")
             os.makedirs(os.path.dirname(fullpath), exist_ok=True)
             data[stem].to_csv(fullpath)
-
-            # saves patch analysis
-            fullpath = os.path.join(output_folder, "second-annotator", name,
-                    "patches", f"{stem}.csv")
-            tqdm.write(f"Saving {fullpath}...")
-            os.makedirs(os.path.dirname(fullpath), exist_ok=True)
-            _patch_measures(pred, gt, 2, _PATCH_CONFIG).to_csv(fullpath)
 
         if overlayed_folder is not None:
             overlay_image = _sample_analysis(
