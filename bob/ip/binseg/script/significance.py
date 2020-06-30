@@ -10,6 +10,7 @@ from bob.extension.scripts.click_helper import (
     ResourceOption,
 )
 
+import numpy
 import scipy.stats
 import logging
 
@@ -114,7 +115,7 @@ from ..engine.significance import patch_performances
          "respectively.",
     default=(128, 128),
     nargs=2,
-    type=float,
+    type=int,
     show_default=True,
     required=True,
     cls=ResourceOption,
@@ -127,7 +128,7 @@ from ..engine.significance import patch_performances
          "respectively.",
     default=(32, 32),
     nargs=2,
-    type=float,
+    type=int,
     show_default=True,
     required=True,
     cls=ResourceOption,
@@ -161,39 +162,46 @@ def significance(
 
         assert threshold in dataset, f"No dataset named '{threshold}'"
 
-        logger.info(f"Evaluating threshold on '{threshold}' set for system 1")
+        logger.info(f"Evaluating threshold on '{threshold}' set for system 1 using {steps} steps")
         threshold1 = run_evaluation(
             dataset[threshold], threshold, predictions_1, steps=steps
         )
-        logger.info(f"Set --threshold={threshold:.5f} for system 1")
+        logger.info(f"Set --threshold={threshold1:.5f} for system 1")
 
-        logger.info(f"Evaluating threshold on '{threshold}' set for system 2")
+        logger.info(f"Evaluating threshold on '{threshold}' set for system 2 using {steps} steps")
         threshold2 = run_evaluation(
             dataset[threshold], threshold, predictions_2, steps=steps
         )
-        logger.info(f"Set --threshold={threshold:.5f} for system 2")
+        logger.info(f"Set --threshold={threshold2:.5f} for system 2")
 
     # for a given threshold on each system, calculate patch performances
-    logger.info(f"Evaluating patch performances on '{evaluate}' set for system 1")
-    perf1 = patch_performances(data, evaluate, predictions_1, threshold1,
+    logger.info(f"Evaluating patch performances on '{evaluate}' set for system 1 using windows of size {size} and stride {stride}")
+    perf1 = patch_performances(dataset, evaluate, predictions_1, threshold1,
             size, stride)
-    logger.info(f"Evaluating patch performances on '{evaluate}' set for system 2")
-    perf2 = patch_performances(data, evaluate, predictions_2, threshold2,
+    logger.info(f"Evaluating patch performances on '{evaluate}' set for system 2 using windows of size {size} and stride {stride}")
+    perf2 = patch_performances(dataset, evaluate, predictions_2, threshold2,
             size, stride)
 
     ###### MAGIC STARTS #######
 
     # load all F1-scores for the given threshold
     da = perf1.f1_score
-    #import matplotlib
-    #matplotlib.use('macosx')
-    #import matplotlib.pyplot as plt
     db = perf2.f1_score
-    #plt.boxplot([da, db])
-    #plt.hist(numpy.array(da)-db, bins=6)
-    #plt.show()
-
     diff = da - db
+
+    import matplotlib
+    import matplotlib.pyplot as plt
+    plt.subplot(2,2,1)
+    plt.boxplot([da, db])
+    plt.title('Systems 1 and 2')
+    plt.subplot(2,2,2)
+    plt.boxplot(diff)
+    plt.title('Differences (1 - 2)')
+    plt.subplot(2,1,2)
+    plt.hist(diff, bins=50)
+    plt.title('Histogram (1 - 2)')
+    plt.savefig('analysis.pdf')
+
     #diff = diff[diff!=0.0]
     #click.echo(diff)
 

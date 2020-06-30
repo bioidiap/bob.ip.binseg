@@ -5,11 +5,11 @@ import os
 import itertools
 
 import h5py
-import tqdm
+from tqdm import tqdm
 import pandas
 import torch.nn
 
-from .evaluator import _sample_measures
+from .evaluator import _sample_measures_for_threshold
 
 
 def _patch_measures(pred, gt, threshold, size, stride):
@@ -56,8 +56,6 @@ def _patch_measures(pred, gt, threshold, size, stride):
 
     """
 
-    height, width, stride = size
-
     # we calculate the required padding so that the last windows on the left
     # and bottom size of predictions/ground-truth data are zero padded, and
     # torch unfolding works exactly.
@@ -76,26 +74,37 @@ def _patch_measures(pred, gt, threshold, size, stride):
     pred_patches = pred_padded.unfold(0, size[0], stride[0]).unfold(
         1, size[1], stride[1]
     )
-    gt_patches = gt_padded.unfold(0, size[0], stride).unfold(
-        1, size[1], stride[0]
+    gt_patches = gt_padded.unfold(0, size[0], stride[0]).unfold(
+        1, size[1], stride[1]
     )
     assert pred_patches.shape == gt_patches.shape
     ylen, xlen, _, _ = pred_patches.shape
 
-    dfs = []
-    for j, i in itertools.product(range(ylen), range(xlen)):
-        dfs.append(
-            _sample_measures(
-                pred_patches[j, i, :, :], gt_patches[j, i, :, :], steps
-            )
+    data = [
+        [j, i]
+        + _sample_measures_for_threshold(
+            pred_patches[j, i, :, :], gt_patches[j, i, :, :], threshold
         )
-        dfs[-1]["patch"] = i + (j * xlen)
+        for j, i in itertools.product(range(ylen), range(xlen))
+    ]
 
-    return pandas.concat(dfs, ignore_index=True)
+    return pandas.DataFrame(
+        data,
+        columns=(
+            "y",
+            "x",
+            "precision",
+            "recall",
+            "specificity",
+            "accuracy",
+            "jaccard",
+            "f1_score",
+        ),
+    )
 
 
 def patch_performances(
-    dataset, name, predictions_folder, threshold, size, stride,
+    dataset, name, predictions_folder, threshold, size, stride
 ):
     """
     Evaluates the performances for multiple image patches, for a whole dataset
@@ -144,7 +153,7 @@ def patch_performances(
     if not os.path.exists(use_predictions_folder):
         use_predictions_folder = predictions_folder
 
-    for sample in tqdm(dataset):
+    for sample in tqdm(dataset[name]):
         stem = sample[0]
         image = sample[1]
         gt = sample[2]
@@ -153,6 +162,6 @@ def patch_performances(
             pred = f["array"][:]
         pred = torch.from_numpy(pred)
         data.append(_patch_measures(pred, gt, threshold, size, stride))
-        data['stem'] = stem
+        data[-1]["stem"] = stem
 
     return pandas.concat(data, ignore_index=True)

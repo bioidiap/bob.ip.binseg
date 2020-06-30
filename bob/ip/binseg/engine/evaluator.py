@@ -50,6 +50,51 @@ def _posneg(pred, gt, threshold):
     return tp_tensor, fp_tensor, tn_tensor, fn_tensor
 
 
+def _sample_measures_for_threshold(pred, gt, threshold):
+    """
+    Calculates measures on one single sample, for a specific threshold
+
+
+    Parameters
+    ----------
+
+    pred : torch.Tensor
+        pixel-wise predictions
+
+    gt : torch.Tensor
+        ground-truth (annotations)
+
+    threshold : float
+        a particular threshold in which to calculate the performance
+        measures
+
+
+    Returns
+    -------
+
+    measures : list
+
+        A list containing the following values:
+
+        * precision: float
+        * recall: float
+        * specificity: float
+        * accuracy: float
+        * jaccard: float
+        * f1_score: float
+
+    """
+
+    tp_tensor, fp_tensor, tn_tensor, fn_tensor = _posneg(pred, gt, threshold)
+
+    # calc measures from scalars
+    tp_count = torch.sum(tp_tensor).item()
+    fp_count = torch.sum(fp_tensor).item()
+    tn_count = torch.sum(tn_tensor).item()
+    fn_count = torch.sum(fn_tensor).item()
+    return base_measures(tp_count, fp_count, tn_count, fn_count)
+
+
 def _sample_measures(pred, gt, steps):
     """
     Calculates measures on one single sample
@@ -87,40 +132,10 @@ def _sample_measures(pred, gt, steps):
     """
 
     step_size = 1.0 / steps
-    data = []
-
-    for index, threshold in enumerate(numpy.arange(0.0, 1.0, step_size)):
-
-        tp_tensor, fp_tensor, tn_tensor, fn_tensor = _posneg(
-            pred, gt, threshold
-        )
-
-        # calc measures from scalars
-        tp_count = torch.sum(tp_tensor).item()
-        fp_count = torch.sum(fp_tensor).item()
-        tn_count = torch.sum(tn_tensor).item()
-        fn_count = torch.sum(fn_tensor).item()
-        (
-            precision,
-            recall,
-            specificity,
-            accuracy,
-            jaccard,
-            f1_score,
-        ) = base_measures(tp_count, fp_count, tn_count, fn_count)
-
-        data.append(
-            [
-                index,
-                threshold,
-                precision,
-                recall,
-                specificity,
-                accuracy,
-                jaccard,
-                f1_score,
-            ]
-        )
+    data = [
+        [index, threshold] + _sample_measures_for_threshold(pred, gt, threshold)
+        for index, threshold in enumerate(numpy.arange(0.0, 1.0, step_size))
+    ]
 
     return pandas.DataFrame(
         data,
@@ -304,7 +319,6 @@ def run(
             os.makedirs(os.path.dirname(fullpath), exist_ok=True)
             overlay_image.save(fullpath)
 
-
     # Merges all dataframes together
     df_measures = pandas.concat(data.values())
 
@@ -321,8 +335,12 @@ def run(
     #         (avg_measures["precision"]+avg_measures["recall"])
 
     avg_measures["std_pr"] = std_measures["precision"]
-    avg_measures["pr_upper"] = avg_measures["precision"] + std_measures["precision"]
-    avg_measures["pr_lower"] = avg_measures["precision"] - std_measures["precision"]
+    avg_measures["pr_upper"] = (
+        avg_measures["precision"] + std_measures["precision"]
+    )
+    avg_measures["pr_lower"] = (
+        avg_measures["precision"] - std_measures["precision"]
+    )
     avg_measures["std_re"] = std_measures["recall"]
     avg_measures["re_upper"] = avg_measures["recall"] + std_measures["recall"]
     avg_measures["re_lower"] = avg_measures["recall"] - std_measures["recall"]
@@ -361,8 +379,9 @@ def run(
     return maxf1_threshold
 
 
-def compare_annotators(baseline, other, name, output_folder,
-        overlayed_folder=None):
+def compare_annotators(
+    baseline, other, name, output_folder, overlayed_folder=None
+):
     """
     Compares annotations on the **same** dataset
 
@@ -398,13 +417,15 @@ def compare_annotators(baseline, other, name, output_folder,
     data = {}
 
     for baseline_sample, other_sample in tqdm(
-        list(zip(baseline, other)), desc="samples", leave=False, disable=None,
+        list(zip(baseline, other)), desc="samples", leave=False, disable=None
     ):
-        assert baseline_sample[0] == other_sample[0], f"Mismatch between " \
-                f"datasets for second-annotator analysis " \
-                f"({baseline_sample[0]} != {other_sample[0]}).  This " \
-                f"typically occurs when the second annotator (`other`) " \
-                f"comes from a different dataset than the `baseline` dataset"
+        assert baseline_sample[0] == other_sample[0], (
+            f"Mismatch between "
+            f"datasets for second-annotator analysis "
+            f"({baseline_sample[0]} != {other_sample[0]}).  This "
+            f"typically occurs when the second annotator (`other`) "
+            f"comes from a different dataset than the `baseline` dataset"
+        )
 
         stem = baseline_sample[0]
         image = baseline_sample[1]
@@ -417,8 +438,9 @@ def compare_annotators(baseline, other, name, output_folder,
         data[stem] = _sample_measures(pred, gt, 2)
 
         if output_folder is not None:
-            fullpath = os.path.join(output_folder, "second-annotator", name,
-                    f"{stem}.csv")
+            fullpath = os.path.join(
+                output_folder, "second-annotator", name, f"{stem}.csv"
+            )
             tqdm.write(f"Saving {fullpath}...")
             os.makedirs(os.path.dirname(fullpath), exist_ok=True)
             data[stem].to_csv(fullpath)
@@ -427,8 +449,9 @@ def compare_annotators(baseline, other, name, output_folder,
             overlay_image = _sample_analysis(
                 image, pred, gt, threshold=0.5, overlay=True
             )
-            fullpath = os.path.join(overlayed_folder, "second-annotator",
-                    name, f"{stem}.png")
+            fullpath = os.path.join(
+                overlayed_folder, "second-annotator", name, f"{stem}.png"
+            )
             tqdm.write(f"Saving {fullpath}...")
             os.makedirs(os.path.dirname(fullpath), exist_ok=True)
             overlay_image.save(fullpath)
@@ -450,14 +473,20 @@ def compare_annotators(baseline, other, name, output_folder,
     #         (avg_measures["precision"]+avg_measures["recall"])
 
     avg_measures["std_pr"] = std_measures["precision"]
-    avg_measures["pr_upper"] = avg_measures["precision"] + std_measures["precision"]
-    avg_measures["pr_lower"] = avg_measures["precision"] - std_measures["precision"]
+    avg_measures["pr_upper"] = (
+        avg_measures["precision"] + std_measures["precision"]
+    )
+    avg_measures["pr_lower"] = (
+        avg_measures["precision"] - std_measures["precision"]
+    )
     avg_measures["std_re"] = std_measures["recall"]
     avg_measures["re_upper"] = avg_measures["recall"] + std_measures["recall"]
     avg_measures["re_lower"] = avg_measures["recall"] - std_measures["recall"]
     avg_measures["std_f1"] = std_measures["f1_score"]
 
-    measures_path = os.path.join(output_folder, "second-annotator", f"{name}.csv")
+    measures_path = os.path.join(
+        output_folder, "second-annotator", f"{name}.csv"
+    )
     os.makedirs(os.path.dirname(measures_path), exist_ok=True)
     logger.info(f"Saving averages over all input images at {measures_path}...")
     avg_measures.to_csv(measures_path)
