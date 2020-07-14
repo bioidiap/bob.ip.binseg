@@ -292,6 +292,17 @@ def _write_analysis_figures(names, da, db, folder):
     show_default=True,
     cls=ResourceOption,
 )
+@click.option(
+    "--parallel",
+    "-x",
+    help="Set the number of parallel processes to use when running using
+    multiprocessing.  A value of zero uses all reported cores.",
+    default=1,
+    type=int,
+    show_default=True,
+    required=True,
+    cls=ResourceOption,
+)
 @verbosity_option(cls=ResourceOption)
 def significance(
     names,
@@ -305,6 +316,7 @@ def significance(
     figure,
     output_folder,
     remove_outliers,
+    parallel,
     **kwargs,
 ):
     """Evaluates how significantly different are two models on the same dataset
@@ -357,7 +369,7 @@ def significance(
         size,
         stride,
         figure,
-        nproc=0,
+        nproc=parallel,
         outdir=dir1,
     )
 
@@ -377,7 +389,7 @@ def significance(
         size,
         stride,
         figure,
-        nproc=0,
+        nproc=parallel,
         outdir=dir2,
     )
 
@@ -405,7 +417,7 @@ def significance(
         size,
         stride,
         figure,
-        nproc=0,
+        nproc=parallel,
         outdir=dirdiff,
     )
 
