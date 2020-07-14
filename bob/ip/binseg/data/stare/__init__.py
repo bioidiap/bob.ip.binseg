@@ -44,21 +44,22 @@ _root_path = bob.extension.rc.get(
 )
 
 
-def _make_loader(root_path):
+class _make_loader:
     #hack to get testing on the CI working fine for this dataset
 
-    def _raw_data_loader(sample):
+    def __init__(self, root_path):
+        self.root_path = root_path
+
+    def __raw_data_loader__(self, sample):
         return dict(
-            data=load_pil_rgb(os.path.join(root_path, sample["data"])),
-            label=load_pil_1(os.path.join(root_path, sample["label"])),
+            data=load_pil_rgb(os.path.join(self.root_path, sample["data"])),
+            label=load_pil_1(os.path.join(self.root_path, sample["label"])),
         )
 
-    def _loader(context, sample):
+    def __call__(self, context, sample):
         # "context" is ignored in this case - database is homogeneous
         # we returned delayed samples to avoid loading all images at once
-        return make_delayed(sample, _raw_data_loader)
-
-    return _loader
+        return make_delayed(sample, self.__raw_data_loader__)
 
 
 def _make_dataset(root_path):
