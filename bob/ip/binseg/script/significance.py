@@ -137,7 +137,7 @@ def _eval_patches(
             f"'{system_name}' using {steps} steps"
         )
         threshold = run_evaluation(
-            dataset[threshold], threshold, predictions[0], steps=steps
+            dataset[threshold], threshold, preddir, steps=steps
         )
         logger.info(f"Set --threshold={threshold:.5f} for '{system_name}'")
 
