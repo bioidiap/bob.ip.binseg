@@ -10,6 +10,7 @@ from tqdm import tqdm
 import numpy
 import pandas
 import torch.nn
+import scipy.stats
 
 from .evaluator import _sample_measures_for_threshold
 
@@ -284,6 +285,7 @@ def _visual_dataset_performance(stem, img, n, avg, std, outdir):
     fname = os.path.join(outdir, stem + ".pdf")
     os.makedirs(os.path.dirname(fname), exist_ok=True)
     fig.savefig(fname)
+    plt.close(fig)
 
 
 def _patch_performances_for_sample(
@@ -688,3 +690,203 @@ def visual_performances(
                 data.append(df)
 
     return dict(data)
+
+
+def index_of_outliers(c):
+    """Finds indexes of outliers (+/- 1.5*IQR) on a pandas dataframe column
+
+    The IQR measures the midspread or where 50% of a normal distribution would
+    sit, if the input data is, indeed, normal.  1.5 IQR corresponds to a
+    symmetrical range that would encompass most of the data, characterizing
+    outliers (outside of that range).  Check out `this Wikipedia page
+    <https://en.wikipedia.org/wiki/Interquartile_range>` for more details.
+
+
+    Parameters
+    ----------
+
+    c : pandas.DataFrame
+        This should be a **single** column of a pandas dataframe with the
+        ``quantile`` method
+
+
+    Returns
+    -------
+
+    indexes : typing.Sequence
+        Indexes of the input column that are considered outliers in the
+        distribution (outside the 1.5 Interquartile Range).
+
+    """
+
+    iqr = c.quantile(0.75) - c.quantile(0.25)
+    limits = (c.quantile(0.25) - 1.5 * iqr, c.quantile(0.75) + 1.5 * iqr)
+    return (c < limits[0]) | (c > limits[1])
+
+
+def write_analysis_text(names, da, db, f):
+    """Writes a text file containing the most important statistics
+
+    Compares patch performances in ``da`` and ``db`` taking into consideration
+    their statistical properties.  A significance test is applied to check
+    whether observed differences in the statistics of both distributions is
+    significant.
+
+
+    Parameters
+    ==========
+
+    names : tuple
+        A tuple containing two strings which are the names of the systems being
+        analyzed
+
+    da : numpy.ndarray
+        A 1D numpy array containing all the performance figures per patch
+        analyzed and organized in a particular order (raster), for the first
+        system (first entry of ``names``)
+
+    db : numpy.ndarray
+        A 1D numpy array containing all the performance figures per patch
+        analyzed and organized in a particular order (raster), for the second
+        system (second entry of ``names``)
+
+    f : file
+        An open file that will be used dump the analysis to
+
+    """
+
+    diff = da - db
+    f.write("#Samples/Median/Avg/Std.Dev./Normality Conf. F1-scores:\n")
+    f.write(
+        f"* {names[0]}: {len(da)}" \
+        f" / {numpy.median(da):.3f}" \
+        f" / {numpy.mean(da):.3f}" \
+        f" / {numpy.std(da, ddof=1):.3f}\n"
+    )
+    f.write(
+        f"* {names[1]}: {len(db)}" \
+        f" / {numpy.median(db):.3f}" \
+        f" / {numpy.mean(db):.3f}" \
+        f" / {numpy.std(db, ddof=1):.3f}\n"
+    )
+    f.write(
+        f"* {names[0]}-{names[1]}: {len(diff)}" \
+        f" / {numpy.median(diff):.3f}" \
+        f" / {numpy.mean(diff):.3f}" \
+        f" / {numpy.std(diff, ddof=1):.3f}" \
+        f" / gaussian? p={scipy.stats.normaltest(diff)[1]:.3f}\n"
+    )
+
+    w, p = scipy.stats.ttest_rel(da, db)
+    f.write(
+        f"Paired T-test (is the difference zero?): S = {w:g}, p = {p:.5f}\n"
+    )
+
+    w, p = scipy.stats.ttest_ind(da, db, equal_var=False)
+    f.write(f"Ind. T-test (is the difference zero?): S = {w:g}, p = {p:.5f}\n")
+
+    w, p = scipy.stats.wilcoxon(diff)
+    f.write(
+        f"Wilcoxon test (is the difference zero?): W = {w:g}, p = {p:.5f}\n"
+    )
+
+    w, p = scipy.stats.wilcoxon(diff, alternative="greater")
+    f.write(
+        f"Wilcoxon test (md({names[0]}) < md({names[1]})?): " \
+        f"W = {w:g}, p = {p:.5f}\n"
+    )
+
+    w, p = scipy.stats.wilcoxon(diff, alternative="less")
+    f.write(
+        f"Wilcoxon test (md({names[0]}) > md({names[1]})?): " \
+        f"W = {w:g}, p = {p:.5f}\n"
+    )
+
+
+def write_analysis_figures(names, da, db, fname):
+    """Writes a PDF containing most important plots for analysis
+
+
+    Parameters
+    ==========
+
+    names : tuple
+        A tuple containing two strings which are the names of the systems being
+        analyzed
+
+    da : numpy.ndarray
+        A 1D numpy array containing all the performance figures per patch
+        analyzed and organized in a particular order (raster), for the first
+        system (first entry of ``names``)
+
+    db : numpy.ndarray
+        A 1D numpy array containing all the performance figures per patch
+        analyzed and organized in a particular order (raster), for the second
+        system (second entry of ``names``)
+
+    fname : str
+        The filename to use for storing the summarized performance figures
+
+    """
+
+    from matplotlib.backends.backend_pdf import PdfPages
+    import matplotlib.pyplot as plt
+
+    diff = da - db
+    bins = 50
+
+    with PdfPages(fname) as pdf:
+
+        fig = plt.figure()
+        plt.grid()
+        plt.hist(da, bins=bins)
+        plt.title(
+            f"{names[0]} - scores (N={len(da)}; M={numpy.median(da):.3f}; "
+            f"$\mu$={numpy.mean(da):.3f}; $\sigma$={numpy.std(da, ddof=1):.3f})"
+        )
+        pdf.savefig()
+        plt.close(fig)
+
+        fig = plt.figure()
+        plt.grid()
+        plt.hist(db, bins=bins)
+        plt.title(
+            f"{names[1]} - scores (N={len(db)}; M={numpy.median(db):.3f}; "
+            f"$\mu$={numpy.mean(db):.3f}; $\sigma$={numpy.std(db, ddof=1):.3f})"
+        )
+        pdf.savefig()
+        plt.close(fig)
+
+        fig = plt.figure()
+        plt.boxplot([da, db])
+        plt.title(f"{names[0]} and {names[1]} (N={len(da)})")
+        pdf.savefig()
+        plt.close(fig)
+
+        fig = plt.figure()
+        plt.boxplot(diff)
+        plt.title(f"Differences ({names[0]} - {names[1]}) (N={len(da)})")
+        pdf.savefig()
+        plt.close(fig)
+
+        fig = plt.figure()
+        plt.grid()
+        plt.hist(diff, bins=bins)
+        plt.title(
+            f"Systems ({names[0]} - {names[1]}) " \
+            f"(N={len(diff)}; M={numpy.median(diff):.3f}; " \
+            f"$\mu$={numpy.mean(diff):.3f}; " \
+            f"$\sigma$={numpy.std(diff, ddof=1):.3f})"
+        )
+        pdf.savefig()
+        plt.close(fig)
+
+        p = scipy.stats.pearsonr(da, db)
+        fig = plt.figure()
+        plt.grid()
+        plt.scatter(da, db, marker=".", color="black")
+        plt.xlabel("{names[0]}")
+        plt.ylabel("{names[1]}")
+        plt.title(f"Scatter (p={p[0]:.3f})")
+        pdf.savefig()
+        plt.close(fig)
