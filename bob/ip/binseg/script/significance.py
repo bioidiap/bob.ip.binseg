@@ -295,8 +295,8 @@ def _write_analysis_figures(names, da, db, folder):
 @click.option(
     "--parallel",
     "-x",
-    help="Set the number of parallel processes to use when running using
-    multiprocessing.  A value of zero uses all reported cores.",
+    help="Set the number of parallel processes to use when running using " \
+    "multiprocessing.  A value of zero uses all reported cores.",
     default=1,
     type=int,
     show_default=True,
