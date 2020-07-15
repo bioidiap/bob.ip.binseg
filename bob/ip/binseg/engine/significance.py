@@ -81,27 +81,21 @@ def _performance_summary(size, patch_perf, patch_size, patch_stride, figure):
     n = numpy.zeros(final_size, dtype=int)
     ylen = ((final_size[0] - patch_size[0]) // patch_stride[0]) + 1
     xlen = ((final_size[1] - patch_size[1]) // patch_stride[1]) + 1
-    for j in range(ylen):
-        for i in range(xlen):
-            yup = slice(
-                patch_stride[0] * j, (patch_stride[0] * j) + patch_size[0], 1
-            )
-            xup = slice(
-                patch_stride[1] * i, (patch_stride[1] * i) + patch_size[1], 1
-            )
-            n[yup, xup] += 1
 
     # calculates the stacked performance
-    layers = n.max()
+    layers = int(numpy.ceil(patch_size[0] / patch_stride[0]) * numpy.ceil(
+        patch_size[1] / patch_stride[1]
+    ))
     perf = numpy.zeros(
         [layers] + final_size, dtype=patch_perf[figure].iloc[0].dtype
     )
     n = -1 * numpy.ones(final_size, dtype=int)
+    col = numpy.array(patch_perf[figure])
     for j in range(ylen):
+        yup = slice(
+            patch_stride[0] * j, (patch_stride[0] * j) + patch_size[0], 1
+        )
         for i in range(xlen):
-            yup = slice(
-                patch_stride[0] * j, (patch_stride[0] * j) + patch_size[0], 1
-            )
             xup = slice(
                 patch_stride[1] * i, (patch_stride[1] * i) + patch_size[1], 1
             )
@@ -112,11 +106,9 @@ def _performance_summary(size, patch_perf, patch_size, patch_stride, figure):
                 range(xup.start, xup.stop, xup.step),
                 indexing="ij",
             )
-            perf[nup.flat, yr.flat, xr.flat] = patch_perf.loc[
-                (patch_perf["y"] == j) & (patch_perf["x"] == i)
-            ][figure]
+            perf[nup.flat, yr.flat, xr.flat] = col[(j*xlen)+i]
 
-    # for each element in the ``perf``matrix, calculated avg and std.
+    # for each element in the ``perf``matrix, calculates avg and std.
     n += 1  # adjust for starting at -1 before
     avg = perf.sum(axis=0) / n
     # calculate variances
@@ -500,7 +492,9 @@ def patch_performances(
     return dict(data)
 
 
-def _visual_performances_for_sample(size, stride, dataset, k, df, figure, outdir):
+def _visual_performances_for_sample(
+    size, stride, dataset, k, df, figure, outdir
+):
     """
     Displays patch performances per sample
 
@@ -685,7 +679,13 @@ def visual_performances(
             data = []
             for k in pbar:
                 df = _visual_performances_for_sample(
-                    size, stride, dataset[name], k, dfs[stems[k]], figure, outdir,
+                    size,
+                    stride,
+                    dataset[name],
+                    k,
+                    dfs[stems[k]],
+                    figure,
+                    outdir,
                 )
                 data.append(df)
 
@@ -758,22 +758,22 @@ def write_analysis_text(names, da, db, f):
     diff = da - db
     f.write("#Samples/Median/Avg/Std.Dev./Normality Conf. F1-scores:\n")
     f.write(
-        f"* {names[0]}: {len(da)}" \
-        f" / {numpy.median(da):.3f}" \
-        f" / {numpy.mean(da):.3f}" \
+        f"* {names[0]}: {len(da)}"
+        f" / {numpy.median(da):.3f}"
+        f" / {numpy.mean(da):.3f}"
         f" / {numpy.std(da, ddof=1):.3f}\n"
     )
     f.write(
-        f"* {names[1]}: {len(db)}" \
-        f" / {numpy.median(db):.3f}" \
-        f" / {numpy.mean(db):.3f}" \
+        f"* {names[1]}: {len(db)}"
+        f" / {numpy.median(db):.3f}"
+        f" / {numpy.mean(db):.3f}"
         f" / {numpy.std(db, ddof=1):.3f}\n"
     )
     f.write(
-        f"* {names[0]}-{names[1]}: {len(diff)}" \
-        f" / {numpy.median(diff):.3f}" \
-        f" / {numpy.mean(diff):.3f}" \
-        f" / {numpy.std(diff, ddof=1):.3f}" \
+        f"* {names[0]}-{names[1]}: {len(diff)}"
+        f" / {numpy.median(diff):.3f}"
+        f" / {numpy.mean(diff):.3f}"
+        f" / {numpy.std(diff, ddof=1):.3f}"
         f" / gaussian? p={scipy.stats.normaltest(diff)[1]:.3f}\n"
     )
 
@@ -792,13 +792,13 @@ def write_analysis_text(names, da, db, f):
 
     w, p = scipy.stats.wilcoxon(diff, alternative="greater")
     f.write(
-        f"Wilcoxon test (md({names[0]}) < md({names[1]})?): " \
+        f"Wilcoxon test (md({names[0]}) < md({names[1]})?): "
         f"W = {w:g}, p = {p:.5f}\n"
     )
 
     w, p = scipy.stats.wilcoxon(diff, alternative="less")
     f.write(
-        f"Wilcoxon test (md({names[0]}) > md({names[1]})?): " \
+        f"Wilcoxon test (md({names[0]}) > md({names[1]})?): "
         f"W = {w:g}, p = {p:.5f}\n"
     )
 
@@ -873,9 +873,9 @@ def write_analysis_figures(names, da, db, fname):
         plt.grid()
         plt.hist(diff, bins=bins)
         plt.title(
-            f"Systems ({names[0]} - {names[1]}) " \
-            f"(N={len(diff)}; M={numpy.median(diff):.3f}; " \
-            f"$\mu$={numpy.mean(diff):.3f}; " \
+            f"Systems ({names[0]} - {names[1]}) "
+            f"(N={len(diff)}; M={numpy.median(diff):.3f}; "
+            f"$\mu$={numpy.mean(diff):.3f}; "
             f"$\sigma$={numpy.std(diff, ddof=1):.3f})"
         )
         pdf.savefig()
