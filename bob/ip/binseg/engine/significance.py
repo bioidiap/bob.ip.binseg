@@ -841,7 +841,7 @@ def write_analysis_figures(names, da, db, fname):
         plt.grid()
         plt.hist(da, bins=bins)
         plt.title(
-            f"{names[0]} - scores (N={len(da)}; M={numpy.median(da):.3f}; "
+            f"{names[0]} - (N={len(da)}; M={numpy.median(da):.3f}; "
             f"$\mu$={numpy.mean(da):.3f}; $\sigma$={numpy.std(da, ddof=1):.3f})"
         )
         pdf.savefig()
@@ -851,21 +851,23 @@ def write_analysis_figures(names, da, db, fname):
         plt.grid()
         plt.hist(db, bins=bins)
         plt.title(
-            f"{names[1]} - scores (N={len(db)}; M={numpy.median(db):.3f}; "
+            f"{names[1]} - (N={len(db)}; M={numpy.median(db):.3f}; "
             f"$\mu$={numpy.mean(db):.3f}; $\sigma$={numpy.std(db, ddof=1):.3f})"
         )
         pdf.savefig()
         plt.close(fig)
 
         fig = plt.figure()
-        plt.boxplot([da, db])
-        plt.title(f"{names[0]} and {names[1]} (N={len(da)})")
+        plt.grid()
+        plt.boxplot([da, db], labels=names)
+        plt.title(f"Boxplots (N={len(da)})")
         pdf.savefig()
         plt.close(fig)
 
         fig = plt.figure()
-        plt.boxplot(diff)
-        plt.title(f"Differences ({names[0]} - {names[1]}) (N={len(da)})")
+        plt.grid()
+        plt.boxplot(diff, labels=(f"{names[0]} - {names[1]}",))
+        plt.title(f"Paired Differences (N={len(da)})")
         pdf.savefig()
         plt.close(fig)
 
@@ -873,7 +875,7 @@ def write_analysis_figures(names, da, db, fname):
         plt.grid()
         plt.hist(diff, bins=bins)
         plt.title(
-            f"Systems ({names[0]} - {names[1]}) "
+            f"Paired Differences "
             f"(N={len(diff)}; M={numpy.median(diff):.3f}; "
             f"$\mu$={numpy.mean(diff):.3f}; "
             f"$\sigma$={numpy.std(diff, ddof=1):.3f})"
@@ -885,8 +887,8 @@ def write_analysis_figures(names, da, db, fname):
         fig = plt.figure()
         plt.grid()
         plt.scatter(da, db, marker=".", color="black")
-        plt.xlabel("{names[0]}")
-        plt.ylabel("{names[1]}")
+        plt.xlabel(f"{names[0]}")
+        plt.ylabel(f"{names[1]}")
         plt.title(f"Scatter (p={p[0]:.3f})")
         pdf.savefig()
         plt.close(fig)
