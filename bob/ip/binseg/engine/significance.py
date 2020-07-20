@@ -315,10 +315,10 @@ def _patch_performances_for_sample(
 
     figure : str
         the performance figure to use for calculating patch micro performances
-        (e.g. `f1_score` or `jaccard`).  Must be available on the produced
-        performance dataframe.
+        (e.g. `accuracy`, `f1_score` or `jaccard`).  Must be available on the
+        produced performance dataframe.
 
-    outdir : :py:class:`str`
+    outdir : str
         path were to save a visual representation of patch performances.  If
         set to ``None``, then do not save those to disk.
 
