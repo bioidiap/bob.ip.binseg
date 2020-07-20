@@ -810,21 +810,27 @@ def write_analysis_text(names, da, db, f):
     w, p = scipy.stats.ttest_rel(da, db)
     f.write(f"  * Paired T (H0: same distro): S = {w:g}, p = {p:.5f}\n")
 
-    w, p = scipy.stats.wilcoxon(diff)
-    f.write("  * Wilcoxon:\n")
-    f.write(f"    * H0 = same distro: W = {w:g}, p = {p:.5f}\n")
+    try:
+        f.write("  * Wilcoxon:\n")
 
-    w, p = scipy.stats.wilcoxon(diff, alternative="greater")
-    f.write(
-        f"    * H0 = med({names[0]}) < med({names[1]}): "
-        f"W = {w:g}, p = {p:.5f}\n"
-    )
+        w, p = scipy.stats.wilcoxon(diff)
+        f.write(f"    * H0 = same distro: W = {w:g}, p = {p:.5f}\n")
 
-    w, p = scipy.stats.wilcoxon(diff, alternative="less")
-    f.write(
-        f"    * H0 = med({names[0]}) > med({names[1]}): "
-        f"W = {w:g}, p = {p:.5f}\n"
-    )
+        w, p = scipy.stats.wilcoxon(diff, alternative="greater")
+        f.write(
+            f"    * H0 = med({names[0]}) < med({names[1]}): "
+            f"W = {w:g}, p = {p:.5f}\n"
+        )
+
+        w, p = scipy.stats.wilcoxon(diff, alternative="less")
+        f.write(
+            f"    * H0 = med({names[0]}) > med({names[1]}): "
+            f"W = {w:g}, p = {p:.5f}\n"
+        )
+    except ValueError as e:
+        f.write(f"    ERROR: Differences are exactly zero between both "
+                f"patch distributions.  The Wilcoxon test does not work in "
+                f"these conditions (review your prediction directories): {e}\n")
 
 
 def write_analysis_figures(names, da, db, fname):

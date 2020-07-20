@@ -524,6 +524,69 @@ def _check_compare(runner):
             )
 
 
+def _check_significance(runner):
+
+    from ..script.significance import significance
+
+    with tempfile.NamedTemporaryFile(
+        mode="wt"
+    ) as config, stdout_logging() as buf:
+
+        config.write("from bob.ip.binseg.data.stare import _make_dataset\n")
+        config.write(f"_raw = _make_dataset('{stare_datadir}')\n")
+        config.write(
+            "from bob.ip.binseg.configs.datasets.stare import _maker\n"
+        )
+        config.write("dataset = _maker('ah', _raw)\n")
+        config.flush()
+
+        ofolder = "significance"
+        cfolder = os.path.join(ofolder, "caches")
+
+        result = runner.invoke(
+            significance,
+            [
+                "-vv",
+                config.name,
+                "--names=v1", "v2",
+                "--predictions=predictions", "predictions",
+                "--threshold=0.5",
+                "--size=64", "64",
+                "--stride=32", "32",
+                "--figure=accuracy",
+                f"--output-folder={ofolder}",
+                f"--checkpoint-folder={cfolder}",
+            ],
+        )
+        _assert_exit_0(result)
+
+        assert os.path.exists(ofolder)
+        assert os.path.exists(cfolder)
+        assert os.path.exists(os.path.join(ofolder, "analysis.pdf"))
+        assert os.path.exists(os.path.join(ofolder, "analysis.txt"))
+
+        keywords = {
+            r"^Evaluating patch 'accuracy' on": 2,
+            r"^Evaluating patch 'accuracy' differences on": 1,
+            r"^#Samples/Median/Avg/Std.Dev.": 1,
+            r"^Paired T-test": 1,
+            r"^Wilcoxon test": 3,
+        }
+        buf.seek(0)
+        logging_output = buf.read()
+
+        for k, v in keywords.items():
+            # if _str_counter(k, logging_output) != v:
+            #    print(f"Count for string '{k}' appeared " \
+            #        f"({_str_counter(k, result.output)}) " \
+            #        f"instead of the expected {v}")
+            assert _str_counter(k, logging_output) == v, (
+                f"Count for string '{k}' appeared "
+                f"({_str_counter(k, logging_output)}) "
+                f"instead of the expected {v}:\nOutput:\n{logging_output}"
+            )
+
+
 @rc_variable_set("bob.ip.binseg.stare.datadir")
 def test_discrete_experiment_stare():
 
@@ -533,6 +596,7 @@ def test_discrete_experiment_stare():
         _check_predict(runner)
         _check_evaluate(runner)
         _check_compare(runner)
+        _check_significance(runner)
 
 
 def test_train_help():
@@ -557,6 +621,12 @@ def test_compare_help():
     from ..script.compare import compare
 
     _check_help(compare)
+
+
+def test_significance_help():
+    from ..script.significance import significance
+
+    _check_help(significance)
 
 
 def test_config_help():

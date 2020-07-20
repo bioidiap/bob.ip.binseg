@@ -91,8 +91,8 @@ def _eval_patches(
         store performance visualizations.
 
     figure : str
-        The name of a performance figure (e.g. ``f1_score``, or ``jaccard``) to
-        use when comparing performances
+        The name of a performance figure (e.g. ``f1_score``, ``jaccard``, or
+        ``accuracy``) to use when comparing performances
 
     nproc : int
         Sets the number of parallel processes to use when running using
@@ -169,7 +169,7 @@ def _eval_patches(
 
     # for a given threshold on each system, calculate patch performances
     logger.info(
-        f"Evaluating patch performances on '{evaluate}' set for "
+        f"Evaluating patch '{figure}' on '{evaluate}' set for "
         f"'{system_name}' using windows of size {size} and stride {stride}"
     )
 
@@ -291,6 +291,13 @@ def _eval_differences(names, perfs, evaluate, dataset, size, stride, outdir,
     for k in perf_diff:
         for col in to_subtract:
             perf_diff[k][col] -= perfs[1][k]["df"][col]
+
+    # for a given threshold on each system, calculate patch performances
+    logger.info(
+        f"Evaluating patch '{figure}' differences on '{evaluate}' set on "
+        f"'{names[0]}-{names[1]}' using windows of size {size} and "
+        f"stride {stride}"
+    )
 
     retval = visual_performances(
         dataset,
@@ -428,7 +435,7 @@ def _eval_differences(names, perfs, evaluate, dataset, size, stride, outdir,
     "-f",
     help="The name of a performance figure (e.g. f1_score, or jaccard) to "
     "use when comparing performances",
-    default="f1_score",
+    default="accuracy",
     type=str,
     show_default=True,
     required=True,
@@ -549,8 +556,8 @@ def significance(
     )
 
     perf_diff = _eval_differences(
-            perf1,
-            perf2,
+            names,
+            (perf1, perf2),
             evaluate,
             dataset,
             size,
@@ -586,12 +593,13 @@ def significance(
     if output_folder is not None:
         fname = os.path.join(output_folder, "analysis.pdf")
         os.makedirs(os.path.dirname(fname), exist_ok=True)
+        logger.info(f"Writing analysis figures to {fname} (multipage PDF)...")
         write_analysis_figures(names, da, db, fname)
 
     if output_folder is not None:
         fname = os.path.join(output_folder, "analysis.txt")
         os.makedirs(os.path.dirname(fname), exist_ok=True)
+        logger.info(f"Writing analysis summary to {fname}...")
         with open(fname, "wt") as f:
             write_analysis_text(names, da, db, f)
-    else:
-        write_analysis_text(names, da, db, sys.stdout)
+    write_analysis_text(names, da, db, sys.stdout)
