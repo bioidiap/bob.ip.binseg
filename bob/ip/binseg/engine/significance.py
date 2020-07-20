@@ -3,6 +3,7 @@
 
 import os
 import itertools
+import textwrap
 import multiprocessing
 
 import h5py
@@ -11,6 +12,7 @@ import numpy
 import pandas
 import torch.nn
 import scipy.stats
+import tabulate
 
 from .evaluator import _sample_measures_for_threshold
 
@@ -83,9 +85,10 @@ def _performance_summary(size, patch_perf, patch_size, patch_stride, figure):
     xlen = ((final_size[1] - patch_size[1]) // patch_stride[1]) + 1
 
     # calculates the stacked performance
-    layers = int(numpy.ceil(patch_size[0] / patch_stride[0]) * numpy.ceil(
-        patch_size[1] / patch_stride[1]
-    ))
+    layers = int(
+        numpy.ceil(patch_size[0] / patch_stride[0])
+        * numpy.ceil(patch_size[1] / patch_stride[1])
+    )
     perf = numpy.zeros(
         [layers] + final_size, dtype=patch_perf[figure].iloc[0].dtype
     )
@@ -106,7 +109,7 @@ def _performance_summary(size, patch_perf, patch_size, patch_stride, figure):
                 range(xup.start, xup.stop, xup.step),
                 indexing="ij",
             )
-            perf[nup.flat, yr.flat, xr.flat] = col[(j*xlen)+i]
+            perf[nup.flat, yr.flat, xr.flat] = col[(j * xlen) + i]
 
     # for each element in the ``perf``matrix, calculates avg and std.
     n += 1  # adjust for starting at -1 before
@@ -756,49 +759,70 @@ def write_analysis_text(names, da, db, f):
     """
 
     diff = da - db
-    f.write("#Samples/Median/Avg/Std.Dev./Normality Conf. F1-scores:\n")
-    f.write(
-        f"* {names[0]}: {len(da)}"
-        f" / {numpy.median(da):.3f}"
-        f" / {numpy.mean(da):.3f}"
-        f" / {numpy.std(da, ddof=1):.3f}\n"
-    )
-    f.write(
-        f"* {names[1]}: {len(db)}"
-        f" / {numpy.median(db):.3f}"
-        f" / {numpy.mean(db):.3f}"
-        f" / {numpy.std(db, ddof=1):.3f}\n"
-    )
-    f.write(
-        f"* {names[0]}-{names[1]}: {len(diff)}"
-        f" / {numpy.median(diff):.3f}"
-        f" / {numpy.mean(diff):.3f}"
-        f" / {numpy.std(diff, ddof=1):.3f}"
-        f" / gaussian? p={scipy.stats.normaltest(diff)[1]:.3f}\n"
-    )
+    f.write("Basic statistics from distributions:\n")
 
+    headers = [
+        "system",
+        "samples",
+        "median",
+        "average",
+        "std.dev.",
+        "normaltest (p)",
+    ]
+    table = [
+        [
+            names[0],
+            len(da),
+            numpy.median(da),
+            numpy.mean(da),
+            numpy.std(da, ddof=1),
+            scipy.stats.normaltest(da)[1],
+        ],
+        [
+            names[1],
+            len(db),
+            numpy.median(db),
+            numpy.mean(db),
+            numpy.std(db, ddof=1),
+            scipy.stats.normaltest(db)[1],
+        ],
+        [
+            "differences",
+            len(diff),
+            numpy.median(diff),
+            numpy.mean(diff),
+            numpy.std(diff, ddof=1),
+            scipy.stats.normaltest(diff)[1],
+        ],
+    ]
+    tdata = tabulate.tabulate(table, headers, tablefmt="rst", floatfmt=".3f")
+    f.write(textwrap.indent(tdata, "  "))
+    f.write("\n")
+
+    # Note: dependent variable = patch performance figure in our case
+    # Assumptions of a Paired T-test:
+    # * The dependent variable must be continuous (interval/ratio). [OK]
+    # * The observations are independent of one another. [OK]
+    # * The dependent variable should be approximately normally distributed. [!!!]
+    # * The dependent variable should not contain any outliers. [OK]
+
+    f.write("\nPaired Significance Tests:\n")
     w, p = scipy.stats.ttest_rel(da, db)
-    f.write(
-        f"Paired T-test (is the difference zero?): S = {w:g}, p = {p:.5f}\n"
-    )
-
-    w, p = scipy.stats.ttest_ind(da, db, equal_var=False)
-    f.write(f"Ind. T-test (is the difference zero?): S = {w:g}, p = {p:.5f}\n")
+    f.write(f"  * Paired T (H0: same distro): S = {w:g}, p = {p:.5f}\n")
 
     w, p = scipy.stats.wilcoxon(diff)
-    f.write(
-        f"Wilcoxon test (is the difference zero?): W = {w:g}, p = {p:.5f}\n"
-    )
+    f.write("  * Wilcoxon:\n")
+    f.write(f"    * H0 = same distro: W = {w:g}, p = {p:.5f}\n")
 
     w, p = scipy.stats.wilcoxon(diff, alternative="greater")
     f.write(
-        f"Wilcoxon test (md({names[0]}) < md({names[1]})?): "
+        f"    * H0 = med({names[0]}) < med({names[1]}): "
         f"W = {w:g}, p = {p:.5f}\n"
     )
 
     w, p = scipy.stats.wilcoxon(diff, alternative="less")
     f.write(
-        f"Wilcoxon test (md({names[0]}) > md({names[1]})?): "
+        f"    * H0 = med({names[0]}) > med({names[1]}): "
         f"W = {w:g}, p = {p:.5f}\n"
     )
 
