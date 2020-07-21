@@ -568,9 +568,10 @@ def _check_significance(runner):
         keywords = {
             r"^Evaluating patch 'accuracy' on": 2,
             r"^Evaluating patch 'accuracy' differences on": 1,
-            r"^#Samples/Median/Avg/Std.Dev.": 1,
-            r"^Paired T-test": 1,
-            r"^Wilcoxon test": 3,
+            #r"^Basic statistics from distributions:$": 1,
+            r"^Writing analysis figures": 1,
+            r"^Writing analysis summary": 1,
+            r"^Differences are exactly zero": 2,
         }
         buf.seek(0)
         logging_output = buf.read()

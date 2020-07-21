@@ -6,6 +6,9 @@ import itertools
 import textwrap
 import multiprocessing
 
+import logging
+logger = logging.getLogger(__name__)
+
 import h5py
 from tqdm import tqdm
 import numpy
@@ -806,31 +809,34 @@ def write_analysis_text(names, da, db, f):
     # * The dependent variable should be approximately normally distributed. [!!!]
     # * The dependent variable should not contain any outliers. [OK]
 
-    f.write("\nPaired Significance Tests:\n")
+    if (diff == 0.0).all():
+        logger.error("Differences are exactly zero between both "
+                "patch distributions, for **all** samples.  Statistical "
+                "significance tests are not meaningful in this context and "
+                "will be skipped.  This typically indicates an issue with "
+                "the setup of prediction folders (duplicated?)")
+        return
+
+    f.write("\nPaired significance tests:\n")
     w, p = scipy.stats.ttest_rel(da, db)
     f.write(f"  * Paired T (H0: same distro): S = {w:g}, p = {p:.5f}\n")
 
-    try:
-        f.write("  * Wilcoxon:\n")
+    f.write("  * Wilcoxon:\n")
 
-        w, p = scipy.stats.wilcoxon(diff)
-        f.write(f"    * H0 = same distro: W = {w:g}, p = {p:.5f}\n")
+    w, p = scipy.stats.wilcoxon(diff)
+    f.write(f"    * H0 = same distro: W = {w:g}, p = {p:.5f}\n")
 
-        w, p = scipy.stats.wilcoxon(diff, alternative="greater")
-        f.write(
-            f"    * H0 = med({names[0]}) < med({names[1]}): "
-            f"W = {w:g}, p = {p:.5f}\n"
-        )
+    w, p = scipy.stats.wilcoxon(diff, alternative="greater")
+    f.write(
+        f"    * H0 = med({names[0]}) < med({names[1]}): "
+        f"W = {w:g}, p = {p:.5f}\n"
+    )
 
-        w, p = scipy.stats.wilcoxon(diff, alternative="less")
-        f.write(
-            f"    * H0 = med({names[0]}) > med({names[1]}): "
-            f"W = {w:g}, p = {p:.5f}\n"
-        )
-    except ValueError as e:
-        f.write(f"    ERROR: Differences are exactly zero between both "
-                f"patch distributions.  The Wilcoxon test does not work in "
-                f"these conditions (review your prediction directories): {e}\n")
+    w, p = scipy.stats.wilcoxon(diff, alternative="less")
+    f.write(
+        f"    * H0 = med({names[0]}) > med({names[1]}): "
+        f"W = {w:g}, p = {p:.5f}\n"
+    )
 
 
 def write_analysis_figures(names, da, db, fname):
