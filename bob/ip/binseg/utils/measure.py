@@ -28,6 +28,12 @@ class SmoothedValue:
         return d.mean().item()
 
 
+def tricky_division(n, d):
+    """Divides n by d.  Returns 0.0 in case of a division by zero"""
+
+    return n/(d+(d==0))
+
+
 def base_measures(tp, fp, tn, fn):
     """Calculates measures from true/false positive and negative counts
 
@@ -105,16 +111,14 @@ def base_measures(tp, fp, tn, fn):
 
     """
 
-    tp = float(tp)
-    tn = float(tn)
-    precision = tp / (tp + fp + ((tp + fp) == 0))
-    recall = tp / (tp + fn + ((tp + fn) == 0))
-    specificity = tn / (fp + tn + ((fp + tn) == 0))
-    accuracy = (tp + tn) / (tp + fp + fn + tn)
-    jaccard = tp / (tp + fp + fn + ((tp + fp + fn) == 0))
-    f1_score = (2.0 * tp) / (2.0 * tp + fp + fn + ((2.0 * tp + fp + fn) == 0))
-    # f1_score = (2.0 * precision * recall) / (precision + recall)
-    return [precision, recall, specificity, accuracy, jaccard, f1_score]
+    return (
+            tricky_division(tp, tp + fp),                #precision
+            tricky_division(tp, tp + fn),                #recall
+            tricky_division(tn, fp + tn),                #specificity
+            tricky_division(tp + tn, tp + fp + fn + tn), #accuracy
+            tricky_division(tp, tp + fp + fn),           #jaccard index
+            tricky_division(2*tp, (2*tp) + fp + fn),     #f1-score
+            )
 
 
 def auc(x, y):
