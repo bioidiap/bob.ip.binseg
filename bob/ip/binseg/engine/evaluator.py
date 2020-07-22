@@ -72,16 +72,17 @@ def _sample_measures_for_threshold(pred, gt, threshold):
     Returns
     -------
 
-    measures : list
+    precision: float
 
-        A list containing the following values:
+    recall: float
 
-        * precision: float
-        * recall: float
-        * specificity: float
-        * accuracy: float
-        * jaccard: float
-        * f1_score: float
+    specificity: float
+
+    accuracy: float
+
+    jaccard: float
+
+    f1_score: float
 
     """
 
@@ -133,7 +134,7 @@ def _sample_measures(pred, gt, steps):
 
     step_size = 1.0 / steps
     data = [
-        [index, threshold] + _sample_measures_for_threshold(pred, gt, threshold)
+        (index, threshold) + _sample_measures_for_threshold(pred, gt, threshold)
         for index, threshold in enumerate(numpy.arange(0.0, 1.0, step_size))
     ]
 

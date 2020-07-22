@@ -195,7 +195,7 @@ def _patch_measures(pred, gt, threshold, size, stride):
     ylen, xlen, _, _ = pred_patches.shape
 
     data = [
-        [j, i]
+        (j, i)
         + _sample_measures_for_threshold(
             pred_patches[j, i, :, :], gt_patches[j, i, :, :], threshold
         )
