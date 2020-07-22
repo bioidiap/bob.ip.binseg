@@ -6,7 +6,7 @@ package:
   version: {{ environ.get('BOB_PACKAGE_VERSION', '0.0.1') }}
 
 build:
-  skip: true  # [not linux]
+  skip: true  # [not (linux or (osx and py==37))]
   number: {{ environ.get('BOB_BUILD_NUMBER', 0) }}
   run_exports:
     - {{ pin_subpackage(name) }}
@@ -29,7 +29,7 @@ requirements:
     - scipy {{ scipy }}
     - h5py {{ h5py }}
     - pytorch {{ pytorch }}
-    - torchvision  {{ torchvision }} # [linux]
+    - torchvision  {{ torchvision }}  # [linux or (osx and py==37)]
     - bob.extension
   run:
     - python
@@ -37,7 +37,7 @@ requirements:
     - {{ pin_compatible('numpy') }}
     - {{ pin_compatible('scipy') }}
     - {{ pin_compatible('pytorch') }}
-    - {{ pin_compatible('torchvision') }} # [linux]
+    - {{ pin_compatible('torchvision') }}  # [linux or (osx and py==37)]
     - matplotlib
     - pandas
     - pillow
