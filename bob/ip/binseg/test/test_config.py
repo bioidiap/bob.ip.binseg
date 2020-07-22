@@ -351,11 +351,27 @@ def test_hrf():
             assert s[1].max() <= 1.0
             assert s[1].min() >= 0.0
 
+    def _check_subset_fullres(samples, size):
+        nose.tools.eq_(len(samples), size)
+        for s in samples:
+            nose.tools.eq_(len(s), 4)
+            assert isinstance(s[0], str)
+            nose.tools.eq_(s[1].shape, (3, 2336, 3296)) #planes, height, width
+            nose.tools.eq_(s[1].dtype, torch.float32)
+            nose.tools.eq_(s[2].shape, (1, 2336, 3296)) #planes, height, width
+            nose.tools.eq_(s[2].dtype, torch.float32)
+            nose.tools.eq_(s[3].shape, (1, 2336, 3296)) #planes, height, width
+            nose.tools.eq_(s[3].dtype, torch.float32)
+            assert s[1].max() <= 1.0
+            assert s[1].min() >= 0.0
+
     from ..configs.datasets.hrf.default import dataset
-    nose.tools.eq_(len(dataset), 4)
+    nose.tools.eq_(len(dataset), 6)
     _check_subset(dataset["__train__"], 15)
     _check_subset(dataset["train"], 15)
     _check_subset(dataset["test"], 30)
+    _check_subset_fullres(dataset["train (full resolution)"], 15)
+    _check_subset_fullres(dataset["test (full resolution)"], 30)
 
 
 @rc_variable_set("bob.ip.binseg.drive.datadir")
@@ -366,7 +382,7 @@ def test_hrf():
 def test_hrf_mtest():
 
     from ..configs.datasets.hrf.mtest import dataset
-    nose.tools.eq_(len(dataset), 10)
+    nose.tools.eq_(len(dataset), 12)
 
     from ..configs.datasets.hrf.default import dataset as baseline
     nose.tools.eq_(dataset["train"], baseline["train"])
@@ -395,7 +411,7 @@ def test_hrf_mtest():
 def test_hrf_covd():
 
     from ..configs.datasets.hrf.covd import dataset
-    nose.tools.eq_(len(dataset), 4)
+    nose.tools.eq_(len(dataset), 6)
 
     from ..configs.datasets.hrf.default import dataset as baseline
     nose.tools.eq_(dataset["train"], dataset["__valid__"])

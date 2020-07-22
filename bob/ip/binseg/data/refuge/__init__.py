@@ -54,8 +54,9 @@ def _disc_loader(sample):
     retval = dict(
         data=load_pil_rgb(os.path.join(_root_path, sample["data"])),
         label=load_pil_rgb(os.path.join(_root_path, sample["label"])),
-        glaucoma=sample["glaucoma"],
     )
+    if "glaucoma" in sample:
+        retval["glaucoma"] = sample["glaucoma"]
     retval["label"] = retval["label"].convert("L")
     retval["label"] = retval["label"].point(lambda p: p <= 150, mode="1")
     return retval
@@ -65,8 +66,9 @@ def _cup_loader(sample):
     retval = dict(
         data=load_pil_rgb(os.path.join(_root_path, sample["data"])),
         label=load_pil_rgb(os.path.join(_root_path, sample["label"])),
-        glaucoma=sample["glaucoma"],
     )
+    if "glaucoma" in sample:
+        retval["glaucoma"] = sample["glaucoma"]
     retval["label"] = retval["label"].convert("L")
     retval["label"] = retval["label"].point(lambda p: p <= 100, mode="1")
     return retval
@@ -74,7 +76,6 @@ def _cup_loader(sample):
 
 def _loader(context, sample):
 
-    sample["glaucoma"] = False
     if context["subset"] == "train":
         # adds binary metadata for glaucoma/non-glaucoma patients
         sample["glaucoma"] = os.path.basename(sample["label"]).startswith("g")
