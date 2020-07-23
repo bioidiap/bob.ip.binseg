@@ -128,7 +128,7 @@ def _performance_summary(size, winperf, winsize, winstride, figure):
     # calculate variances
     std = numpy.zeros_like(avg)
     for k in range(2, n.max() + 1):
-        std[n == k] = perf[: (k + 1), :, :].std(axis=0, ddof=1)[n == k]
+        std[n == k] = perf[:k].std(axis=0, ddof=1)[n == k]
 
     return n, avg, std
 
