@@ -2,7 +2,6 @@
 # coding=utf-8
 
 import os
-import itertools
 import textwrap
 import multiprocessing
 
@@ -12,7 +11,6 @@ logger = logging.getLogger(__name__)
 import h5py
 from tqdm import tqdm
 import numpy
-import pandas
 import torch.nn
 import scipy.stats
 import tabulate
@@ -20,13 +18,24 @@ import tabulate
 from .evaluator import _sample_measures_for_threshold
 
 
-def _performance_summary(size, patch_perf, patch_size, patch_stride, figure):
+PERFORMANCE_FIGURES = [
+        "precision",
+        "recall",
+        "specificity",
+        "accuracy",
+        "jaccard",
+        "f1_score",
+        ]
+"""List of performance figures supported by this module, in order"""
+
+
+def _performance_summary(size, winperf, winsize, winstride, figure):
     """Generates an array that represents the performance per pixel of the
     original image
 
     The returned array corresponds to a stacked version of performances for
-    each pixel in the original image taking into consideration the patch
-    performances, their size and stride.
+    each pixel in the original image taking into consideration the sliding
+    window performances, their size and stride.
 
 
     Parameters
@@ -36,17 +45,20 @@ def _performance_summary(size, patch_perf, patch_size, patch_stride, figure):
         A two tuple with the original height and width of the image being
         analyzed
 
-    patch_perf : typing.Sequence
-        An ordered sequence of patch performances (in raster direction - every
-        row, from left to right and then rows from top to bottom).
+    winperf : numpy.ndarray
+        A 3D array with shape ``(N, H, W)``, where ``N`` represents the number
+        of performance measures supported by this module, ``(H,W)`` is the
+        total number of vertical and horizontal sliding windows.
 
-    patch_size : tuple
-        A two tuple that indicates the size of each patch (height, width)
+    winsize : tuple
+        A two tuple that indicates the size of the sliding window (height,
+        width)
 
-    patch_stride: tuple
-        A two tuple that indicates the stride of each patch (height, width)
+    winstride : tuple
+        A two tuple that indicates the stride of the sliding window (height,
+        width)
 
-    figure: str
+    figure : str
         Name of the performance figure to use for the summary
 
 
@@ -59,14 +71,13 @@ def _performance_summary(size, patch_perf, patch_size, patch_stride, figure):
 
     avg : numpy.ndarray
         A 2D numpy array containing the average performances for every pixel on
-        the input image considering the patch sizes and strides applied when
-        windowing the image
+        the input image considering the sliding window sizes and strides
+        applied to the image
 
     std : numpy.ndarray
         A 2D numpy array containing the (unbiased) standard deviations for the
         provided performance figure, for every pixel on the input image
-        considering the patch sizes and strides applied when windowing the
-        image
+        considering the sliding window sizes and strides applied to the image
 
     """
 
@@ -77,33 +88,30 @@ def _performance_summary(size, patch_perf, patch_size, patch_stride, figure):
     # torch unfolding works exactly.  The last windows on the left and bottom
     # parts of the image may be extended with zeros.
     final_size = list(size)
-    rem = (size[0] - patch_size[0]) % patch_stride[0]
+    rem = (size[0] - winsize[0]) % winstride[0]
     if rem != 0:
-        final_size[0] += patch_stride[0] - rem
-    rem = (size[1] - patch_size[1]) % patch_stride[1]
+        final_size[0] += winstride[0] - rem
+    rem = (size[1] - winsize[1]) % winstride[1]
     if rem != 0:
-        final_size[1] += patch_stride[1] - rem
+        final_size[1] += winstride[1] - rem
     n = numpy.zeros(final_size, dtype=int)
-    ylen = ((final_size[0] - patch_size[0]) // patch_stride[0]) + 1
-    xlen = ((final_size[1] - patch_size[1]) // patch_stride[1]) + 1
 
     # calculates the stacked performance
     layers = int(
-        numpy.ceil(patch_size[0] / patch_stride[0])
-        * numpy.ceil(patch_size[1] / patch_stride[1])
+        numpy.ceil(winsize[0] / winstride[0])
+        * numpy.ceil(winsize[1] / winstride[1])
     )
-    perf = numpy.zeros(
-        [layers] + final_size, dtype=patch_perf[figure].iloc[0].dtype
-    )
+    figindex = PERFORMANCE_FIGURES.index(figure)
+    perf = numpy.zeros([layers] + final_size, dtype=winperf.dtype)
     n = -1 * numpy.ones(final_size, dtype=int)
-    col = numpy.array(patch_perf[figure])
-    for j in range(ylen):
+    data = winperf[PERFORMANCE_FIGURES.index(figure)]
+    for j in range(data.shape[0]):
         yup = slice(
-            patch_stride[0] * j, (patch_stride[0] * j) + patch_size[0], 1
+            winstride[0] * j, (winstride[0] * j) + winsize[0], 1
         )
-        for i in range(xlen):
+        for i in range(data.shape[1]):
             xup = slice(
-                patch_stride[1] * i, (patch_stride[1] * i) + patch_size[1], 1
+                winstride[1] * i, (winstride[1] * i) + winsize[1], 1
             )
             nup = n[yup, xup]
             nup += 1
@@ -112,7 +120,7 @@ def _performance_summary(size, patch_perf, patch_size, patch_stride, figure):
                 range(xup.start, xup.stop, xup.step),
                 indexing="ij",
             )
-            perf[nup.flat, yr.flat, xr.flat] = col[(j * xlen) + i]
+            perf[nup.flat, yr.flat, xr.flat] = data[j, i]
 
     # for each element in the ``perf``matrix, calculates avg and std.
     n += 1  # adjust for starting at -1 before
@@ -125,9 +133,9 @@ def _performance_summary(size, patch_perf, patch_size, patch_stride, figure):
     return n, avg, std
 
 
-def _patch_measures(pred, gt, threshold, size, stride):
+def _winperf_measures(pred, gt, threshold, size, stride):
     """
-    Calculates measures on patches of a single sample
+    Calculates measures on sliding windows of a single sample
 
 
     Parameters
@@ -140,7 +148,7 @@ def _patch_measures(pred, gt, threshold, size, stride):
         ground-truth (annotations)
 
     threshold : float
-        threshold to use for evaluating individual patch performances
+        threshold to use for evaluating individual sliding window performances
 
     size : tuple
         size (vertical, horizontal) for windows for which we will calculate
@@ -154,18 +162,15 @@ def _patch_measures(pred, gt, threshold, size, stride):
     Returns
     -------
 
-    measures : pandas.DataFrame
+    measures : numpy.ndarray
 
-        A pandas dataframe with the following columns:
+        A 3D float array with all supported performance entries for each
+        sliding window.
 
-        * patch: int
-        * threshold: float
-        * precision: float
-        * recall: float
-        * specificity: float
-        * accuracy: float
-        * jaccard: float
-        * f1_score: float
+        The first dimension of the array is therefore 6.  The other two
+        dimensions correspond to resulting size of the sliding window operation
+        applied to the input data and taking into consideration the sliding
+        window size and the stride.
 
     """
 
@@ -185,36 +190,20 @@ def _patch_measures(pred, gt, threshold, size, stride):
     gt_padded = torch.nn.functional.pad(gt.squeeze(0), padding)
 
     # this will create as many views as required
-    pred_patches = pred_padded.unfold(0, size[0], stride[0]).unfold(
+    pred_windows = pred_padded.unfold(0, size[0], stride[0]).unfold(
         1, size[1], stride[1]
     )
-    gt_patches = gt_padded.unfold(0, size[0], stride[0]).unfold(
+    gt_windows = gt_padded.unfold(0, size[0], stride[0]).unfold(
         1, size[1], stride[1]
     )
-    assert pred_patches.shape == gt_patches.shape
-    ylen, xlen, _, _ = pred_patches.shape
+    assert pred_windows.shape == gt_windows.shape
+    ylen, xlen, _, _ = pred_windows.shape
 
-    data = [
-        (j, i)
-        + _sample_measures_for_threshold(
-            pred_patches[j, i, :, :], gt_patches[j, i, :, :], threshold
+    retval = numpy.array([_sample_measures_for_threshold(
+            pred_windows[j, i, :, :], gt_windows[j, i, :, :], threshold
         )
-        for j, i in itertools.product(range(ylen), range(xlen))
-    ]
-
-    return pandas.DataFrame(
-        data,
-        columns=(
-            "y",
-            "x",
-            "precision",
-            "recall",
-            "specificity",
-            "accuracy",
-            "jaccard",
-            "f1_score",
-        ),
-    )
+        for j in range(ylen) for i in range(xlen)])
+    return retval.transpose(1,0).reshape(6, ylen, xlen)
 
 
 def _visual_dataset_performance(stem, img, n, avg, std, outdir):
@@ -286,11 +275,11 @@ def _visual_dataset_performance(stem, img, n, avg, std, outdir):
     plt.close(fig)
 
 
-def _patch_performances_for_sample(
+def _winperf_for_sample(
     basedir, threshold, size, stride, dataset, k, figure, outdir,
 ):
     """
-    Evaluates patch performances per sample
+    Evaluates sliding window performances per sample
 
 
     Parameters
@@ -317,16 +306,17 @@ def _patch_performances_for_sample(
 
     k : int
         the sample number (order inside the dataset, starting from zero), to
-        calculate patch performances for
+        calculate sliding window performances for
 
     figure : str
-        the performance figure to use for calculating patch micro performances
-        (e.g. `accuracy`, `f1_score` or `jaccard`).  Must be available on the
-        produced performance dataframe.
+        the performance figure to use for calculating sliding window micro
+        performances (e.g. `accuracy`, `f1_score` or `jaccard`).  Must be
+        a supported performance figure as defined in
+        :py:attr:`PERFORMANCE_FIGURES`
 
     outdir : str
-        path were to save a visual representation of patch performances.  If
-        set to ``None``, then do not save those to disk.
+        path were to save a visual representation of sliding window
+        performances.  If set to ``None``, then do not save those to disk.
 
 
     Returns
@@ -338,8 +328,8 @@ def _patch_performances_for_sample(
     data : dict
         A dictionary containing the following fields:
 
-        * ``df``: a :py:class:`pandas.DataFrame` with the patch performance
-          figures in raster scan order.
+        * ``winperf``: a 3D :py:class:`numpy.ndarray` with the sliding window
+          performance figures
         * ``n``: a 2D integer :py:class:`numpy.ndarray` with the same size as
           the original image pertaining to the analyzed sample, that indicates
           how many overlapping windows are available for each pixel in the
@@ -356,16 +346,16 @@ def _patch_performances_for_sample(
     sample = dataset[k]
     with h5py.File(os.path.join(basedir, sample[0] + ".hdf5"), "r") as f:
         pred = torch.from_numpy(f["array"][:])
-    df = _patch_measures(pred, sample[2], threshold, size, stride)
+    winperf = _winperf_measures(pred, sample[2], threshold, size, stride)
     n, avg, std = _performance_summary(
-        sample[1].shape[1:], df, size, stride, figure
+        sample[1].shape[1:], winperf, size, stride, figure
     )
     if outdir is not None:
         _visual_dataset_performance(sample[0], sample[1], n, avg, std, outdir)
-    return sample[0], dict(df=df, n=n, avg=avg, std=std)
+    return sample[0], dict(winperf=winperf, n=n, avg=avg, std=std)
 
 
-def patch_performances(
+def sliding_window_performances(
     dataset,
     name,
     predictions_folder,
@@ -377,7 +367,7 @@ def patch_performances(
     outdir=None,
 ):
     """
-    Evaluates the performances for multiple image patches, for a whole dataset
+    Evaluates sliding window performances for a whole dataset
 
 
     Parameters
@@ -407,7 +397,8 @@ def patch_performances(
         partial performances based on the threshold and existing ground-truth
 
     figure : str
-        the performance figure to use for calculating patch micro performances
+        the performance figure to use for calculating sliding window micro
+        performances
 
     nproc : :py:class:`int`, Optional
         the number of processing cores to use for performance evaluation.
@@ -417,8 +408,8 @@ def patch_performances(
         multiprocessing.
 
     outdir : :py:class:`str`, Optional
-        path were to save a visual representation of patch performances.  If
-        set to ``None``, then do not save those to disk.
+        path were to save a visual representation of sliding window
+        performances.  If set to ``None``, then do not save those to disk.
 
 
     Returns
@@ -428,23 +419,21 @@ def patch_performances(
         A dictionary in which keys are filename stems and values are
         dictionaries with the following contents:
 
-        ``df``: :py:class:`pandas.DataFrame`
-            A dataframe with all the patch performances aggregated, for all
-            input images.
+        ``winperf``: numpy.ndarray
 
-        ``n`` : :py:class:`numpy.ndarray`
+        ``n`` : numpy.ndarray
             A 2D numpy array containing the number of performance scores for
             every pixel in the original image
 
         ``avg`` : :py:class:`numpy.ndarray`
             A 2D numpy array containing the average performances for every
-            pixel on the input image considering the patch sizes and strides
-            applied when windowing the image
+            pixel on the input image considering the sliding window sizes and
+            strides applied to the image
 
         ``std`` : :py:class:`numpy.ndarray`
             A 2D numpy array containing the (unbiased) standard deviations for
             the provided performance figure, for every pixel on the input image
-            considering the patch sizes and strides applied when windowing the
+            considering the sliding window sizes and strides applied to the
             image
 
     """
@@ -453,7 +442,7 @@ def patch_performances(
     if not os.path.exists(use_predictions_folder):
         use_predictions_folder = predictions_folder
 
-    with tqdm(range(len(dataset[name])), desc="patch-perf") as pbar:
+    with tqdm(range(len(dataset[name])), desc="sld-win-perf") as pbar:
         # we avoid the multiprocessing module if nproc==1
         # so it is easier to run ipdb
         if nproc != 1:
@@ -462,7 +451,7 @@ def patch_performances(
             pool = multiprocessing.Pool(nproc)
             results = [
                 pool.apply_async(
-                    _patch_performances_for_sample,
+                    _winperf_for_sample,
                     args=(
                         use_predictions_folder,
                         threshold,
@@ -483,7 +472,7 @@ def patch_performances(
         else:
             data = []
             for k in pbar:
-                df = _patch_performances_for_sample(
+                winperf = _winperf_for_sample(
                     use_predictions_folder,
                     threshold,
                     size,
@@ -493,21 +482,22 @@ def patch_performances(
                     figure,
                     outdir,
                 )
-                data.append(df)
+                data.append(winperf)
 
     return dict(data)
 
 
 def _visual_performances_for_sample(
-    size, stride, dataset, k, df, figure, outdir
+    size, stride, dataset, k, winperf, figure, outdir
 ):
     """
-    Displays patch performances per sample
+    Displays sliding windows performances per sample
 
-    This is a simplified version of :py:func:`_patch_performances_for_sample`
-    in which the patch performances are not recalculated and used as input.  It
-    can be used in case you have the patch performances stored in disk or if
-    you're evaluating differences between patches of 2 different systems.
+    This is a simplified version of :py:func:`_winper_for_sample`
+    in which the sliding window performances are not recalculated and used as
+    input.  It can be used in case you have the sliding window performances
+    stored in disk or if you're evaluating differences between sliding windows
+    of 2 different systems.
 
 
     Parameters
@@ -526,20 +516,21 @@ def _visual_performances_for_sample(
 
     k : int
         the sample number (order inside the dataset, starting from zero), to
-        calculate patch performances for
+        calculate sliding window performances for
 
-    df : pandas.DataFrame
-        the previously calculated dataframe to use for this patch performance
+    winperf : numpy.ndarray
+        the previously calculated sliding window performances to use for this
         assessment.
 
     figure : str
-        the performance figure to use for calculating patch micro performances
-        (e.g. `f1_score` or `jaccard`).  Must be available on the produced
-        performance dataframe.
+        the performance figure to use for calculating sliding window micro
+        performances (e.g. `accuracy`, `f1_score` or `jaccard`).  Must be
+        a supported performance figure as defined in
+        :py:attr:`PERFORMANCE_FIGURES`
 
     outdir : :py:class:`str`
-        path were to save a visual representation of patch performances.  If
-        set to ``None``, then do not save those to disk.
+        path were to save a visual representation of sliding window
+        performances.  If set to ``None``, then do not save those to disk.
 
 
     Returns
@@ -551,9 +542,9 @@ def _visual_performances_for_sample(
     data : dict
         A dictionary containing the following fields:
 
-        * ``df``: a :py:class:`pandas.DataFrame` with the patch performance
-          figures in raster scan order.  Notice this is just a copy of the
-          input data frame with the same name.
+        * ``winperf``: a 3D float :py:class:`numpy.ndarray` with the sliding
+          window performance figures.  Notice this is just a copy of the input
+          sliding window performance figures with the same name.
         * ``n``: a 2D integer :py:class:`numpy.ndarray` with the same size as
           the original image pertaining to the analyzed sample, that indicates
           how many overlapping windows are available for each pixel in the
@@ -569,23 +560,24 @@ def _visual_performances_for_sample(
 
     sample = dataset[k]
     n, avg, std = _performance_summary(
-        sample[1].shape[1:], df, size, stride, figure
+        sample[1].shape[1:], winperf, size, stride, figure
     )
     if outdir is not None:
         _visual_dataset_performance(sample[0], sample[1], n, avg, std, outdir)
-    return sample[0], dict(df=df, n=n, avg=avg, std=std)
+    return sample[0], dict(winperf=winperf, n=n, avg=avg, std=std)
 
 
 def visual_performances(
-    dataset, name, dfs, size, stride, figure, nproc=1, outdir=None,
+    dataset, name, winperfs, size, stride, figure, nproc=1, outdir=None,
 ):
     """
-    Displays the performances for multiple image patches, for a whole dataset
+    Displays the performances for for a whole dataset
 
-    This is a simplified version of :py:func:`patch_performances` in which the
-    patch performances are not recalculated and used as input.  It can be used
-    in case you have the patch performances stored in disk or if you're
-    evaluating differences between patches of 2 different systems.
+    This is a simplified version of :py:func:`sliding_window_performances` in
+    which the sliding window performances are not recalculated and used as
+    input.  It can be used in case you have the sliding window performances
+    stored in disk or if you're evaluating differences between sliding windows
+    of 2 different systems.
 
 
     Parameters
@@ -598,9 +590,9 @@ def visual_performances(
         the local name of this dataset (e.g. ``train``, or ``test``), to be
         used when saving measures files.
 
-    dfs : dict
-        a dictionary mapping dataset stems to dataframes containing the patch
-        performances to be evaluated
+    winperfs : dict
+        a dictionary mapping dataset stems to arrays containing the sliding
+        window performances to be evaluated
 
     size : tuple
         size (vertical, horizontal) for windows for which we will calculate
@@ -611,7 +603,8 @@ def visual_performances(
         partial performances based on the threshold and existing ground-truth
 
     figure : str
-        the performance figure to use for calculating patch micro performances
+        the performance figure to use for calculating sliding window micro
+        performances
 
     nproc : :py:class:`int`, Optional
         the number of processing cores to use for performance evaluation.
@@ -621,8 +614,8 @@ def visual_performances(
         multiprocessing.
 
     outdir : :py:class:`str`, Optional
-        path were to save a visual representation of patch performances.  If
-        set to ``None``, then do not save those to disk.
+        path were to save a visual representation of sliding window
+        performances.  If set to ``None``, then do not save those to disk.
 
 
     Returns
@@ -632,23 +625,23 @@ def visual_performances(
         A dictionary in which keys are filename stems and values are
         dictionaries with the following contents:
 
-        ``df``: :py:class:`pandas.DataFrame`
-            A dataframe with all the patch performances aggregated, for all
-            input images.
+        ``winperf``: numpy.ndarray
+            A 3D float array with all the sliding window performances for the
+            input image
 
-        ``n`` : :py:class:`numpy.ndarray`
+        ``n`` : numpy.ndarray
             A 2D numpy array containing the number of performance scores for
             every pixel in the original image
 
-        ``avg`` : :py:class:`numpy.ndarray`
+        ``avg`` : numpy.ndarray
             A 2D numpy array containing the average performances for every
-            pixel on the input image considering the patch sizes and strides
-            applied when windowing the image
+            pixel on the input image considering the sliding window sizes and
+            strides applied to the image
 
         ``std`` : :py:class:`numpy.ndarray`
             A 2D numpy array containing the (unbiased) standard deviations for
             the provided performance figure, for every pixel on the input image
-            considering the patch sizes and strides applied when windowing the
+            considering the sliding window sizes and strides applied to the
             image
 
     """
@@ -670,7 +663,7 @@ def visual_performances(
                         stride,
                         dataset[name],
                         k,
-                        dfs[stems[k]],
+                        winperfs[stems[k]],
                         figure,
                         outdir,
                     ),
@@ -684,22 +677,22 @@ def visual_performances(
         else:
             data = []
             for k in pbar:
-                df = _visual_performances_for_sample(
+                winperf = _visual_performances_for_sample(
                     size,
                     stride,
                     dataset[name],
                     k,
-                    dfs[stems[k]],
+                    winperfs[stems[k]],
                     figure,
                     outdir,
                 )
-                data.append(df)
+                data.append(winperf)
 
     return dict(data)
 
 
 def index_of_outliers(c):
-    """Finds indexes of outliers (+/- 1.5*IQR) on a pandas dataframe column
+    """Finds indexes of outliers (+/- 1.5*IQR) on an array of random values
 
     The IQR measures the midspread or where 50% of a normal distribution would
     sit, if the input data is, indeed, normal.  1.5 IQR corresponds to a
@@ -711,32 +704,32 @@ def index_of_outliers(c):
     Parameters
     ----------
 
-    c : pandas.DataFrame
-        This should be a **single** column of a pandas dataframe with the
-        ``quantile`` method
+    c : numpy.ndarray
+        A 1D float array
 
 
     Returns
     -------
 
-    indexes : typing.Sequence
+    indexes : numpy.ndarray
         Indexes of the input column that are considered outliers in the
         distribution (outside the 1.5 Interquartile Range).
 
     """
 
-    iqr = c.quantile(0.75) - c.quantile(0.25)
-    limits = (c.quantile(0.25) - 1.5 * iqr, c.quantile(0.75) + 1.5 * iqr)
+    l, h = numpy.quantile(c, (0.25, 0.75))
+    iqr = h - l
+    limits = (l - 1.5 * iqr, h + 1.5 * iqr)
     return (c < limits[0]) | (c > limits[1])
 
 
 def write_analysis_text(names, da, db, f):
     """Writes a text file containing the most important statistics
 
-    Compares patch performances in ``da`` and ``db`` taking into consideration
-    their statistical properties.  A significance test is applied to check
-    whether observed differences in the statistics of both distributions is
-    significant.
+    Compares sliding window performances in ``da`` and ``db`` taking into
+    consideration their statistical properties.  A significance test is applied
+    to check whether observed differences in the statistics of both
+    distributions is significant.
 
 
     Parameters
@@ -747,14 +740,14 @@ def write_analysis_text(names, da, db, f):
         analyzed
 
     da : numpy.ndarray
-        A 1D numpy array containing all the performance figures per patch
-        analyzed and organized in a particular order (raster), for the first
-        system (first entry of ``names``)
+        A 1D numpy array containing all the performance figures per sliding
+        window analyzed and organized in a particular order (raster), for the
+        first system (first entry of ``names``)
 
     db : numpy.ndarray
-        A 1D numpy array containing all the performance figures per patch
-        analyzed and organized in a particular order (raster), for the second
-        system (second entry of ``names``)
+        A 1D numpy array containing all the performance figures per sliding
+        window analyzed and organized in a particular order (raster), for the
+        second system (second entry of ``names``)
 
     f : file
         An open file that will be used dump the analysis to
@@ -802,7 +795,7 @@ def write_analysis_text(names, da, db, f):
     f.write(textwrap.indent(tdata, "  "))
     f.write("\n")
 
-    # Note: dependent variable = patch performance figure in our case
+    # Note: dependent variable = sliding window performance figure in our case
     # Assumptions of a Paired T-test:
     # * The dependent variable must be continuous (interval/ratio). [OK]
     # * The observations are independent of one another. [OK]
@@ -811,10 +804,11 @@ def write_analysis_text(names, da, db, f):
 
     if (diff == 0.0).all():
         logger.error("Differences are exactly zero between both "
-                "patch distributions, for **all** samples.  Statistical "
-                "significance tests are not meaningful in this context and "
-                "will be skipped.  This typically indicates an issue with "
-                "the setup of prediction folders (duplicated?)")
+                "sliding window distributions, for **all** samples. "
+                "Statistical significance tests are not meaningful in "
+                "this context and will be skipped.  This typically "
+                "indicates an issue with the setup of prediction folders "
+                "(duplicated?)")
         return
 
     f.write("\nPaired significance tests:\n")
@@ -851,14 +845,14 @@ def write_analysis_figures(names, da, db, fname):
         analyzed
 
     da : numpy.ndarray
-        A 1D numpy array containing all the performance figures per patch
-        analyzed and organized in a particular order (raster), for the first
-        system (first entry of ``names``)
+        A 1D numpy array containing all the performance figures per sliding
+        window analyzed and organized in a particular order (raster), for the
+        first system (first entry of ``names``)
 
     db : numpy.ndarray
-        A 1D numpy array containing all the performance figures per patch
-        analyzed and organized in a particular order (raster), for the second
-        system (second entry of ``names``)
+        A 1D numpy array containing all the performance figures per sliding
+        window analyzed and organized in a particular order (raster), for the
+        second system (second entry of ``names``)
 
     fname : str
         The filename to use for storing the summarized performance figures

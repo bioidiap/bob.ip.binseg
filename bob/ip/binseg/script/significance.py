@@ -19,15 +19,16 @@ logger = logging.getLogger(__name__)
 
 from .evaluate import _validate_threshold, run as run_evaluation
 from ..engine.significance import (
-    patch_performances,
+    sliding_window_performances,
     visual_performances,
     write_analysis_text,
     write_analysis_figures,
     index_of_outliers,
+    PERFORMANCE_FIGURES,
 )
 
 
-def _eval_patches(
+def _eval_sliding_windows(
     system_name,
     threshold,
     evaluate,
@@ -41,7 +42,7 @@ def _eval_patches(
     nproc,
     checkpointdir,
 ):
-    """Calculates the patch performances on a dataset
+    """Calculates the sliding window performances on a dataset
 
 
     Parameters
@@ -79,12 +80,12 @@ def _eval_patches(
         possible F1-score on train/test data.
 
     size : tuple
-        Two values indicating the size of windows to be used for patch
-        analysis.  The values represent height and width respectively
+        Two values indicating the size of windows to be used for the sliding
+        window analysis.  The values represent height and width respectively
 
     stride : tuple
-        Two values indicating the stride of windows to be used for patch
-        analysis.  The values represent height and width respectively
+        Two values indicating the stride of windows to be used for the sliding
+        window analysis.  The values represent height and width respectively
 
     outdir : str
         Path where to store visualizations.  If set to ``None``, then do not
@@ -102,7 +103,7 @@ def _eval_patches(
 
     checkpointdir : str
         If set to a string (instead of ``None``), then stores a cached version
-        of the patch performances on disk, for a particular system.
+        of the sliding window performances on disk, for a particular system.
 
 
     Returns
@@ -112,45 +113,49 @@ def _eval_patches(
         A dictionary in which keys are filename stems and values are
         dictionaries with the following contents:
 
-        ``df``: :py:class:`pandas.DataFrame`
-            A dataframe with all the patch performances aggregated, for all
-            input images.
+        ``winperf``: numpy.ndarray
+            A dataframe with all the sliding window performances aggregated,
+            for all input images.
 
-        ``n`` : :py:class:`numpy.ndarray`
+        ``n`` : numpy.ndarray
             A 2D numpy array containing the number of performance scores for
             every pixel in the original image
 
-        ``avg`` : :py:class:`numpy.ndarray`
+        ``avg`` : numpy.ndarray
             A 2D numpy array containing the average performances for every
-            pixel on the input image considering the patch sizes and strides
-            applied when windowing the image
+            pixel on the input image considering the sliding window sizes and
+            strides applied to the image
 
-        ``std`` : :py:class:`numpy.ndarray`
+        ``std`` : numpy.ndarray
             A 2D numpy array containing the (unbiased) standard deviations for
             the provided performance figure, for every pixel on the input image
-            considering the patch sizes and strides applied when windowing the
+            considering the sliding window sizes and strides applied to the
             image
 
     """
 
     if checkpointdir is not None:
-        chkpt_fname = os.path.join(checkpointdir,
-                f"{system_name}-{evaluate}-{threshold}-" \
-                f"{size[0]}x{size[1]}+{stride[0]}x{stride[1]}-{figure}.pkl.gz"
-                )
+        chkpt_fname = os.path.join(
+            checkpointdir,
+            f"{system_name}-{evaluate}-{threshold}-"
+            f"{size[0]}x{size[1]}+{stride[0]}x{stride[1]}-{figure}.pkl.gz",
+        )
         os.makedirs(os.path.dirname(chkpt_fname), exist_ok=True)
         if os.path.exists(chkpt_fname):
             logger.info(f"Loading checkpoint from {chkpt_fname}...")
             # loads and returns checkpoint from file
             try:
-                with __import__('gzip').GzipFile(chkpt_fname, "r") as f:
-                    return __import__('pickle').load(f)
+                with __import__("gzip").GzipFile(chkpt_fname, "r") as f:
+                    return __import__("pickle").load(f)
             except EOFError as e:
-                logger.warning(f"Could not load patch performance from " \
-                        f"{chkpt_fname}: {e}. Calculating...")
+                logger.warning(
+                    f"Could not load sliding window performance "
+                    f"from {chkpt_fname}: {e}. Calculating..."
+                )
         else:
-            logger.debug(f"Checkpoint not available at {chkpt_fname}. " \
-                    f"Calculating...")
+            logger.debug(
+                f"Checkpoint not available at {chkpt_fname}. " f"Calculating..."
+            )
     else:
         chkpt_fname = None
 
@@ -167,13 +172,13 @@ def _eval_patches(
         )
         logger.info(f"Set --threshold={threshold:.5f} for '{system_name}'")
 
-    # for a given threshold on each system, calculate patch performances
+    # for a given threshold on each system, calculate sliding window performances
     logger.info(
-        f"Evaluating patch '{figure}' on '{evaluate}' set for "
+        f"Evaluating sliding window '{figure}' on '{evaluate}' set for "
         f"'{system_name}' using windows of size {size} and stride {stride}"
     )
 
-    retval = patch_performances(
+    retval = sliding_window_performances(
         dataset,
         evaluate,
         preddir,
@@ -185,18 +190,28 @@ def _eval_patches(
         outdir,
     )
 
-    # cache patch performance for later use, if necessary
+    # cache sliding window performance for later use, if necessary
     if chkpt_fname is not None:
         logger.debug(f"Storing checkpoint at {chkpt_fname}...")
-        with __import__('gzip').GzipFile(chkpt_fname, "w") as f:
-            __import__('pickle').dump(retval, f)
+        with __import__("gzip").GzipFile(chkpt_fname, "w") as f:
+            __import__("pickle").dump(retval, f)
 
     return retval
 
 
-def _eval_differences(names, perfs, evaluate, dataset, size, stride, outdir,
-        figure, nproc, checkpointdir):
-    """Evaluate differences in the performance patches between two systems
+def _eval_differences(
+    names,
+    perfs,
+    evaluate,
+    dataset,
+    size,
+    stride,
+    outdir,
+    figure,
+    nproc,
+    checkpointdir,
+):
+    """Evaluate differences in the performance sliding windows between two systems
 
     Parameters
     ----------
@@ -205,8 +220,8 @@ def _eval_differences(names, perfs, evaluate, dataset, size, stride, outdir,
         Names of the first and second systems
 
     perfs : :py:class:`tuple` of :py:class:`dict`
-        Dictionaries for the patch performances of each system, as returned by
-        :py:func:`_eval_patches`
+        Dictionaries for the sliding window performances of each system, as
+        returned by :py:func:`_eval_sliding_windows`
 
     evaluate : str
         Name of the dataset key to use from ``dataset`` to evaluate (typically,
@@ -217,12 +232,12 @@ def _eval_differences(names, perfs, evaluate, dataset, size, stride, outdir,
         :py:class:`torch.utils.data.dataset.Dataset` instances
 
     size : tuple
-        Two values indicating the size of windows to be used for patch
+        Two values indicating the size of windows to be used for sliding window
         analysis.  The values represent height and width respectively
 
     stride : tuple
-        Two values indicating the stride of windows to be used for patch
-        analysis.  The values represent height and width respectively
+        Two values indicating the stride of windows to be used for sliding
+        window analysis.  The values represent height and width respectively
 
     outdir : str
         If set to ``None``, then do not output performance visualizations.
@@ -241,80 +256,65 @@ def _eval_differences(names, perfs, evaluate, dataset, size, stride, outdir,
 
     checkpointdir : str
         If set to a string (instead of ``None``), then stores a cached version
-        of the patch performances on disk, for a particular difference between
-        systems.
+        of the sliding window performances on disk, for a particular difference
+        between systems.
 
 
     Returns
     -------
 
     d : dict
-        A dictionary representing patch performance differences across all
-        files and patches.  The format of this is similar to the individual
-        inputs ``perf1`` and ``perf2``.
+        A dictionary representing sliding window performance differences across
+        all files and sliding windows.  The format of this is similar to the
+        individual inputs ``perf1`` and ``perf2``.
 
     """
 
     if checkpointdir is not None:
-        chkpt_fname = os.path.join(checkpointdir,
-                f"{names[0]}-{names[1]}-{evaluate}-" \
-                f"{size[0]}x{size[1]}+{stride[0]}x{stride[1]}-{figure}.pkl.gz"
-                )
+        chkpt_fname = os.path.join(
+            checkpointdir,
+            f"{names[0]}-{names[1]}-{evaluate}-"
+            f"{size[0]}x{size[1]}+{stride[0]}x{stride[1]}-{figure}.pkl.gz",
+        )
         os.makedirs(os.path.dirname(chkpt_fname), exist_ok=True)
         if os.path.exists(chkpt_fname):
             logger.info(f"Loading checkpoint from {chkpt_fname}...")
             # loads and returns checkpoint from file
             try:
-                with __import__('gzip').GzipFile(chkpt_fname, "r") as f:
-                    return __import__('pickle').load(f)
+                with __import__("gzip").GzipFile(chkpt_fname, "r") as f:
+                    return __import__("pickle").load(f)
             except EOFError as e:
-                logger.warning(f"Could not load patch performance from " \
-                        f"{chkpt_fname}: {e}. Calculating...")
+                logger.warning(
+                    f"Could not load sliding window performance "
+                    f"from {chkpt_fname}: {e}. Calculating..."
+                )
         else:
-            logger.debug(f"Checkpoint not available at {chkpt_fname}. " \
-                    f"Calculating...")
+            logger.debug(
+                f"Checkpoint not available at {chkpt_fname}. " f"Calculating..."
+            )
     else:
         chkpt_fname = None
 
-    perf_diff = dict([(k, perfs[0][k]["df"].copy()) for k in perfs[0]])
-
-    # we can subtract these
-    to_subtract = (
-        "precision",
-        "recall",
-        "specificity",
-        "accuracy",
-        "jaccard",
-        "f1_score",
+    perf_diff = dict(
+        [(k, perfs[0][k]["winperf"] - perfs[1][k]["winperf"]) for k in perfs[0]]
     )
 
-    for k in perf_diff:
-        for col in to_subtract:
-            perf_diff[k][col] -= perfs[1][k]["df"][col]
-
-    # for a given threshold on each system, calculate patch performances
+    # for a given threshold on each system, calculate sliding window performances
     logger.info(
-        f"Evaluating patch '{figure}' differences on '{evaluate}' set on "
-        f"'{names[0]}-{names[1]}' using windows of size {size} and "
+        f"Evaluating sliding window '{figure}' differences on '{evaluate}' "
+        f"set on '{names[0]}-{names[1]}' using windows of size {size} and "
         f"stride {stride}"
     )
 
     retval = visual_performances(
-        dataset,
-        evaluate,
-        perf_diff,
-        size,
-        stride,
-        figure,
-        nproc,
-        outdir,
+        dataset, evaluate, perf_diff, size, stride, figure, nproc, outdir,
     )
 
-    # cache patch performance for later use, if necessary
+    # cache sliding window performance for later use, if necessary
     if chkpt_fname is not None:
         logger.debug(f"Storing checkpoint at {chkpt_fname}...")
-        with __import__('gzip').GzipFile(chkpt_fname, "w") as f:
-            __import__('pickle').dump(retval, f)
+        with __import__("gzip").GzipFile(chkpt_fname, "w") as f:
+            __import__("pickle").dump(retval, f)
 
     return retval
 
@@ -408,8 +408,8 @@ def _eval_differences(names, perfs, evaluate, dataset, size, stride, outdir,
     "--size",
     "-s",
     help="This is a tuple with two values indicating the size of windows to "
-    "be used for patch analysis.  The values represent height and width "
-    "respectively.",
+    "be used for sliding window analysis.  The values represent height and "
+    "width respectively.",
     default=(128, 128),
     nargs=2,
     type=int,
@@ -421,8 +421,8 @@ def _eval_differences(names, perfs, evaluate, dataset, size, stride, outdir,
     "--stride",
     "-t",
     help="This is a tuple with two values indicating the stride of windows to "
-    "be used for patch analysis.  The values represent height and width "
-    "respectively.",
+    "be used for sliding window analysis.  The values represent height and "
+    "width respectively.",
     default=(32, 32),
     nargs=2,
     type=int,
@@ -487,7 +487,8 @@ def _eval_differences(names, perfs, evaluate, dataset, size, stride, outdir,
 @click.option(
     "--checkpoint-folder",
     "-k",
-    help="Path where to store checkpointed versions of patch performances",
+    help="Path where to store checkpointed versions of sliding window "
+    "performances",
     required=False,
     type=click.Path(),
     show_default=True,
@@ -521,7 +522,7 @@ def significance(
     threshold = _validate_threshold(threshold, dataset)
     assert evaluate in dataset, f"No dataset named '{evaluate}'"
 
-    perf1 = _eval_patches(
+    perf1 = _eval_sliding_windows(
         names[0],
         threshold,
         evaluate,
@@ -530,15 +531,17 @@ def significance(
         steps,
         size,
         stride,
-        (output_folder
-        if output_folder is None
-        else os.path.join(output_folder, names[0])),
+        (
+            output_folder
+            if output_folder is None
+            else os.path.join(output_folder, names[0])
+        ),
         figure,
         parallel,
         checkpoint_folder,
     )
 
-    perf2 = _eval_patches(
+    perf2 = _eval_sliding_windows(
         names[1],
         threshold,
         evaluate,
@@ -547,33 +550,38 @@ def significance(
         steps,
         size,
         stride,
-        (output_folder
+        (
+            output_folder
             if output_folder is None
-            else os.path.join(output_folder, names[1])),
+            else os.path.join(output_folder, names[1])
+        ),
         figure,
         parallel,
         checkpoint_folder,
     )
 
     perf_diff = _eval_differences(
-            names,
-            (perf1, perf2),
-            evaluate,
-            dataset,
-            size,
-            stride,
-            (output_folder
-                if output_folder is None
-                else os.path.join(output_folder, "diff")),
-            figure,
-            parallel,
-            checkpoint_folder,
-            )
+        names,
+        (perf1, perf2),
+        evaluate,
+        dataset,
+        size,
+        stride,
+        (
+            output_folder
+            if output_folder is None
+            else os.path.join(output_folder, "diff")
+        ),
+        figure,
+        parallel,
+        checkpoint_folder,
+    )
 
     # loads all figures for the given threshold
     stems = list(perf1.keys())
-    da = numpy.array([perf1[k]["df"][figure] for k in stems]).flatten()
-    db = numpy.array([perf2[k]["df"][figure] for k in stems]).flatten()
+    figindex = PERFORMANCE_FIGURES.index(figure)
+    da = numpy.array([perf1[k]["winperf"][figindex] for k in stems]).flatten()
+    db = numpy.array([perf2[k]["winperf"][figindex] for k in stems]).flatten()
     diff = da - db
 
     while remove_outliers:
