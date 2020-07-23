@@ -157,11 +157,6 @@ def _check_performance_summary(pred, gt, threshold, size, stride, s, figure):
         figsize, measures, size, stride, figure
     )
 
-    # the following code is not optimal, but easier to debug than the
-    # list comprehension versions:
-    # n_expected = numpy.array([len(k) for j in s for k in j]).reshape(figsize)
-    # avg_expected = numpy.array([measures.iloc[k][figure].mean() for j in s for k in j]).reshape(figsize)
-    # std_expected = numpy.array([measures.iloc[k][figure].std(ddof=1) for j in s for k in j]).reshape(figsize)
     n_expected = numpy.zeros_like(n_actual)
     avg_expected = numpy.zeros_like(avg_actual)
     std_expected = numpy.zeros_like(std_actual)
