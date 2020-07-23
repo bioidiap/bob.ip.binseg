@@ -166,20 +166,22 @@ def _check_performance_summary(pred, gt, threshold, size, stride, s, figure):
             n_expected[y, x] = len(cell)
             entries = tuple(numpy.array(cell).T)  # convert indexing to numpy
             avg_expected[y, x] = measures[figindex][entries].mean()
-            std_expected[y, x] = measures[figindex][entries].std(ddof=1)
-    std_expected = numpy.nan_to_num(std_expected)
+            if len(cell) == 1:
+                std_expected[y, x] = 0
+            else:
+                std_expected[y, x] = measures[figindex][entries].std(ddof=1)
 
     assert (n_actual == n_expected).all(), (
         f"Actual N output:\n{n_actual}\n "
         f"**!=** Expected N output:\n{n_expected}"
     )
 
-    assert (avg_actual == avg_expected).all(), (
+    assert numpy.allclose(avg_actual, avg_expected), (
         f"Actual average output:\n{avg_actual}\n "
         f"**!=** Expected average output:\n{avg_expected}"
     )
 
-    assert (std_actual == std_expected).all(), (
+    assert numpy.allclose(std_actual, std_expected), (
         f"Actual std.deviation output:\n{std_actual}\n "
         f"**!=** Expected std.deviation output:\n{std_expected}"
     )
@@ -193,10 +195,9 @@ def test_performance_summary_alltrue_accuracy():
     size = (2, 2)
     stride = (1, 1)
 
-    # what we expect will happen for the accumulation of statistics
-    # each number represents the pandas dataframe index in ``measures``
-    # that needs to be accumulated for that particular pixel in the
-    # original image
+    # what we expect will happen for the accumulation of statistics each number
+    # represents the indexes in ``measures`` that needs to be accumulated for
+    # that particular pixel in the original image
     stats = [
         # first row of image
         [[(0, 0)], [(0, 0), (0, 1)], [(0, 1), (0, 2)], [(0, 2)]],
@@ -218,6 +219,120 @@ def test_performance_summary_alltrue_accuracy():
         [[(2, 0)], [(2, 0), (2, 1)], [(2, 1), (2, 2)], [(2, 2)]],
     ]
 
-    _check_performance_summary(
-        pred, gt, threshold, size, stride, stats, "accuracy"
-    )
+    for fig in PERFORMANCE_FIGURES:
+        _check_performance_summary(
+            pred, gt, threshold, size, stride, stats, fig,
+        )
+
+
+def test_performance_summary_cross():
+
+    pred = numpy.zeros((5, 5), dtype=float)
+    pred[2, :] = 1.0
+    pred[:, 2] = 1.0
+    pred[2, 2] = 0.0  # make one mistake at the center of the cross
+    gt = numpy.zeros((5, 5), dtype=bool)
+    gt[2, :] = 1.0
+    gt[:, 2] = 1.0  # white cross pattern
+    threshold = 0.5
+    size = (3, 3)
+    stride = (1, 1)
+
+    # what we expect will happen for the accumulation of statistics
+    # each number represents the pandas dataframe index in ``measures``
+    # that needs to be accumulated for that particular pixel in the
+    # original image
+    stats = [
+        # first row of image
+        [[(0,0)], [(0,0),(0,1)], [(0,0),(0,1),(0,2)], [(0,1),(0,2)], [(0,2)]],
+        # second row of image
+        [[(0,0),(1,0)], [(0,0),(0,1),(1,0),(1,1)], [(0,0),(0,1),(0,2),(1,0),(1,1),(1,2)], [(0,1),(0,2),(1,1),(1,2)], [(0,2),(1,2)]],
+        # third row of image
+        [[(0,0),(1,0),(2,0)], [(0,0),(0,1),(1,0),(1,1),(2,0),(2,1)], [(0,0),(0,1),(0,2),(1,0),(1,1),(1,2),(2,0),(2,1),(2,2)], [(0,1),(0,2),(1,1),(1,2),(2,1),(2,2)], [(0,2),(1,2),(2,2)]],
+        # fourth row of image
+        [[(1,0),(2,0)], [(1,0),(1,1),(2,0),(2,1)], [(1,0),(1,1),(1,2),(2,0),(2,1),(2,2)], [(1,1),(1,2),(2,1),(2,2)], [(1,2),(2,2)]],
+        # fifth row of image
+        [[(2,0)], [(2,0),(2,1)], [(2,0),(2,1),(2,2)], [(2,1),(2,2)], [(2,2)]],
+    ]
+
+    for fig in PERFORMANCE_FIGURES:
+        _check_performance_summary(
+            pred, gt, threshold, size, stride, stats, fig,
+        )
+
+
+def test_performance_summary_cross_with_padding():
+
+    pred = numpy.zeros((5, 5), dtype=float)
+    gt = numpy.zeros((5, 5), dtype=bool)
+    gt[2, :] = 1.0
+    gt[:, 2] = 1.0  # white cross pattern
+    threshold = 0.5
+    size = (4, 4)
+    stride = (2, 2)
+
+    # what we expect will happen for the accumulation of statistics
+    # each number represents the pandas dataframe index in ``measures``
+    # that needs to be accumulated for that particular pixel in the
+    # original image
+    stats = [
+        # first row of image + padding
+        [[(0,0)], [(0,0)], [(0,0),(0,1)], [(0,0),(0,1)], [(0,1)], [(0,1)]],
+        # second row of image + padding
+        [[(0,0)], [(0,0)], [(0,0),(0,1)], [(0,0),(0,1)], [(0,1)], [(0,1)]],
+        # third row of image + padding
+        [[(0,0),(1,0)], [(0,0),(1,0)], [(0,0),(0,1),(1,0),(1,1)],
+            [(0,0),(0,1),(1,0),(1,1)], [(0,1),(1,1)], [(0,1),(1,1)]],
+        # fourth row of image + padding
+        [[(0,0),(1,0)], [(0,0),(1,0)], [(0,0),(0,1),(1,0),(1,1)],
+            [(0,0),(0,1),(1,0),(1,1)], [(0,1),(1,1)], [(0,1),(1,1)]],
+        # fifth row of image + padding
+        [[(1,0)], [(1,0)], [(1,0),(1,1)], [(1,0),(1,1)], [(1,1)], [(1,1)]],
+        # sixth row of image (only padding)
+        [[(1,0)], [(1,0)], [(1,0),(1,1)], [(1,0),(1,1)], [(1,1)], [(1,1)]],
+    ]
+
+    for fig in PERFORMANCE_FIGURES:
+        _check_performance_summary(
+            pred, gt, threshold, size, stride, stats, fig,
+        )
+
+
+def test_performance_summary_cross_with_padding_2():
+
+    pred = numpy.zeros((5, 5), dtype=float)
+    pred[2, :] = 1.0
+    pred[:, 2] = 1.0
+    pred[2, 2] = 0.0  # make one mistake at the center of the cross
+    gt = numpy.zeros((5, 5), dtype=bool)
+    gt[2, :] = 1.0
+    gt[:, 2] = 1.0  # white cross pattern
+    threshold = 0.5
+    size = (4, 4)
+    stride = (2, 2)
+
+    # what we expect will happen for the accumulation of statistics
+    # each number represents the pandas dataframe index in ``measures``
+    # that needs to be accumulated for that particular pixel in the
+    # original image
+    stats = [
+        # first row of image + padding
+        [[(0,0)], [(0,0)], [(0,0),(0,1)], [(0,0),(0,1)], [(0,1)], [(0,1)]],
+        # second row of image + padding
+        [[(0,0)], [(0,0)], [(0,0),(0,1)], [(0,0),(0,1)], [(0,1)], [(0,1)]],
+        # third row of image + padding
+        [[(0,0),(1,0)], [(0,0),(1,0)], [(0,0),(0,1),(1,0),(1,1)],
+            [(0,0),(0,1),(1,0),(1,1)], [(0,1),(1,1)], [(0,1),(1,1)]],
+        # fourth row of image + padding
+        [[(0,0),(1,0)], [(0,0),(1,0)], [(0,0),(0,1),(1,0),(1,1)],
+            [(0,0),(0,1),(1,0),(1,1)], [(0,1),(1,1)], [(0,1),(1,1)]],
+        # fifth row of image + padding
+        [[(1,0)], [(1,0)], [(1,0),(1,1)], [(1,0),(1,1)], [(1,1)], [(1,1)]],
+        # sixth row of image (only padding)
+        [[(1,0)], [(1,0)], [(1,0),(1,1)], [(1,0),(1,1)], [(1,1)], [(1,1)]],
+    ]
+
+    for fig in PERFORMANCE_FIGURES:
+        _check_performance_summary(
+            pred, gt, threshold, size, stride, stats, fig,
+        )
