@@ -276,20 +276,18 @@ def test_performance_summary_cross_with_padding():
     # that needs to be accumulated for that particular pixel in the
     # original image
     stats = [
-        # first row of image + padding
-        [[(0,0)], [(0,0)], [(0,0),(0,1)], [(0,0),(0,1)], [(0,1)], [(0,1)]],
-        # second row of image + padding
-        [[(0,0)], [(0,0)], [(0,0),(0,1)], [(0,0),(0,1)], [(0,1)], [(0,1)]],
-        # third row of image + padding
+        # first row of image
+        [[(0,0)], [(0,0)], [(0,0),(0,1)], [(0,0),(0,1)], [(0,1)]],
+        # second row of image
+        [[(0,0)], [(0,0)], [(0,0),(0,1)], [(0,0),(0,1)], [(0,1)]],
+        # third row of image
         [[(0,0),(1,0)], [(0,0),(1,0)], [(0,0),(0,1),(1,0),(1,1)],
-            [(0,0),(0,1),(1,0),(1,1)], [(0,1),(1,1)], [(0,1),(1,1)]],
-        # fourth row of image + padding
+            [(0,0),(0,1),(1,0),(1,1)], [(0,1),(1,1)]],
+        # fourth row of image
         [[(0,0),(1,0)], [(0,0),(1,0)], [(0,0),(0,1),(1,0),(1,1)],
-            [(0,0),(0,1),(1,0),(1,1)], [(0,1),(1,1)], [(0,1),(1,1)]],
-        # fifth row of image + padding
-        [[(1,0)], [(1,0)], [(1,0),(1,1)], [(1,0),(1,1)], [(1,1)], [(1,1)]],
-        # sixth row of image (only padding)
-        [[(1,0)], [(1,0)], [(1,0),(1,1)], [(1,0),(1,1)], [(1,1)], [(1,1)]],
+            [(0,0),(0,1),(1,0),(1,1)], [(0,1),(1,1)]],
+        # fifth row of image
+        [[(1,0)], [(1,0)], [(1,0),(1,1)], [(1,0),(1,1)], [(1,1)]],
     ]
 
     for fig in PERFORMANCE_FIGURES:
@@ -316,20 +314,18 @@ def test_performance_summary_cross_with_padding_2():
     # that needs to be accumulated for that particular pixel in the
     # original image
     stats = [
-        # first row of image + padding
-        [[(0,0)], [(0,0)], [(0,0),(0,1)], [(0,0),(0,1)], [(0,1)], [(0,1)]],
-        # second row of image + padding
-        [[(0,0)], [(0,0)], [(0,0),(0,1)], [(0,0),(0,1)], [(0,1)], [(0,1)]],
-        # third row of image + padding
+        # first row of image
+        [[(0,0)], [(0,0)], [(0,0),(0,1)], [(0,0),(0,1)], [(0,1)]],
+        # second row of image
+        [[(0,0)], [(0,0)], [(0,0),(0,1)], [(0,0),(0,1)], [(0,1)]],
+        # third row of image
         [[(0,0),(1,0)], [(0,0),(1,0)], [(0,0),(0,1),(1,0),(1,1)],
-            [(0,0),(0,1),(1,0),(1,1)], [(0,1),(1,1)], [(0,1),(1,1)]],
-        # fourth row of image + padding
+            [(0,0),(0,1),(1,0),(1,1)], [(0,1),(1,1)]],
+        # fourth row of image
         [[(0,0),(1,0)], [(0,0),(1,0)], [(0,0),(0,1),(1,0),(1,1)],
-            [(0,0),(0,1),(1,0),(1,1)], [(0,1),(1,1)], [(0,1),(1,1)]],
-        # fifth row of image + padding
-        [[(1,0)], [(1,0)], [(1,0),(1,1)], [(1,0),(1,1)], [(1,1)], [(1,1)]],
-        # sixth row of image (only padding)
-        [[(1,0)], [(1,0)], [(1,0),(1,1)], [(1,0),(1,1)], [(1,1)], [(1,1)]],
+            [(0,0),(0,1),(1,0),(1,1)], [(0,1),(1,1)]],
+        # fifth row of image
+        [[(1,0)], [(1,0)], [(1,0),(1,1)], [(1,0),(1,1)], [(1,1)]],
     ]
 
     for fig in PERFORMANCE_FIGURES:

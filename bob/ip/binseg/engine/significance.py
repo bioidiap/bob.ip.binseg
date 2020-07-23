@@ -130,7 +130,8 @@ def _performance_summary(size, winperf, winsize, winstride, figure):
     for k in range(2, n.max() + 1):
         std[n == k] = perf[:k].std(axis=0, ddof=1)[n == k]
 
-    return n, avg, std
+    # returns only valid bounds wrt to the original image
+    return n[:size[0],:size[1]], avg[:size[0],:size[1]], std[:size[0],:size[1]]
 
 
 def _winperf_measures(pred, gt, threshold, size, stride):
