@@ -566,8 +566,8 @@ def _check_significance(runner):
         assert os.path.exists(os.path.join(ofolder, "analysis.txt"))
 
         keywords = {
-            r"^Evaluating patch 'accuracy' on": 2,
-            r"^Evaluating patch 'accuracy' differences on": 1,
+            r"^Evaluating sliding window 'accuracy' on": 2,
+            r"^Evaluating sliding window 'accuracy' differences on": 1,
             #r"^Basic statistics from distributions:$": 1,
             r"^Writing analysis figures": 1,
             r"^Writing analysis summary": 1,
