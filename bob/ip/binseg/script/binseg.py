@@ -7,6 +7,7 @@ import os
 import re
 import sys
 import time
+import random
 import tempfile
 import urllib.request
 
@@ -15,10 +16,98 @@ import click
 from click_plugins import with_plugins
 from tqdm import tqdm
 
+import numpy
+import torch
+
 from bob.extension.scripts.click_helper import AliasedGroup
 
 import logging
 logger = logging.getLogger(__name__)
+
+
+def setup_pytorch_device(name):
+    """Sets-up the pytorch device to use
+
+
+    Parameters
+    ----------
+
+    name : str
+        The device name (``cpu``, ``cuda:0``, ``cuda:1``, and so on)
+
+
+    Returns
+    -------
+
+    device : :py:class:`torch.device`
+        The pytorch device to use, pre-configured (and checked)
+
+    """
+
+    if name.startswith("cuda"):
+        # In case one has multiple devices, we must first set the one
+        # we would like to use so pytorch can find it.
+        os.environ['CUDA_VISIBLE_DEVICES'] = name.split(":",1)[1]
+        if not torch.cuda.is_available():
+            raise RuntimeError(f"CUDA is not currently available, but " \
+                    f"you set device to '{name}'")
+        # Let pytorch auto-select from environment variable
+        return torch.device("cuda")
+
+    #cpu
+    return torch.device(name)
+
+
+def set_seeds(value, all_gpus):
+    """Sets up all relevant random seeds (numpy, python, cuda)
+
+    If running with multiple GPUs **at the same time**, set ``all_gpus`` to
+    ``True`` to force all GPU seeds to be initialized.
+
+    Reference: `PyTorch page for reproducibility
+    <https://pytorch.org/docs/stable/notes/randomness.html>`_.
+
+
+    Parameters
+    ----------
+
+    value : int
+        The random seed value to use
+
+    all_gpus : :py:class:`bool`, Optional
+        If set, then reset the seed on all GPUs available at once.  This is
+        normally **not** what you want if running on a single GPU
+
+    """
+
+    random.seed(value)
+    numpy.random.seed(value)
+    torch.manual_seed(value)
+    torch.cuda.manual_seed(value)  #noop if cuda not available
+
+    # set seeds for all gpus
+    if all_gpus:
+        torch.cuda.manual_seed_all(value)  #noop if cuda not available
+
+
+def set_reproducible_cuda():
+    """Turns-off all CUDA optimizations that would affect reproducibility
+
+    For full reproducibility, also ensure not to use multiple (parallel) data
+    lowers.  That is setup ``num_workers=0``.
+
+    Reference: `PyTorch page for reproducibility
+    <https://pytorch.org/docs/stable/notes/randomness.html>`_.
+
+
+    """
+
+    # ensure to use only optimization algos for cuda that are known to have
+    # a deterministic effect (not random)
+    torch.backends.cudnn.deterministic = True
+
+    # turns off any optimization tricks
+    torch.backends.cudnn.benchmark = False
 
 
 def escape_name(v):

@@ -17,7 +17,7 @@ from bob.extension.scripts.click_helper import (
 from ..engine.predictor import run
 from ..utils.checkpointer import Checkpointer
 
-from .binseg import download_to_tempfile
+from .binseg import download_to_tempfile, setup_pytorch_device
 
 import logging
 logger = logging.getLogger(__name__)
@@ -114,6 +114,8 @@ logger = logging.getLogger(__name__)
 def predict(output_folder, model, dataset, batch_size, device, weight,
         overlayed, **kwargs):
     """Predicts vessel map (probabilities) on input images"""
+
+    device = setup_pytorch_device(device)
 
     dataset = dataset if isinstance(dataset, dict) else dict(test=dataset)
 
