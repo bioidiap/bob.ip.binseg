@@ -14,6 +14,7 @@ from bob.extension.scripts.click_helper import (
 )
 
 from ..utils.checkpointer import Checkpointer
+from .binseg import setup_pytorch_device, set_seeds
 
 import logging
 logger = logging.getLogger(__name__)
@@ -216,7 +217,9 @@ def train(
     abruptly.
     """
 
-    torch.manual_seed(seed)
+    device = setup_pytorch_device(device)
+
+    set_seeds(seed, all_gpus=False)
 
     use_dataset = dataset
     validation_dataset = None

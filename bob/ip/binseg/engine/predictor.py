@@ -116,8 +116,8 @@ def run(model, data_loader, name, device, output_folder, overlayed_folder):
         the local name of this dataset (e.g. ``train``, or ``test``), to be
         used when saving measures files.
 
-    device : str
-        device to use ``cpu`` or ``cuda:0``
+    device : :py:class:`torch.device`
+        device to use
 
     output_folder : str
         folder where to store output prediction maps (HDF5 files) and model

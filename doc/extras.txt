@@ -2,6 +2,7 @@
 # Project: extras
 # Version: stable
 # The remainder of this file is compressed using zlib.
+torch.device py:class 1 https://pytorch.org/docs/master/tensor_attributes.html#torch.torch.device -
 torch.optim.optimizer.Optimizer py:class 1 https://pytorch.org/docs/stable/optim.html#torch.optim.Optimizer -
 torch.nn.Module py:class 1 https://pytorch.org/docs/stable/nn.html?highlight=module#torch.nn.Module -
 torch.nn.modules.module.Module py:class 1 https://pytorch.org/docs/stable/nn.html?highlight=module#torch.nn.Module -

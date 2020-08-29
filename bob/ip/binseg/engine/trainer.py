@@ -100,8 +100,8 @@ def run(
         save a checkpoint every ``n`` epochs.  If set to ``0`` (zero), then do
         not save intermediary checkpoints
 
-    device : str
-        device to use ``'cpu'`` or ``cuda:0``
+    device : :py:class:`torch.device`
+        device to use
 
     arguments : dict
         start and end epochs
@@ -113,11 +113,10 @@ def run(
     start_epoch = arguments["epoch"]
     max_epoch = arguments["max_epoch"]
 
-    if device != "cpu":
+    if device.type == "cuda":
         # asserts we do have a GPU
         assert bool(gpu_constants()), (
-            f"Device set to '{device}', but cannot "
-            f"find a GPU (maybe nvidia-smi is not installed?)"
+            f"Device set to '{device}', but nvidia-smi is not installed"
         )
 
     os.makedirs(output_folder, exist_ok=True)
@@ -139,7 +138,7 @@ def run(
         shutil.move(static_logfile_name, backup)
     with open(static_logfile_name, "w", newline="") as f:
         logdata = cpu_constants()
-        if device != "cpu":
+        if device == "cuda":
             logdata += gpu_constants()
         logdata += (("model_size", n),)
         logwriter = csv.DictWriter(f, fieldnames=[k[0] for k in logdata])
@@ -166,7 +165,7 @@ def run(
     if valid_loader is not None:
         logfile_fields += ("validation_average_loss", "validation_median_loss")
     logfile_fields += tuple([k[0] for k in cpu_log()])
-    if device != "cpu":
+    if device.type == "cuda":
         logfile_fields += tuple([k[0] for k in gpu_log()])
 
     # the lowest validation loss obtained so far - this value is updated only
@@ -308,7 +307,7 @@ def run(
                     ("validation_median_loss", f"{valid_losses.median:.6f}"),
                 )
             logdata += cpu_log()
-            if device != "cpu":
+            if device.type == "cuda":
                 logdata += gpu_log()
 
             logwriter.writerow(dict(k for k in logdata))
