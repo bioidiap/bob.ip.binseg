@@ -48,11 +48,14 @@ _root_path = bob.extension.rc.get(
     "bob.ip.binseg.chasedb1.datadir", os.path.realpath(os.curdir)
 )
 
+_pkg_path = pkg_resources.resource_filename(__name__, "masks")
+
 
 def _raw_data_loader(sample):
     return dict(
         data=load_pil_rgb(os.path.join(_root_path, sample["data"])),
         label=load_pil_1(os.path.join(_root_path, sample["label"])),
+        mask=load_pil_1(os.path.join(_pkg_path, sample["mask"])),
     )
 
 
@@ -63,6 +66,6 @@ def _loader(context, sample):
 
 
 dataset = JSONDataset(
-    protocols=_protocols, fieldnames=("data", "label"), loader=_loader
+    protocols=_protocols, fieldnames=("data", "label", "mask"), loader=_loader
 )
 """CHASE-DB1 dataset object"""

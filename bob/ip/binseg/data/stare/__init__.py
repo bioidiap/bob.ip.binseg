@@ -37,11 +37,13 @@ _protocols = [
     pkg_resources.resource_filename(__name__, "vk.json"),
 ]
 
-_fieldnames = ("data", "label")
+_fieldnames = ("data", "label", "mask")
 
 _root_path = bob.extension.rc.get(
     "bob.ip.binseg.stare.datadir", os.path.realpath(os.curdir)
 )
+
+_pkg_path = pkg_resources.resource_filename(__name__, "masks")
 
 
 class _make_loader:
@@ -54,6 +56,7 @@ class _make_loader:
         return dict(
             data=load_pil_rgb(os.path.join(self.root_path, sample["data"])),
             label=load_pil_1(os.path.join(self.root_path, sample["label"])),
+            mask=load_pil_1(os.path.join(_pkg_path, sample["mask"])),
         )
 
     def __call__(self, context, sample):
