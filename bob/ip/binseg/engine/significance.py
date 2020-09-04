@@ -6,6 +6,7 @@ import textwrap
 import multiprocessing
 
 import logging
+
 logger = logging.getLogger(__name__)
 
 import h5py
@@ -15,17 +16,17 @@ import torch.nn
 import scipy.stats
 import tabulate
 
-from .evaluator import _sample_measures_for_threshold
+from .evaluator import sample_measures_for_threshold
 
 
 PERFORMANCE_FIGURES = [
-        "precision",
-        "recall",
-        "specificity",
-        "accuracy",
-        "jaccard",
-        "f1_score",
-        ]
+    "precision",
+    "recall",
+    "specificity",
+    "accuracy",
+    "jaccard",
+    "f1_score",
+]
 """List of performance figures supported by this module, in order"""
 
 
@@ -106,13 +107,9 @@ def _performance_summary(size, winperf, winsize, winstride, figure):
     n = -1 * numpy.ones(final_size, dtype=int)
     data = winperf[PERFORMANCE_FIGURES.index(figure)]
     for j in range(data.shape[0]):
-        yup = slice(
-            winstride[0] * j, (winstride[0] * j) + winsize[0], 1
-        )
+        yup = slice(winstride[0] * j, (winstride[0] * j) + winsize[0], 1)
         for i in range(data.shape[1]):
-            xup = slice(
-                winstride[1] * i, (winstride[1] * i) + winsize[1], 1
-            )
+            xup = slice(winstride[1] * i, (winstride[1] * i) + winsize[1], 1)
             nup = n[yup, xup]
             nup += 1
             yr, xr = numpy.meshgrid(
@@ -131,10 +128,14 @@ def _performance_summary(size, winperf, winsize, winstride, figure):
         std[n == k] = perf[:k].std(axis=0, ddof=1)[n == k]
 
     # returns only valid bounds wrt to the original image
-    return n[:size[0],:size[1]], avg[:size[0],:size[1]], std[:size[0],:size[1]]
+    return (
+        n[: size[0], : size[1]],
+        avg[: size[0], : size[1]],
+        std[: size[0], : size[1]],
+    )
 
 
-def _winperf_measures(pred, gt, threshold, size, stride):
+def _winperf_measures(pred, gt, mask, threshold, size, stride):
     """
     Calculates measures on sliding windows of a single sample
 
@@ -147,6 +148,9 @@ def _winperf_measures(pred, gt, threshold, size, stride):
 
     gt : torch.Tensor
         ground-truth (annotations)
+
+    mask : torch.Tensor
+        mask for the region of interest, optional (only used if specified)
 
     threshold : float
         threshold to use for evaluating individual sliding window performances
@@ -189,6 +193,7 @@ def _winperf_measures(pred, gt, threshold, size, stride):
 
     pred_padded = torch.nn.functional.pad(pred, padding)
     gt_padded = torch.nn.functional.pad(gt.squeeze(0), padding)
+    mask_padded = torch.nn.functional.pad(mask.squeeze(0), padding)
 
     # this will create as many views as required
     pred_windows = pred_padded.unfold(0, size[0], stride[0]).unfold(
@@ -197,14 +202,26 @@ def _winperf_measures(pred, gt, threshold, size, stride):
     gt_windows = gt_padded.unfold(0, size[0], stride[0]).unfold(
         1, size[1], stride[1]
     )
+    mask_windows = mask_padded.unfold(0, size[0], stride[0]).unfold(
+        1, size[1], stride[1]
+    )
     assert pred_windows.shape == gt_windows.shape
+    assert gt_windows.shape == mask_windows.shape
     ylen, xlen, _, _ = pred_windows.shape
 
-    retval = numpy.array([_sample_measures_for_threshold(
-            pred_windows[j, i, :, :], gt_windows[j, i, :, :], threshold
-        )
-        for j in range(ylen) for i in range(xlen)])
-    return retval.transpose(1,0).reshape(6, ylen, xlen)
+    retval = numpy.array(
+        [
+            sample_measures_for_threshold(
+                pred_windows[j, i, :, :],
+                gt_windows[j, i, :, :],
+                mask_windows[j, i, :, :],
+                threshold,
+            )
+            for j in range(ylen)
+            for i in range(xlen)
+        ]
+    )
+    return retval.transpose(1, 0).reshape(6, ylen, xlen)
 
 
 def _visual_dataset_performance(stem, img, n, avg, std, outdir):
@@ -804,12 +821,14 @@ def write_analysis_text(names, da, db, f):
     # * The dependent variable should not contain any outliers. [OK]
 
     if (diff == 0.0).all():
-        logger.error("Differences are exactly zero between both "
-                "sliding window distributions, for **all** samples. "
-                "Statistical significance tests are not meaningful in "
-                "this context and will be skipped.  This typically "
-                "indicates an issue with the setup of prediction folders "
-                "(duplicated?)")
+        logger.error(
+            "Differences are exactly zero between both "
+            "sliding window distributions, for **all** samples. "
+            "Statistical significance tests are not meaningful in "
+            "this context and will be skipped.  This typically "
+            "indicates an issue with the setup of prediction folders "
+            "(duplicated?)"
+        )
         return
 
     f.write("\nPaired significance tests:\n")
