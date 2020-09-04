@@ -64,17 +64,16 @@ def test_drive_mtest():
 
     for subset in dataset:
         for sample in dataset[subset]:
-            assert 3 <= len(sample) <= 4
+            assert len(sample) == 4
             assert isinstance(sample[0], str)
             nose.tools.eq_(sample[1].shape, (3, 544, 544)) #planes, height, width
             nose.tools.eq_(sample[1].dtype, torch.float32)
             nose.tools.eq_(sample[2].shape, (1, 544, 544))
             nose.tools.eq_(sample[2].dtype, torch.float32)
+            nose.tools.eq_(sample[3].shape, (1, 544, 544))
+            nose.tools.eq_(sample[3].dtype, torch.float32)
             assert sample[1].max() <= 1.0
             assert sample[1].min() >= 0.0
-            if len(sample) == 4:
-                nose.tools.eq_(sample[3].shape, (1, 544, 544))
-                nose.tools.eq_(sample[3].dtype, torch.float32)
 
 
 @rc_variable_set("bob.ip.binseg.drive.datadir")
@@ -94,17 +93,16 @@ def test_drive_covd():
     for key in ("__train__", "train"):
         nose.tools.eq_(len(dataset[key]), 123)
         for sample in dataset["__train__"]:
-            assert 3 <= len(sample) <= 4
+            assert len(sample) == 4
             assert isinstance(sample[0], str)
             nose.tools.eq_(sample[1].shape, (3, 544, 544)) #planes, height, width
             nose.tools.eq_(sample[1].dtype, torch.float32)
             nose.tools.eq_(sample[2].shape, (1, 544, 544)) #planes, height, width
             nose.tools.eq_(sample[2].dtype, torch.float32)
+            nose.tools.eq_(sample[3].shape, (1, 544, 544))
+            nose.tools.eq_(sample[3].dtype, torch.float32)
             assert sample[1].max() <= 1.0
             assert sample[1].min() >= 0.0
-            if len(sample) == 4:
-                nose.tools.eq_(sample[3].shape, (1, 544, 544))
-                nose.tools.eq_(sample[3].dtype, torch.float32)
 
 
 @rc_variable_set("bob.ip.binseg.drive.datadir")
@@ -126,24 +124,19 @@ def test_drive_ssl():
     # these are the only different from the baseline
     nose.tools.eq_(len(dataset["__train__"]), 123)
     for sample in dataset["__train__"]:
-        assert 5 <= len(sample) <= 6
+        assert len(sample) == 6
         assert isinstance(sample[0], str)
         nose.tools.eq_(sample[1].shape, (3, 544, 544)) #planes, height, width
         nose.tools.eq_(sample[1].dtype, torch.float32)
         nose.tools.eq_(sample[2].shape, (1, 544, 544)) #planes, height, width
         nose.tools.eq_(sample[2].dtype, torch.float32)
+        nose.tools.eq_(sample[3].shape, (1, 544, 544)) #planes, height, width
+        nose.tools.eq_(sample[3].dtype, torch.float32)
+        assert isinstance(sample[4], str)
+        nose.tools.eq_(sample[5].shape, (3, 544, 544)) #planes, height, width
+        nose.tools.eq_(sample[5].dtype, torch.float32)
         assert sample[1].max() <= 1.0
         assert sample[1].min() >= 0.0
-        if len(sample) == 6:
-            nose.tools.eq_(sample[3].shape, (1, 544, 544)) #planes, height, width
-            nose.tools.eq_(sample[3].dtype, torch.float32)
-            assert isinstance(sample[4], str)
-            nose.tools.eq_(sample[5].shape, (3, 544, 544)) #planes, height, width
-            nose.tools.eq_(sample[5].dtype, torch.float32)
-        else:
-            assert isinstance(sample[3], str)
-            nose.tools.eq_(sample[4].shape, (3, 544, 544)) #planes, height, width
-            nose.tools.eq_(sample[4].dtype, torch.float32)
 
 
 @stare_variable_set("bob.ip.binseg.stare.datadir")
@@ -169,12 +162,14 @@ def test_stare():
     def _check_subset(samples, size):
         nose.tools.eq_(len(samples), size)
         for s in samples:
-            nose.tools.eq_(len(s), 3)
+            nose.tools.eq_(len(s), 4)
             assert isinstance(s[0], str)
             nose.tools.eq_(s[1].shape, (3, 608, 704)) #planes, height, width
             nose.tools.eq_(s[1].dtype, torch.float32)
             nose.tools.eq_(s[2].shape, (1, 608, 704)) #planes, height, width
             nose.tools.eq_(s[2].dtype, torch.float32)
+            nose.tools.eq_(s[3].shape, (1, 608, 704)) #planes, height, width
+            nose.tools.eq_(s[3].dtype, torch.float32)
             assert s[1].max() <= 1.0
             assert s[1].min() >= 0.0
 
@@ -205,17 +200,16 @@ def test_stare_mtest():
 
     for subset in dataset:
         for sample in dataset[subset]:
-            assert 3 <= len(sample) <= 4
+            assert len(sample) == 4
             assert isinstance(sample[0], str)
             nose.tools.eq_(sample[1].shape, (3, 608, 704)) #planes,height,width
             nose.tools.eq_(sample[1].dtype, torch.float32)
             nose.tools.eq_(sample[2].shape, (1, 608, 704)) #planes,height,width
             nose.tools.eq_(sample[2].dtype, torch.float32)
+            nose.tools.eq_(sample[3].shape, (1, 608, 704))
+            nose.tools.eq_(sample[3].dtype, torch.float32)
             assert sample[1].max() <= 1.0
             assert sample[1].min() >= 0.0
-            if len(sample) == 4:
-                nose.tools.eq_(sample[3].shape, (1, 608, 704))
-                nose.tools.eq_(sample[3].dtype, torch.float32)
 
 
 @stare_variable_set("bob.ip.binseg.stare.datadir")
@@ -236,7 +230,7 @@ def test_stare_covd():
     for key in ("__train__", "train"):
         nose.tools.eq_(len(dataset[key]), 143)
         for sample in dataset[key]:
-            assert 3 <= len(sample) <= 4
+            assert len(sample) == 4
             assert isinstance(sample[0], str)
             nose.tools.eq_(sample[1].shape, (3, 608, 704)) #planes, height, width
             nose.tools.eq_(sample[1].dtype, torch.float32)
@@ -244,9 +238,8 @@ def test_stare_covd():
             nose.tools.eq_(sample[2].dtype, torch.float32)
             assert sample[1].max() <= 1.0
             assert sample[1].min() >= 0.0
-            if len(sample) == 4:
-                nose.tools.eq_(sample[3].shape, (1, 608, 704))
-                nose.tools.eq_(sample[3].dtype, torch.float32)
+            nose.tools.eq_(sample[3].shape, (1, 608, 704))
+            nose.tools.eq_(sample[3].dtype, torch.float32)
 
 
 @rc_variable_set("bob.ip.binseg.chasedb1.datadir")
@@ -255,12 +248,14 @@ def test_chasedb1():
     def _check_subset(samples, size):
         nose.tools.eq_(len(samples), size)
         for s in samples:
-            nose.tools.eq_(len(s), 3)
+            nose.tools.eq_(len(s), 4)
             assert isinstance(s[0], str)
             nose.tools.eq_(s[1].shape, (3, 960, 960)) #planes, height, width
             nose.tools.eq_(s[1].dtype, torch.float32)
             nose.tools.eq_(s[2].shape, (1, 960, 960)) #planes, height, width
             nose.tools.eq_(s[2].dtype, torch.float32)
+            nose.tools.eq_(s[3].shape, (1, 960, 960)) #planes, height, width
+            nose.tools.eq_(s[3].dtype, torch.float32)
             assert s[1].max() <= 1.0
             assert s[1].min() >= 0.0
 
@@ -290,17 +285,16 @@ def test_chasedb1_mtest():
 
     for subset in dataset:
         for sample in dataset[subset]:
-            assert 3 <= len(sample) <= 4
+            assert len(sample) == 4
             assert isinstance(sample[0], str)
             nose.tools.eq_(sample[1].shape, (3, 960, 960)) #planes,height,width
             nose.tools.eq_(sample[1].dtype, torch.float32)
             nose.tools.eq_(sample[2].shape, (1, 960, 960)) #planes,height,width
             nose.tools.eq_(sample[2].dtype, torch.float32)
+            nose.tools.eq_(sample[3].shape, (1, 960, 960))
+            nose.tools.eq_(sample[3].dtype, torch.float32)
             assert sample[1].max() <= 1.0
             assert sample[1].min() >= 0.0
-            if len(sample) == 4:
-                nose.tools.eq_(sample[3].shape, (1, 960, 960))
-                nose.tools.eq_(sample[3].dtype, torch.float32)
 
 
 @rc_variable_set("bob.ip.binseg.drive.datadir")
@@ -321,17 +315,16 @@ def test_chasedb1_covd():
     for key in ("__train__", "train"):
         nose.tools.eq_(len(dataset[key]), 135)
         for sample in dataset[key]:
-            assert 3 <= len(sample) <= 4
+            assert len(sample) == 4
             assert isinstance(sample[0], str)
             nose.tools.eq_(sample[1].shape, (3, 960, 960)) #planes, height, width
             nose.tools.eq_(sample[1].dtype, torch.float32)
             nose.tools.eq_(sample[2].shape, (1, 960, 960)) #planes, height, width
             nose.tools.eq_(sample[2].dtype, torch.float32)
+            nose.tools.eq_(sample[3].shape, (1, 960, 960))
+            nose.tools.eq_(sample[3].dtype, torch.float32)
             assert sample[1].max() <= 1.0
             assert sample[1].min() >= 0.0
-            if len(sample) == 4:
-                nose.tools.eq_(sample[3].shape, (1, 960, 960))
-                nose.tools.eq_(sample[3].dtype, torch.float32)
 
 
 @rc_variable_set("bob.ip.binseg.hrf.datadir")
@@ -390,17 +383,24 @@ def test_hrf_mtest():
 
     for subset in dataset:
         for sample in dataset[subset]:
-            assert 3 <= len(sample) <= 4
+            assert len(sample) == 4
             assert isinstance(sample[0], str)
-            nose.tools.eq_(sample[1].shape, (3, 1168, 1648)) #planes,height,width
-            nose.tools.eq_(sample[1].dtype, torch.float32)
-            nose.tools.eq_(sample[2].shape, (1, 1168, 1648)) #planes,height,width
-            nose.tools.eq_(sample[2].dtype, torch.float32)
-            assert sample[1].max() <= 1.0
-            assert sample[1].min() >= 0.0
-            if len(sample) == 4:
+            if "full resolution" in subset:
+                nose.tools.eq_(sample[1].shape, (3, 2336, 3296))
+                nose.tools.eq_(sample[1].dtype, torch.float32)
+                nose.tools.eq_(sample[2].shape, (1, 2336, 3296))
+                nose.tools.eq_(sample[2].dtype, torch.float32)
+                nose.tools.eq_(sample[3].shape, (1, 2336, 3296))
+                nose.tools.eq_(sample[3].dtype, torch.float32)
+            else:
+                nose.tools.eq_(sample[1].shape, (3, 1168, 1648))
+                nose.tools.eq_(sample[1].dtype, torch.float32)
+                nose.tools.eq_(sample[2].shape, (1, 1168, 1648))
+                nose.tools.eq_(sample[2].dtype, torch.float32)
                 nose.tools.eq_(sample[3].shape, (1, 1168, 1648))
                 nose.tools.eq_(sample[3].dtype, torch.float32)
+            assert sample[1].max() <= 1.0
+            assert sample[1].min() >= 0.0
 
 
 @rc_variable_set("bob.ip.binseg.drive.datadir")
@@ -421,17 +421,16 @@ def test_hrf_covd():
     for key in ("__train__", "train"):
         nose.tools.eq_(len(dataset[key]), 118)
         for sample in dataset[key]:
-            assert 3 <= len(sample) <= 4
+            assert len(sample) == 4
             assert isinstance(sample[0], str)
             nose.tools.eq_(sample[1].shape, (3, 1168, 1648))
             nose.tools.eq_(sample[1].dtype, torch.float32)
             nose.tools.eq_(sample[2].shape, (1, 1168, 1648))
             nose.tools.eq_(sample[2].dtype, torch.float32)
+            nose.tools.eq_(sample[3].shape, (1, 1168, 1648))
+            nose.tools.eq_(sample[3].dtype, torch.float32)
             assert sample[1].max() <= 1.0
             assert sample[1].min() >= 0.0
-            if len(sample) == 4:
-                nose.tools.eq_(sample[3].shape, (1, 1168, 1648))
-                nose.tools.eq_(sample[3].dtype, torch.float32)
 
 
 @rc_variable_set("bob.ip.binseg.iostar.datadir")
@@ -476,17 +475,16 @@ def test_iostar_mtest():
 
     for subset in dataset:
         for sample in dataset[subset]:
-            assert 3 <= len(sample) <= 4
+            assert len(sample) == 4
             assert isinstance(sample[0], str)
             nose.tools.eq_(sample[1].shape, (3, 1024, 1024)) #planes,height,width
             nose.tools.eq_(sample[1].dtype, torch.float32)
             nose.tools.eq_(sample[2].shape, (1, 1024, 1024)) #planes,height,width
             nose.tools.eq_(sample[2].dtype, torch.float32)
+            nose.tools.eq_(sample[3].shape, (1, 1024, 1024))
+            nose.tools.eq_(sample[3].dtype, torch.float32)
             assert sample[1].max() <= 1.0
             assert sample[1].min() >= 0.0
-            if len(sample) == 4:
-                nose.tools.eq_(sample[3].shape, (1, 1024, 1024))
-                nose.tools.eq_(sample[3].dtype, torch.float32)
 
 
 @rc_variable_set("bob.ip.binseg.drive.datadir")
@@ -507,17 +505,16 @@ def test_iostar_covd():
     for key in ("__train__", "train"):
         nose.tools.eq_(len(dataset[key]), 133)
         for sample in dataset[key]:
-            assert 3 <= len(sample) <= 4
+            assert len(sample) == 4
             assert isinstance(sample[0], str)
             nose.tools.eq_(sample[1].shape, (3, 1024, 1024))
             nose.tools.eq_(sample[1].dtype, torch.float32)
             nose.tools.eq_(sample[2].shape, (1, 1024, 1024))
             nose.tools.eq_(sample[2].dtype, torch.float32)
+            nose.tools.eq_(sample[3].shape, (1, 1024, 1024))
+            nose.tools.eq_(sample[3].dtype, torch.float32)
             assert sample[1].max() <= 1.0
             assert sample[1].min() >= 0.0
-            if len(sample) == 4:
-                nose.tools.eq_(sample[3].shape, (1, 1024, 1024))
-                nose.tools.eq_(sample[3].dtype, torch.float32)
 
 
 @rc_variable_set("bob.ip.binseg.refuge.datadir")

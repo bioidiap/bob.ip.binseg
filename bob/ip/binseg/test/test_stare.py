@@ -50,11 +50,11 @@ def test_loading():
 
     image_size = (700, 605)
 
-    def _check_sample(s, bw_threshold_label):
+    def _check_sample(s, bw_threshold_label, bw_threshold_mask):
 
         data = s.data
         assert isinstance(data, dict)
-        nose.tools.eq_(len(data), 2)
+        nose.tools.eq_(len(data), 3)
 
         assert "data" in data
         nose.tools.eq_(data["data"].size, image_size)
@@ -73,11 +73,25 @@ def test_loading():
                 f"of {bw_threshold_label} at '{s.key}':label - this could " \
                 f"indicate a loading problem!"
 
+        assert "mask" in data
+        nose.tools.eq_(data["mask"].size, image_size)
+        nose.tools.eq_(data["mask"].mode, "1")
+        bm, wm = count_bw(data["mask"])
+        assert (bm+wm) == numpy.prod(image_size), \
+                f"Counts of black + white ({bm}+{wm}) do not add up to total " \
+                f"image size ({numpy.prod(image_size)}) at '{s.key}':mask"
+        assert (wm/bm) > bw_threshold_mask, \
+                f"The proportion between black and white pixels in masks " \
+                f"({wm}/{bm}={wm/bm:.2f}) is smaller than the allowed " \
+                f"threshold of {bw_threshold_mask} at '{s.key}':label - " \
+                f"this could indicate a loading problem!"
+        #print (f"{s.key}: {wm/bm} > {bw_threshold_mask}? {(wm/bm)>bw_threshold_mask}")
+
         # to visualize images, uncomment the folowing code
         # it should display an image with a faded background representing the
         # original data, blended with green labels.
         #from ..data.utils import overlayed_image
-        #display = overlayed_image(data["data"], data["label"])
+        #display = overlayed_image(data["data"], data["label"], data["mask"])
         #display.show()
         #import ipdb; ipdb.set_trace()
 
@@ -85,15 +99,15 @@ def test_loading():
 
     limit = None  #use this to limit testing to first images only
     subset = dataset.subsets("ah")
-    proportions = [_check_sample(s, 0.10) for s in subset["train"][:limit]]
+    proportions = [_check_sample(s, 0.10, 2.67) for s in subset["train"][:limit]]
     #print(f"max label proportions = {max(proportions)}")
-    proportions = [_check_sample(s, 0.12) for s in subset["test"][:limit]]
+    proportions = [_check_sample(s, 0.12, 2.70) for s in subset["test"][:limit]]
     #print(f"max label proportions = {max(proportions)}")
 
     subset = dataset.subsets("vk")
-    proportions = [_check_sample(s, 0.19) for s in subset["train"][:limit]]
+    #proportions = [_check_sample(s, 0.19, 2.67) for s in subset["train"][:limit]]
     #print(f"max label proportions = {max(proportions)}")
-    proportions = [_check_sample(s, 0.18) for s in subset["test"][:limit]]
+    #proportions = [_check_sample(s, 0.18, 2.70) for s in subset["test"][:limit]]
     #print(f"max label proportions = {max(proportions)}")
 
 
