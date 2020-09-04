@@ -12,7 +12,7 @@ can be downloaded.  We include the reference of the data split protocols used
 to generate iterators for training and testing.
 
 
-.. list-table::
+.. list-table:: Supported Datasets (``*`` provided within this package)
 
    * - Dataset
      - Reference
@@ -40,7 +40,7 @@ to generate iterators for training and testing.
      - [STARE-2000]_
      - 605 x 700
      - 20
-     -
+     - *
      - x
      -
      -
@@ -51,7 +51,7 @@ to generate iterators for training and testing.
      - [CHASEDB1-2012]_
      - 960 x 999
      - 28
-     -
+     - *
      - x
      -
      -

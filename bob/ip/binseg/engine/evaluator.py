@@ -24,7 +24,39 @@ logger = logging.getLogger(__name__)
 
 
 def _posneg(pred, gt, threshold):
-    """Calculates true and false positives and negatives"""
+    """Calculates true and false positives and negatives
+
+
+    Parameters
+    ----------
+
+    pred : torch.Tensor
+        pixel-wise predictions
+
+    gt : torch.Tensor
+        ground-truth (annotations)
+
+    threshold : float
+        a particular threshold in which to calculate the performance
+        measures
+
+
+    Returns
+    -------
+
+    tp_tensor : torch.Tensor
+        boolean tensor with true positives, considering all observations
+
+    fp_tensor : torch.Tensor
+        boolean tensor with false positives, considering all observations
+
+    tn_tensor : torch.Tensor
+        boolean tensor with true negatives, considering all observations
+
+    fn_tensor : torch.Tensor
+        boolean tensor with false negatives, considering all observations
+
+    """
 
     gt = gt.byte()  # byte tensor
 
@@ -39,18 +71,18 @@ def _posneg(pred, gt, threshold):
     tp_tensor = gt * binary_pred
 
     # false positives
-    fp_tensor = torch.eq((binary_pred + tp_tensor), 1)
+    fp_tensor = torch.eq((binary_pred + tp_tensor), 1).byte()
 
     # true negatives
     tn_tensor = equals - tp_tensor
 
     # false negatives
-    fn_tensor = notequals - fp_tensor.type(torch.uint8)
+    fn_tensor = notequals - fp_tensor
 
     return tp_tensor, fp_tensor, tn_tensor, fn_tensor
 
 
-def _sample_measures_for_threshold(pred, gt, threshold):
+def sample_measures_for_threshold(pred, gt, mask, threshold):
     """
     Calculates measures on one single sample, for a specific threshold
 
@@ -63,6 +95,9 @@ def _sample_measures_for_threshold(pred, gt, threshold):
 
     gt : torch.Tensor
         ground-truth (annotations)
+
+    mask : torch.Tensor
+        region mask (used only if available).  May be set to ``None``.
 
     threshold : float
         a particular threshold in which to calculate the performance
@@ -88,15 +123,25 @@ def _sample_measures_for_threshold(pred, gt, threshold):
 
     tp_tensor, fp_tensor, tn_tensor, fn_tensor = _posneg(pred, gt, threshold)
 
+    # if a mask is provided, consider only TP/FP/TN/FN **within** the region of
+    # interest defined by the mask
+    if mask is not None:
+        antimask = torch.le(mask, 0.5)
+        tp_tensor[antimask] = 0
+        fp_tensor[antimask] = 0
+        tn_tensor[antimask] = 0
+        fn_tensor[antimask] = 0
+
     # calc measures from scalars
     tp_count = torch.sum(tp_tensor).item()
     fp_count = torch.sum(fp_tensor).item()
     tn_count = torch.sum(tn_tensor).item()
     fn_count = torch.sum(fn_tensor).item()
+
     return base_measures(tp_count, fp_count, tn_count, fn_count)
 
 
-def _sample_measures(pred, gt, steps):
+def _sample_measures(pred, gt, mask, steps):
     """
     Calculates measures on one single sample
 
@@ -109,6 +154,9 @@ def _sample_measures(pred, gt, steps):
 
     gt : torch.Tensor
         ground-truth (annotations)
+
+    mask : torch.Tensor
+        region mask (used only if available).  May be set to ``None``.
 
     steps : int
         number of steps to use for threshold analysis.  The step size is
@@ -134,7 +182,8 @@ def _sample_measures(pred, gt, steps):
 
     step_size = 1.0 / steps
     data = [
-        (index, threshold) + _sample_measures_for_threshold(pred, gt, threshold)
+        (index, threshold) + sample_measures_for_threshold(pred, gt, mask,
+            threshold)
         for index, threshold in enumerate(numpy.arange(0.0, 1.0, step_size))
     ]
 
@@ -157,6 +206,7 @@ def _sample_analysis(
     img,
     pred,
     gt,
+    mask,
     threshold,
     tp_color=(0, 255, 0),  # (128,128,128) Gray
     fp_color=(0, 0, 255),  # (70, 240, 240) Cyan
@@ -177,6 +227,9 @@ def _sample_analysis(
 
     gt : torch.Tensor
         ground-truth (annotations)
+
+    mask : torch.Tensor
+        region mask (used only if available).  May be set to ``None``.
 
     threshold : float
         The threshold to be used while analyzing this image's probability map
@@ -206,6 +259,15 @@ def _sample_analysis(
     """
 
     tp_tensor, fp_tensor, tn_tensor, fn_tensor = _posneg(pred, gt, threshold)
+
+    # if a mask is provided, consider only TP/FP/TN/FN **within** the region of
+    # interest defined by the mask
+    if mask is not None:
+        antimask = torch.le(mask, 0.5)
+        tp_tensor[antimask] = 0
+        fp_tensor[antimask] = 0
+        tn_tensor[antimask] = 0
+        fn_tensor[antimask] = 0
 
     # change to PIL representation
     tp_pil = VF.to_pil_image(tp_tensor.float())
@@ -295,6 +357,7 @@ def run(
         stem = sample[0]
         image = sample[1]
         gt = sample[2]
+        mask = None if len(sample) <= 3 else sample[3]
         pred_fullpath = os.path.join(use_predictions_folder, stem + ".hdf5")
         with h5py.File(pred_fullpath, "r") as f:
             pred = f["array"][:]
@@ -303,7 +366,7 @@ def run(
             raise RuntimeError(
                 f"{stem} entry already exists in data. Cannot overwrite."
             )
-        data[stem] = _sample_measures(pred, gt, steps)
+        data[stem] = _sample_measures(pred, gt, mask, steps)
 
         if output_folder is not None:
             fullpath = os.path.join(output_folder, name, f"{stem}.csv")
@@ -313,7 +376,7 @@ def run(
 
         if overlayed_folder is not None:
             overlay_image = _sample_analysis(
-                image, pred, gt, threshold=threshold, overlay=True
+                image, pred, gt, mask, threshold=threshold, overlay=True
             )
             fullpath = os.path.join(overlayed_folder, name, f"{stem}.png")
             tqdm.write(f"Saving {fullpath}...")
@@ -432,11 +495,12 @@ def compare_annotators(
         image = baseline_sample[1]
         gt = baseline_sample[2]
         pred = other_sample[2]  # works as a prediction
+        mask = None if len(sample) <= 3 else sample[3]
         if stem in data:
             raise RuntimeError(
                 f"{stem} entry already exists in data. " f"Cannot overwrite."
             )
-        data[stem] = _sample_measures(pred, gt, 2)
+        data[stem] = _sample_measures(pred, gt, mask, 2)
 
         if output_folder is not None:
             fullpath = os.path.join(
@@ -448,7 +512,7 @@ def compare_annotators(
 
         if overlayed_folder is not None:
             overlay_image = _sample_analysis(
-                image, pred, gt, threshold=0.5, overlay=True
+                image, pred, gt, mask, threshold=0.5, overlay=True
             )
             fullpath = os.path.join(
                 overlayed_folder, "second-annotator", name, f"{stem}.png"
