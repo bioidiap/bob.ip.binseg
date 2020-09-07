@@ -495,7 +495,7 @@ def compare_annotators(
         image = baseline_sample[1]
         gt = baseline_sample[2]
         pred = other_sample[2]  # works as a prediction
-        mask = None if len(sample) <= 3 else sample[3]
+        mask = None if len(baseline_sample) < 4 else baseline_sample[3]
         if stem in data:
             raise RuntimeError(
                 f"{stem} entry already exists in data. " f"Cannot overwrite."
