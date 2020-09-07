@@ -32,7 +32,7 @@ class Tester(unittest.TestCase):
     def test_batch_measures(self):
         dfs = []
         for pred, gt in zip(self.predictions, self.ground_truths):
-            dfs.append(_sample_measures(pred, gt, 100))
+            dfs.append(_sample_measures(pred, gt, None, 100))
         bm = pandas.concat(dfs)
 
         self.assertEqual(len(bm), 2 * 100)
@@ -40,7 +40,3 @@ class Tester(unittest.TestCase):
         calculated = bm.f1_score.to_numpy()
         ours = (2*(bm.precision*bm.recall)/(bm.precision+bm.recall)).to_numpy()
         assert numpy.isclose(calculated, ours).all()
-
-
-if __name__ == "__main__":
-    unittest.main()
