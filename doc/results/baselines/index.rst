@@ -15,7 +15,8 @@ F1 Scores (micro-level)
   U-Net Models are trained for a fixed number of 1000 epochs, with a learning
   rate of 0.001 until epoch 900 and then 0.0001 until the end of the training,
   after being initialized with a VGG-16 backend.  Little W-Net models are
-  trained using a cosine anneling strategy (see [SMITH-2017]_) for 2000 epochs.
+  trained using a cosine anneling strategy (see [GALDRAN-2020]_ and
+  [SMITH-2017]_) for 2000 epochs.
 * During the training session, an unaugmented copy of the training set is used
   as validation set.  We keep checkpoints for the best performing networks
   based on such validation set.  The best performing network during training is
