@@ -150,7 +150,7 @@ def _winperf_measures(pred, gt, mask, threshold, size, stride):
         ground-truth (annotations)
 
     mask : torch.Tensor
-        mask for the region of interest, optional (only used if specified)
+        mask for the region of interest
 
     threshold : float
         threshold to use for evaluating individual sliding window performances
@@ -191,9 +191,15 @@ def _winperf_measures(pred, gt, mask, threshold, size, stride):
     if rem != 0:
         padding += (0, (stride[0] - rem))
 
-    pred_padded = torch.nn.functional.pad(pred, padding)
-    gt_padded = torch.nn.functional.pad(gt.squeeze(0), padding)
-    mask_padded = torch.nn.functional.pad(mask.squeeze(0), padding)
+    pred_padded = torch.nn.functional.pad(
+        pred, padding, mode="constant", value=0.0
+    )
+    gt_padded = torch.nn.functional.pad(
+        gt.squeeze(0), padding, mode="constant", value=0.0
+    )
+    mask_padded = torch.nn.functional.pad(
+        mask.squeeze(0), padding, mode="constant", value=1.0
+    )
 
     # this will create as many views as required
     pred_windows = pred_padded.unfold(0, size[0], stride[0]).unfold(
@@ -364,7 +370,8 @@ def _winperf_for_sample(
     sample = dataset[k]
     with h5py.File(os.path.join(basedir, sample[0] + ".hdf5"), "r") as f:
         pred = torch.from_numpy(f["array"][:])
-    winperf = _winperf_measures(pred, sample[2], threshold, size, stride)
+    mask = None if len(sample) < 4 else sample[3]
+    winperf = _winperf_measures(pred, sample[2], mask, threshold, size, stride)
     n, avg, std = _performance_summary(
         sample[1].shape[1:], winperf, size, stride, figure
     )
