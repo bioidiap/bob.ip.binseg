@@ -10,6 +10,8 @@ https://github.com/jvanvugt/pytorch-unet
 It is based on two simple U-Nets with 3 layers concatenated to each other.  The
 first U-Net produces a segmentation map that is used by the second to better
 guide segmentation.
+
+Reference: [GALDRAN-2020]_
 """
 
 

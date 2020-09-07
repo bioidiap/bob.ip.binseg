@@ -73,6 +73,7 @@ Neural Network Models
    bob.ip.binseg.models.m2unet
    bob.ip.binseg.models.resunet
    bob.ip.binseg.models.unet
+   bob.ip.binseg.models.lwnet
    bob.ip.binseg.models.losses
    bob.ip.binseg.models.make_layers
 

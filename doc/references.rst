@@ -112,7 +112,7 @@
 .. [GALDRAN-2020] *A. Galdran, A. Anjos, J. Dolz, H. Chakor, H. Lombaert, and
    I. Ben Ayed*, **The Little W-Net That Could: State-of-the-Art Retinal Vessel
    Segmentation with Minimalistic Models**, 2020.
-   https://arxiv.org/abs/xxxx.xxxxxv1
+   https://arxiv.org/abs/2009.01907
 
 .. [SMITH-2017] *L. N. Smith*, **Cyclical Learning Rates for Training Neural
    Networks**, 2017.  https://arxiv.org/abs/1506.01186
