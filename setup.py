@@ -55,7 +55,7 @@ setup(
             "m2unet-ssl = bob.ip.binseg.configs.models.m2unet_ssl",
             "unet = bob.ip.binseg.configs.models.unet",
             "resunet = bob.ip.binseg.configs.models.resunet",
-            "lwnet = bob.ip.binseg.configs.models.lwunet",
+            "lwnet = bob.ip.binseg.configs.models.lwnet",
 
             # example datasets
             "csv-dataset-example = bob.ip.binseg.configs.datasets.csv",

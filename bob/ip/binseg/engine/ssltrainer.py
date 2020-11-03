@@ -357,6 +357,7 @@ def run(
                     epoch, rampup_length=rampup_length
                 )
 
+                # note: no support for masks...
                 loss, ll, ul = criterion(
                     outputs,
                     ground_truths,
@@ -395,15 +396,16 @@ def run(
                             device=device,
                             non_blocking=torch.cuda.is_available(),
                         )
-                        masks = None
-                        if len(samples) == 4:
-                            masks = samples[-1].to(
+                        masks = (
+                            torch.ones_like(ground_truths)
+                            if len(samples) < 4
+                            else samples[3].to(
                                 device=device,
                                 non_blocking=torch.cuda.is_available(),
                             )
+                        )
 
                         outputs = model(images)
-
                         loss = criterion(outputs, ground_truths, masks)
                         valid_losses.update(loss)
 

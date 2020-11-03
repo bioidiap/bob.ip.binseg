@@ -14,7 +14,7 @@ Reference: [XIE-2015]_
 
 from torch.optim.lr_scheduler import MultiStepLR
 from bob.ip.binseg.models.hed import hed
-from bob.ip.binseg.models.losses import HEDSoftJaccardBCELogitsLoss
+from bob.ip.binseg.models.losses import MultiSoftJaccardBCELogitsLoss
 from bob.ip.binseg.engine.adabound import AdaBound
 
 
@@ -45,7 +45,7 @@ optimizer = AdaBound(
     amsbound=amsbound,
 )
 # criterion
-criterion = HEDSoftJaccardBCELogitsLoss(alpha=0.7)
+criterion = MultiSoftJaccardBCELogitsLoss(alpha=0.7)
 
 # scheduler
 scheduler = MultiStepLR(

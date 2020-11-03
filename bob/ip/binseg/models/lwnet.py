@@ -157,7 +157,7 @@ class LittleUNet(torch.nn.Module):
         conv_bridge=True,
         shortcut=True,
     ):
-        super(UNet, self).__init__()
+        super(LittleUNet, self).__init__()
         self.n_classes = n_classes
         self.first = ConvBlock(
             in_c=in_c, out_c=layers[0], k_sz=k_sz, shortcut=shortcut, pool=False
@@ -224,7 +224,7 @@ class LittleWNet(torch.nn.Module):
         mode="train",
     ):
 
-        super(wnet, self).__init__()
+        super(LittleWNet, self).__init__()
         self.unet1 = LittleUNet(
             in_c=in_c,
             n_classes=n_classes,

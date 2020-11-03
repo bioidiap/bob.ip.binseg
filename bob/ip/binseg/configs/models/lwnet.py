@@ -11,8 +11,8 @@ Reference: [GALDRAN-2020]_
 
 from torch.optim.lr_scheduler import CosineAnnealingLR
 from torch.optim import Adam
-from torch.nn import BCEWithLogitsLoss
 from bob.ip.binseg.models.lwnet import lwnet
+from bob.ip.binseg.models.losses import MultiWeightedBCELogitsLoss
 
 ##### Config #####
 max_lr = 0.01  #start
@@ -21,7 +21,7 @@ cycle = 50  #epochs for a complete scheduling cycle
 
 model = lwnet()
 
-criterion = BCEWithLogitsLoss()
+criterion = MultiWeightedBCELogitsLoss()
 
 optimizer = Adam(
     model.parameters(),

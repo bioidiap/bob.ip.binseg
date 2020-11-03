@@ -79,8 +79,7 @@ class HED(torch.nn.Module):
             conv1_2_16, upsample2, upsample4, upsample8, upsample16
         )
 
-        out = [upsample2, upsample4, upsample8, upsample16, concatfuse]
-        return out
+        return (upsample2, upsample4, upsample8, upsample16, concatfuse)
 
 
 def hed(pretrained_backbone=True, progress=True):

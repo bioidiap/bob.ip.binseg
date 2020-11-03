@@ -161,9 +161,9 @@ def run(model, data_loader, name, device, output_folder, overlayed_folder):
             start_time = time.perf_counter()
             outputs = model(images)
 
-            # necessary check for HED architecture that uses several outputs
-            # for loss calculation instead of just the last concatfuse block
-            if isinstance(outputs, list):
+            # necessary check for HED/Little W-Net architecture that use
+            # several outputs for loss calculation instead of just the last one
+            if isinstance(outputs, (list, tuple)):
                 outputs = outputs[-1]
 
             predictions = sigmoid(outputs)

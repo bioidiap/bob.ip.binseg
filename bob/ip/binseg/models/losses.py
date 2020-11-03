@@ -3,243 +3,216 @@
 import torch
 from torch.nn.modules.loss import _Loss
 
-# Conditionally decorates a method if a decorator exists in PyTorch
-# This overcomes an import error with versions of PyTorch >= 1.2, where the
-# decorator ``weak_script_method`` is not anymore available.  See:
-# https://github.com/pytorch/pytorch/commit/10c4b98ade8349d841518d22f19a653a939e260c#diff-ee07db084d958260fd24b4b02d4f078d
-# from July 4th, 2019.
-try:
-    from torch._jit_internal import weak_script_method
-except ImportError:
-
-    def weak_script_method(x):
-        return x
-
 
 class WeightedBCELogitsLoss(_Loss):
+    """Calculates sum of weighted cross entropy loss.
+
+    Implements Equation 1 in [MANINIS-2016]_.  The weight depends on the
+    current proportion between negatives and positives in the ground-truth
+    sample being analyzed.
     """
-    Implements Equation 1 in [MANINIS-2016]_. Based on
-    :py:class:`torch.nn.BCEWithLogitsLoss`.
 
-    Calculate sum of weighted cross entropy loss.
-    """
+    def __init__(self):
+        super(WeightedBCELogitsLoss, self).__init__()
 
-    def __init__(
-        self,
-        weight=None,
-        size_average=None,
-        reduce=None,
-        reduction="mean",
-        pos_weight=None,
-    ):
-        super(WeightedBCELogitsLoss, self).__init__(size_average, reduce, reduction)
-        self.register_buffer("weight", weight)
-        self.register_buffer("pos_weight", pos_weight)
-
-    @weak_script_method
-    def forward(self, input, target, masks=None):
+    def forward(self, input, target, mask):
         """
+
         Parameters
         ----------
+
         input : :py:class:`torch.Tensor`
+            Value produced by the model to be evaluated, with the shape ``[n, c,
+            h, w]``
+
         target : :py:class:`torch.Tensor`
-        masks : :py:class:`torch.Tensor`, optional
+            Ground-truth information with the shape ``[n, c, h, w]``
+
+        mask : :py:class:`torch.Tensor`
+            Mask to be use for specifying the region of interest where to
+            compute the loss, with the shape ``[n, c, h, w]``
+
 
         Returns
         -------
-        :py:class:`torch.Tensor`
-        """
-        n, c, h, w = target.shape
-        num_pos = (
-            torch.sum(target, dim=[1, 2, 3]).float().reshape(n, 1)
-        )  # torch.Size([n, 1])
-        if hasattr(masks, "dtype"):
-            num_mask_neg = c * h * w - torch.sum(masks, dim=[1, 2, 3]).float().reshape(
-                n, 1
-            )  # torch.Size([n, 1])
-            num_neg = c * h * w - num_pos - num_mask_neg
-        else:
-            num_neg = c * h * w - num_pos
-        numposnumtotal = torch.ones_like(target) * (
-            num_pos / (num_pos + num_neg)
-        ).unsqueeze(1).unsqueeze(2)
-        numnegnumtotal = torch.ones_like(target) * (
-            num_neg / (num_pos + num_neg)
-        ).unsqueeze(1).unsqueeze(2)
-        weight = torch.where((target <= 0.5), numposnumtotal, numnegnumtotal)
 
-        loss = torch.nn.functional.binary_cross_entropy_with_logits(
-            input, target, weight=weight, reduction=self.reduction
+        loss : :py:class:`torch.Tensor`
+            The average loss for all input data
+
+        """
+
+        # calculates the proportion of negatives to the total number of pixels
+        # available in the masked region
+        valid = mask > 0.5
+        num_pos = target[valid].sum()
+        num_neg = valid.sum() - num_pos
+        pos_weight = num_neg / num_pos
+
+        return torch.nn.functional.binary_cross_entropy_with_logits(
+            input[valid], target[valid], reduction="mean", pos_weight=pos_weight
         )
-        return loss
 
 
 class SoftJaccardBCELogitsLoss(_Loss):
     """
-    Implements Equation 3 in [IGLOVIKOV-2018]_.  Based on
-    ``torch.nn.BCEWithLogitsLoss``.
+    Implements the generalized loss function of Equation (3) in
+    [IGLOVIKOV-2018]_, with J being the Jaccard distance, and H, the Binary
+    Cross-Entropy Loss:
+
+    .. math::
+
+       L = \alpha H + (1-\alpha)(1-J)
+
+
+    Our implementation is based on :py:class:`torch.nn.BCEWithLogitsLoss`.
+
 
     Attributes
     ----------
+
     alpha : float
-        determines the weighting of SoftJaccard and BCE. Default: ``0.7``
+        determines the weighting of J and H. Default: ``0.7``
+
     """
 
-    def __init__(
-        self,
-        alpha=0.7,
-        size_average=None,
-        reduce=None,
-        reduction="mean",
-        pos_weight=None,
-    ):
-        super(SoftJaccardBCELogitsLoss, self).__init__(size_average, reduce, reduction)
+    def __init__(self, alpha=0.7):
+        super(SoftJaccardBCELogitsLoss, self).__init__()
         self.alpha = alpha
 
-    @weak_script_method
-    def forward(self, input, target, masks=None):
+    def forward(self, input, target, mask):
         """
+
         Parameters
         ----------
+
         input : :py:class:`torch.Tensor`
+            Value produced by the model to be evaluated, with the shape ``[n, c,
+            h, w]``
+
         target : :py:class:`torch.Tensor`
-        masks : :py:class:`torch.Tensor`, optional
+            Ground-truth information with the shape ``[n, c, h, w]``
+
+        mask : :py:class:`torch.Tensor`
+            Mask to be use for specifying the region of interest where to
+            compute the loss, with the shape ``[n, c, h, w]``
+
 
         Returns
         -------
-        :py:class:`torch.Tensor`
+
+        loss : :py:class:`torch.Tensor`
+            Loss, in a single entry
+
         """
+
         eps = 1e-8
-        probabilities = torch.sigmoid(input)
-        intersection = (probabilities * target).sum()
-        sums = probabilities.sum() + target.sum()
+        valid = mask > 0.5
+        probabilities = torch.sigmoid(input[valid])
+        intersection = (probabilities * target[valid]).sum()
+        sums = probabilities.sum() + target[valid].sum()
+        J = intersection / (sums - intersection + eps)
 
-        softjaccard = intersection / (sums - intersection + eps)
-
-        bceloss = torch.nn.functional.binary_cross_entropy_with_logits(
-            input, target, weight=None, reduction=self.reduction
+        # this implements the support for looking just into the RoI
+        H = torch.nn.functional.binary_cross_entropy_with_logits(
+            input[valid], target[valid], reduction="mean"
         )
-        loss = self.alpha * bceloss + (1 - self.alpha) * (1 - softjaccard)
-        return loss
+        return (self.alpha * H) + ((1 - self.alpha) * (1 - J))
 
 
-class HEDWeightedBCELogitsLoss(_Loss):
+class MultiWeightedBCELogitsLoss(WeightedBCELogitsLoss):
     """
-    Implements Equation 2 in [HE-2015]_. Based on
-    ``torch.nn.modules.loss.BCEWithLogitsLoss``.
-
-    Calculate sum of weighted cross entropy loss.
+    Weighted Binary Cross-Entropy Loss for multi-layered inputs (e.g. for
+    Holistically-Nested Edge Detection in [XIE-2015]_).
     """
 
-    def __init__(
-        self,
-        weight=None,
-        size_average=None,
-        reduce=None,
-        reduction="mean",
-        pos_weight=None,
-    ):
-        super(HEDWeightedBCELogitsLoss, self).__init__(size_average, reduce, reduction)
-        self.register_buffer("weight", weight)
-        self.register_buffer("pos_weight", pos_weight)
+    def __init__(self):
+        super(MultiWeightedBCELogitsLoss, self).__init__()
 
-    @weak_script_method
-    def forward(self, inputlist, target, masks=None):
+    def forward(self, input, target, mask):
         """
         Parameters
         ----------
-        inputlist : list of :py:class:`torch.Tensor`
-            HED uses multiple side-output feature maps for the loss calculation
+
+        input : iterable over :py:class:`torch.Tensor`
+            Value produced by the model to be evaluated, with the shape ``[L,
+            n, c, h, w]``
+
         target : :py:class:`torch.Tensor`
-        masks : :py:class:`torch.Tensor`, optional
+            Ground-truth information with the shape ``[n, c, h, w]``
+
+        mask : :py:class:`torch.Tensor`
+            Mask to be use for specifying the region of interest where to
+            compute the loss, with the shape ``[n, c, h, w]``
+
+
         Returns
         -------
-        :py:class:`torch.Tensor`
+
+        loss : torch.Tensor
+            The average loss for all input data
+
         """
-        loss_over_all_inputs = []
-        for input in inputlist:
-            n, c, h, w = target.shape
-            num_pos = (
-                torch.sum(target, dim=[1, 2, 3]).float().reshape(n, 1)
-            )  # torch.Size([n, 1])
-            if hasattr(masks, "dtype"):
-                num_mask_neg = c * h * w - torch.sum(
-                    masks, dim=[1, 2, 3]
-                ).float().reshape(
-                    n, 1
-                )  # torch.Size([n, 1])
-                num_neg = c * h * w - num_pos - num_mask_neg
-            else:
-                num_neg = c * h * w - num_pos  # torch.Size([n, 1])
-            numposnumtotal = torch.ones_like(target) * (
-                num_pos / (num_pos + num_neg)
-            ).unsqueeze(1).unsqueeze(2)
-            numnegnumtotal = torch.ones_like(target) * (
-                num_neg / (num_pos + num_neg)
-            ).unsqueeze(1).unsqueeze(2)
-            weight = torch.where((target <= 0.5), numposnumtotal, numnegnumtotal)
-            loss = torch.nn.functional.binary_cross_entropy_with_logits(
-                input, target, weight=weight, reduction=self.reduction
-            )
-            loss_over_all_inputs.append(loss.unsqueeze(0))
-        final_loss = torch.cat(loss_over_all_inputs).mean()
-        return final_loss
+
+        return torch.cat(
+            [
+                super(MultiWeightedBCELogitsLoss, self).forward(i, target,
+                    mask).unsqueeze(0)
+                for i in input
+            ]
+        ).mean()
 
 
-class HEDSoftJaccardBCELogitsLoss(_Loss):
+class MultiSoftJaccardBCELogitsLoss(SoftJaccardBCELogitsLoss):
     """
 
-    Implements  Equation 3 in [IGLOVIKOV-2018]_ for the hed network. Based on
-    :py:class:`torch.nn.BCEWithLogitsLoss`.
+    Implements  Equation 3 in [IGLOVIKOV-2018]_ for the multi-output networks
+    such as HED or Little W-Net.
+
 
     Attributes
     ----------
+
     alpha : float
         determines the weighting of SoftJaccard and BCE. Default: ``0.3``
+
     """
 
-    def __init__(
-        self,
-        alpha=0.3,
-        size_average=None,
-        reduce=None,
-        reduction="mean",
-        pos_weight=None,
-    ):
-        super(HEDSoftJaccardBCELogitsLoss, self).__init__(
-            size_average, reduce, reduction
-        )
-        self.alpha = alpha
+    def __init__(self, alpha=0.7):
+        super(MultiSoftJaccardBCELogitsLoss, self).__init__(alpha=alpha)
 
-    @weak_script_method
-    def forward(self, inputlist, target, masks=None):
+    def forward(self, inputlist, target):
         """
         Parameters
         ----------
-        input : :py:class:`torch.Tensor`
+
+        input : iterable over :py:class:`torch.Tensor`
+            Value produced by the model to be evaluated, with the shape ``[L,
+            n, c, h, w]``
+
         target : :py:class:`torch.Tensor`
-        masks : :py:class:`torch.Tensor`, optional
+            Ground-truth information with the shape ``[n, c, h, w]``
+
+        mask : :py:class:`torch.Tensor`
+            Mask to be use for specifying the region of interest where to
+            compute the loss, with the shape ``[n, c, h, w]``
+
 
         Returns
         -------
-        :py:class:`torch.Tensor`
+
+        loss : torch.Tensor
+            The average loss for all input data
+
         """
-        eps = 1e-8
-        loss_over_all_inputs = []
-        for input in inputlist:
-            probabilities = torch.sigmoid(input)
-            intersection = (probabilities * target).sum()
-            sums = probabilities.sum() + target.sum()
 
-            softjaccard = intersection / (sums - intersection + eps)
-
-            bceloss = torch.nn.functional.binary_cross_entropy_with_logits(
-                input, target, weight=None, reduction=self.reduction
-            )
-            loss = self.alpha * bceloss + (1 - self.alpha) * (1 - softjaccard)
-            loss_over_all_inputs.append(loss.unsqueeze(0))
-        final_loss = torch.cat(loss_over_all_inputs).mean()
-        return final_loss
+        return torch.cat(
+            [
+                super(MultiSoftJaccardBCELogitsLoss, self).forward(
+                    i, target, mask
+                ).unsqueeze(0)
+                for i in input
+            ]
+        ).mean()
 
 
 class MixJacLoss(_Loss):
@@ -267,8 +240,9 @@ class MixJacLoss(_Loss):
         self.labeled_loss = SoftJaccardBCELogitsLoss(alpha=jacalpha)
         self.unlabeled_loss = torch.nn.BCEWithLogitsLoss()
 
-    @weak_script_method
-    def forward(self, input, target, unlabeled_input, unlabeled_traget, ramp_up_factor):
+    def forward(
+        self, input, target, unlabeled_input, unlabeled_target, ramp_up_factor
+    ):
         """
         Parameters
         ----------
@@ -276,7 +250,7 @@ class MixJacLoss(_Loss):
         input : :py:class:`torch.Tensor`
         target : :py:class:`torch.Tensor`
         unlabeled_input : :py:class:`torch.Tensor`
-        unlabeled_traget : :py:class:`torch.Tensor`
+        unlabeled_target : :py:class:`torch.Tensor`
         ramp_up_factor : float
 
         Returns
@@ -286,7 +260,7 @@ class MixJacLoss(_Loss):
 
         """
         ll = self.labeled_loss(input, target)
-        ul = self.unlabeled_loss(unlabeled_input, unlabeled_traget)
+        ul = self.unlabeled_loss(unlabeled_input, unlabeled_target)
 
         loss = ll + self.lambda_u * ramp_up_factor * ul
         return loss, ll, ul

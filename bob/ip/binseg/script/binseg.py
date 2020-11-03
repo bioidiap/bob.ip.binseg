@@ -33,7 +33,9 @@ def setup_pytorch_device(name):
     ----------
 
     name : str
-        The device name (``cpu``, ``cuda:0``, ``cuda:1``, and so on)
+        The device name (``cpu``, ``cuda:0``, ``cuda:1``, and so on).  If you
+        set a specific cuda device such as ``cuda:1``, then we'll make sure it
+        is currently set.
 
 
     Returns
@@ -44,9 +46,10 @@ def setup_pytorch_device(name):
 
     """
 
-    if name.startswith("cuda"):
+    if name.startswith("cuda:"):
         # In case one has multiple devices, we must first set the one
         # we would like to use so pytorch can find it.
+        logger.info(f"User set device to '{name}' - trying to force device...")
         os.environ['CUDA_VISIBLE_DEVICES'] = name.split(":",1)[1]
         if not torch.cuda.is_available():
             raise RuntimeError(f"CUDA is not currently available, but " \
@@ -54,7 +57,11 @@ def setup_pytorch_device(name):
         # Let pytorch auto-select from environment variable
         return torch.device("cuda")
 
-    #cpu
+    elif name.startswith("cuda"):  #use default device
+        logger.info(f"User set device to '{name}' - using default CUDA device")
+        assert os.environ.get('CUDA_VISIBLE_DEVICES') is not None
+
+    #cuda or cpu
     return torch.device(name)
 
 
