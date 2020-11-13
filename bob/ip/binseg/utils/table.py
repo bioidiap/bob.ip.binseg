@@ -20,11 +20,19 @@ def performance_table(data, fmt):
         * ``df``: :py:class:`pandas.DataFrame`
 
           A dataframe that is produced by our evaluator engine, indexed by
-          integer "thresholds", containing the following columns: ``threshold``
-          (sorted ascending), ``precision``, ``recall``, ``pr_upper`` (upper
-          precision bounds), ``pr_lower`` (lower precision bounds),
-          ``re_upper`` (upper recall bounds), ``re_lower`` (lower recall
-          bounds).
+          integer "thresholds", containing the following columns:
+          ``threshold``, ``tp``, ``fp``, ``tn``, ``fn``, ``mean_precision``,
+          ``mode_precision``, ``lower_precision``, ``upper_precision``,
+          ``mean_recall``, ``mode_recall``, ``lower_recall``, ``upper_recall``,
+          ``mean_specificity``, ``mode_specificity``, ``lower_specificity``,
+          ``upper_specificity``, ``mean_accuracy``, ``mode_accuracy``,
+          ``lower_accuracy``, ``upper_accuracy``, ``mean_jaccard``,
+          ``mode_jaccard``, ``lower_jaccard``, ``upper_jaccard``,
+          ``mean_f1_score``, ``mode_f1_score``, ``lower_f1_score``,
+          ``upper_f1_score``, ``frequentist_precision``,
+          ``frequentist_recall``, ``frequentist_specificity``,
+          ``frequentist_accuracy``, ``frequentist_jaccard``,
+          ``frequentist_f1_score``.
 
         * ``threshold``: :py:class:`list`
 
@@ -47,14 +55,10 @@ def performance_table(data, fmt):
     headers = [
         "Dataset",
         "T",
-        "F1",
-        "F1\nstd",
-        "P",
-        "R",
-        "F1\nmax",
-        "P\nmax",
-        "R\nmax",
+        "E(F1)",
+        "CI(F1)",
         "AUC",
+        "CI(AUC)",
         ]
 
     table = []
@@ -65,19 +69,19 @@ def performance_table(data, fmt):
         bins = len(v["df"])
         index = int(round(bins*v["threshold"]))
         index = min(index, len(v["df"])-1)  #avoids out of range indexing
-        entry.append(v["df"].f1_score[index])
-        entry.append(v["df"].std_f1[index])
-        entry.append(v["df"].precision[index])
-        entry.append(v["df"].recall[index])
+        entry.append(v["df"].mean_f1_score[index])
+        entry.append(f"{v['df'].lower_f1_score[index]:.3f}-{v['df'].upper_f1_score[index]:.3f}")
 
-        # statistics based on the best threshold (a posteriori, biased)
-        entry.append(v["df"].f1_score.max())
-        f1max_idx = v["df"].f1_score.idxmax()
-        entry.append(v["df"].precision[f1max_idx])
-        entry.append(v["df"].recall[f1max_idx])
-        entry.append(auc(v["df"]["recall"].to_numpy(),
-            v["df"]["precision"].to_numpy()))
+        # AUC PR curve
+        entry.append(auc(v["df"]["mean_recall"].to_numpy(),
+                v["df"]["mean_precision"].to_numpy()))
+        lower_auc = auc(v["df"]["lower_recall"].to_numpy(),
+                v["df"]["lower_precision"].to_numpy())
+        upper_auc = auc(v["df"]["upper_recall"].to_numpy(),
+                v["df"]["upper_precision"].to_numpy())
+        entry.append(f"{lower_auc:.3f}-{upper_auc:.3f}")
 
         table.append(entry)
 
-    return tabulate.tabulate(table, headers, tablefmt=fmt, floatfmt=".3f")
+    return tabulate.tabulate(table, headers, tablefmt=fmt, floatfmt=".3f",
+            stralign="right")

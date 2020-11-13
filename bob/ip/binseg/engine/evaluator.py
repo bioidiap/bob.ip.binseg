@@ -16,7 +16,7 @@ import torchvision.transforms.functional as VF
 
 import h5py
 
-from ..utils.measure import base_measures
+from ..utils.measure import base_measures, bayesian_measures
 
 import logging
 
@@ -84,7 +84,7 @@ def _posneg(pred, gt, threshold):
 
 def sample_measures_for_threshold(pred, gt, mask, threshold):
     """
-    Calculates measures on one single sample, for a specific threshold
+    Calculates counts on one single sample, for a specific threshold
 
 
     Parameters
@@ -107,17 +107,13 @@ def sample_measures_for_threshold(pred, gt, mask, threshold):
     Returns
     -------
 
-    precision: float
+    tp : int
 
-    recall: float
+    fp : int
 
-    specificity: float
+    tn : int
 
-    accuracy: float
-
-    jaccard: float
-
-    f1_score: float
+    fn : int
 
     """
 
@@ -138,7 +134,7 @@ def sample_measures_for_threshold(pred, gt, mask, threshold):
     tn_count = torch.sum(tn_tensor).item()
     fn_count = torch.sum(fn_tensor).item()
 
-    return base_measures(tp_count, fp_count, tn_count, fn_count)
+    return tp_count, fp_count, tn_count, fn_count
 
 
 def _sample_measures(pred, gt, mask, steps):
@@ -170,36 +166,33 @@ def _sample_measures(pred, gt, mask, steps):
 
         A pandas dataframe with the following columns:
 
-        * threshold: float
-        * precision: float
-        * recall: float
-        * specificity: float
-        * accuracy: float
-        * jaccard: float
-        * f1_score: float
+        * tp: int
+        * fp: int
+        * tn: int
+        * fn: int
 
     """
 
     step_size = 1.0 / steps
     data = [
-        (index, threshold) + sample_measures_for_threshold(pred, gt, mask,
-            threshold)
+        (index, threshold)
+        + sample_measures_for_threshold(pred, gt, mask, threshold)
         for index, threshold in enumerate(numpy.arange(0.0, 1.0, step_size))
     ]
 
-    return pandas.DataFrame(
+    retval = pandas.DataFrame(
         data,
         columns=(
             "index",
             "threshold",
-            "precision",
-            "recall",
-            "specificity",
-            "accuracy",
-            "jaccard",
-            "f1_score",
+            "tp",
+            "fp",
+            "tn",
+            "fn",
         ),
     )
+    retval.set_index("index", inplace=True)
+    return retval
 
 
 def _sample_analysis(
@@ -289,6 +282,73 @@ def _sample_analysis(
         tp_pil_colored = PIL.Image.blend(img, tp_pil_colored, 0.5)
 
     return tp_pil_colored
+
+
+def _summarize(data):
+    """Summarizes collected dataframes and adds bayesian figures"""
+
+    _entries = (
+        "mean_precision",
+        "mode_precision",
+        "lower_precision",
+        "upper_precision",
+        "mean_recall",
+        "mode_recall",
+        "lower_recall",
+        "upper_recall",
+        "mean_specificity",
+        "mode_specificity",
+        "lower_specificity",
+        "upper_specificity",
+        "mean_accuracy",
+        "mode_accuracy",
+        "lower_accuracy",
+        "upper_accuracy",
+        "mean_jaccard",
+        "mode_jaccard",
+        "lower_jaccard",
+        "upper_jaccard",
+        "mean_f1_score",
+        "mode_f1_score",
+        "lower_f1_score",
+        "upper_f1_score",
+        "frequentist_precision",
+        "frequentist_recall",
+        "frequentist_specificity",
+        "frequentist_accuracy",
+        "frequentist_jaccard",
+        "frequentist_f1_score",
+    )
+
+    def _row_summary(r):
+
+        # run bayesian_measures(), flatten tuple of tuples, name entries
+        bayesian = [
+            item
+            for sublist in bayesian_measures(
+                r.tp,
+                r.fp,
+                r.tn,
+                r.fn,
+                lambda_=0.5,
+                coverage=0.95,
+            )
+            for item in sublist
+        ]
+
+        # evaluate frequentist measures
+        frequentist = base_measures(r.tp, r.fp, r.tn, r.fn)
+        return pandas.Series(bayesian + list(frequentist), index=_entries)
+
+    # Merges all dataframes together
+    sums = pandas.concat(data.values()).groupby("index").sum()
+    sums["threshold"] /= len(data)
+
+    # create a new dataframe with these
+    measures = sums.apply(lambda r: _row_summary(r), axis=1)
+
+    ## merge sums and measures into a single dataframe
+    return pandas.concat([sums, measures.reindex(sums.index)], axis=1).copy()
 
 
 def run(
@@ -384,35 +444,11 @@ def run(
             overlay_image.save(fullpath)
 
     # Merges all dataframes together
-    df_measures = pandas.concat(data.values())
+    measures = _summarize(data)
 
-    # Report and Averages
-    avg_measures = df_measures.groupby("index").mean()
-    std_measures = df_measures.groupby("index").std()
-
-    # Uncomment below for F1-score calculation based on average precision and
-    # measures instead of F1-scores of individual images. This method is in line
-    # with Maninis et. al. (2016)
-    #
-    # avg_measures["f1_score"] = \
-    #         (2* avg_measures["precision"]*avg_measures["recall"])/ \
-    #         (avg_measures["precision"]+avg_measures["recall"])
-
-    avg_measures["std_pr"] = std_measures["precision"]
-    avg_measures["pr_upper"] = (
-        avg_measures["precision"] + std_measures["precision"]
-    )
-    avg_measures["pr_lower"] = (
-        avg_measures["precision"] - std_measures["precision"]
-    )
-    avg_measures["std_re"] = std_measures["recall"]
-    avg_measures["re_upper"] = avg_measures["recall"] + std_measures["recall"]
-    avg_measures["re_lower"] = avg_measures["recall"] - std_measures["recall"]
-    avg_measures["std_f1"] = std_measures["f1_score"]
-
-    maxf1 = avg_measures["f1_score"].max()
-    maxf1_index = avg_measures["f1_score"].idxmax()
-    maxf1_threshold = avg_measures["threshold"][maxf1_index]
+    maxf1 = measures["mean_f1_score"].max()
+    maxf1_index = measures["mean_f1_score"].idxmax()
+    maxf1_threshold = measures["threshold"][maxf1_index]
 
     logger.info(
         f"Maximum F1-score of {maxf1:.5f}, achieved at "
@@ -423,8 +459,12 @@ def run(
 
         # get the closest possible threshold we have
         index = int(round(steps * threshold))
-        f1_a_priori = avg_measures["f1_score"][index]
-        actual_threshold = avg_measures["threshold"][index]
+        f1_a_priori = measures["mean_f1_score"][index]
+        actual_threshold = measures["threshold"][index]
+
+        # mark threshold a priori chosen on this dataset
+        measures["threshold_a_priori"] = False
+        measures["threshold_a_priori", index] = True
 
         logger.info(
             f"F1-score of {f1_a_priori:.5f}, at threshold "
@@ -436,9 +476,9 @@ def run(
         os.makedirs(output_folder, exist_ok=True)
         measures_path = os.path.join(output_folder, f"{name}.csv")
         logger.info(
-            f"Saving averages over all input images at {measures_path}..."
+            f"Saving measures over all input images at {measures_path}..."
         )
-        avg_measures.to_csv(measures_path)
+        measures.to_csv(measures_path)
 
     return maxf1_threshold
 
@@ -521,40 +561,15 @@ def compare_annotators(
             os.makedirs(os.path.dirname(fullpath), exist_ok=True)
             overlay_image.save(fullpath)
 
-    # Merges all dataframes together
-    df_measures = pandas.concat(data.values())
-    df_measures.drop(0, inplace=True)
-
-    # Report and Averages
-    avg_measures = df_measures.groupby("index").mean()
-    std_measures = df_measures.groupby("index").std()
-
-    # Uncomment below for F1-score calculation based on average precision and
-    # {name} instead of F1-scores of individual images. This method is in line
-    # with Maninis et. al. (2016)
-    #
-    # avg_measures["f1_score"] = \
-    #         (2* avg_measures["precision"]*avg_measures["recall"])/ \
-    #         (avg_measures["precision"]+avg_measures["recall"])
-
-    avg_measures["std_pr"] = std_measures["precision"]
-    avg_measures["pr_upper"] = (
-        avg_measures["precision"] + std_measures["precision"]
-    )
-    avg_measures["pr_lower"] = (
-        avg_measures["precision"] - std_measures["precision"]
-    )
-    avg_measures["std_re"] = std_measures["recall"]
-    avg_measures["re_upper"] = avg_measures["recall"] + std_measures["recall"]
-    avg_measures["re_lower"] = avg_measures["recall"] - std_measures["recall"]
-    avg_measures["std_f1"] = std_measures["f1_score"]
+    measures = _summarize(data)
+    measures.drop(0, inplace=True)  #removes threshold == 0.0, keeps 0.5 only
 
     measures_path = os.path.join(
         output_folder, "second-annotator", f"{name}.csv"
     )
     os.makedirs(os.path.dirname(measures_path), exist_ok=True)
-    logger.info(f"Saving averages over all input images at {measures_path}...")
-    avg_measures.to_csv(measures_path)
+    logger.info(f"Saving summaries over all input images at {measures_path}...")
+    measures.to_csv(measures_path)
 
-    maxf1 = avg_measures["f1_score"].max()
+    maxf1 = measures["mean_f1_score"].max()
     logger.info(f"F1-score of {maxf1:.5f} (second annotator; threshold=0.5)")

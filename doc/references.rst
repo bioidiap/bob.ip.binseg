@@ -112,3 +112,8 @@
 
 .. [SMITH-2017] *L. N. Smith*, **Cyclical Learning Rates for Training Neural
    Networks**, 2017.  https://arxiv.org/abs/1506.01186
+
+.. [GOUTTE-2005] *C. Goutte and E. Gaussier*, **A probabilistic interpretation
+   of precision, recall and F-score, with implication for evaluation**,
+   European conference on Advances in Information Retrieval Research, 2005.
+   https://doi.org/10.1007/978-3-540-31865-1_25

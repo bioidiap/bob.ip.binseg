@@ -86,7 +86,7 @@ def _load(data, threshold=None):
                 f"'{threshold}' dataset...")
         measures_path = data[threshold]
         df = pandas.read_csv(measures_path)
-        use_threshold = df.threshold[df.f1_score.idxmax()]
+        use_threshold = df.threshold[df.mean_f1_score.idxmax()]
         logger.info(f"Dataset '*': threshold = {use_threshold:.3f}'")
 
     elif isinstance(threshold, float):
@@ -105,8 +105,15 @@ def _load(data, threshold=None):
         df = pandas.read_csv(measures_path)
 
         if threshold is None:
-            use_threshold = df.threshold[df.f1_score.idxmax()]
-            logger.info(f"Dataset '{name}': threshold = {use_threshold:.3f}'")
+
+            if 'threshold_a_priori' in df:
+                use_threshold = df.threshold[df.threshold_a_priori.idxmax()]
+                logger.info(f"Dataset '{name}': threshold (a priori) = " \
+                        f"{use_threshold:.3f}'")
+            else:
+                use_threshold = df.threshold[df.mean_f1_score.idxmax()]
+                logger.info(f"Dataset '{name}': threshold (a posteriori) = " \
+                        f"{use_threshold:.3f}'")
 
         retval[name] = dict(df=df, threshold=use_threshold)
 
@@ -159,7 +166,10 @@ def _load(data, threshold=None):
     help="This number is used to select which F1-score to use for "
     "representing a system performance.  If not set, we report the maximum "
     "F1-score in the set, which is equivalent to threshold selection a "
-    "posteriori (biased estimator).  You can either set this value to a "
+    "posteriori (biased estimator), unless the performance file being "
+    "considered already was pre-tunned, and contains a 'threshold_a_priori' "
+    "column which we then use to pick a threshold for the dataset. "
+    "You can override this behaviour by either setting this value to a "
     "floating-point number in the range [0.0, 1.0], or to a string, naming "
     "one of the systems which will be used to calculate the threshold "
     "leading to the maximum F1-score and then applied to all other sets.",
@@ -187,7 +197,7 @@ def compare(label_path, output_figure, table_format, output_table, threshold,
         output_figure = os.path.realpath(output_figure)
         logger.info(f"Creating and saving plot at {output_figure}...")
         os.makedirs(os.path.dirname(output_figure), exist_ok=True)
-        fig = precision_recall_f1iso(data, confidence=True)
+        fig = precision_recall_f1iso(data, credible=True)
         fig.savefig(output_figure)
 
     logger.info("Tabulating performance summary...")
