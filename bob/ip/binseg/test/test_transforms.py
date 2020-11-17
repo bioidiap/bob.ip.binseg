@@ -4,7 +4,6 @@
 import os
 import random
 
-import nose.tools
 import pkg_resources
 
 import numpy
@@ -33,11 +32,9 @@ def test_center_crop():
     idx = (slice(bh, -bh), slice(bw, -bw), slice(0, im_size[0]))
     transforms = CenterCrop(crop_size)
     img, gt, mask = [_create_img(im_size) for i in range(3)]
-    nose.tools.eq_(img.size, (im_size[2], im_size[1]))  # confirms the above
+    assert img.size == (im_size[2], im_size[1])  # confirms the above
     img_t, gt_t, mask_t = transforms(img, gt, mask)
-    nose.tools.eq_(
-        img_t.size, (crop_size[1], crop_size[0])
-    )  # confirms the above
+    assert img_t.size == (crop_size[1], crop_size[0])  # confirms the above
     # notice that PIL->array does array.transpose(1, 2, 0)
     # so it creates an array that is (height, width, planes)
     assert numpy.all(numpy.array(img_t) == numpy.array(img)[idx])
@@ -57,14 +54,12 @@ def test_center_crop_uneven():
     # when the crop size is uneven, this is what happens - notice here that the
     # image height is uneven, and the crop width as well - the attributions of
     # extra pixels will depend on what is uneven (original image or crop)
-    idx = (slice(bh, -(bh + 1)), slice((bw + 1), -bw), slice(0, im_size[0]))
+    idx = (slice(bh+1, -bh), slice(bw+1, -bw), slice(0, im_size[0]))
     transforms = CenterCrop(crop_size)
     img, gt, mask = [_create_img(im_size) for i in range(3)]
-    nose.tools.eq_(img.size, (im_size[2], im_size[1]))  # confirms the above
+    assert img.size == (im_size[2], im_size[1])  # confirms the above
     img_t, gt_t, mask_t = transforms(img, gt, mask)
-    nose.tools.eq_(
-        img_t.size, (crop_size[1], crop_size[0])
-    )  # confirms the above
+    assert img_t.size == (crop_size[1], crop_size[0])  # confirms the above
     # notice that PIL->array does array.transpose(1, 2, 0)
     # so it creates an array that is (height, width, planes)
     assert numpy.all(numpy.array(img_t) == numpy.array(img)[idx])
@@ -86,7 +81,7 @@ def test_pad_default():
     )
     transforms = Pad(pad_size)
     img, gt, mask = [_create_img(im_size) for i in range(3)]
-    nose.tools.eq_(img.size, (im_size[2], im_size[1]))  # confirms the above
+    assert img.size == (im_size[2], im_size[1])  # confirms the above
     img_t, gt_t, mask_t = transforms(img, gt, mask)
     # notice that PIL->array does array.transpose(1, 2, 0)
     # so it creates an array that is (height, width, planes)
@@ -98,15 +93,15 @@ def test_pad_default():
     img_t = numpy.array(img_t)
     img_t[idx] = 0
     border_size_plane = img_t[:, :, 0].size - numpy.array(img)[:, :, 0].size
-    nose.tools.eq_(img_t.sum(), 0)
+    assert img_t.sum() == 0
 
     gt_t = numpy.array(gt_t)
     gt_t[idx] = 0
-    nose.tools.eq_(gt_t.sum(), 0)
+    assert gt_t.sum() == 0
 
     mask_t = numpy.array(mask_t)
     mask_t[idx] = 0
-    nose.tools.eq_(mask_t.sum(), 0)
+    assert mask_t.sum() == 0
 
 
 def test_pad_2tuple():
@@ -124,7 +119,7 @@ def test_pad_2tuple():
     )
     transforms = Pad(pad_size, fill)
     img, gt, mask = [_create_img(im_size) for i in range(3)]
-    nose.tools.eq_(img.size, (im_size[2], im_size[1]))  # confirms the above
+    assert img.size == (im_size[2], im_size[1])  # confirms the above
     img_t, gt_t, mask_t = transforms(img, gt, mask)
     # notice that PIL->array does array.transpose(1, 2, 0)
     # so it creates an array that is (height, width, planes)
@@ -137,15 +132,15 @@ def test_pad_2tuple():
     img_t[idx] = 0
     border_size_plane = img_t[:, :, 0].size - numpy.array(img)[:, :, 0].size
     expected_sum = sum((fill[k] * border_size_plane) for k in range(3))
-    nose.tools.eq_(img_t.sum(), expected_sum)
+    assert img_t.sum() == expected_sum
 
     gt_t = numpy.array(gt_t)
     gt_t[idx] = 0
-    nose.tools.eq_(gt_t.sum(), expected_sum)
+    assert gt_t.sum() == expected_sum
 
     mask_t = numpy.array(mask_t)
     mask_t[idx] = 0
-    nose.tools.eq_(mask_t.sum(), expected_sum)
+    assert mask_t.sum() == expected_sum
 
 
 def test_pad_4tuple():
@@ -163,7 +158,7 @@ def test_pad_4tuple():
     )
     transforms = Pad(pad_size, fill)
     img, gt, mask = [_create_img(im_size) for i in range(3)]
-    nose.tools.eq_(img.size, (im_size[2], im_size[1]))  # confirms the above
+    assert img.size == (im_size[2], im_size[1])  # confirms the above
     img_t, gt_t, mask_t = transforms(img, gt, mask)
     # notice that PIL->array does array.transpose(1, 2, 0)
     # so it creates an array that is (height, width, planes)
@@ -176,15 +171,15 @@ def test_pad_4tuple():
     img_t[idx] = 0
     border_size_plane = img_t[:, :, 0].size - numpy.array(img)[:, :, 0].size
     expected_sum = sum((fill[k] * border_size_plane) for k in range(3))
-    nose.tools.eq_(img_t.sum(), expected_sum)
+    assert img_t.sum() == expected_sum
 
     gt_t = numpy.array(gt_t)
     gt_t[idx] = 0
-    nose.tools.eq_(gt_t.sum(), expected_sum)
+    assert gt_t.sum() == expected_sum
 
     mask_t = numpy.array(mask_t)
     mask_t[idx] = 0
-    nose.tools.eq_(mask_t.sum(), expected_sum)
+    assert mask_t.sum() == expected_sum
 
 
 def test_resize_downscale_w():
@@ -196,12 +191,12 @@ def test_resize_downscale_w():
     # test
     transforms = Resize(new_size)
     img, gt, mask = [_create_img(im_size) for i in range(3)]
-    nose.tools.eq_(img.size, (im_size[2], im_size[1]))  # confirms the above
+    assert img.size == (im_size[2], im_size[1])  # confirms the above
     img_t, gt_t, mask_t = transforms(img, gt, mask)
     new_size = (new_size, (new_size * im_size[1]) / im_size[2])
-    nose.tools.eq_(img_t.size, new_size)
-    nose.tools.eq_(gt_t.size, new_size)
-    nose.tools.eq_(mask_t.size, new_size)
+    assert img_t.size == new_size
+    assert gt_t.size == new_size
+    assert mask_t.size == new_size
 
 
 def test_resize_downscale_hw():
@@ -213,11 +208,11 @@ def test_resize_downscale_hw():
     # test
     transforms = Resize(new_size)
     img, gt, mask = [_create_img(im_size) for i in range(3)]
-    nose.tools.eq_(img.size, (im_size[2], im_size[1]))  # confirms the above
+    assert img.size == (im_size[2], im_size[1])  # confirms the above
     img_t, gt_t, mask_t = transforms(img, gt, mask)
-    nose.tools.eq_(img_t.size, (new_size[1], new_size[0]))
-    nose.tools.eq_(gt_t.size, (new_size[1], new_size[0]))
-    nose.tools.eq_(mask_t.size, (new_size[1], new_size[0]))
+    assert img_t.size == (new_size[1], new_size[0])
+    assert gt_t.size == (new_size[1], new_size[0])
+    assert mask_t.size == (new_size[1], new_size[0])
 
 
 def test_crop():
@@ -234,7 +229,7 @@ def test_crop():
     )
     transforms = Crop(*crop_size)
     img, gt, mask = [_create_img(im_size) for i in range(3)]
-    nose.tools.eq_(img.size, (im_size[2], im_size[1]))  # confirms the above
+    assert img.size == (im_size[2], im_size[1])  # confirms the above
     img_t, gt_t, mask_t = transforms(img, gt, mask)
     # notice that PIL->array does array.transpose(1, 2, 0)
     # so it creates an array that is (height, width, planes)
@@ -250,9 +245,9 @@ def test_to_tensor():
     gt = gt.convert("1", dither=None)
     mask = mask.convert("1", dither=None)
     img_t, gt_t, mask_t = transforms(img, gt, mask)
-    nose.tools.eq_(img_t.dtype, torch.float32)
-    nose.tools.eq_(gt_t.dtype, torch.float32)
-    nose.tools.eq_(mask_t.dtype, torch.float32)
+    assert img_t.dtype == torch.float32
+    assert gt_t.dtype == torch.float32
+    assert mask_t.dtype == torch.float32
 
 
 def test_horizontal_flip():
@@ -295,7 +290,7 @@ def test_rotation():
     # and they are different from the original
     random.seed(42)
     img1_t, img2_t, img3_t = transforms(img, img, img)
-    nose.tools.eq_(img1_t.size, (im_size[2], im_size[1]))
+    assert img1_t.size == (im_size[2], im_size[1])
     assert numpy.all(numpy.array(img1_t) == numpy.array(img2_t))
     assert numpy.all(numpy.array(img1_t) == numpy.array(img3_t))
     assert numpy.any(numpy.array(img1_t) != numpy.array(img))
@@ -316,7 +311,7 @@ def test_color_jitter():
     # all others match the input data
     random.seed(42)
     img1_t, img2_t, img3_t = transforms(img, img, img)
-    nose.tools.eq_(img1_t.size, (im_size[2], im_size[1]))
+    assert img1_t.size == (im_size[2], im_size[1])
     assert numpy.any(numpy.array(img1_t) != numpy.array(img))
     assert numpy.any(numpy.array(img1_t) != numpy.array(img2_t))
     assert numpy.all(numpy.array(img2_t) == numpy.array(img3_t))
@@ -355,11 +350,11 @@ def test_16bit_autolevel():
     # https://stackoverflow.com/questions/32622658/read-16-bit-png-image-file-using-python
     # https://github.com/python-pillow/Pillow/issues/3011
     img = PIL.Image.fromarray(numpy.array(PIL.Image.open(path)).astype("uint16"))
-    nose.tools.eq_(img.mode, "I;16")
-    nose.tools.eq_(img.getextrema(), (0, 65281))
+    assert img.mode == "I;16"
+    assert img.getextrema() == (0, 65281)
 
     timg = SingleAutoLevel16to8()(img)
-    nose.tools.eq_(timg.mode, "L")
-    nose.tools.eq_(timg.getextrema(), (0, 255))
+    assert timg.mode == "L"
+    assert timg.getextrema() == (0, 255)
     #timg.show()
     #import ipdb; ipdb.set_trace()

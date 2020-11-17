@@ -9,13 +9,11 @@ import fnmatch
 import tempfile
 import contextlib
 
-import nose.tools
-
 from click.testing import CliRunner
 
 from . import mock_dataset
 
-stare_datadir, stare_dataset, rc_variable_set = mock_dataset()
+stare_datadir, stare_dataset = mock_dataset()
 
 
 @contextlib.contextmanager
@@ -119,10 +117,10 @@ def _check_experiment_stare(overlay):
         predict_folder = os.path.join(output_folder, "predictions")
         traindir = os.path.join(predict_folder, "train", "stare-images")
         assert os.path.exists(traindir)
-        nose.tools.eq_(len(fnmatch.filter(os.listdir(traindir), "*.hdf5")), 10)
+        assert len(fnmatch.filter(os.listdir(traindir), "*.hdf5")) == 10
         testdir = os.path.join(predict_folder, "test", "stare-images")
         assert os.path.exists(testdir)
-        nose.tools.eq_(len(fnmatch.filter(os.listdir(testdir), "*.hdf5")), 10)
+        assert len(fnmatch.filter(os.listdir(testdir), "*.hdf5")) == 10
 
         overlay_folder = os.path.join(output_folder, "overlayed", "predictions")
         traindir = os.path.join(overlay_folder, "train", "stare-images")
@@ -130,14 +128,10 @@ def _check_experiment_stare(overlay):
         if overlay:
             # check overlayed images are there (since we requested them)
             assert os.path.exists(traindir)
-            nose.tools.eq_(
-                len(fnmatch.filter(os.listdir(traindir), "*.png")), 10
-            )
+            assert len(fnmatch.filter(os.listdir(traindir), "*.png")) == 10
             # check overlayed images are there (since we requested them)
             assert os.path.exists(testdir)
-            nose.tools.eq_(
-                len(fnmatch.filter(os.listdir(testdir), "*.png")), 10
-            )
+            assert len(fnmatch.filter(os.listdir(testdir), "*.png")) == 10
         else:
             assert not os.path.exists(traindir)
             assert not os.path.exists(testdir)
@@ -148,17 +142,13 @@ def _check_experiment_stare(overlay):
         # checks individual performance figures are there
         traindir = os.path.join(eval_folder, "train", "stare-images")
         assert os.path.exists(traindir)
-        nose.tools.eq_(
-            len(fnmatch.filter(os.listdir(traindir), "*.csv")), 10
-        )
+        assert len(fnmatch.filter(os.listdir(traindir), "*.csv")) == 10
 
         assert os.path.exists(os.path.join(eval_folder, "test.csv"))
         # checks individual performance figures are there
         testdir = os.path.join(eval_folder, "test", "stare-images")
         assert os.path.exists(testdir)
-        nose.tools.eq_(
-            len(fnmatch.filter(os.listdir(testdir), "*.csv")), 10
-        )
+        assert len(fnmatch.filter(os.listdir(testdir), "*.csv")) == 10
 
         assert os.path.exists(
             os.path.join(eval_folder, "second-annotator", "train.csv")
@@ -167,9 +157,7 @@ def _check_experiment_stare(overlay):
         traindir_sa = os.path.join(eval_folder, "second-annotator", "train",
                 "stare-images")
         assert os.path.exists(traindir_sa)
-        nose.tools.eq_(
-            len(fnmatch.filter(os.listdir(traindir_sa), "*.csv")), 10
-        )
+        assert len(fnmatch.filter(os.listdir(traindir_sa), "*.csv")) == 10
 
         assert os.path.exists(
             os.path.join(eval_folder, "second-annotator", "test.csv")
@@ -177,9 +165,7 @@ def _check_experiment_stare(overlay):
         testdir_sa = os.path.join(eval_folder, "second-annotator", "test",
                 "stare-images")
         assert os.path.exists(testdir_sa)
-        nose.tools.eq_(
-            len(fnmatch.filter(os.listdir(testdir_sa), "*.csv")), 10
-        )
+        assert len(fnmatch.filter(os.listdir(testdir_sa), "*.csv")) == 10
 
         overlay_folder = os.path.join(output_folder, "overlayed", "analysis")
         traindir = os.path.join(overlay_folder, "train", "stare-images")
@@ -187,13 +173,9 @@ def _check_experiment_stare(overlay):
         if overlay:
             # check overlayed images are there (since we requested them)
             assert os.path.exists(traindir)
-            nose.tools.eq_(
-                len(fnmatch.filter(os.listdir(traindir), "*.png")), 10
-            )
+            assert len(fnmatch.filter(os.listdir(traindir), "*.png")) == 10
             assert os.path.exists(testdir)
-            nose.tools.eq_(
-                len(fnmatch.filter(os.listdir(testdir), "*.png")), 10
-            )
+            assert len(fnmatch.filter(os.listdir(testdir), "*.png")) == 10
         else:
             assert not os.path.exists(traindir)
             assert not os.path.exists(testdir)
@@ -207,13 +189,9 @@ def _check_experiment_stare(overlay):
         testdir = os.path.join(overlay_folder, "test", "stare-images")
         if overlay:
             assert os.path.exists(traindir)
-            nose.tools.eq_(
-                len(fnmatch.filter(os.listdir(traindir), "*.png")), 10
-            )
+            assert len(fnmatch.filter(os.listdir(traindir), "*.png")) == 10
             assert os.path.exists(testdir)
-            nose.tools.eq_(
-                len(fnmatch.filter(os.listdir(testdir), "*.png")), 10
-            )
+            assert len(fnmatch.filter(os.listdir(testdir), "*.png")) == 10
         else:
             assert not os.path.exists(traindir)
             assert not os.path.exists(testdir)
@@ -262,12 +240,10 @@ def _check_experiment_stare(overlay):
             )
 
 
-@rc_variable_set("bob.ip.binseg.stare.datadir")
 def test_experiment_stare_with_overlay():
     _check_experiment_stare(overlay=True)
 
 
-@rc_variable_set("bob.ip.binseg.stare.datadir")
 def test_experiment_stare_without_overlay():
     _check_experiment_stare(overlay=False)
 
@@ -373,12 +349,12 @@ def _check_predict(runner):
         # check predictions are there
         basedir = os.path.join(output_folder, "test", "stare-images")
         assert os.path.exists(basedir)
-        nose.tools.eq_(len(fnmatch.filter(os.listdir(basedir), "*.hdf5")), 10)
+        assert len(fnmatch.filter(os.listdir(basedir), "*.hdf5")) == 10
 
         # check overlayed images are there (since we requested them)
         basedir = os.path.join(overlay_folder, "test", "stare-images")
         assert os.path.exists(basedir)
-        nose.tools.eq_(len(fnmatch.filter(os.listdir(basedir), "*.png")), 10)
+        assert len(fnmatch.filter(os.listdir(basedir), "*.png")) == 10
 
         keywords = {
             r"^Loading checkpoint from.*$": 1,
@@ -436,9 +412,7 @@ def _check_evaluate(runner):
         # checks individual performance figures are there
         testdir = os.path.join(output_folder, "test", "stare-images")
         assert os.path.exists(testdir)
-        nose.tools.eq_(
-            len(fnmatch.filter(os.listdir(testdir), "*.csv")), 10
-        )
+        assert len(fnmatch.filter(os.listdir(testdir), "*.csv")) == 10
 
         assert os.path.exists(
             os.path.join(output_folder, "second-annotator", "test.csv")
@@ -447,14 +421,12 @@ def _check_evaluate(runner):
         testdir_sa = os.path.join(output_folder, "second-annotator", "test",
                 "stare-images")
         assert os.path.exists(testdir_sa)
-        nose.tools.eq_(
-            len(fnmatch.filter(os.listdir(testdir_sa), "*.csv")), 10
-        )
+        assert len(fnmatch.filter(os.listdir(testdir_sa), "*.csv")) == 10
 
         # check overlayed images are there (since we requested them)
         basedir = os.path.join(overlay_folder, "test", "stare-images")
         assert os.path.exists(basedir)
-        nose.tools.eq_(len(fnmatch.filter(os.listdir(basedir), "*.png")), 10)
+        assert len(fnmatch.filter(os.listdir(basedir), "*.png")) == 10
 
         keywords = {
             r"^Skipping dataset '__train__'": 0,
@@ -588,7 +560,6 @@ def _check_significance(runner):
             )
 
 
-@rc_variable_set("bob.ip.binseg.stare.datadir")
 def test_discrete_experiment_stare():
 
     runner = CliRunner()

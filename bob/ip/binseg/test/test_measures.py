@@ -7,7 +7,7 @@ import math
 
 import numpy
 import torch
-import nose.tools
+import pytest
 
 from ..utils.measure import (
     base_measures,
@@ -146,12 +146,20 @@ class TestBayesian:
         # Notice that for very large k and l, the base frequentist measures
         # should be approximately the same as the bayesian mean and mode
         # extracted from the beta posterior.  We test that here.
-        assert numpy.isclose(_prec, prec[0]), f"freq: {_prec} <> bays: {prec[0]}"
-        assert numpy.isclose(_prec, prec[1]), f"freq: {_prec} <> bays: {prec[1]}"
+        assert numpy.isclose(
+            _prec, prec[0]
+        ), f"freq: {_prec} <> bays: {prec[0]}"
+        assert numpy.isclose(
+            _prec, prec[1]
+        ), f"freq: {_prec} <> bays: {prec[1]}"
         assert numpy.isclose(_rec, rec[0]), f"freq: {_rec} <> bays: {rec[0]}"
         assert numpy.isclose(_rec, rec[1]), f"freq: {_rec} <> bays: {rec[1]}"
-        assert numpy.isclose(_spec, spec[0]), f"freq: {_spec} <> bays: {spec[0]}"
-        assert numpy.isclose(_spec, spec[1]), f"freq: {_spec} <> bays: {spec[1]}"
+        assert numpy.isclose(
+            _spec, spec[0]
+        ), f"freq: {_spec} <> bays: {spec[0]}"
+        assert numpy.isclose(
+            _spec, spec[1]
+        ), f"freq: {_spec} <> bays: {spec[1]}"
         assert numpy.isclose(_acc, acc[0]), f"freq: {_acc} <> bays: {acc[0]}"
         assert numpy.isclose(_acc, acc[1]), f"freq: {_acc} <> bays: {acc[1]}"
         assert numpy.isclose(_jac, jac[0]), f"freq: {_jac} <> bays: {jac[0]}"
@@ -161,18 +169,24 @@ class TestBayesian:
 
         # We also test that the interval in question includes the mode and the
         # mean in this case.
-        assert (prec[2] < prec[1]) and (prec[1] < prec[3]), \
-                f"precision is out of bounds {_prec[2]} < {_prec[1]} < {_prec[3]}"
-        assert (rec[2] < rec[1]) and (rec[1] < rec[3]), \
-                f"recall is out of bounds {_rec[2]} < {_rec[1]} < {_rec[3]}"
-        assert (spec[2] < spec[1]) and (spec[1] < spec[3]), \
-                f"specif. is out of bounds {_spec[2]} < {_spec[1]} < {_spec[3]}"
-        assert (acc[2] < acc[1]) and (acc[1] < acc[3]), \
-                f"accuracy is out of bounds {_acc[2]} < {_acc[1]} < {_acc[3]}"
-        assert (jac[2] < jac[1]) and (jac[1] < jac[3]), \
-                f"jaccard is out of bounds {_jac[2]} < {_jac[1]} < {_jac[3]}"
-        assert (f1[2] < f1[1]) and (f1[1] < f1[3]), \
-                f"f1-score is out of bounds {_f1[2]} < {_f1[1]} < {_f1[3]}"
+        assert (prec[2] < prec[1]) and (
+            prec[1] < prec[3]
+        ), f"precision is out of bounds {_prec[2]} < {_prec[1]} < {_prec[3]}"
+        assert (rec[2] < rec[1]) and (
+            rec[1] < rec[3]
+        ), f"recall is out of bounds {_rec[2]} < {_rec[1]} < {_rec[3]}"
+        assert (spec[2] < spec[1]) and (
+            spec[1] < spec[3]
+        ), f"specif. is out of bounds {_spec[2]} < {_spec[1]} < {_spec[3]}"
+        assert (acc[2] < acc[1]) and (
+            acc[1] < acc[3]
+        ), f"accuracy is out of bounds {_acc[2]} < {_acc[1]} < {_acc[3]}"
+        assert (jac[2] < jac[1]) and (
+            jac[1] < jac[3]
+        ), f"jaccard is out of bounds {_jac[2]} < {_jac[1]} < {_jac[3]}"
+        assert (f1[2] < f1[1]) and (
+            f1[1] < f1[3]
+        ), f"f1-score is out of bounds {_f1[2]} < {_f1[1]} < {_f1[3]}"
 
 
 def test_auc():
@@ -214,18 +228,20 @@ def test_auc():
     )
 
 
-@nose.tools.raises(ValueError)
 def test_auc_raises_value_error():
 
-    # x is **not** monotonically increasing or decreasing
-    assert math.isclose(auc([0.0, 0.5, 0.0], [1.0, 1.0, 1.0]), 1.0)
+    with pytest.raises(
+        ValueError, match=r".*neither increasing nor decreasing.*"
+    ):
+        # x is **not** monotonically increasing or decreasing
+        assert math.isclose(auc([0.0, 0.5, 0.0], [1.0, 1.0, 1.0]), 1.0)
 
 
-@nose.tools.raises(AssertionError)
 def test_auc_raises_assertion_error():
 
-    # x is **not** the same size as y
-    assert math.isclose(auc([0.0, 0.5, 1.0], [1.0, 1.0]), 1.0)
+    with pytest.raises(AssertionError, match=r".*must have the same length.*"):
+        # x is **not** the same size as y
+        assert math.isclose(auc([0.0, 0.5, 1.0], [1.0, 1.0]), 1.0)
 
 
 def test_sample_measures_mask_checkerbox():
@@ -244,11 +260,8 @@ def test_sample_measures_mask_checkerbox():
     tn = 0
     fn = 0
 
-    nose.tools.eq_(
-        (tp, fp, tn, fn),
-        sample_measures_for_threshold(
-            prediction, ground_truth, mask, threshold
-        ),
+    assert (tp, fp, tn, fn) == sample_measures_for_threshold(
+        prediction, ground_truth, mask, threshold
     )
 
 
@@ -272,11 +285,8 @@ def test_sample_measures_mask_cross():
     tn = 2
     fn = 2
 
-    nose.tools.eq_(
-        (tp, fp, tn, fn),
-        sample_measures_for_threshold(
-            prediction, ground_truth, mask, threshold
-        ),
+    assert (tp, fp, tn, fn) == sample_measures_for_threshold(
+        prediction, ground_truth, mask, threshold
     )
 
 
@@ -304,9 +314,6 @@ def test_sample_measures_mask_border():
     tn = 47
     fn = 1
 
-    nose.tools.eq_(
-        (tp, fp, tn, fn),
-        sample_measures_for_threshold(
-            prediction, ground_truth, mask, threshold
-        ),
+    assert (tp, fp, tn, fn) == sample_measures_for_threshold(
+        prediction, ground_truth, mask, threshold
     )

@@ -5,13 +5,11 @@
 """Tests for REFUGE"""
 
 import os
-
 import numpy
-import nose.tools
-from nose.plugins.attrib import attr
+import pytest
 
 from ..data.refuge import dataset
-from .utils import rc_variable_set, count_bw
+from .utils import count_bw
 
 
 def test_protocol_consistency():
@@ -19,26 +17,26 @@ def test_protocol_consistency():
     for protocol in ("optic-disc", "optic-cup"):
 
         subset = dataset.subsets(protocol)
-        nose.tools.eq_(len(subset), 3)
+        assert len(subset) == 3
 
         assert "train" in subset
-        nose.tools.eq_(len(subset["train"]), 400)
+        assert len(subset["train"]) == 400
         for s in subset["train"]:
             assert s.key.startswith("Training400")
 
         assert "validation" in subset
-        nose.tools.eq_(len(subset["validation"]), 400)
+        assert len(subset["validation"]) == 400
         for s in subset["validation"]:
             assert s.key.startswith("REFUGE-Validation400")
 
         assert "test" in subset
-        nose.tools.eq_(len(subset["test"]), 400)
+        assert len(subset["test"]) == 400
         for s in subset["test"]:
             assert s.key.startswith("Test400")
 
 
-@rc_variable_set("bob.ip.binseg.refuge.datadir")
-@attr("slow")
+@pytest.mark.skip_if_rc_var_not_set("bob.ip.binseg.refuge.datadir")
+@pytest.mark.slow
 def test_loading():
 
     def _check_sample(
@@ -47,15 +45,15 @@ def test_loading():
 
         data = s.data
         assert isinstance(data, dict)
-        nose.tools.eq_(len(data), entries)
+        assert len(data) == entries
 
         assert "data" in data
-        nose.tools.eq_(data["data"].size, image_size)
-        nose.tools.eq_(data["data"].mode, "RGB")
+        assert data["data"].size == image_size
+        assert data["data"].mode == "RGB"
 
         assert "label" in data
-        nose.tools.eq_(data["label"].size, image_size)
-        nose.tools.eq_(data["label"].mode, "1")
+        assert data["label"].size == image_size
+        assert data["label"].mode == "1"
         b, w = count_bw(data["label"])
         assert (b + w) == numpy.prod(image_size), (
             f"Counts of black + white ({b}+{w}) do not add up to total "
@@ -99,7 +97,7 @@ def test_loading():
     #print(f"max label proportions = {max(proportions)}")
 
 
-@rc_variable_set("bob.ip.binseg.refuge.datadir")
-@attr("slow")
+@pytest.mark.skip_if_rc_var_not_set("bob.ip.binseg.refuge.datadir")
+@pytest.mark.slow
 def test_check():
-    nose.tools.eq_(dataset.check(), 0)
+    assert dataset.check() == 0

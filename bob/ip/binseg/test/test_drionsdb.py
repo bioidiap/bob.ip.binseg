@@ -5,13 +5,11 @@
 """Tests for DRIONS-DB"""
 
 import os
-
 import numpy
-import nose.tools
-from nose.plugins.attrib import attr
+import pytest
 
 from ..data.drionsdb import dataset
-from .utils import rc_variable_set, count_bw
+from .utils import count_bw
 
 
 def test_protocol_consistency():
@@ -19,21 +17,21 @@ def test_protocol_consistency():
     for protocol in ("expert1", "expert2"):
 
         subset = dataset.subsets(protocol)
-        nose.tools.eq_(len(subset), 2)
+        assert len(subset) == 2
 
         assert "train" in subset
-        nose.tools.eq_(len(subset["train"]), 60)
+        assert len(subset["train"]) == 60
         for s in subset["train"]:
             assert s.key.startswith(os.path.join("images", "image_0"))
 
         assert "test" in subset
-        nose.tools.eq_(len(subset["test"]), 50)
+        assert len(subset["test"]) == 50
         for s in subset["test"]:
             assert s.key.startswith(os.path.join("images", "image_"))
 
 
-@rc_variable_set("bob.ip.binseg.drionsdb.datadir")
-@attr("slow")
+@pytest.mark.skip_if_rc_var_not_set("bob.ip.binseg.drionsdb.datadir")
+@pytest.mark.slow
 def test_loading():
 
     image_size = (600, 400)
@@ -42,15 +40,15 @@ def test_loading():
 
         data = s.data
         assert isinstance(data, dict)
-        nose.tools.eq_(len(data), 2)
+        assert len(data) == 2
 
         assert "data" in data
-        nose.tools.eq_(data["data"].size, image_size)
-        nose.tools.eq_(data["data"].mode, "RGB")
+        assert data["data"].size == image_size
+        assert data["data"].mode == "RGB"
 
         assert "label" in data
-        nose.tools.eq_(data["label"].size, image_size)
-        nose.tools.eq_(data["label"].mode, "1")
+        assert data["label"].size == image_size
+        assert data["label"].mode == "1"
 
         b, w = count_bw(data["label"])
         assert (b + w) == numpy.prod(image_size), (
@@ -87,7 +85,8 @@ def test_loading():
     proportions = [_check_sample(s, 0.045) for s in subset["test"][:limit]]
     #print(f"max label proportions = {max(proportions)}")
 
-@rc_variable_set("bob.ip.binseg.drionsdb.datadir")
-@attr("slow")
+
+@pytest.mark.skip_if_rc_var_not_set("bob.ip.binseg.drionsdb.datadir")
+@pytest.mark.slow
 def test_check():
-    nose.tools.eq_(dataset.check(), 0)
+    assert dataset.check() == 0
