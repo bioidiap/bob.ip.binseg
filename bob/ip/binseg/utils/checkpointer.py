@@ -74,7 +74,7 @@ class Checkpointer:
 
         if f is None:
             # no checkpoint could be found
-            logger.warn("No checkpoint found (and none passed)")
+            logger.warning("No checkpoint found (and none passed)")
             return {}
 
         # loads file data into memory
