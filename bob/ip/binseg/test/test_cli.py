@@ -401,6 +401,14 @@ def _check_evaluate(caplog, runner):
         assert os.path.exists(basedir)
         assert len(fnmatch.filter(os.listdir(basedir), "*.png")) == 10
 
+        keywords = {
+            r"^Started evaluation$": 1,
+            r"^Maximum F1-score of.*\(chosen \*a posteriori\*\)$": 3,
+            r"^F1-score of.*\(chosen \*a priori\*\)$": 2,
+            r"^F1-score of.*\(second annotator; threshold=0.5\)$": 2,
+            r"^Ended evaluation$": 1,
+        }
+
         messages = "\n".join([k.getMessage() for k in caplog.records])
         for k, v in keywords.items():
             assert _str_counter(k, messages) == v, (
