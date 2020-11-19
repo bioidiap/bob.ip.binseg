@@ -44,9 +44,6 @@ requirements:
     - h5py
     - tqdm
     - tabulate
-    # pytorch 1.7 from the pytorch channel misses these somehow
-    - future
-    - dataclasses
 
 test:
   imports:
