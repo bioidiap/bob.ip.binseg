@@ -126,16 +126,6 @@ class SampleListDataset(torch.utils.data.Dataset):
     sample.
 
 
-    Attributes
-    ----------
-
-    transforms : list
-        An accessor to the list of transforms to be applied (excluding the last
-        transform, which is fixed).  Notice that, after setting, a last transform
-        (:py:class:`bob.ip.binseg.data.transforms.ToTensor`) is always applied
-        - you do not need to add that.
-
-
     Parameters
     ----------
 
