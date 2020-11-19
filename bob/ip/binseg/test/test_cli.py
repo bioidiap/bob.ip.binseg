@@ -215,11 +215,7 @@ def _check_experiment_stare(caplog, overlay):
         }
         messages = "\n".join([k.getMessage() for k in caplog.records])
         for k, v in keywords.items():
-            assert _str_counter(k, messages) == v, (
-                f"Count for string '{k}' appeared "
-                f"({_str_counter(k, logging_output)}) "
-                f"instead of the expected {v}"
-            )
+            assert _str_counter(k, messages) == v
 
 
 def test_experiment_stare_with_overlay(caplog):
@@ -283,11 +279,7 @@ def _check_train(caplog, runner):
 
         messages = "\n".join([k.getMessage() for k in caplog.records])
         for k, v in keywords.items():
-            assert _str_counter(k, messages) == v, (
-                f"Count for string '{k}' appeared "
-                f"({_str_counter(k, logging_output)}) "
-                f"instead of the expected {v}"
-            )
+            assert _str_counter(k, messages) == v
 
 
 def _check_predict(caplog, runner):
@@ -340,11 +332,7 @@ def _check_predict(caplog, runner):
 
         messages = "\n".join([k.getMessage() for k in caplog.records])
         for k, v in keywords.items():
-            assert _str_counter(k, messages) == v, (
-                f"Count for string '{k}' appeared "
-                f"({_str_counter(k, logging_output)}) "
-                f"instead of the expected {v}"
-            )
+            assert _str_counter(k, messages) == v
 
 
 def _check_evaluate(caplog, runner):
@@ -402,20 +390,14 @@ def _check_evaluate(caplog, runner):
         assert len(fnmatch.filter(os.listdir(basedir), "*.png")) == 10
 
         keywords = {
-            r"^Started evaluation$": 1,
             r"^Maximum F1-score of.*\(chosen \*a posteriori\*\)$": 3,
             r"^F1-score of.*\(chosen \*a priori\*\)$": 2,
             r"^F1-score of.*\(second annotator; threshold=0.5\)$": 2,
-            r"^Ended evaluation$": 1,
         }
 
         messages = "\n".join([k.getMessage() for k in caplog.records])
         for k, v in keywords.items():
-            assert _str_counter(k, messages) == v, (
-                f"Count for string '{k}' appeared "
-                f"({_str_counter(k, logging_output)}) "
-                f"instead of the expected {v}"
-            )
+            assert _str_counter(k, messages) == v
 
 
 def _check_compare(caplog, runner):
@@ -451,11 +433,7 @@ def _check_compare(caplog, runner):
         }
         messages = "\n".join([k.getMessage() for k in caplog.records])
         for k, v in keywords.items():
-            assert _str_counter(k, messages) == v, (
-                f"Count for string '{k}' appeared "
-                f"({_str_counter(k, logging_output)}) "
-                f"instead of the expected {v}"
-            )
+            assert _str_counter(k, messages) == v
 
 
 def _check_significance(caplog, runner):
@@ -513,11 +491,7 @@ def _check_significance(caplog, runner):
         }
         messages = "\n".join([k.getMessage() for k in caplog.records])
         for k, v in keywords.items():
-            assert _str_counter(k, messages) == v, (
-                f"Count for string '{k}' appeared "
-                f"({_str_counter(k, logging_output)}) "
-                f"instead of the expected {v}"
-            )
+            assert _str_counter(k, messages) == v
 
 
 def test_discrete_experiment_stare(caplog):
