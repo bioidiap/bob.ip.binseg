@@ -390,9 +390,9 @@ def _check_evaluate(caplog, runner):
         assert len(fnmatch.filter(os.listdir(basedir), "*.png")) == 10
 
         keywords = {
-            r"^Maximum F1-score of.*\(chosen \*a posteriori\*\)$": 3,
-            r"^F1-score of.*\(chosen \*a priori\*\)$": 2,
-            r"^F1-score of.*\(second annotator; threshold=0.5\)$": 2,
+            r"^Maximum F1-score of.*\(chosen \*a posteriori\*\)$": 1,
+            r"^F1-score of.*\(chosen \*a priori\*\)$": 1,
+            r"^F1-score of.*\(second annotator; threshold=0.5\)$": 1,
         }
 
         messages = "\n".join([k.getMessage() for k in caplog.records])
