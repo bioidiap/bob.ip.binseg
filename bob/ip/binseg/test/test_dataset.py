@@ -5,7 +5,6 @@
 
 import os
 import pkg_resources
-import nose.tools
 
 from ..data.dataset import CSVDataset, JSONDataset
 from ..data.sample import Sample
@@ -49,20 +48,20 @@ def test_csv_loading():
 
     data = dataset.subsets()
 
-    nose.tools.eq_(len(data["train"]), 75)
+    assert len(data["train"]) == 75
     for k in data["train"]:
         for f in range(4):
-            nose.tools.eq_(type(k.data[f]), float)
-        nose.tools.eq_(type(k.data[4]), str)
-        nose.tools.eq_(type(k.key), str)
+            assert type(k.data[f]) == float
+        assert type(k.data[4]) == str
+        assert type(k.key) == str
 
-    nose.tools.eq_(len(data["test"]), 75)
+    assert len(data["test"]) == 75
     for k in data["test"]:
         for f in range(4):
-            nose.tools.eq_(type(k.data[f]), float)
-        nose.tools.eq_(type(k.data[4]), str)
+            assert type(k.data[f]) == float
+        assert type(k.data[4]) == str
         assert k.data[4] in ("setosa", "versicolor", "virginica")
-        nose.tools.eq_(type(k.key), str)
+        assert type(k.key) == str
 
 
 def test_json_loading():
@@ -83,16 +82,16 @@ def test_json_loading():
 
     data = dataset.subsets("default")
 
-    nose.tools.eq_(len(data["train"]), 75)
+    assert len(data["train"]) == 75
     for k in data["train"]:
         for f in range(4):
-            nose.tools.eq_(type(k.data[f]), float)
-        nose.tools.eq_(type(k.data[4]), str)
-        nose.tools.eq_(type(k.key), str)
+            assert type(k.data[f]) == float
+        assert type(k.data[4]) == str
+        assert type(k.key) == str
 
-    nose.tools.eq_(len(data["test"]), 75)
+    assert len(data["test"]) == 75
     for k in data["test"]:
         for f in range(4):
-            nose.tools.eq_(type(k.data[f]), float)
-        nose.tools.eq_(type(k.data[4]), str)
-        nose.tools.eq_(type(k.key), str)
+            assert type(k.data[f]) == float
+        assert type(k.data[4]) == str
+        assert type(k.key) == str

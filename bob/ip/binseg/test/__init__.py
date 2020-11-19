@@ -22,22 +22,6 @@ def teardown_package():
         TESTDB_TMPDIR.cleanup()
 
 
-def _mock_test_skipper(name):
-    """
-    Dummary decorator that does nothing
-    """
-    import functools
-
-    def wrapped_function(test):
-        @functools.wraps(test)
-        def wrapper(*args, **kwargs):
-            return test(*args, **kwargs)
-
-        return wrapper
-
-    return wrapped_function
-
-
 def mock_dataset():
     global TESTDB_TMPDIR
     from bob.extension import rc
@@ -64,13 +48,10 @@ def mock_dataset():
 
     if TESTDB_TMPDIR is None:
         # if the user has the STARE directory ready, then we do a normal return
-        from .utils import rc_variable_set
-
-        return rc["bob.ip.binseg.stare.datadir"], stare.dataset, rc_variable_set
+        return rc["bob.ip.binseg.stare.datadir"], stare.dataset
 
     # else, we do a "mock" return
     return (
         TESTDB_TMPDIR.name,
         stare._make_dataset(TESTDB_TMPDIR.name),
-        _mock_test_skipper,
     )

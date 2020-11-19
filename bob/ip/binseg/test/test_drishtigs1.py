@@ -5,13 +5,11 @@
 """Tests for Drishti-GS1"""
 
 import os
-
 import numpy
-import nose.tools
-from nose.plugins.attrib import attr
+import pytest
 
 from ..data.drishtigs1 import dataset
-from .utils import rc_variable_set, count_bw
+from .utils import count_bw
 
 
 def test_protocol_consistency():
@@ -20,30 +18,30 @@ def test_protocol_consistency():
             "optic-cup-any"):
 
         subset = dataset.subsets(protocol)
-        nose.tools.eq_(len(subset), 2)
+        assert len(subset) == 2
 
         assert "train" in subset
-        nose.tools.eq_(len(subset["train"]), 50)
+        assert len(subset["train"]) == 50
         for s in subset["train"]:
             assert s.key.startswith(os.path.join("Drishti-GS1_files",
                 "Training", "Images", "drishtiGS_"))
 
         assert "test" in subset
-        nose.tools.eq_(len(subset["test"]), 51)
+        assert len(subset["test"]) == 51
         for s in subset["test"]:
             assert s.key.startswith(os.path.join("Drishti-GS1_files",
                 "Test", "Images", "drishtiGS_"))
 
 
-@rc_variable_set("bob.ip.binseg.drishtigs1.datadir")
-@attr("slow")
+@pytest.mark.skip_if_rc_var_not_set("bob.ip.binseg.drishtigs1.datadir")
+@pytest.mark.slow
 def test_loading():
 
     def _check_sample(s, bw_threshold_label):
 
         data = s.data
         assert isinstance(data, dict)
-        nose.tools.eq_(len(data), 2)
+        assert len(data) == 2
 
         assert "data" in data
         assert data["data"].size[0] > 2040, (
@@ -54,12 +52,12 @@ def test_loading():
                 f"Width ({data['data'].size[1]}) for {s.key} is smaller "
                 f"than 1740 pixels"
                 )
-        nose.tools.eq_(data["data"].mode, "RGB")
+        assert data["data"].mode == "RGB"
 
         assert "label" in data
-        #nose.tools.eq_(data["label"].size, image_size)
-        nose.tools.eq_(data["data"].size, data["label"].size)
-        nose.tools.eq_(data["label"].mode, "1")
+        #assert data["label"].size == image_size
+        assert data["data"].size == data["label"].size
+        assert data["label"].mode == "1"
         b, w = count_bw(data["label"])
         assert (b + w) == numpy.prod(data["data"].size), (
             f"Counts of black + white ({b}+{w}) do not add up to total "
@@ -108,7 +106,7 @@ def test_loading():
     #print(f"max label proportions = {max(proportions)}")
 
 
-@rc_variable_set("bob.ip.binseg.drishtigs1.datadir")
-@attr("slow")
+@pytest.mark.skip_if_rc_var_not_set("bob.ip.binseg.drishtigs1.datadir")
+@pytest.mark.slow
 def test_check():
-    nose.tools.eq_(dataset.check(), 0)
+    assert dataset.check() == 0

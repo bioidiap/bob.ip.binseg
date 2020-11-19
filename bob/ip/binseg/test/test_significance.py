@@ -6,8 +6,8 @@
 
 import numpy
 import pandas
-import nose.tools
 import torch
+import pytest
 
 from ..engine.significance import (
     _winperf_measures,
@@ -35,6 +35,7 @@ def _check_window_measures(pred, gt, mask, threshold, size, stride, expected):
     ), f"Actual output:\n{actual}\n **!=** Expected output:\n{expected}"
 
 
+@pytest.mark.skip
 def test_winperf_measures_alltrue():
 
     pred = numpy.ones((4, 4), dtype=float)
@@ -53,6 +54,7 @@ def test_winperf_measures_alltrue():
     _check_window_measures(pred, gt, mask, threshold, size, stride, expected)
 
 
+@pytest.mark.skip
 def test_winperf_measures_alltrue_with_padding():
 
     pred = numpy.ones((3, 3), dtype=float)
@@ -70,6 +72,7 @@ def test_winperf_measures_alltrue_with_padding():
     _check_window_measures(pred, gt, mask, threshold, size, stride, expected)
 
 
+@pytest.mark.skip
 def test_winperf_measures_dot_with_padding():
 
     pred = numpy.ones((3, 3), dtype=float)
@@ -88,6 +91,7 @@ def test_winperf_measures_dot_with_padding():
     _check_window_measures(pred, gt, mask, threshold, size, stride, expected)
 
 
+@pytest.mark.skip
 def test_winperf_measures_cross():
 
     pred = numpy.zeros((5, 5), dtype=float)
@@ -111,6 +115,7 @@ def test_winperf_measures_cross():
     _check_window_measures(pred, gt, mask, threshold, size, stride, expected)
 
 
+@pytest.mark.skip
 def test_winperf_measures_cross_with_padding():
 
     pred = numpy.zeros((5, 5), dtype=float)
@@ -130,6 +135,7 @@ def test_winperf_measures_cross_with_padding():
     _check_window_measures(pred, gt, mask, threshold, size, stride, expected)
 
 
+@pytest.mark.skip
 def test_winperf_measures_cross_with_padding_2():
 
     pred = numpy.zeros((5, 5), dtype=float)
@@ -197,6 +203,7 @@ def _check_performance_summary(pred, gt, mask, threshold, size, stride, s, figur
     )
 
 
+@pytest.mark.skip
 def test_performance_summary_alltrue_accuracy():
 
     pred = numpy.ones((4, 4), dtype=float)
@@ -236,6 +243,7 @@ def test_performance_summary_alltrue_accuracy():
         )
 
 
+@pytest.mark.skip
 def test_performance_summary_cross():
 
     pred = numpy.zeros((5, 5), dtype=float)
@@ -273,6 +281,7 @@ def test_performance_summary_cross():
         )
 
 
+@pytest.mark.skip
 def test_performance_summary_cross_with_padding():
 
     pred = numpy.zeros((5, 5), dtype=float)
@@ -309,6 +318,7 @@ def test_performance_summary_cross_with_padding():
         )
 
 
+@pytest.mark.skip
 def test_performance_summary_cross_with_padding_2():
 
     pred = numpy.zeros((5, 5), dtype=float)

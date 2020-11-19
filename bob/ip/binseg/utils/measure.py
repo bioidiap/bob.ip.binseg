@@ -133,30 +133,30 @@ def beta_credible_region(k, l, lambda_, coverage):
     from a series of Bernoulli trials (likelihood is binomial).  The posterior
     is derivated using the Bayes Theorem with a beta prior.  As there is no
     reason to favour high vs.  low precision, we use a symmetric Beta prior
-    (:math:`\alpha=\beta`):
+    (:math:`\\alpha=\\beta`):
 
     .. math::
 
-        P(p|k,n) &= \frac{P(k,n|p)P(p)}{P(k,n)} \\
-        P(p|k,n) &= \frac{\frac{n!}{k!(n-k)!}p^{k}(1-p)^{n-k}P(p)}{P(k)} \\
-        P(p|k,n) &= \frac{1}{B(k+\alpha, n-k+\beta)}p^{k+\alpha-1}(1-p)^{n-k+\beta-1}
-        P(p|k,n) &= \frac{1}{B(k+\alpha, n-k+\alpha)}p^{k+\alpha-1}(1-p)^{n-k+\alpha-1}
+       P(p|k,n) &= \\frac{P(k,n|p)P(p)}{P(k,n)} \\\\
+       P(p|k,n) &= \\frac{\\frac{n!}{k!(n-k)!}p^{k}(1-p)^{n-k}P(p)}{P(k)} \\\\
+       P(p|k,n) &= \\frac{1}{B(k+\\alpha, n-k+\beta)}p^{k+\\alpha-1}(1-p)^{n-k+\\beta-1} \\\\
+       P(p|k,n) &= \\frac{1}{B(k+\\alpha, n-k+\\alpha)}p^{k+\\alpha-1}(1-p)^{n-k+\\alpha-1}
 
     The mode for this posterior (also the maximum a posteriori) is:
 
     .. math::
 
-        mode(p) = \frac{k+\lambda-1}{n+2\lambda-2}
+       \\text{mode}(p) = \\frac{k+\\lambda-1}{n+2\\lambda-2}
 
     Concretely, the prior may be flat (all rates are equally likely,
-    :math:`\lambda=1`) or we may use Jeoffrey's prior (:math:`\lambda=0.5`),
-    that is invariant through re-parameterisation.  Jeffrey's prior indicate
-    that rates close to zero or one are more likely.
+    :math:`\\lambda=1`) or we may use Jeoffrey's prior
+    (:math:`\\lambda=0.5`), that is invariant through re-parameterisation.
+    Jeffrey's prior indicate that rates close to zero or one are more likely.
 
-    The mode above works if :math:`k+\alpha,n-k+\alpha > 1`, which is usually
-    the case for a resonably well tunned system, with more than a few samples
-    for analysis.  In the limit of the system performance, :math:`k` may be 0,
-    which will make the mode become zero.
+    The mode above works if :math:`k+{\\alpha},n-k+{\\alpha} > 1`, which is
+    usually the case for a resonably well tunned system, with more than a few
+    samples for analysis.  In the limit of the system performance, :math:`k`
+    may be 0, which will make the mode become zero.
 
     For our purposes, it may be more suitable to represent :math:`n = k + l`,
     with :math:`k`, the number of successes and :math:`l`, the number of
@@ -165,8 +165,8 @@ def beta_credible_region(k, l, lambda_, coverage):
 
     .. math::
 
-        P(p|k,l) &= \frac{1}{B(k+\alpha, l+\alpha)}p^{k+\alpha-1}(1-p)^{l+\alpha-1} \\
-        mode(p) &= \frac{k+\lambda-1}{k+l+2\lambda-2}
+       P(p|k,l) &= \\frac{1}{B(k+\\alpha, l+\\alpha)}p^{k+\\alpha-1}(1-p)^{l+\\alpha-1} \\\\
+       \\text{mode}(p) &= \\frac{k+\\lambda-1}{k+l+2\\lambda-2}
 
     This can be mapped to most rates calculated in the context of binary
     classification this way:
@@ -189,7 +189,7 @@ def beta_credible_region(k, l, lambda_, coverage):
 
     .. note::
 
-       For a disambiguation with Confidence Interfval, read
+       For a disambiguation with Confidence Interval, read
        https://en.wikipedia.org/wiki/Credible_interval.
 
 
@@ -202,9 +202,9 @@ def beta_credible_region(k, l, lambda_, coverage):
     l : int
         Number of failures observed on the experiment
 
-    lambda_ : :py:class:`float`, Optional
+    lambda__ : :py:class:`float`, Optional
         The parameterisation of the Beta prior to consider. Use
-        :math:`\lambda=1` for a flat prior.  Use :math:`\lambda=0.5` for
+        :math:`\\lambda=1` for a flat prior.  Use :math:`\\lambda=0.5` for
         Jeffrey's prior (the default).
 
     coverage : :py:class:`float`, Optional

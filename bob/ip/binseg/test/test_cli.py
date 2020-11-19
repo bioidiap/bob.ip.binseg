@@ -6,34 +6,14 @@
 import os
 import re
 import fnmatch
+import logging
 import tempfile
-import contextlib
-
-import nose.tools
 
 from click.testing import CliRunner
 
 from . import mock_dataset
 
-stare_datadir, stare_dataset, rc_variable_set = mock_dataset()
-
-
-@contextlib.contextmanager
-def stdout_logging():
-
-    ## copy logging messages to std out
-    import sys
-    import logging
-    import io
-
-    buf = io.StringIO()
-    ch = logging.StreamHandler(buf)
-    ch.setFormatter(logging.Formatter("%(message)s"))
-    ch.setLevel(logging.INFO)
-    logger = logging.getLogger("bob")
-    logger.addHandler(ch)
-    yield buf
-    logger.removeHandler(ch)
+stare_datadir, stare_dataset = mock_dataset()
 
 
 def _assert_exit_0(result):
@@ -67,14 +47,17 @@ def _str_counter(substr, s):
     return sum(1 for _ in re.finditer(substr, s, re.MULTILINE))
 
 
-def _check_experiment_stare(overlay):
+def _check_experiment_stare(caplog, overlay):
 
     from ..script.experiment import experiment
 
+    # ensures we capture only ERROR messages and above by default
+    caplog.set_level(logging.ERROR)
+
     runner = CliRunner()
-    with runner.isolated_filesystem(), stdout_logging() as buf, tempfile.NamedTemporaryFile(
-        mode="wt"
-    ) as config:
+    with runner.isolated_filesystem(), caplog.at_level(
+        logging.INFO, logger="bob.ip.binseg"
+    ), tempfile.NamedTemporaryFile(mode="wt") as config:
 
         # re-write STARE dataset configuration for test
         config.write("from bob.ip.binseg.data.stare import _make_dataset\n")
@@ -119,10 +102,10 @@ def _check_experiment_stare(overlay):
         predict_folder = os.path.join(output_folder, "predictions")
         traindir = os.path.join(predict_folder, "train", "stare-images")
         assert os.path.exists(traindir)
-        nose.tools.eq_(len(fnmatch.filter(os.listdir(traindir), "*.hdf5")), 10)
+        assert len(fnmatch.filter(os.listdir(traindir), "*.hdf5")) == 10
         testdir = os.path.join(predict_folder, "test", "stare-images")
         assert os.path.exists(testdir)
-        nose.tools.eq_(len(fnmatch.filter(os.listdir(testdir), "*.hdf5")), 10)
+        assert len(fnmatch.filter(os.listdir(testdir), "*.hdf5")) == 10
 
         overlay_folder = os.path.join(output_folder, "overlayed", "predictions")
         traindir = os.path.join(overlay_folder, "train", "stare-images")
@@ -130,14 +113,10 @@ def _check_experiment_stare(overlay):
         if overlay:
             # check overlayed images are there (since we requested them)
             assert os.path.exists(traindir)
-            nose.tools.eq_(
-                len(fnmatch.filter(os.listdir(traindir), "*.png")), 10
-            )
+            assert len(fnmatch.filter(os.listdir(traindir), "*.png")) == 10
             # check overlayed images are there (since we requested them)
             assert os.path.exists(testdir)
-            nose.tools.eq_(
-                len(fnmatch.filter(os.listdir(testdir), "*.png")), 10
-            )
+            assert len(fnmatch.filter(os.listdir(testdir), "*.png")) == 10
         else:
             assert not os.path.exists(traindir)
             assert not os.path.exists(testdir)
@@ -148,38 +127,32 @@ def _check_experiment_stare(overlay):
         # checks individual performance figures are there
         traindir = os.path.join(eval_folder, "train", "stare-images")
         assert os.path.exists(traindir)
-        nose.tools.eq_(
-            len(fnmatch.filter(os.listdir(traindir), "*.csv")), 10
-        )
+        assert len(fnmatch.filter(os.listdir(traindir), "*.csv")) == 10
 
         assert os.path.exists(os.path.join(eval_folder, "test.csv"))
         # checks individual performance figures are there
         testdir = os.path.join(eval_folder, "test", "stare-images")
         assert os.path.exists(testdir)
-        nose.tools.eq_(
-            len(fnmatch.filter(os.listdir(testdir), "*.csv")), 10
-        )
+        assert len(fnmatch.filter(os.listdir(testdir), "*.csv")) == 10
 
         assert os.path.exists(
             os.path.join(eval_folder, "second-annotator", "train.csv")
         )
         # checks individual performance figures are there
-        traindir_sa = os.path.join(eval_folder, "second-annotator", "train",
-                "stare-images")
-        assert os.path.exists(traindir_sa)
-        nose.tools.eq_(
-            len(fnmatch.filter(os.listdir(traindir_sa), "*.csv")), 10
+        traindir_sa = os.path.join(
+            eval_folder, "second-annotator", "train", "stare-images"
         )
+        assert os.path.exists(traindir_sa)
+        assert len(fnmatch.filter(os.listdir(traindir_sa), "*.csv")) == 10
 
         assert os.path.exists(
             os.path.join(eval_folder, "second-annotator", "test.csv")
         )
-        testdir_sa = os.path.join(eval_folder, "second-annotator", "test",
-                "stare-images")
-        assert os.path.exists(testdir_sa)
-        nose.tools.eq_(
-            len(fnmatch.filter(os.listdir(testdir_sa), "*.csv")), 10
+        testdir_sa = os.path.join(
+            eval_folder, "second-annotator", "test", "stare-images"
         )
+        assert os.path.exists(testdir_sa)
+        assert len(fnmatch.filter(os.listdir(testdir_sa), "*.csv")) == 10
 
         overlay_folder = os.path.join(output_folder, "overlayed", "analysis")
         traindir = os.path.join(overlay_folder, "train", "stare-images")
@@ -187,13 +160,9 @@ def _check_experiment_stare(overlay):
         if overlay:
             # check overlayed images are there (since we requested them)
             assert os.path.exists(traindir)
-            nose.tools.eq_(
-                len(fnmatch.filter(os.listdir(traindir), "*.png")), 10
-            )
+            assert len(fnmatch.filter(os.listdir(traindir), "*.png")) == 10
             assert os.path.exists(testdir)
-            nose.tools.eq_(
-                len(fnmatch.filter(os.listdir(testdir), "*.png")), 10
-            )
+            assert len(fnmatch.filter(os.listdir(testdir), "*.png")) == 10
         else:
             assert not os.path.exists(traindir)
             assert not os.path.exists(testdir)
@@ -207,13 +176,9 @@ def _check_experiment_stare(overlay):
         testdir = os.path.join(overlay_folder, "test", "stare-images")
         if overlay:
             assert os.path.exists(traindir)
-            nose.tools.eq_(
-                len(fnmatch.filter(os.listdir(traindir), "*.png")), 10
-            )
+            assert len(fnmatch.filter(os.listdir(traindir), "*.png")) == 10
             assert os.path.exists(testdir)
-            nose.tools.eq_(
-                len(fnmatch.filter(os.listdir(testdir), "*.png")), 10
-            )
+            assert len(fnmatch.filter(os.listdir(testdir), "*.png")) == 10
         else:
             assert not os.path.exists(traindir)
             assert not os.path.exists(testdir)
@@ -248,37 +213,26 @@ def _check_experiment_stare(overlay):
             r"^Saving table at": 1,
             r"^Ended comparison.*$": 1,
         }
-        buf.seek(0)
-        logging_output = buf.read()
+        messages = "\n".join([k.getMessage() for k in caplog.records])
         for k, v in keywords.items():
-            # if _str_counter(k, logging_output) != v:
-            #    print(f"Count for string '{k}' appeared " \
-            #        f"({_str_counter(k, result.output)}) " \
-            #        f"instead of the expected {v}")
-            assert _str_counter(k, logging_output) == v, (
-                f"Count for string '{k}' appeared "
-                f"({_str_counter(k, logging_output)}) "
-                f"instead of the expected {v}"
-            )
+            assert _str_counter(k, messages) == v
 
 
-@rc_variable_set("bob.ip.binseg.stare.datadir")
-def test_experiment_stare_with_overlay():
-    _check_experiment_stare(overlay=True)
+def test_experiment_stare_with_overlay(caplog):
+    _check_experiment_stare(caplog, overlay=True)
 
 
-@rc_variable_set("bob.ip.binseg.stare.datadir")
-def test_experiment_stare_without_overlay():
-    _check_experiment_stare(overlay=False)
+def test_experiment_stare_without_overlay(caplog):
+    _check_experiment_stare(caplog, overlay=False)
 
 
-def _check_train(runner):
+def _check_train(caplog, runner):
 
     from ..script.train import train
 
-    with tempfile.NamedTemporaryFile(
-        mode="wt"
-    ) as config, stdout_logging() as buf:
+    with tempfile.NamedTemporaryFile(mode="wt") as config, caplog.at_level(
+        logging.INFO, logger="bob.ip.binseg"
+    ):
 
         # single training set configuration
         config.write("from bob.ip.binseg.data.stare import _make_dataset\n")
@@ -322,28 +276,19 @@ def _check_train(runner):
             r"^Saving checkpoint to .*/model_final.pth$": 1,
             r"^Total training time:": 1,
         }
-        buf.seek(0)
-        logging_output = buf.read()
 
+        messages = "\n".join([k.getMessage() for k in caplog.records])
         for k, v in keywords.items():
-            # if _str_counter(k, logging_output) != v:
-            #    print(f"Count for string '{k}' appeared " \
-            #        f"({_str_counter(k, result.output)}) " \
-            #        f"instead of the expected {v}")
-            assert _str_counter(k, logging_output) == v, (
-                f"Count for string '{k}' appeared "
-                f"({_str_counter(k, logging_output)}) "
-                f"instead of the expected {v}:\nOutput:\n{logging_output}"
-            )
+            assert _str_counter(k, messages) == v
 
 
-def _check_predict(runner):
+def _check_predict(caplog, runner):
 
     from ..script.predict import predict
 
-    with tempfile.NamedTemporaryFile(
-        mode="wt"
-    ) as config, stdout_logging() as buf:
+    with tempfile.NamedTemporaryFile(mode="wt") as config, caplog.at_level(
+        logging.INFO, logger="bob.ip.binseg"
+    ):
 
         # single training set configuration
         config.write("from bob.ip.binseg.data.stare import _make_dataset\n")
@@ -373,39 +318,30 @@ def _check_predict(runner):
         # check predictions are there
         basedir = os.path.join(output_folder, "test", "stare-images")
         assert os.path.exists(basedir)
-        nose.tools.eq_(len(fnmatch.filter(os.listdir(basedir), "*.hdf5")), 10)
+        assert len(fnmatch.filter(os.listdir(basedir), "*.hdf5")) == 10
 
         # check overlayed images are there (since we requested them)
         basedir = os.path.join(overlay_folder, "test", "stare-images")
         assert os.path.exists(basedir)
-        nose.tools.eq_(len(fnmatch.filter(os.listdir(basedir), "*.png")), 10)
+        assert len(fnmatch.filter(os.listdir(basedir), "*.png")) == 10
 
         keywords = {
             r"^Loading checkpoint from.*$": 1,
             r"^Total time:.*$": 1,
         }
-        buf.seek(0)
-        logging_output = buf.read()
 
+        messages = "\n".join([k.getMessage() for k in caplog.records])
         for k, v in keywords.items():
-            # if _str_counter(k, logging_output) != v:
-            #    print(f"Count for string '{k}' appeared " \
-            #        f"({_str_counter(k, result.output)}) " \
-            #        f"instead of the expected {v}")
-            assert _str_counter(k, logging_output) == v, (
-                f"Count for string '{k}' appeared "
-                f"({_str_counter(k, logging_output)}) "
-                f"instead of the expected {v}:\nOutput:\n{logging_output}"
-            )
+            assert _str_counter(k, messages) == v
 
 
-def _check_evaluate(runner):
+def _check_evaluate(caplog, runner):
 
     from ..script.evaluate import evaluate
 
-    with tempfile.NamedTemporaryFile(
-        mode="wt"
-    ) as config, stdout_logging() as buf:
+    with tempfile.NamedTemporaryFile(mode="wt") as config, caplog.at_level(
+        logging.INFO, logger="bob.ip.binseg"
+    ):
 
         # single training set configuration
         config.write("from bob.ip.binseg.data.stare import _make_dataset\n")
@@ -436,53 +372,39 @@ def _check_evaluate(runner):
         # checks individual performance figures are there
         testdir = os.path.join(output_folder, "test", "stare-images")
         assert os.path.exists(testdir)
-        nose.tools.eq_(
-            len(fnmatch.filter(os.listdir(testdir), "*.csv")), 10
-        )
+        assert len(fnmatch.filter(os.listdir(testdir), "*.csv")) == 10
 
         assert os.path.exists(
             os.path.join(output_folder, "second-annotator", "test.csv")
         )
         # checks individual performance figures are there
-        testdir_sa = os.path.join(output_folder, "second-annotator", "test",
-                "stare-images")
-        assert os.path.exists(testdir_sa)
-        nose.tools.eq_(
-            len(fnmatch.filter(os.listdir(testdir_sa), "*.csv")), 10
+        testdir_sa = os.path.join(
+            output_folder, "second-annotator", "test", "stare-images"
         )
+        assert os.path.exists(testdir_sa)
+        assert len(fnmatch.filter(os.listdir(testdir_sa), "*.csv")) == 10
 
         # check overlayed images are there (since we requested them)
         basedir = os.path.join(overlay_folder, "test", "stare-images")
         assert os.path.exists(basedir)
-        nose.tools.eq_(len(fnmatch.filter(os.listdir(basedir), "*.png")), 10)
+        assert len(fnmatch.filter(os.listdir(basedir), "*.png")) == 10
 
         keywords = {
-            r"^Skipping dataset '__train__'": 0,
-            r"^Saving summaries over all input images.*$": 1,
             r"^Maximum F1-score of.*\(chosen \*a posteriori\*\)$": 1,
             r"^F1-score of.*\(chosen \*a priori\*\)$": 1,
             r"^F1-score of.*\(second annotator; threshold=0.5\)$": 1,
         }
-        buf.seek(0)
-        logging_output = buf.read()
 
+        messages = "\n".join([k.getMessage() for k in caplog.records])
         for k, v in keywords.items():
-            # if _str_counter(k, logging_output) != v:
-            #    print(f"Count for string '{k}' appeared " \
-            #        f"({_str_counter(k, result.output)}) " \
-            #        f"instead of the expected {v}")
-            assert _str_counter(k, logging_output) == v, (
-                f"Count for string '{k}' appeared "
-                f"({_str_counter(k, logging_output)}) "
-                f"instead of the expected {v}:\nOutput:\n{logging_output}"
-            )
+            assert _str_counter(k, messages) == v
 
 
-def _check_compare(runner):
+def _check_compare(caplog, runner):
 
     from ..script.compare import compare
 
-    with stdout_logging() as buf:
+    with caplog.at_level(logging.INFO, logger="bob.ip.binseg"):
 
         output_folder = "evaluations"
         result = runner.invoke(
@@ -509,28 +431,18 @@ def _check_compare(runner):
             r"^Tabulating performance summary...": 1,
             r"^Saving table at": 1,
         }
-        buf.seek(0)
-        logging_output = buf.read()
-
+        messages = "\n".join([k.getMessage() for k in caplog.records])
         for k, v in keywords.items():
-            # if _str_counter(k, logging_output) != v:
-            #    print(f"Count for string '{k}' appeared " \
-            #        f"({_str_counter(k, result.output)}) " \
-            #        f"instead of the expected {v}")
-            assert _str_counter(k, logging_output) == v, (
-                f"Count for string '{k}' appeared "
-                f"({_str_counter(k, logging_output)}) "
-                f"instead of the expected {v}:\nOutput:\n{logging_output}"
-            )
+            assert _str_counter(k, messages) == v
 
 
-def _check_significance(runner):
+def _check_significance(caplog, runner):
 
     from ..script.significance import significance
 
-    with tempfile.NamedTemporaryFile(
-        mode="wt"
-    ) as config, stdout_logging() as buf:
+    with tempfile.NamedTemporaryFile(mode="wt") as config, caplog.at_level(
+        logging.INFO, logger="bob.ip.binseg"
+    ):
 
         config.write("from bob.ip.binseg.data.stare import _make_dataset\n")
         config.write(f"_raw = _make_dataset('{stare_datadir}')\n")
@@ -548,11 +460,15 @@ def _check_significance(runner):
             [
                 "-vv",
                 config.name,
-                "--names=v1", "v2",
-                "--predictions=predictions", "predictions",
+                "--names=v1",
+                "v2",
+                "--predictions=predictions",
+                "predictions",
                 "--threshold=0.5",
-                "--size=64", "64",
-                "--stride=32", "32",
+                "--size=64",
+                "64",
+                "--stride=32",
+                "32",
                 "--figure=accuracy",
                 f"--output-folder={ofolder}",
                 f"--checkpoint-folder={cfolder}",
@@ -568,36 +484,28 @@ def _check_significance(runner):
         keywords = {
             r"^Evaluating sliding window 'accuracy' on": 2,
             r"^Evaluating sliding window 'accuracy' differences on": 1,
-            #r"^Basic statistics from distributions:$": 1,
+            # r"^Basic statistics from distributions:$": 1,
             r"^Writing analysis figures": 1,
             r"^Writing analysis summary": 1,
             r"^Differences are exactly zero": 2,
         }
-        buf.seek(0)
-        logging_output = buf.read()
-
+        messages = "\n".join([k.getMessage() for k in caplog.records])
         for k, v in keywords.items():
-            # if _str_counter(k, logging_output) != v:
-            #    print(f"Count for string '{k}' appeared " \
-            #        f"({_str_counter(k, result.output)}) " \
-            #        f"instead of the expected {v}")
-            assert _str_counter(k, logging_output) == v, (
-                f"Count for string '{k}' appeared "
-                f"({_str_counter(k, logging_output)}) "
-                f"instead of the expected {v}:\nOutput:\n{logging_output}"
-            )
+            assert _str_counter(k, messages) == v
 
 
-@rc_variable_set("bob.ip.binseg.stare.datadir")
-def test_discrete_experiment_stare():
+def test_discrete_experiment_stare(caplog):
+
+    # ensures we capture only ERROR messages and above by default
+    caplog.set_level(logging.ERROR)
 
     runner = CliRunner()
     with runner.isolated_filesystem():
-        _check_train(runner)
-        _check_predict(runner)
-        _check_evaluate(runner)
-        _check_compare(runner)
-        #_check_significance(runner)
+        _check_train(caplog, runner)
+        _check_predict(caplog, runner)
+        _check_evaluate(caplog, runner)
+        _check_compare(caplog, runner)
+        # _check_significance(caplog, runner)
 
 
 def test_train_help():
