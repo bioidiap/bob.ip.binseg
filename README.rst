@@ -2,9 +2,9 @@
 
 .. image:: https://img.shields.io/badge/docs-available-orange.svg
    :target: https://www.idiap.ch/software/bob/docs/bob/bob.ip.binseg/master/index.html
-.. image:: https://gitlab.idiap.ch/bob/bob.ip.binseg/badges/v1.2.0/pipeline.svg
-   :target: https://gitlab.idiap.ch/bob/bob.ip.binseg/commits/v1.2.0
-.. image:: https://gitlab.idiap.ch/bob/bob.ip.binseg/badges/v1.2.0/coverage.svg
+.. image:: https://gitlab.idiap.ch/bob/bob.ip.binseg/badges/master/pipeline.svg
+   :target: https://gitlab.idiap.ch/bob/bob.ip.binseg/commits/master
+.. image:: https://gitlab.idiap.ch/bob/bob.ip.binseg/badges/master/coverage.svg
    :target: https://www.idiap.ch/software/bob/docs/bob/bob.ip.binseg/master/coverage/index.html
 .. image:: https://img.shields.io/badge/gitlab-project-0000c0.svg
    :target: https://gitlab.idiap.ch/bob/bob.ip.binseg
