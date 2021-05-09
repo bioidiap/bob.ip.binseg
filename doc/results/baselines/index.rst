@@ -63,7 +63,7 @@ F1 Scores (micro-level)
      - `0.813 (0.016) <baselines_hed_drive_>`_
      - `0.802 (0.014) <baselines_m2unet_drive_>`_
      - `0.825 (0.015) <baselines_unet_drive_>`_
-     -  0.828 <baselines_lwnet_drive_>`_
+     - `0.828 <baselines_lwnet_drive_>`_
    * - :py:mod:`stare <bob.ip.binseg.configs.datasets.stare.ah>`
      - 0.759 (0.028)
      - `0.828 (0.039) <baselines_driu_stare_>`_
