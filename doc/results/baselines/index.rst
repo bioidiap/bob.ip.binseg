@@ -49,7 +49,7 @@ F1 Scores (micro-level)
      - :py:mod:`hed <bob.ip.binseg.configs.models.hed>`
      - :py:mod:`m2unet <bob.ip.binseg.configs.models.m2unet>`
      - :py:mod:`unet <bob.ip.binseg.configs.models.unet>`
-     - :py:mod:`unet <bob.ip.binseg.configs.models.lwnet>`
+     - :py:mod:`lwnet <bob.ip.binseg.configs.models.lwnet>`
    * - Dataset
      - 2nd. Annot.
      - 15M
