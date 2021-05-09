@@ -98,7 +98,7 @@ F1 Scores (micro-level)
      - `0.827 (0.020) <baselines_hed_iostar_>`_
      - `0.820 (0.018) <baselines_m2unet_iostar_>`_
      - `0.818 (0.020) <baselines_unet_iostar_>`_
-     -  0.832 <baselines_lwnet_iostar_>
+     -  0.832 
 
 Precision-Recall (PR) Curves
 ----------------------------
