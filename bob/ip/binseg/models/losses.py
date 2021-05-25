@@ -180,7 +180,7 @@ class MultiSoftJaccardBCELogitsLoss(SoftJaccardBCELogitsLoss):
     def __init__(self, alpha=0.7):
         super(MultiSoftJaccardBCELogitsLoss, self).__init__(alpha=alpha)
 
-    def forward(self, inputlist, target):
+    def forward(self, input, target , mask):
         """
         Parameters
         ----------
