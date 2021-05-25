@@ -120,6 +120,7 @@ Models
    bob.ip.binseg.configs.models.m2unet_ssl
    bob.ip.binseg.configs.models.resunet
    bob.ip.binseg.configs.models.unet
+   bob.ip.binseg.configs.models.lwnet
 
 
 .. _bob.ip.binseg.configs.datasets:
