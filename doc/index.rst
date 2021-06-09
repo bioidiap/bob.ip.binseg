@@ -49,6 +49,7 @@ User Guide
    datasets
    cli
    api
+   contribute
 
 
 Indices and tables

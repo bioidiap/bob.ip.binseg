@@ -9,6 +9,9 @@
 .. _pytorch: https://pytorch.org
 .. _tabulate: https://pypi.org/project/tabulate/
 .. _our paper: https://arxiv.org/abs/1909.03856
+.. _cla: https://en.wikipedia.org/wiki/Contributor_License_Agreement
+.. _project harmony: http://www.harmonyagreements.org/
+.. _tto: mailto:tto@idiap.ch
 
 .. Raw data websites
 .. _drive: https://www.isi.uu.nl/Research/Databases/DRIVE/
