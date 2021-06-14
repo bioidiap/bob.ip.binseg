@@ -125,7 +125,7 @@ to generate iterators for training and testing.
      - 400 (+400)
      - 400
    * - DRHAGIS_
-     - [DRHAGIS_2017]_
+     - [DRHAGIS-2017]_
      - Varying
      - 39
      - x
