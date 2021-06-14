@@ -124,6 +124,17 @@ to generate iterators for training and testing.
      - [REFUGE-2018]_
      - 400 (+400)
      - 400
-
+   * - DRHAGIS_
+     - [DRHAGIS_2017]_
+     - Varying
+     - 39
+     - x
+     - x
+     -
+     -
+     - [DRHAGIS-2017]_
+     - 19
+     - 20
+    
 
 .. include:: links.rst

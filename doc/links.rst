@@ -20,6 +20,8 @@
 .. _rim-one r3: http://medimrg.webs.ull.es/research/downloads/
 .. _drishti-gs1: http://cvit.iiit.ac.in/projects/mip/drishti-gs/mip-dataset2/Home.php
 .. _refuge: https://refuge.grand-challenge.org/Details/
+.. _drhagis: https://personalpages.manchester.ac.uk/staff/niall.p.mcloughlin/
+
 
 .. Software Tools
 .. _maskrcnn-benchmark: https://github.com/facebookresearch/maskrcnn-benchmark
