@@ -99,7 +99,7 @@ F1 Scores (micro-level)
      - `0.820 (0.018) <baselines_m2unet_iostar_>`_
      - `0.818 (0.020) <baselines_unet_iostar_>`_
      -  0.832 
-   * - :py:mod:`drive <bob.ip.binseg.configs.datasets.drhagis.default>`
+   * - :py:mod:`drhagis <bob.ip.binseg.configs.datasets.drhagis.default>`
      - 
      - `0.787  
      - `0.782  
