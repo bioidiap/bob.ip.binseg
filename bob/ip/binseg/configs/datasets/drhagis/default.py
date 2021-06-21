@@ -4,7 +4,7 @@
 """DRHAGIS dataset for Vessel Segmentation (default protocol)
 
 
-* This configuration resolution: 1880 x 1880 (center-crop)
+* This configuration resolution: 1760 x 1760 (Resizing)
 
 """
 
