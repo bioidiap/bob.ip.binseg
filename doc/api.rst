@@ -37,6 +37,7 @@ Datasets
    bob.ip.binseg.data.drishtigs1
    bob.ip.binseg.data.rimoner3
    bob.ip.binseg.data.drionsdb
+   bob.ip.binseg.data.drhagis
 
 
 Engines
@@ -186,6 +187,8 @@ Datasets
 
    bob.ip.binseg.configs.datasets.drionsdb.expert1
    bob.ip.binseg.configs.datasets.drionsdb.expert2
+   
+   bob.ip.binseg.configs.datasets.drhagis.default
 
 
 .. include:: links.rst

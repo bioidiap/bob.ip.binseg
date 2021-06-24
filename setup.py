@@ -68,6 +68,9 @@ setup(
             "drive-covd = bob.ip.binseg.configs.datasets.drive.covd",
             "drive-ssl = bob.ip.binseg.configs.datasets.drive.ssl",
 
+	    # drhagis dataset
+            "drhagis = bob.ip.binseg.configs.datasets.drhagis.default",
+
             # stare dataset
             "stare = bob.ip.binseg.configs.datasets.stare.ah",
             "stare-2nd = bob.ip.binseg.configs.datasets.stare.vk",

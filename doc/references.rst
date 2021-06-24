@@ -117,3 +117,9 @@
    of precision, recall and F-score, with implication for evaluation**,
    European conference on Advances in Information Retrieval Research, 2005.
    https://doi.org/10.1007/978-3-540-31865-1_25
+
+.. [DRHAGIS-2017] *S. Holm, G. Russell, V. Nourrit, N. McLoughlin*, **DR HAGIS – A Novel Fundus Image Database for the Automatic Extraction of Retinal Surface Vessels**,
+   SPIE Journal of Medical Imaging, 2017.
+   https://doi.org/10.1117/1.jmi.4.1.014503
+
+
