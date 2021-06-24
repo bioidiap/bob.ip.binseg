@@ -20,7 +20,7 @@ The images resolutions (height x width) are:
 
 * Protocol ``default``:
 
-  * Training samples: 20 (including labels and masks)
+  * Training samples: 19 (including labels and masks)
   * Test samples: 20 (including labels and masks)
 
 
