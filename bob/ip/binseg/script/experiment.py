@@ -185,6 +185,20 @@ logger = logging.getLogger(__name__)
     cls=ResourceOption,
 )
 @click.option(
+    "--multiproc_data_loading",
+    "-P",
+    help="""Multiprocessing data loading:
+    - < 0: (default), disable multiprocessing data loading.
+    - 0: if set, enables as many data loading instances as CPUs as available in
+     the system.
+    - >= 1: if set, enables that many multiprocessing instances for data loading.
+    """,
+    show_default=True,
+    required=True,
+    default=-1,
+    cls=ResourceOption,
+)
+@click.option(
     "--overlayed/--no-overlayed",
     "-O",
     help="Creates overlayed representations of the output probability maps, "
@@ -225,6 +239,7 @@ def experiment(
     seed,
     ssl,
     rampup,
+    multiproc_data_loading,
     overlayed,
     steps,
     verbose,
@@ -309,6 +324,7 @@ def experiment(
         seed=seed,
         ssl=ssl,
         rampup=rampup,
+        multiproc_data_loading=multiproc_data_loading,
         verbose=verbose,
     )
     logger.info("Ended training")

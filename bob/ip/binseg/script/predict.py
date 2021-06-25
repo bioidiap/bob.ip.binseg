@@ -3,6 +3,7 @@
 
 import os
 import tempfile
+import multiprocessing
 
 import click
 import torch
@@ -110,9 +111,23 @@ logger = logging.getLogger(__name__)
     required=False,
     cls=ResourceOption,
 )
+@click.option(
+    "--multiproc_data_loading",
+    "-P",
+    help="""Multiprocessing data loading:
+    - < 0: (default), disable multiprocessing data loading.
+    - 0: if set, enables as many data loading instances as CPUs as available in
+     the system.
+    - >= 1: if set, enables that many multiprocessing instances for data loading.
+    """,
+    show_default=True,
+    required=True,
+    default=-1,
+    cls=ResourceOption,
+)
 @verbosity_option(cls=ResourceOption)
 def predict(output_folder, model, dataset, batch_size, device, weight,
-        overlayed, **kwargs):
+            overlayed, multiproc_data_loading, **kwargs):
     """Predicts vessel map (probabilities) on input images"""
 
     device = setup_pytorch_device(device)
@@ -141,10 +156,18 @@ def predict(output_folder, model, dataset, batch_size, device, weight,
 
         logger.info(f"Running inference on '{k}' set...")
 
+        if multiproc_data_loading < 0:
+            num_workers = 0
+        elif multiproc_data_loading == 0:
+            num_workers = multiprocessing.cpu_count()
+        else:
+            num_workers = multiproc_data_loading
+
         data_loader = DataLoader(
             dataset=v,
             batch_size=batch_size,
             shuffle=False,
             pin_memory=torch.cuda.is_available(),
+            num_workers=num_workers,
         )
         run(model, data_loader, k, device, output_folder, overlayed)

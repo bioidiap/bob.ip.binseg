@@ -47,7 +47,7 @@ def _str_counter(substr, s):
     return sum(1 for _ in re.finditer(substr, s, re.MULTILINE))
 
 
-def _check_experiment_stare(caplog, overlay):
+def _check_experiment_stare(caplog, overlay, multiprocess=False):
 
     from ..script.experiment import experiment
 
@@ -81,6 +81,11 @@ def _check_experiment_stare(caplog, overlay):
         ]
         if overlay:
             options += ["--overlayed"]
+        result = runner.invoke(experiment, options)
+        _assert_exit_0(result)
+
+        if multiprocess:
+            options += ["--multiproc_data_loading=0"]
         result = runner.invoke(experiment, options)
         _assert_exit_0(result)
 
@@ -224,6 +229,10 @@ def test_experiment_stare_with_overlay(caplog):
 
 def test_experiment_stare_without_overlay(caplog):
     _check_experiment_stare(caplog, overlay=False)
+
+
+def test_experiment_stare_with_multiprocessing(caplog):
+    _check_experiment_stare(caplog, overlay=False, multiprocess=True)
 
 
 def _check_train(caplog, runner):

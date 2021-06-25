@@ -2,6 +2,7 @@
 # coding=utf-8
 
 import os
+import multiprocessing
 
 import click
 import torch
@@ -189,6 +190,20 @@ logger = logging.getLogger(__name__)
     type=click.IntRange(min=0),
     cls=ResourceOption,
 )
+@click.option(
+    "--multiproc_data_loading",
+    "-P",
+    help="""Multiprocessing data loading:
+    - < 0: (default), disable multiprocessing data loading.
+    - 0: if set, enables as many data loading instances as CPUs as available in
+     the system.
+    - >= 1: if set, enables that many multiprocessing instances for data loading.
+    """,
+    show_default=True,
+    required=True,
+    default=-1,
+    cls=ResourceOption,
+)
 @verbosity_option(cls=ResourceOption)
 def train(
     model,
@@ -205,6 +220,7 @@ def train(
     seed,
     ssl,
     rampup,
+    multiproc_data_loading,
     verbose,
     **kwargs,
 ):
@@ -236,12 +252,20 @@ def train(
             validation_dataset = dataset["__valid__"]
 
     # PyTorch dataloader
+    if multiproc_data_loading < 0:
+        num_workers = 0
+    elif multiproc_data_loading == 0:
+        num_workers = multiprocessing.cpu_count()
+    else:
+        num_workers = multiproc_data_loading
+
     data_loader = DataLoader(
         dataset=use_dataset,
         batch_size=batch_size,
         shuffle=True,
         drop_last=drop_incomplete_batch,
         pin_memory=torch.cuda.is_available(),
+        num_workers=num_workers,
     )
 
     valid_loader = None
