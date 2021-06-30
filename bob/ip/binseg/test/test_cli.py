@@ -81,11 +81,9 @@ def _check_experiment_stare(caplog, overlay, multiprocess=False):
         ]
         if overlay:
             options += ["--overlayed"]
-        result = runner.invoke(experiment, options)
-        _assert_exit_0(result)
-
         if multiprocess:
-            options += ["--multiproc_data_loading=0"]
+            options += ["--multiproc-data-loading=2"]
+
         result = runner.invoke(experiment, options)
         _assert_exit_0(result)
 
@@ -220,7 +218,11 @@ def _check_experiment_stare(caplog, overlay, multiprocess=False):
         }
         messages = "\n".join([k.getMessage() for k in caplog.records])
         for k, v in keywords.items():
-            assert _str_counter(k, messages) == v
+            total = _str_counter(k, messages)
+            assert total == v, (
+                f"message '{k}' appears {total} times, but I expected "
+                f"it to appear {v} times"
+            )
 
 
 def test_experiment_stare_with_overlay(caplog):
@@ -288,7 +290,11 @@ def _check_train(caplog, runner):
 
         messages = "\n".join([k.getMessage() for k in caplog.records])
         for k, v in keywords.items():
-            assert _str_counter(k, messages) == v
+            total = _str_counter(k, messages)
+            assert total == v, (
+                f"message '{k}' appears {total} times, but I expected "
+                f"it to appear {v} times"
+            )
 
 
 def _check_predict(caplog, runner):
@@ -341,7 +347,11 @@ def _check_predict(caplog, runner):
 
         messages = "\n".join([k.getMessage() for k in caplog.records])
         for k, v in keywords.items():
-            assert _str_counter(k, messages) == v
+            total = _str_counter(k, messages)
+            assert total == v, (
+                f"message '{k}' appears {total} times, but I expected "
+                f"it to appear {v} times"
+            )
 
 
 def _check_evaluate(caplog, runner):
@@ -406,7 +416,11 @@ def _check_evaluate(caplog, runner):
 
         messages = "\n".join([k.getMessage() for k in caplog.records])
         for k, v in keywords.items():
-            assert _str_counter(k, messages) == v
+            total = _str_counter(k, messages)
+            assert total == v, (
+                f"message '{k}' appears {total} times, but I expected "
+                f"it to appear {v} times"
+            )
 
 
 def _check_compare(caplog, runner):
@@ -442,7 +456,11 @@ def _check_compare(caplog, runner):
         }
         messages = "\n".join([k.getMessage() for k in caplog.records])
         for k, v in keywords.items():
-            assert _str_counter(k, messages) == v
+            total = _str_counter(k, messages)
+            assert total == v, (
+                f"message '{k}' appears {total} times, but I expected "
+                f"it to appear {v} times"
+            )
 
 
 def _check_significance(caplog, runner):
@@ -500,7 +518,11 @@ def _check_significance(caplog, runner):
         }
         messages = "\n".join([k.getMessage() for k in caplog.records])
         for k, v in keywords.items():
-            assert _str_counter(k, messages) == v
+            total = _str_counter(k, messages)
+            assert total == v, (
+                f"message '{k}' appears {total} times, but I expected "
+                f"it to appear {v} times"
+            )
 
 
 def test_discrete_experiment_stare(caplog):
