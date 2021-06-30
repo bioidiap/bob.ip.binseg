@@ -191,14 +191,13 @@ logger = logging.getLogger(__name__)
     cls=ResourceOption,
 )
 @click.option(
-    "--multiproc_data_loading",
+    "--multiproc-data-loading",
     "-P",
-    help="""Multiprocessing data loading:
-    - < 0: (default), disable multiprocessing data loading.
-    - 0: if set, enables as many data loading instances as CPUs as available in
-     the system.
-    - >= 1: if set, enables that many multiprocessing instances for data loading.
-    """,
+    help="""Use multiprocessing for data loading: if set to -1 (default),
+    disables multiprocessing data loading.  Set to 0 to enable as many data
+    loading instances as processing cores as available in the system.  Set to
+    >= 1 to enable that many multiprocessing instances for data loading.""",
+    type=click.IntRange(min=-1),
     show_default=True,
     required=True,
     default=-1,
