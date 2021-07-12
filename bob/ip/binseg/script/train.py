@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 # coding=utf-8
 
-import os
+import sys
+import multiprocessing
 
 import click
 import torch
@@ -17,6 +18,7 @@ from ..utils.checkpointer import Checkpointer
 from .binseg import setup_pytorch_device, set_seeds
 
 import logging
+
 logger = logging.getLogger(__name__)
 
 
@@ -189,6 +191,19 @@ logger = logging.getLogger(__name__)
     type=click.IntRange(min=0),
     cls=ResourceOption,
 )
+@click.option(
+    "--multiproc-data-loading",
+    "-P",
+    help="""Use multiprocessing for data loading: if set to -1 (default),
+    disables multiprocessing data loading.  Set to 0 to enable as many data
+    loading instances as processing cores as available in the system.  Set to
+    >= 1 to enable that many multiprocessing instances for data loading.""",
+    type=click.IntRange(min=-1),
+    show_default=True,
+    required=True,
+    default=-1,
+    cls=ResourceOption,
+)
 @verbosity_option(cls=ResourceOption)
 def train(
     model,
@@ -205,6 +220,7 @@ def train(
     seed,
     ssl,
     rampup,
+    multiproc_data_loading,
     verbose,
     **kwargs,
 ):
@@ -236,23 +252,38 @@ def train(
             validation_dataset = dataset["__valid__"]
 
     # PyTorch dataloader
+    multiproc_kwargs = dict()
+    if multiproc_data_loading < 0:
+        multiproc_kwargs["num_workers"] = 0
+    elif multiproc_data_loading == 0:
+        multiproc_kwargs["num_workers"] = multiprocessing.cpu_count()
+    else:
+        multiproc_kwargs["num_workers"] = multiproc_data_loading
+
+    if multiproc_kwargs["num_workers"] > 0 and sys.platform == "darwin":
+        multiproc_kwargs[
+            "multiprocessing_context"
+        ] = multiprocessing.get_context("spawn")
+
     data_loader = DataLoader(
         dataset=use_dataset,
         batch_size=batch_size,
         shuffle=True,
         drop_last=drop_incomplete_batch,
         pin_memory=torch.cuda.is_available(),
+        **multiproc_kwargs,
     )
 
     valid_loader = None
     if validation_dataset is not None:
         valid_loader = DataLoader(
-                dataset=validation_dataset,
-                batch_size=batch_size,
-                shuffle=False,
-                drop_last=False,
-                pin_memory=torch.cuda.is_available(),
-                )
+            dataset=validation_dataset,
+            batch_size=batch_size,
+            shuffle=False,
+            drop_last=False,
+            pin_memory=torch.cuda.is_available(),
+            **multiproc_kwargs,
+        )
 
     checkpointer = Checkpointer(model, optimizer, scheduler, path=output_folder)
 
@@ -267,6 +298,7 @@ def train(
 
     if not ssl:
         from ..engine.trainer import run
+
         run(
             model,
             data_loader,
@@ -283,6 +315,7 @@ def train(
 
     else:
         from ..engine.ssltrainer import run
+
         run(
             model,
             data_loader,
