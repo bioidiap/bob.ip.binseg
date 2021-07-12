@@ -21,6 +21,7 @@ from ..utils.checkpointer import Checkpointer
 from .binseg import download_to_tempfile, setup_pytorch_device
 
 import logging
+
 logger = logging.getLogger(__name__)
 
 
@@ -125,8 +126,17 @@ logger = logging.getLogger(__name__)
     cls=ResourceOption,
 )
 @verbosity_option(cls=ResourceOption)
-def predict(output_folder, model, dataset, batch_size, device, weight,
-            overlayed, multiproc_data_loading, **kwargs):
+def predict(
+    output_folder,
+    model,
+    dataset,
+    batch_size,
+    device,
+    weight,
+    overlayed,
+    multiproc_data_loading,
+    **kwargs,
+):
     """Predicts vessel map (probabilities) on input images"""
 
     device = setup_pytorch_device(device)
@@ -147,7 +157,7 @@ def predict(output_folder, model, dataset, batch_size, device, weight,
     if overlayed is not None:
         overlayed = overlayed.strip()
 
-    for k,v in dataset.items():
+    for k, v in dataset.items():
 
         if k.startswith("_"):
             logger.info(f"Skipping dataset '{k}' (not to be evaluated)")
@@ -155,18 +165,24 @@ def predict(output_folder, model, dataset, batch_size, device, weight,
 
         logger.info(f"Running inference on '{k}' set...")
 
+        multiproc_kwargs = dict()
         if multiproc_data_loading < 0:
-            num_workers = 0
+            multiproc_kwargs["num_workers"] = 0
         elif multiproc_data_loading == 0:
-            num_workers = multiprocessing.cpu_count()
+            multiproc_kwargs["num_workers"] = multiprocessing.cpu_count()
         else:
-            num_workers = multiproc_data_loading
+            multiproc_kwargs["num_workers"] = multiproc_data_loading
+
+        if multiproc_kwargs["num_workers"] > 0:
+            multiproc_kwargs[
+                "multiprocessing_context"
+            ] = multiprocessing.get_context("spawn")
 
         data_loader = DataLoader(
             dataset=v,
             batch_size=batch_size,
             shuffle=False,
             pin_memory=torch.cuda.is_available(),
-            num_workers=num_workers,
+            **multiproc_kwargs,
         )
         run(model, data_loader, k, device, output_folder, overlayed)

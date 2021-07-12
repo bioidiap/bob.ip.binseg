@@ -251,12 +251,18 @@ def train(
             validation_dataset = dataset["__valid__"]
 
     # PyTorch dataloader
+    multiproc_kwargs = dict()
     if multiproc_data_loading < 0:
-        num_workers = 0
+        multiproc_kwargs["num_workers"] = 0
     elif multiproc_data_loading == 0:
-        num_workers = multiprocessing.cpu_count()
+        multiproc_kwargs["num_workers"] = multiprocessing.cpu_count()
     else:
-        num_workers = multiproc_data_loading
+        multiproc_kwargs["num_workers"] = multiproc_data_loading
+
+    if multiproc_kwargs["num_workers"] > 0:
+        multiproc_kwargs[
+            "multiprocessing_context"
+        ] = multiprocessing.get_context("spawn")
 
     data_loader = DataLoader(
         dataset=use_dataset,
@@ -264,7 +270,7 @@ def train(
         shuffle=True,
         drop_last=drop_incomplete_batch,
         pin_memory=torch.cuda.is_available(),
-        num_workers=num_workers,
+        **multiproc_kwargs,
     )
 
     valid_loader = None
@@ -275,6 +281,7 @@ def train(
                 shuffle=False,
                 drop_last=False,
                 pin_memory=torch.cuda.is_available(),
+                **multiproc_kwargs,
                 )
 
     checkpointer = Checkpointer(model, optimizer, scheduler, path=output_folder)
