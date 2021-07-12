@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding=utf-8
 
-import os
+import sys
 import multiprocessing
 
 import click
@@ -18,6 +18,7 @@ from ..utils.checkpointer import Checkpointer
 from .binseg import setup_pytorch_device, set_seeds
 
 import logging
+
 logger = logging.getLogger(__name__)
 
 
@@ -259,7 +260,7 @@ def train(
     else:
         multiproc_kwargs["num_workers"] = multiproc_data_loading
 
-    if multiproc_kwargs["num_workers"] > 0:
+    if multiproc_kwargs["num_workers"] > 0 and sys.platform == "darwin":
         multiproc_kwargs[
             "multiprocessing_context"
         ] = multiprocessing.get_context("spawn")
@@ -276,13 +277,13 @@ def train(
     valid_loader = None
     if validation_dataset is not None:
         valid_loader = DataLoader(
-                dataset=validation_dataset,
-                batch_size=batch_size,
-                shuffle=False,
-                drop_last=False,
-                pin_memory=torch.cuda.is_available(),
-                **multiproc_kwargs,
-                )
+            dataset=validation_dataset,
+            batch_size=batch_size,
+            shuffle=False,
+            drop_last=False,
+            pin_memory=torch.cuda.is_available(),
+            **multiproc_kwargs,
+        )
 
     checkpointer = Checkpointer(model, optimizer, scheduler, path=output_folder)
 
@@ -297,6 +298,7 @@ def train(
 
     if not ssl:
         from ..engine.trainer import run
+
         run(
             model,
             data_loader,
@@ -313,6 +315,7 @@ def train(
 
     else:
         from ..engine.ssltrainer import run
+
         run(
             model,
             data_loader,

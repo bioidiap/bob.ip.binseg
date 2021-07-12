@@ -2,7 +2,7 @@
 # coding=utf-8
 
 import os
-import tempfile
+import sys
 import multiprocessing
 
 import click
@@ -173,7 +173,7 @@ def predict(
         else:
             multiproc_kwargs["num_workers"] = multiproc_data_loading
 
-        if multiproc_kwargs["num_workers"] > 0:
+        if multiproc_kwargs["num_workers"] > 0 and sys.platform == "darwin":
             multiproc_kwargs[
                 "multiprocessing_context"
             ] = multiprocessing.get_context("spawn")
