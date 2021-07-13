@@ -7,7 +7,7 @@ The database includes 58 cases with	manifestation of tuberculosis, and 80
 normal cases.  It contains a total  of 138 resolution of 4020 x 4892, or
 4892 x 4020. One set of ground-truth lung annotations is available.
 
-* Reference: [JAEGER-2014]_
+* Reference: [MC-2014]_
 * Original resolution (height x width): 4020 x 4892, or 4892 x 4020
 * Configuration resolution: 512 x 512 (after rescaling)
 * Split reference: [GAÁL-2020]_

@@ -8,7 +8,7 @@ normal cases.  It contains a total  of 662 images. Image size varies for each
 X-ray. It is approximately 3K x 3K. One set of ground-truth lung annotations is 
 available for 566 of the 662 images.
 
-* Reference: [JAEGER-2014]_
+* Reference: [SHENZHEN-2014]_
 * Original resolution (height x width): Approximately 3K x 3K (varies)
 * Configuration resolution: 512 x 512 (after rescaling)
 * Split reference: [GAÁL-2020]_

@@ -7,7 +7,7 @@ The database includes 154 nodule and 93 non-nodule images.  It contains a total
 of 247 resolution of 2048 x 2048 One set of ground-truth lung annotations is 
 available.
 
-* Reference: [SHIRAISHI-2000]_
+* Reference: [JSRT-2000]_
 * Original resolution (height x width): 2048 x 2048
 * Configuration resolution: 512 x 512 (after rescaling)
 * Split reference: [GAÁL-2020]_
