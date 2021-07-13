@@ -122,4 +122,23 @@
    SPIE Journal of Medical Imaging, 2017.
    https://doi.org/10.1117/1.jmi.4.1.014503
 
+.. [MC-2014] *S. Jaeger, S. Candemir, S. Antani, Y. X. Wáng, P. X. Lu, G.
+   Thoma*, **Two public chest X-ray datasets for computer-aided screening of
+   pulmonary diseases.**, Quantitative imaging in medicine and surgery. 2014.
+   https://doi:10.3978/j.issn.2223-4292.2014.11.20
 
+.. [JSRT-2000] *J. Shiraishi, S. Katsuragawa, J. Ikezoe, T. Matsumoto, T.
+   Kobayashi, K. Komatsu, M. Matsui, H. Fujita, Y. Kodera, K. Doi*,
+   **Development of a digital image database for chest radiographs with and
+   without a lung nodule: Receiver operating characteristic analysis of
+   radiologists’ detection of pulmonary nodules.**, American Journal of
+   Roentgenology. 2000. https://pubmed.ncbi.nlm.nih.gov/10628457
+
+.. [SHENZHEN-2014] *S. Jaeger, S. Candemir, S. Antani, Y. X. Wáng, P. X. Lu, G.
+   Thoma*, **Two public chest X-ray datasets for computer-aided screening of
+   pulmonary diseases.**, Quantitative imaging in medicine and surgery. 2014.
+   https://doi:10.3978/j.issn.2223-4292.2014.11.20
+
+.. [GAÁL-2020] *G. Gaál, B. Maga, A. Lukács*, **Attention U-Net Based
+   Adversarial Architectures for Chest X-ray Lung Segmentation.**, 2020.
+   https://arxiv.org/abs/2003.10304v1

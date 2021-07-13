@@ -135,6 +135,38 @@ to generate iterators for training and testing.
      - [DRHAGIS-2017]_
      - 19
      - 20
-    
+   * - MC_
+     - [MC-2014]_
+     - 4020 x 4892, or 4892 x 4020
+     - 138
+     - x
+     -
+     -
+     -
+     - [GAÁL-2020]_
+     - 96 (+14)
+     - 28
+   * - JSRT_
+     - [JSRT-2000]_
+     - 2048 x 2048
+     - 247
+     - x
+     -
+     -
+     -
+     - [GAÁL-2020]_
+     - 172 (+25)
+     - 50
+   * - SHENZHEN_
+     - [SHENZHEN-2014]_
+     - Varying
+     - 662
+     -
+     -
+     -
+     -
+     - [GAÁL-2020]_
+     - 396 (+56)
+     - 114
 
 .. include:: links.rst
