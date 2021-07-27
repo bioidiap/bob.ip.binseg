@@ -138,7 +138,7 @@ def run(
         shutil.move(static_logfile_name, backup)
     with open(static_logfile_name, "w", newline="") as f:
         logdata = cpu_constants()
-        if device == "cuda":
+        if device.type == "cuda":
             logdata += gpu_constants()
         logdata += (("model_size", n),)
         logwriter = csv.DictWriter(f, fieldnames=[k[0] for k in logdata])
