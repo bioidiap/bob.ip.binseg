@@ -1,6 +1,20 @@
 # See https://pre-commit.com for more information
 # See https://pre-commit.com/hooks.html for more hooks
 repos:
+  - repo: https://github.com/timothycrosley/isort
+    rev: 5.9.3
+    hooks:
+    - id: isort
+      args: [--sl, --line-length, "88"]
+  - repo: https://github.com/psf/black
+    rev: 21.7b0
+    hooks:
+      - id: black
+  - repo: https://gitlab.com/pycqa/flake8
+    rev: 3.9.2
+    hooks:
+      - id: flake8
+        exclude: bob/ip/binseg/configs|doc/conf.py
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.0.1
     hooks:
@@ -12,17 +26,3 @@ repos:
       - id: check-added-large-files
       - id: check-yaml
         exclude: .*/meta.yaml
-  - repo: https://github.com/psf/black
-    rev: 21.7b0
-    hooks:
-      - id: black
-  - repo: https://github.com/timothycrosley/isort
-    rev: 5.9.3
-    hooks:
-    - id: isort
-      args: [--sl, --line-length, "88"]
-  - repo: https://gitlab.com/pycqa/flake8
-    rev: 3.9.2
-    hooks:
-      - id: flake8
-        exclude: bob/ip/binseg/configs|doc/conf.py
