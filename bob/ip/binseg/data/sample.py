@@ -11,8 +11,7 @@ from collections.abc import MutableSequence
 
 
 def _copy_attributes(s, d):
-    """Copies attributes from a dictionary to self
-    """
+    """Copies attributes from a dictionary to self"""
     s.__dict__.update(
         dict([k, v] for k, v in d.items() if k not in ("data", "load", "samples"))
     )
@@ -79,7 +78,6 @@ class Sample:
         if parent is not None:
             _copy_attributes(self, parent.__dict__)
         _copy_attributes(self, kwargs)
-
 
 
 class SampleSet(MutableSequence):

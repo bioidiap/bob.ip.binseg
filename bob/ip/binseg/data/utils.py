@@ -4,24 +4,20 @@
 
 """Common utilities"""
 
-import contextlib
-
 import PIL.Image
-import PIL.ImageOps
 import PIL.ImageChops
-
+import PIL.ImageOps
 import torch
 import torch.utils.data
 
-from .transforms import Compose, ToTensor
+from .transforms import Compose
+from .transforms import ToTensor
 
 
 def invert_mode1_image(img):
     """Inverts a binary PIL image (mode == ``"1"``)"""
 
-    return PIL.ImageOps.invert(img.convert("RGB")).convert(
-        mode="1", dither=None
-    )
+    return PIL.ImageOps.invert(img.convert("RGB")).convert(mode="1", dither=None)
 
 
 def subtract_mode1_images(img1, img2):
@@ -150,8 +146,8 @@ class SampleListDataset(torch.utils.data.Dataset):
         return self._transforms.transforms[:-1]
 
     @transforms.setter
-    def transforms(self, l):
-        self._transforms = Compose(l + [ToTensor()])
+    def transforms(self, value):
+        self._transforms = Compose(value + [ToTensor()])
 
     def copy(self, transforms=None):
         """Returns a deep copy of itself, optionally resetting transforms
@@ -172,8 +168,7 @@ class SampleListDataset(torch.utils.data.Dataset):
             yield k.key
 
     def all_keys_match(self, other):
-        """Compares all keys to ``other``, return ``True`` if all match
-        """
+        """Compares all keys to ``other``, return ``True`` if all match"""
         return len(self) == len(other) and all(
             [(ks == ko) for ks, ko in zip(self.keys(), other.keys())]
         )
@@ -261,8 +256,7 @@ class SSLDataset(torch.utils.data.Dataset):
             yield k.key
 
     def all_keys_match(self, other):
-        """Compares all keys to ``other``, return ``True`` if all match
-        """
+        """Compares all keys to ``other``, return ``True`` if all match"""
         return len(self) == len(other) and all(
             [(ks == ko) for ks, ko in zip(self.keys(), other.keys())]
         )

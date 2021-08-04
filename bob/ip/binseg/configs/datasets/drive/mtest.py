@@ -6,21 +6,17 @@
 * Configuration resolution: 544 x 544
 """
 
-from bob.ip.binseg.data.transforms import Resize, Pad, Crop
-from bob.ip.binseg.configs.datasets.drive.xtest import (
-    dataset as _xt,
-    second_annotator,
-)
+from bob.ip.binseg.configs.datasets.drive.xtest import dataset as _xt
+from bob.ip.binseg.configs.datasets.drive.xtest import second_annotator
+from bob.ip.binseg.data.transforms import Crop
+from bob.ip.binseg.data.transforms import Pad
+from bob.ip.binseg.data.transforms import Resize
 
 dataset = {
     "train": _xt["train"],
     "test": _xt["test"],
-    "stare (train)": _xt["stare (train)"].copy(
-        [Resize(471), Pad((0, 37, 0, 36))]
-    ),
-    "stare (test)": _xt["stare (test)"].copy(
-        [Resize(471), Pad((0, 37, 0, 36))]
-    ),
+    "stare (train)": _xt["stare (train)"].copy([Resize(471), Pad((0, 37, 0, 36))]),
+    "stare (test)": _xt["stare (test)"].copy([Resize(471), Pad((0, 37, 0, 36))]),
     "chasedb1 (train)": _xt["chasedb1 (train)"].copy(
         [Resize(544), Crop(0, 12, 544, 544)]
     ),

@@ -6,7 +6,8 @@ from collections import OrderedDict
 import torch.nn
 
 from .backbones.vgg import vgg16_for_segmentation
-from .make_layers import conv_with_kaiming_uniform, UnetBlock
+from .make_layers import UnetBlock
+from .make_layers import conv_with_kaiming_uniform
 
 
 class UNet(torch.nn.Module):
@@ -75,7 +76,8 @@ def unet(pretrained_backbone=True, progress=True):
     """
 
     backbone = vgg16_for_segmentation(
-        pretrained=pretrained_backbone, progress=progress,
+        pretrained=pretrained_backbone,
+        progress=progress,
         return_features=[3, 8, 14, 22, 29],
     )
     head = UNet([64, 128, 256, 512, 512], pixel_shuffle=False)
@@ -83,6 +85,7 @@ def unet(pretrained_backbone=True, progress=True):
     order = [("backbone", backbone), ("head", head)]
     if pretrained_backbone:
         from .normalizer import TorchVisionNormalizer
+
         order = [("normalizer", TorchVisionNormalizer())] + order
 
     model = torch.nn.Sequential(OrderedDict(order))

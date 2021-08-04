@@ -1,21 +1,18 @@
 #!/usr/bin/env python
 # coding=utf-8
 
+import logging
 import os
+
 import click
-
-from bob.extension.scripts.click_helper import (
-    verbosity_option,
-    AliasedGroup,
-)
-
 import pandas
 import tabulate
+
+from bob.extension.scripts.click_helper import verbosity_option
 
 from ..utils.plot import precision_recall_f1iso
 from ..utils.table import performance_table
 
-import logging
 logger = logging.getLogger(__name__)
 
 
@@ -82,8 +79,10 @@ def _load(data, threshold=None):
     """
 
     if isinstance(threshold, str):
-        logger.info(f"Calculating threshold from maximum F1-score at "
-                f"'{threshold}' dataset...")
+        logger.info(
+            f"Calculating threshold from maximum F1-score at "
+            f"'{threshold}' dataset..."
+        )
         measures_path = data[threshold]
         df = pandas.read_csv(measures_path)
         use_threshold = df.threshold[df.mean_f1_score.idxmax()]
@@ -92,10 +91,6 @@ def _load(data, threshold=None):
     elif isinstance(threshold, float):
         use_threshold = threshold
         logger.info(f"Dataset '*': threshold = {use_threshold:.3f}'")
-
-    names = []
-    dfs = []
-    thresholds = []
 
     # loads all data
     retval = {}
@@ -106,14 +101,17 @@ def _load(data, threshold=None):
 
         if threshold is None:
 
-            if 'threshold_a_priori' in df:
+            if "threshold_a_priori" in df:
                 use_threshold = df.threshold[df.threshold_a_priori.idxmax()]
-                logger.info(f"Dataset '{name}': threshold (a priori) = " \
-                        f"{use_threshold:.3f}'")
+                logger.info(
+                    f"Dataset '{name}': threshold (a priori) = " f"{use_threshold:.3f}'"
+                )
             else:
                 use_threshold = df.threshold[df.mean_f1_score.idxmax()]
-                logger.info(f"Dataset '{name}': threshold (a posteriori) = " \
-                        f"{use_threshold:.3f}'")
+                logger.info(
+                    f"Dataset '{name}': threshold (a posteriori) = "
+                    f"{use_threshold:.3f}'"
+                )
 
         retval[name] = dict(df=df, threshold=use_threshold)
 
@@ -130,9 +128,9 @@ def _load(data, threshold=None):
 """,
 )
 @click.argument(
-        'label_path',
-        nargs=-1,
-        )
+    "label_path",
+    nargs=-1,
+)
 @click.option(
     "--output-figure",
     "-f",
@@ -178,14 +176,14 @@ def _load(data, threshold=None):
     required=False,
 )
 @verbosity_option()
-def compare(label_path, output_figure, table_format, output_table, threshold,
-        **kwargs):
+def compare(label_path, output_figure, table_format, output_table, threshold, **kwargs):
     """Compares multiple systems together"""
 
     # hack to get a dictionary from arguments passed to input
     if len(label_path) % 2 != 0:
-        raise click.ClickException("Input label-paths should be doubles"
-                " composed of name-path entries")
+        raise click.ClickException(
+            "Input label-paths should be doubles" " composed of name-path entries"
+        )
     data = dict(zip(label_path[::2], label_path[1::2]))
 
     threshold = _validate_threshold(threshold, data)

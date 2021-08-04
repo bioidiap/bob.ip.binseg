@@ -1,23 +1,22 @@
 #!/usr/bin/env python
 # coding=utf-8
 
+import logging
+import multiprocessing
 import os
 import textwrap
-import multiprocessing
-
-import logging
-
-logger = logging.getLogger(__name__)
 
 import h5py
-from tqdm import tqdm
 import numpy
-import torch.nn
 import scipy.stats
 import tabulate
+import torch.nn
+
+from tqdm import tqdm
 
 from .evaluator import sample_measures_for_threshold
 
+logger = logging.getLogger(__name__)
 
 PERFORMANCE_FIGURES = [
     "precision",
@@ -99,10 +98,9 @@ def _performance_summary(size, winperf, winsize, winstride, figure):
 
     # calculates the stacked performance
     layers = int(
-        numpy.ceil(winsize[0] / winstride[0])
-        * numpy.ceil(winsize[1] / winstride[1])
+        numpy.ceil(winsize[0] / winstride[0]) * numpy.ceil(winsize[1] / winstride[1])
     )
-    figindex = PERFORMANCE_FIGURES.index(figure)
+    # figindex = PERFORMANCE_FIGURES.index(figure)
     perf = numpy.zeros([layers] + final_size, dtype=winperf.dtype)
     n = -1 * numpy.ones(final_size, dtype=int)
     data = winperf[PERFORMANCE_FIGURES.index(figure)]
@@ -191,9 +189,7 @@ def _winperf_measures(pred, gt, mask, threshold, size, stride):
     if rem != 0:
         padding += (0, (stride[0] - rem))
 
-    pred_padded = torch.nn.functional.pad(
-        pred, padding, mode="constant", value=0.0
-    )
+    pred_padded = torch.nn.functional.pad(pred, padding, mode="constant", value=0.0)
     gt_padded = torch.nn.functional.pad(
         gt.squeeze(0), padding, mode="constant", value=0.0
     )
@@ -205,9 +201,7 @@ def _winperf_measures(pred, gt, mask, threshold, size, stride):
     pred_windows = pred_padded.unfold(0, size[0], stride[0]).unfold(
         1, size[1], stride[1]
     )
-    gt_windows = gt_padded.unfold(0, size[0], stride[0]).unfold(
-        1, size[1], stride[1]
-    )
+    gt_windows = gt_padded.unfold(0, size[0], stride[0]).unfold(1, size[1], stride[1])
     mask_windows = mask_padded.unfold(0, size[0], stride[0]).unfold(
         1, size[1], stride[1]
     )
@@ -300,7 +294,14 @@ def _visual_dataset_performance(stem, img, n, avg, std, outdir):
 
 
 def _winperf_for_sample(
-    basedir, threshold, size, stride, dataset, k, figure, outdir,
+    basedir,
+    threshold,
+    size,
+    stride,
+    dataset,
+    k,
+    figure,
+    outdir,
 ):
     """
     Evaluates sliding window performances per sample
@@ -512,9 +513,7 @@ def sliding_window_performances(
     return dict(data)
 
 
-def _visual_performances_for_sample(
-    size, stride, dataset, k, winperf, figure, outdir
-):
+def _visual_performances_for_sample(size, stride, dataset, k, winperf, figure, outdir):
     """
     Displays sliding windows performances per sample
 
@@ -593,7 +592,14 @@ def _visual_performances_for_sample(
 
 
 def visual_performances(
-    dataset, name, winperfs, size, stride, figure, nproc=1, outdir=None,
+    dataset,
+    name,
+    winperfs,
+    size,
+    stride,
+    figure,
+    nproc=1,
+    outdir=None,
 ):
     """
     Displays the performances for for a whole dataset
@@ -849,14 +855,12 @@ def write_analysis_text(names, da, db, f):
 
     w, p = scipy.stats.wilcoxon(diff, alternative="greater")
     f.write(
-        f"    * H0 = med({names[0]}) < med({names[1]}): "
-        f"W = {w:g}, p = {p:.5f}\n"
+        f"    * H0 = med({names[0]}) < med({names[1]}): " f"W = {w:g}, p = {p:.5f}\n"
     )
 
     w, p = scipy.stats.wilcoxon(diff, alternative="less")
     f.write(
-        f"    * H0 = med({names[0]}) > med({names[1]}): "
-        f"W = {w:g}, p = {p:.5f}\n"
+        f"    * H0 = med({names[0]}) > med({names[1]}): " f"W = {w:g}, p = {p:.5f}\n"
     )
 
 
@@ -886,8 +890,9 @@ def write_analysis_figures(names, da, db, fname):
 
     """
 
-    from matplotlib.backends.backend_pdf import PdfPages
     import matplotlib.pyplot as plt
+
+    from matplotlib.backends.backend_pdf import PdfPages
 
     diff = da - db
     bins = 50
@@ -899,7 +904,7 @@ def write_analysis_figures(names, da, db, fname):
         plt.hist(da, bins=bins)
         plt.title(
             f"{names[0]} - (N={len(da)}; M={numpy.median(da):.3f}; "
-            f"$\mu$={numpy.mean(da):.3f}; $\sigma$={numpy.std(da, ddof=1):.3f})"
+            f"$\\mu$={numpy.mean(da):.3f}; $\\sigma$={numpy.std(da, ddof=1):.3f})"
         )
         pdf.savefig()
         plt.close(fig)
@@ -909,7 +914,7 @@ def write_analysis_figures(names, da, db, fname):
         plt.hist(db, bins=bins)
         plt.title(
             f"{names[1]} - (N={len(db)}; M={numpy.median(db):.3f}; "
-            f"$\mu$={numpy.mean(db):.3f}; $\sigma$={numpy.std(db, ddof=1):.3f})"
+            f"$\\mu$={numpy.mean(db):.3f}; $\\sigma$={numpy.std(db, ddof=1):.3f})"
         )
         pdf.savefig()
         plt.close(fig)
@@ -934,8 +939,8 @@ def write_analysis_figures(names, da, db, fname):
         plt.title(
             f"Paired Differences "
             f"(N={len(diff)}; M={numpy.median(diff):.3f}; "
-            f"$\mu$={numpy.mean(diff):.3f}; "
-            f"$\sigma$={numpy.std(diff, ddof=1):.3f})"
+            f"$\\mu$={numpy.mean(diff):.3f}; "
+            f"$\\sigma$={numpy.std(diff, ddof=1):.3f})"
         )
         pdf.savefig()
         plt.close(fig)

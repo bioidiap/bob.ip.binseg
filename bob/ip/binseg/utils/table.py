@@ -3,6 +3,7 @@
 
 
 import tabulate
+
 from .measure import auc
 
 
@@ -59,29 +60,38 @@ def performance_table(data, fmt):
         "CI(F1)",
         "AUC",
         "CI(AUC)",
-        ]
+    ]
 
     table = []
     for k, v in data.items():
-        entry = [k, v["threshold"], ]
+        entry = [
+            k,
+            v["threshold"],
+        ]
 
         # statistics based on the "assigned" threshold (a priori, less biased)
         bins = len(v["df"])
-        index = int(round(bins*v["threshold"]))
-        index = min(index, len(v["df"])-1)  #avoids out of range indexing
+        index = int(round(bins * v["threshold"]))
+        index = min(index, len(v["df"]) - 1)  # avoids out of range indexing
         entry.append(v["df"].mean_f1_score[index])
-        entry.append(f"{v['df'].lower_f1_score[index]:.3f}-{v['df'].upper_f1_score[index]:.3f}")
+        entry.append(
+            f"{v['df'].lower_f1_score[index]:.3f}-{v['df'].upper_f1_score[index]:.3f}"
+        )
 
         # AUC PR curve
-        entry.append(auc(v["df"]["mean_recall"].to_numpy(),
-                v["df"]["mean_precision"].to_numpy()))
-        lower_auc = auc(v["df"]["lower_recall"].to_numpy(),
-                v["df"]["lower_precision"].to_numpy())
-        upper_auc = auc(v["df"]["upper_recall"].to_numpy(),
-                v["df"]["upper_precision"].to_numpy())
+        entry.append(
+            auc(v["df"]["mean_recall"].to_numpy(), v["df"]["mean_precision"].to_numpy())
+        )
+        lower_auc = auc(
+            v["df"]["lower_recall"].to_numpy(), v["df"]["lower_precision"].to_numpy()
+        )
+        upper_auc = auc(
+            v["df"]["upper_recall"].to_numpy(), v["df"]["upper_precision"].to_numpy()
+        )
         entry.append(f"{lower_auc:.3f}-{upper_auc:.3f}")
 
         table.append(entry)
 
-    return tabulate.tabulate(table, headers, tablefmt=fmt, floatfmt=".3f",
-            stralign="right")
+    return tabulate.tabulate(
+        table, headers, tablefmt=fmt, floatfmt=".3f", stralign="right"
+    )

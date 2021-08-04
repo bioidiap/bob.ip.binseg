@@ -13,11 +13,12 @@ Reference: [MANINIS-2016]_
 """
 
 from torch.optim.lr_scheduler import MultiStepLR
+
+from bob.ip.binseg.engine.adabound import AdaBound
 from bob.ip.binseg.models.driu_bn import driu_bn
 from bob.ip.binseg.models.losses import MixJacLoss
-from bob.ip.binseg.engine.adabound import AdaBound
 
-##### Config #####
+# config
 lr = 0.001
 betas = (0.9, 0.999)
 eps = 1e-08

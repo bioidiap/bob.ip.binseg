@@ -3,22 +3,21 @@
 
 """Defines functionality for the evaluation of predictions"""
 
+import logging
 import os
 
-import PIL
+import h5py
 import numpy
 import pandas
-from tqdm import tqdm
-
+import PIL
 import torch
 import torch.nn.functional
 import torchvision.transforms.functional as VF
 
-import h5py
+from tqdm import tqdm
 
-from ..utils.measure import base_measures, bayesian_measures
-
-import logging
+from ..utils.measure import base_measures
+from ..utils.measure import bayesian_measures
 
 logger = logging.getLogger(__name__)
 
@@ -175,8 +174,7 @@ def _sample_measures(pred, gt, mask, steps):
 
     step_size = 1.0 / steps
     data = [
-        (index, threshold)
-        + sample_measures_for_threshold(pred, gt, mask, threshold)
+        (index, threshold) + sample_measures_for_threshold(pred, gt, mask, threshold)
         for index, threshold in enumerate(numpy.arange(0.0, 1.0, step_size))
     ]
 
@@ -347,7 +345,7 @@ def _summarize(data):
     # create a new dataframe with these
     measures = sums.apply(lambda r: _row_summary(r), axis=1)
 
-    ## merge sums and measures into a single dataframe
+    # merge sums and measures into a single dataframe
     return pandas.concat([sums, measures.reindex(sums.index)], axis=1).copy()
 
 
@@ -475,17 +473,13 @@ def run(
         logger.info(f"Output folder: {output_folder}")
         os.makedirs(output_folder, exist_ok=True)
         measures_path = os.path.join(output_folder, f"{name}.csv")
-        logger.info(
-            f"Saving measures over all input images at {measures_path}..."
-        )
+        logger.info(f"Saving measures over all input images at {measures_path}...")
         measures.to_csv(measures_path)
 
     return maxf1_threshold
 
 
-def compare_annotators(
-    baseline, other, name, output_folder, overlayed_folder=None
-):
+def compare_annotators(baseline, other, name, output_folder, overlayed_folder=None):
     """
     Compares annotations on the **same** dataset
 
@@ -562,11 +556,9 @@ def compare_annotators(
             overlay_image.save(fullpath)
 
     measures = _summarize(data)
-    measures.drop(0, inplace=True)  #removes threshold == 0.0, keeps 0.5 only
+    measures.drop(0, inplace=True)  # removes threshold == 0.0, keeps 0.5 only
 
-    measures_path = os.path.join(
-        output_folder, "second-annotator", f"{name}.csv"
-    )
+    measures_path = os.path.join(output_folder, "second-annotator", f"{name}.csv")
     os.makedirs(os.path.dirname(measures_path), exist_ok=True)
     logger.info(f"Saving summaries over all input images at {measures_path}...")
     measures.to_csv(measures_path)

@@ -5,6 +5,7 @@
 """Tests for DRIONS-DB"""
 
 import os
+
 import numpy
 import pytest
 
@@ -65,25 +66,26 @@ def test_loading():
         # to visualize images, uncomment the folowing code
         # it should display an image with a faded background representing the
         # original data, blended with green labels.
-        #from ..data.utils import overlayed_image
-        #display = overlayed_image(data["data"], data["label"])
-        #display.show()
-        #import ipdb; ipdb.set_trace()
+        # from ..data.utils import overlayed_image
+        # display = overlayed_image(data["data"], data["label"])
+        # display.show()
+        # import ipdb; ipdb.set_trace()
 
-        return w/b
+        return w / b
 
-    limit = None  #use this to limit testing to first images only
+    limit = None  # use this to limit testing to first images only
     subset = dataset.subsets("expert1")
     proportions = [_check_sample(s, 0.046) for s in subset["train"][:limit]]
-    #print(f"max label proportions = {max(proportions)}")
+    # print(f"max label proportions = {max(proportions)}")
     proportions = [_check_sample(s, 0.043) for s in subset["test"][:limit]]
-    #print(f"max label proportions = {max(proportions)}")
+    # print(f"max label proportions = {max(proportions)}")
 
     subset = dataset.subsets("expert2")
     proportions = [_check_sample(s, 0.044) for s in subset["train"][:limit]]
-    #print(f"max label proportions = {max(proportions)}")
+    # print(f"max label proportions = {max(proportions)}")
     proportions = [_check_sample(s, 0.045) for s in subset["test"][:limit]]
-    #print(f"max label proportions = {max(proportions)}")
+    # print(f"max label proportions = {max(proportions)}")
+    del proportions  # only to satisfy flake8
 
 
 @pytest.mark.skip_if_rc_var_not_set("bob.ip.binseg.drionsdb.datadir")

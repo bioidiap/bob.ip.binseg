@@ -13,12 +13,12 @@ Reference: [XIE-2015]_
 
 
 from torch.optim.lr_scheduler import MultiStepLR
+
+from bob.ip.binseg.engine.adabound import AdaBound
 from bob.ip.binseg.models.hed import hed
 from bob.ip.binseg.models.losses import MultiSoftJaccardBCELogitsLoss
-from bob.ip.binseg.engine.adabound import AdaBound
 
-
-##### Config #####
+# config
 lr = 0.001
 betas = (0.9, 0.999)
 eps = 1e-08

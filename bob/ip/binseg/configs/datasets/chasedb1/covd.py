@@ -17,12 +17,11 @@ For details on those datasets, consult:
 """
 
 from torch.utils.data import ConcatDataset
+
 from bob.ip.binseg.configs.datasets import augment_subset as _augment
+from bob.ip.binseg.configs.datasets.chasedb1.first_annotator import dataset as _baseline
+from bob.ip.binseg.configs.datasets.chasedb1.first_annotator import second_annotator
 from bob.ip.binseg.configs.datasets.chasedb1.mtest import dataset as _mtest
-from bob.ip.binseg.configs.datasets.chasedb1.first_annotator import (
-    dataset as _baseline,
-    second_annotator,
-)
 
 dataset = dict(**_baseline)
 dataset["__train__"] = ConcatDataset(
@@ -37,7 +36,7 @@ dataset["__train__"] = ConcatDataset(
         _augment(_mtest["iostar (test)"], rotation_before=False),
     ]
 )
-del second_annotator["train"]  #mismatch with used train set
+del second_annotator["train"]  # mismatch with used train set
 dataset["train"] = ConcatDataset(
     [
         _mtest["drive (train)"],

@@ -1,14 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import os
 import unittest
 
 from ..models.driu import driu
 from ..models.driu_od import driu_od
 from ..models.hed import hed
-from ..models.unet import unet
 from ..models.resunet import resunet50
+from ..models.unet import unet
 from ..utils.summary import summary
 
 

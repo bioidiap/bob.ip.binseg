@@ -38,9 +38,7 @@ class VGG4Segmentation(torchvision.models.vgg.VGG):
         return outputs
 
 
-def _vgg_for_segmentation(
-    arch, cfg, batch_norm, pretrained, progress, **kwargs
-):
+def _vgg_for_segmentation(arch, cfg, batch_norm, pretrained, progress, **kwargs):
 
     if pretrained:
         kwargs["init_weights"] = False
@@ -59,25 +57,21 @@ def _vgg_for_segmentation(
         model.load_state_dict(state_dict)
 
     # erase VGG head (for classification), not used for segmentation
-    delattr(model, 'classifier')
-    delattr(model, 'avgpool')
+    delattr(model, "classifier")
+    delattr(model, "avgpool")
 
     return model
 
 
 def vgg16_for_segmentation(pretrained=False, progress=True, **kwargs):
-    return _vgg_for_segmentation(
-        "vgg16", "D", False, pretrained, progress, **kwargs
-    )
+    return _vgg_for_segmentation("vgg16", "D", False, pretrained, progress, **kwargs)
 
 
 vgg16_for_segmentation.__doc__ = torchvision.models.vgg16.__doc__
 
 
 def vgg16_bn_for_segmentation(pretrained=False, progress=True, **kwargs):
-    return _vgg_for_segmentation(
-        "vgg16_bn", "D", True, pretrained, progress, **kwargs
-    )
+    return _vgg_for_segmentation("vgg16_bn", "D", True, pretrained, progress, **kwargs)
 
 
 vgg16_bn_for_segmentation.__doc__ = torchvision.models.vgg16_bn.__doc__

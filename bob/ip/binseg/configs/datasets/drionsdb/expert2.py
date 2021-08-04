@@ -9,4 +9,5 @@
 """
 
 from bob.ip.binseg.configs.datasets.drionsdb import _maker
+
 dataset = _maker("expert2")

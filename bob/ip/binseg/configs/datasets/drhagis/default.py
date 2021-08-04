@@ -9,5 +9,5 @@
 """
 
 from bob.ip.binseg.configs.datasets.drhagis import _maker
-dataset = _maker("default")
 
+dataset = _maker("default")

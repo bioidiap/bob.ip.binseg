@@ -10,4 +10,5 @@
 """
 
 from bob.ip.binseg.configs.datasets.drive import _maker
+
 dataset = _maker("second-annotator")

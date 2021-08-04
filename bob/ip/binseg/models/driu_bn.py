@@ -5,9 +5,10 @@ from collections import OrderedDict
 
 import torch
 import torch.nn
-from .backbones.vgg import vgg16_bn_for_segmentation
 
-from .make_layers import conv_with_kaiming_uniform, UpsampleCropBlock
+from .backbones.vgg import vgg16_bn_for_segmentation
+from .make_layers import UpsampleCropBlock
+from .make_layers import conv_with_kaiming_uniform
 
 
 class ConcatFuseBlock(torch.nn.Module):
@@ -114,6 +115,7 @@ def driu_bn(pretrained_backbone=True, progress=True):
     order = [("backbone", backbone), ("head", head)]
     if pretrained_backbone:
         from .normalizer import TorchVisionNormalizer
+
         order = [("normalizer", TorchVisionNormalizer())] + order
 
     model = torch.nn.Sequential(OrderedDict(order))

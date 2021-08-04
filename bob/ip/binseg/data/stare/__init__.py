@@ -25,12 +25,15 @@ commonly used for training and testing. The second set by Valentina Kouznetsova
 """
 
 import os
+
 import pkg_resources
 
 import bob.extension
 
 from ..dataset import JSONDataset
-from ..loader import load_pil_rgb, load_pil_1, make_delayed
+from ..loader import load_pil_1
+from ..loader import load_pil_rgb
+from ..loader import make_delayed
 
 _protocols = [
     pkg_resources.resource_filename(__name__, "ah.json"),
@@ -47,7 +50,7 @@ _pkg_path = pkg_resources.resource_filename(__name__, "masks")
 
 
 class _make_loader:
-    #hack to get testing on the CI working fine for this dataset
+    # hack to get testing on the CI working fine for this dataset
 
     def __init__(self, root_path):
         self.root_path = root_path
@@ -72,6 +75,7 @@ def _make_dataset(root_path):
         fieldnames=_fieldnames,
         loader=_make_loader(root_path),
     )
+
 
 dataset = _make_dataset(_root_path)
 """STARE dataset object"""

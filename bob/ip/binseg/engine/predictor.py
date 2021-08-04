@@ -1,22 +1,19 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import datetime
+import logging
 import os
 import time
-import datetime
 
-import PIL
+import h5py
 import numpy
-from tqdm import tqdm
-
 import torch
 import torchvision.transforms.functional as VF
 
-import h5py
+from tqdm import tqdm
 
 from ..data.utils import overlayed_image
-
-import logging
 
 logger = logging.getLogger(__name__)
 
@@ -44,9 +41,7 @@ def _save_hdf5(stem, prob, output_folder):
     os.makedirs(os.path.dirname(fullpath), exist_ok=True)
     with h5py.File(fullpath, "w") as f:
         data = prob.cpu().squeeze(0).numpy()
-        f.create_dataset(
-            "array", data=data, compression="gzip", compression_opts=9
-        )
+        f.create_dataset("array", data=data, compression="gzip", compression_opts=9)
 
 
 def _save_image(stem, extension, data, output_folder):
@@ -152,9 +147,7 @@ def run(model, data_loader, name, device, output_folder, overlayed_folder):
     for samples in tqdm(data_loader, desc="batches", leave=False, disable=None):
 
         names = samples[0]
-        images = samples[1].to(
-            device=device, non_blocking=torch.cuda.is_available()
-        )
+        images = samples[1].to(device=device, non_blocking=torch.cuda.is_available())
 
         with torch.no_grad():
 

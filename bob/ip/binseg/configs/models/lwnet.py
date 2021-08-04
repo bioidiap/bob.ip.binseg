@@ -9,15 +9,16 @@ closely matches (or outperforms) other more complex techniques.
 Reference: [GALDRAN-2020]_
 """
 
-from torch.optim.lr_scheduler import CosineAnnealingLR
 from torch.optim import Adam
-from bob.ip.binseg.models.lwnet import lwnet
-from bob.ip.binseg.models.losses import MultiWeightedBCELogitsLoss
+from torch.optim.lr_scheduler import CosineAnnealingLR
 
-##### Config #####
-max_lr = 0.01  #start
-min_lr = 1e-08  #valley
-cycle = 50  #epochs for a complete scheduling cycle
+from bob.ip.binseg.models.losses import MultiWeightedBCELogitsLoss
+from bob.ip.binseg.models.lwnet import lwnet
+
+# config
+max_lr = 0.01  # start
+min_lr = 1e-08  # valley
+cycle = 50  # epochs for a complete scheduling cycle
 
 model = lwnet()
 

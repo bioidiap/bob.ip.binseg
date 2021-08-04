@@ -2,9 +2,10 @@
 # -*- coding: utf-8 -*-
 
 from collections import deque
+
 import numpy
-import torch
 import scipy.special
+import torch
 
 
 class SmoothedValue:
@@ -32,7 +33,7 @@ class SmoothedValue:
 def tricky_division(n, d):
     """Divides n by d.  Returns 0.0 in case of a division by zero"""
 
-    return n/(d+(d==0))
+    return n / (d + (d == 0))
 
 
 def base_measures(tp, fp, tn, fn):
@@ -114,13 +115,13 @@ def base_measures(tp, fp, tn, fn):
     """
 
     return (
-            tricky_division(tp, tp + fp),                #precision
-            tricky_division(tp, tp + fn),                #recall
-            tricky_division(tn, fp + tn),                #specificity
-            tricky_division(tp + tn, tp + fp + fn + tn), #accuracy
-            tricky_division(tp, tp + fp + fn),           #jaccard index
-            tricky_division(2*tp, (2*tp) + fp + fn),     #f1-score
-            )
+        tricky_division(tp, tp + fp),  # precision
+        tricky_division(tp, tp + fn),  # recall
+        tricky_division(tn, fp + tn),  # specificity
+        tricky_division(tp + tn, tp + fp + fn + tn),  # accuracy
+        tricky_division(tp, tp + fp + fn),  # jaccard index
+        tricky_division(2 * tp, (2 * tp) + fp + fn),  # f1-score
+    )
 
 
 def beta_credible_region(k, l, lambda_, coverage):
@@ -229,19 +230,19 @@ def beta_credible_region(k, l, lambda_, coverage):
     """
 
     # we return the equally-tailed range
-    right = (1.0-coverage)/2  #half-width in each side
-    lower = scipy.special.betaincinv(k+lambda_, l+lambda_, right)
-    upper = scipy.special.betaincinv(k+lambda_, l+lambda_, 1.0-right)
+    right = (1.0 - coverage) / 2  # half-width in each side
+    lower = scipy.special.betaincinv(k + lambda_, l + lambda_, right)
+    upper = scipy.special.betaincinv(k + lambda_, l + lambda_, 1.0 - right)
 
     # evaluate mean and mode (https://en.wikipedia.org/wiki/Beta_distribution)
-    alpha = k+lambda_
-    beta = l+lambda_
+    alpha = k + lambda_
+    beta = l + lambda_
 
     E = alpha / (alpha + beta)
 
     # the mode of a beta distribution is a bit tricky
     if alpha > 1 and beta > 1:
-        mode = (alpha-1) / (alpha+beta-2)
+        mode = (alpha - 1) / (alpha + beta - 2)
     elif alpha == 1 and beta == 1:
         # In the case of precision, if the threshold is close to 1.0, both TP
         # and FP can be zero, which may cause this condition to be reached, if
@@ -250,12 +251,12 @@ def beta_credible_region(k, l, lambda_, coverage):
         # total number of experiments is zero.  So, only the prior counts - but
         # the prior is flat, so we should just pick a value.  We choose the
         # middle of the range.
-        mode = 0.0  #any value would do, we just pick this one
+        mode = 0.0  # any value would do, we just pick this one
     elif alpha <= 1 and beta > 1:
         mode = 0.0
     elif alpha > 1 and beta <= 1:
         mode = 1.0
-    else: #elif alpha < 1 and beta < 1:
+    else:  # elif alpha < 1 and beta < 1:
         # in the case of precision, if the threshold is close to 1.0, both TP
         # and FP can be zero, which may cause this condition to be reached, if
         # the prior is smaller than 1.  This is a weird situation, because
@@ -263,7 +264,7 @@ def beta_credible_region(k, l, lambda_, coverage):
         # number of experiments is zero.  So, only the prior counts - but the
         # prior is bimodal, so we should just pick a value.  We choose the
         # left of the range.
-        mode = 0.0  #could also be 1.0 as the prior is bimodal
+        mode = 0.0  # could also be 1.0 as the prior is bimodal
 
     return E, mode, lower, upper
 
@@ -298,7 +299,7 @@ def bayesian_measures(tp, fp, tn, fn, lambda_, coverage):
 
     lambda_ : float
         The parameterisation of the Beta prior to consider. Use
-        :math:`\lambda=1` for a flat prior.  Use :math:`\lambda=0.5` for
+        :math:`\\lambda=1` for a flat prior.  Use :math:`\\lambda=0.5` for
         Jeffrey's prior.
 
     coverage : float
@@ -357,13 +358,13 @@ def bayesian_measures(tp, fp, tn, fn, lambda_, coverage):
     """
 
     return (
-            beta_credible_region(tp, fp, lambda_, coverage),  #precision
-            beta_credible_region(tp, fn, lambda_, coverage),  #recall
-            beta_credible_region(tn, fp, lambda_, coverage),  #specificity
-            beta_credible_region(tp+tn, fp+fn, lambda_, coverage),  #accuracy
-            beta_credible_region(tp, fp+fn, lambda_, coverage),  #jaccard index
-            beta_credible_region(2*tp, fp+fn, lambda_, coverage),  #f1-score
-            )
+        beta_credible_region(tp, fp, lambda_, coverage),  # precision
+        beta_credible_region(tp, fn, lambda_, coverage),  # recall
+        beta_credible_region(tn, fp, lambda_, coverage),  # specificity
+        beta_credible_region(tp + tn, fp + fn, lambda_, coverage),  # accuracy
+        beta_credible_region(tp, fp + fn, lambda_, coverage),  # jaccard index
+        beta_credible_region(2 * tp, fp + fn, lambda_, coverage),  # f1-score
+    )
 
 
 def auc(x, y):
@@ -400,8 +401,9 @@ def auc(x, y):
             x = x[::-1]
             y = y[::-1]
         else:
-            raise ValueError("x is neither increasing nor decreasing "
-                             ": {}.".format(x))
+            raise ValueError(
+                "x is neither increasing nor decreasing " ": {}.".format(x)
+            )
 
     y_interp = numpy.interp(
         numpy.arange(0, 1, 0.001),

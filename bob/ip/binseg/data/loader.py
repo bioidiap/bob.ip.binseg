@@ -5,8 +5,8 @@
 """Data loading code"""
 
 
-import os
 import functools
+import os
 
 import PIL.Image
 
@@ -84,6 +84,6 @@ def make_delayed(sample, loader, key=None):
     """
 
     return DelayedSample(
-            functools.partial(loader, sample),
-            key=key or os.path.splitext(sample["data"])[0],
-            )
+        functools.partial(loader, sample),
+        key=key or os.path.splitext(sample["data"])[0],
+    )

@@ -17,5 +17,3 @@ message containing more detailed instructions.
    We strongly advice training with a GPU (using ``--device="cuda:0"``).
    Depending on the available GPU memory you might have to adjust your batch
    size (``--batch``).
-
-

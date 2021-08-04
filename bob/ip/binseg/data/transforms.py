@@ -158,9 +158,7 @@ class RandomHorizontalFlip(torchvision.transforms.RandomHorizontalFlip):
 
     def __call__(self, *args):
         if random.random() < self.p:
-            return [
-                torchvision.transforms.functional.hflip(img) for img in args
-            ]
+            return [torchvision.transforms.functional.hflip(img) for img in args]
         else:
             return args
 
@@ -170,9 +168,7 @@ class RandomVerticalFlip(torchvision.transforms.RandomVerticalFlip):
 
     def __call__(self, *args):
         if random.random() < self.p:
-            return [
-                torchvision.transforms.functional.vflip(img) for img in args
-            ]
+            return [torchvision.transforms.functional.vflip(img) for img in args]
         else:
             return args
 

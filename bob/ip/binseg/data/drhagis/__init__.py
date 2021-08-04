@@ -13,7 +13,7 @@ from a patient exhibiting both diabetic retinopathy and age-related macular dege
 
 The images resolutions (height x width) are:
     - 4752x3168  or
-    - 3456x2304  or 
+    - 3456x2304  or
     - 3126x2136  or
     - 2896x1944  or
     - 2816x1880  or
@@ -27,12 +27,15 @@ The images resolutions (height x width) are:
 """
 
 import os
+
 import pkg_resources
 
 import bob.extension
 
 from ..dataset import JSONDataset
-from ..loader import load_pil_rgb, load_pil_1, make_delayed
+from ..loader import load_pil_1
+from ..loader import load_pil_rgb
+from ..loader import make_delayed
 
 _protocols = [
     pkg_resources.resource_filename(__name__, "default.json"),
@@ -63,4 +66,3 @@ dataset = JSONDataset(
     loader=_loader,
 )
 """DRHAGIS dataset object"""
-

@@ -1,23 +1,26 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import os
-import sys
-import csv
-import time
-import shutil
-import datetime
 import contextlib
+import csv
+import datetime
 import distutils.version
+import logging
+import os
+import shutil
+import sys
+import time
 
 import torch
+
 from tqdm import tqdm
 
 from ..utils.measure import SmoothedValue
+from ..utils.resources import cpu_constants
+from ..utils.resources import cpu_log
+from ..utils.resources import gpu_constants
+from ..utils.resources import gpu_log
 from ..utils.summary import summary
-from ..utils.resources import cpu_constants, gpu_constants, cpu_log, gpu_log
-
-import logging
 
 logger = logging.getLogger(__name__)
 
@@ -205,9 +208,7 @@ def run(
             start_epoch_time = time.time()
 
             # progress bar only on interactive jobs
-            for samples in tqdm(
-                data_loader, desc="batch", leave=False, disable=None
-            ):
+            for samples in tqdm(data_loader, desc="batch", leave=False, disable=None):
 
                 # data forwarding on the existing network
                 images = samples[1].to(
@@ -271,16 +272,12 @@ def run(
             if checkpoint_period and (epoch % checkpoint_period == 0):
                 checkpointer.save(f"model_{epoch:03d}", **arguments)
 
-            if (
-                valid_losses is not None
-                and valid_losses.avg < lowest_validation_loss
-            ):
+            if valid_losses is not None and valid_losses.avg < lowest_validation_loss:
                 lowest_validation_loss = valid_losses.avg
                 logger.info(
-                    f"Found new low on validation set:"
-                    f" {lowest_validation_loss:.6f}"
+                    f"Found new low on validation set:" f" {lowest_validation_loss:.6f}"
                 )
-                checkpointer.save(f"model_lowest_valid_loss", **arguments)
+                checkpointer.save("model_lowest_valid_loss", **arguments)
 
             if epoch >= max_epoch:
                 checkpointer.save("model_final", **arguments)

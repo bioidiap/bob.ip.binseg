@@ -5,14 +5,11 @@ from collections import OrderedDict
 
 import torch.nn
 
-from .make_layers import (
-    conv_with_kaiming_uniform,
-    convtrans_with_kaiming_uniform,
-    PixelShuffle_ICNR,
-    UnetBlock,
-)
-
 from .backbones.resnet import resnet50_for_segmentation
+from .make_layers import PixelShuffle_ICNR
+from .make_layers import UnetBlock
+from .make_layers import conv_with_kaiming_uniform
+from .make_layers import convtrans_with_kaiming_uniform
 
 
 class ResUNet(torch.nn.Module):
@@ -44,9 +41,7 @@ class ResUNet(torch.nn.Module):
         if pixel_shuffle:
             self.decode0 = PixelShuffle_ICNR(c_decode0, c_decode0)
         else:
-            self.decode0 = convtrans_with_kaiming_uniform(
-                c_decode0, c_decode0, 2, 2
-            )
+            self.decode0 = convtrans_with_kaiming_uniform(c_decode0, c_decode0, 2, 2)
         self.final = conv_with_kaiming_uniform(c_decode0, 1, 1)
 
     def forward(self, x):

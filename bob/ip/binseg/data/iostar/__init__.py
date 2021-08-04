@@ -23,13 +23,17 @@ dataset includes annotations for the optic disc and the artery/vein ratio.
 """
 
 import os
+
 import pkg_resources
 
 import bob.extension
 
 from ..dataset import JSONDataset
-from ..loader import load_pil_rgb, load_pil_1, make_delayed
-from ..utils import invert_mode1_image, subtract_mode1_images
+from ..loader import load_pil_1
+from ..loader import load_pil_rgb
+from ..loader import make_delayed
+from ..utils import invert_mode1_image
+from ..utils import subtract_mode1_images
 
 _protocols = [
     pkg_resources.resource_filename(__name__, "vessel.json"),
@@ -56,9 +60,7 @@ def _disc_loader(sample):
     data = load_pil_rgb(os.path.join(_root_path, sample["data"]))
     label = load_pil_1(os.path.join(_root_path, sample["label"]))
     mask = load_pil_1(os.path.join(_root_path, sample["mask"]))
-    label = subtract_mode1_images(
-        invert_mode1_image(label), invert_mode1_image(mask)
-    )
+    label = subtract_mode1_images(invert_mode1_image(label), invert_mode1_image(mask))
     return dict(data=data, label=label, mask=mask)
 
 
@@ -71,6 +73,8 @@ def _loader(context, sample):
 
 
 dataset = JSONDataset(
-    protocols=_protocols, fieldnames=("data", "label", "mask"), loader=_loader,
+    protocols=_protocols,
+    fieldnames=("data", "label", "mask"),
+    loader=_loader,
 )
 """IOSTAR dataset object"""

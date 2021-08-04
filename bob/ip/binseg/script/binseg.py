@@ -3,25 +3,25 @@
 
 """The main entry for bob ip binseg (click-based) scripts."""
 
+import logging
 import os
+import random
 import re
 import sys
-import time
-import random
 import tempfile
+import time
 import urllib.request
 
-import pkg_resources
 import click
+import numpy
+import pkg_resources
+import torch
+
 from click_plugins import with_plugins
 from tqdm import tqdm
 
-import numpy
-import torch
-
 from bob.extension.scripts.click_helper import AliasedGroup
 
-import logging
 logger = logging.getLogger(__name__)
 
 
@@ -50,18 +50,19 @@ def setup_pytorch_device(name):
         # In case one has multiple devices, we must first set the one
         # we would like to use so pytorch can find it.
         logger.info(f"User set device to '{name}' - trying to force device...")
-        os.environ['CUDA_VISIBLE_DEVICES'] = name.split(":",1)[1]
+        os.environ["CUDA_VISIBLE_DEVICES"] = name.split(":", 1)[1]
         if not torch.cuda.is_available():
-            raise RuntimeError(f"CUDA is not currently available, but " \
-                    f"you set device to '{name}'")
+            raise RuntimeError(
+                f"CUDA is not currently available, but " f"you set device to '{name}'"
+            )
         # Let pytorch auto-select from environment variable
         return torch.device("cuda")
 
-    elif name.startswith("cuda"):  #use default device
+    elif name.startswith("cuda"):  # use default device
         logger.info(f"User set device to '{name}' - using default CUDA device")
-        assert os.environ.get('CUDA_VISIBLE_DEVICES') is not None
+        assert os.environ.get("CUDA_VISIBLE_DEVICES") is not None
 
-    #cuda or cpu
+    # cuda or cpu
     return torch.device(name)
 
 
@@ -90,11 +91,11 @@ def set_seeds(value, all_gpus):
     random.seed(value)
     numpy.random.seed(value)
     torch.manual_seed(value)
-    torch.cuda.manual_seed(value)  #noop if cuda not available
+    torch.cuda.manual_seed(value)  # noop if cuda not available
 
     # set seeds for all gpus
     if all_gpus:
-        torch.cuda.manual_seed_all(value)  #noop if cuda not available
+        torch.cuda.manual_seed_all(value)  # noop if cuda not available
 
 
 def set_reproducible_cuda():
@@ -138,7 +139,7 @@ def escape_name(v):
         Escaped string
 
     """
-    return re.sub(r'[^\w\-_\. ]', '-', v)
+    return re.sub(r"[^\w\-_\. ]", "-", v)
 
 
 def save_sh_command(destfile):
@@ -162,7 +163,7 @@ def save_sh_command(destfile):
 
     """
 
-    if os.path.exists(destfile) and not overwrite:
+    if os.path.exists(destfile):
         logger.info(f"Not overwriting existing file '{destfile}'")
         return
 

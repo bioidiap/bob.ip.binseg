@@ -1,23 +1,22 @@
 #!/usr/bin/env python
 # coding=utf-8
 
-import sys
+import logging
 import multiprocessing
+import sys
 
 import click
 import torch
+
 from torch.utils.data import DataLoader
 
-from bob.extension.scripts.click_helper import (
-    verbosity_option,
-    ConfigCommand,
-    ResourceOption,
-)
+from bob.extension.scripts.click_helper import ConfigCommand
+from bob.extension.scripts.click_helper import ResourceOption
+from bob.extension.scripts.click_helper import verbosity_option
 
 from ..utils.checkpointer import Checkpointer
-from .binseg import setup_pytorch_device, set_seeds
-
-import logging
+from .binseg import set_seeds
+from .binseg import setup_pytorch_device
 
 logger = logging.getLogger(__name__)
 
@@ -261,9 +260,9 @@ def train(
         multiproc_kwargs["num_workers"] = multiproc_data_loading
 
     if multiproc_kwargs["num_workers"] > 0 and sys.platform == "darwin":
-        multiproc_kwargs[
-            "multiprocessing_context"
-        ] = multiprocessing.get_context("spawn")
+        multiproc_kwargs["multiprocessing_context"] = multiprocessing.get_context(
+            "spawn"
+        )
 
     data_loader = DataLoader(
         dataset=use_dataset,

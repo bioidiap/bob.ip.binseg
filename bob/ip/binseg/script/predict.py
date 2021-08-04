@@ -1,26 +1,24 @@
 #!/usr/bin/env python
 # coding=utf-8
 
+import logging
+import multiprocessing
 import os
 import sys
-import multiprocessing
 
 import click
 import torch
+
 from torch.utils.data import DataLoader
 
-from bob.extension.scripts.click_helper import (
-    verbosity_option,
-    ConfigCommand,
-    ResourceOption,
-)
+from bob.extension.scripts.click_helper import ConfigCommand
+from bob.extension.scripts.click_helper import ResourceOption
+from bob.extension.scripts.click_helper import verbosity_option
 
 from ..engine.predictor import run
 from ..utils.checkpointer import Checkpointer
-
-from .binseg import download_to_tempfile, setup_pytorch_device
-
-import logging
+from .binseg import download_to_tempfile
+from .binseg import setup_pytorch_device
 
 logger = logging.getLogger(__name__)
 
@@ -174,9 +172,9 @@ def predict(
             multiproc_kwargs["num_workers"] = multiproc_data_loading
 
         if multiproc_kwargs["num_workers"] > 0 and sys.platform == "darwin":
-            multiproc_kwargs[
-                "multiprocessing_context"
-            ] = multiprocessing.get_context("spawn")
+            multiproc_kwargs["multiprocessing_context"] = multiprocessing.get_context(
+                "spawn"
+            )
 
         data_loader = DataLoader(
             dataset=v,

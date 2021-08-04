@@ -32,7 +32,7 @@ class ConvBlock(torch.nn.Module):
         """
 
         super(ConvBlock, self).__init__()
-        if shortcut == True:
+        if shortcut is True:
             self.shortcut = torch.nn.Sequential(
                 _conv1x1(in_c, out_c), torch.nn.BatchNorm2d(out_c)
             )
@@ -46,15 +46,11 @@ class ConvBlock(torch.nn.Module):
         else:
             self.pool = False
 
-        block.append(
-            torch.nn.Conv2d(in_c, out_c, kernel_size=k_sz, padding=pad)
-        )
+        block.append(torch.nn.Conv2d(in_c, out_c, kernel_size=k_sz, padding=pad))
         block.append(torch.nn.ReLU())
         block.append(torch.nn.BatchNorm2d(out_c))
 
-        block.append(
-            torch.nn.Conv2d(out_c, out_c, kernel_size=k_sz, padding=pad)
-        )
+        block.append(torch.nn.Conv2d(out_c, out_c, kernel_size=k_sz, padding=pad))
         block.append(torch.nn.ReLU())
         block.append(torch.nn.BatchNorm2d(out_c))
 
@@ -75,14 +71,10 @@ class UpsampleBlock(torch.nn.Module):
         super(UpsampleBlock, self).__init__()
         block = []
         if up_mode == "transp_conv":
-            block.append(
-                torch.nn.ConvTranspose2d(in_c, out_c, kernel_size=2, stride=2)
-            )
+            block.append(torch.nn.ConvTranspose2d(in_c, out_c, kernel_size=2, stride=2))
         elif up_mode == "up_conv":
             block.append(
-                torch.nn.Upsample(
-                    mode="bilinear", scale_factor=2, align_corners=False
-                )
+                torch.nn.Upsample(mode="bilinear", scale_factor=2, align_corners=False)
             )
             block.append(torch.nn.Conv2d(in_c, out_c, kernel_size=1))
         else:
@@ -101,9 +93,7 @@ class ConvBridgeBlock(torch.nn.Module):
         pad = (k_sz - 1) // 2
         block = []
 
-        block.append(
-            torch.nn.Conv2d(channels, channels, kernel_size=k_sz, padding=pad)
-        )
+        block.append(torch.nn.Conv2d(channels, channels, kernel_size=k_sz, padding=pad))
         block.append(torch.nn.ReLU())
         block.append(torch.nn.BatchNorm2d(channels))
 
@@ -250,7 +240,7 @@ class LittleWNet(torch.nn.Module):
         return x1, x2
 
 
-def lunet(in_c=3, n_classes=1):
+def lunet(input_channels=3, output_classes=1):
     """Builds Little U-Net segmentation network (uninitialized)
 
 

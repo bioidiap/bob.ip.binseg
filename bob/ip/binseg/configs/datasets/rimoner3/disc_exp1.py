@@ -9,4 +9,5 @@
 """
 
 from bob.ip.binseg.configs.datasets.rimoner3 import _maker
+
 dataset = _maker("optic-disc-exp1")

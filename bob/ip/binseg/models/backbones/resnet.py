@@ -38,9 +38,7 @@ class ResNet4Segmentation(torchvision.models.resnet.ResNet):
         return outputs
 
 
-def _resnet_for_segmentation(
-    arch, block, layers, pretrained, progress, **kwargs
-):
+def _resnet_for_segmentation(arch, block, layers, pretrained, progress, **kwargs):
     model = ResNet4Segmentation(block, layers, **kwargs)
     if pretrained:
         state_dict = torchvision.models.resnet.load_state_dict_from_url(
@@ -49,8 +47,8 @@ def _resnet_for_segmentation(
         model.load_state_dict(state_dict)
 
     # erase ResNet head (for classification), not used for segmentation
-    delattr(model, 'avgpool')
-    delattr(model, 'fc')
+    delattr(model, "avgpool")
+    delattr(model, "fc")
 
     return model
 

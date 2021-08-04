@@ -7,9 +7,8 @@ import torch
 import torch.nn
 
 from .backbones.vgg import vgg16_for_segmentation
-
-from .make_layers import UpsampleCropBlock
 from .driu import ConcatFuseBlock
+from .make_layers import UpsampleCropBlock
 
 
 class DRIUPIX(torch.nn.Module):
@@ -87,7 +86,8 @@ def driu_pix(pretrained_backbone=True, progress=True):
     """
 
     backbone = vgg16_for_segmentation(
-        pretrained=pretrained_backbone, progress=progress,
+        pretrained=pretrained_backbone,
+        progress=progress,
         return_features=[3, 8, 14, 22],
     )
     head = DRIUPIX([64, 128, 256, 512])
@@ -95,6 +95,7 @@ def driu_pix(pretrained_backbone=True, progress=True):
     order = [("backbone", backbone), ("head", head)]
     if pretrained_backbone:
         from .normalizer import TorchVisionNormalizer
+
         order = [("normalizer", TorchVisionNormalizer())] + order
 
     model = torch.nn.Sequential(OrderedDict(order))

@@ -6,8 +6,10 @@
 * Configuration resolution: 1168 x 1648
 """
 
-from bob.ip.binseg.data.transforms import Crop, Pad, Resize
 from bob.ip.binseg.configs.datasets.hrf.xtest import dataset as _xt
+from bob.ip.binseg.data.transforms import Crop
+from bob.ip.binseg.data.transforms import Pad
+from bob.ip.binseg.data.transforms import Resize
 
 dataset = {
     "train": _xt["train"],

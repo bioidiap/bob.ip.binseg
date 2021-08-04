@@ -1,31 +1,27 @@
 #!/usr/bin/env python
 # coding=utf-8
 
+import logging
 import os
 import sys
+
 import click
-
-from bob.extension.scripts.click_helper import (
-    verbosity_option,
-    ConfigCommand,
-    ResourceOption,
-)
-
 import numpy
-import logging
+
+from bob.extension.scripts.click_helper import ConfigCommand
+from bob.extension.scripts.click_helper import ResourceOption
+from bob.extension.scripts.click_helper import verbosity_option
+
+from ..engine.significance import PERFORMANCE_FIGURES
+from ..engine.significance import index_of_outliers
+from ..engine.significance import sliding_window_performances
+from ..engine.significance import visual_performances
+from ..engine.significance import write_analysis_figures
+from ..engine.significance import write_analysis_text
+from .evaluate import _validate_threshold
+from .evaluate import run as run_evaluation
 
 logger = logging.getLogger(__name__)
-
-
-from .evaluate import _validate_threshold, run as run_evaluation
-from ..engine.significance import (
-    sliding_window_performances,
-    visual_performances,
-    write_analysis_text,
-    write_analysis_figures,
-    index_of_outliers,
-    PERFORMANCE_FIGURES,
-)
 
 
 def _eval_sliding_windows(
@@ -167,9 +163,7 @@ def _eval_sliding_windows(
             f"Evaluating threshold on '{threshold}' set for "
             f"'{system_name}' using {steps} steps"
         )
-        threshold = run_evaluation(
-            dataset[threshold], threshold, preddir, steps=steps
-        )
+        threshold = run_evaluation(dataset[threshold], threshold, preddir, steps=steps)
         logger.info(f"Set --threshold={threshold:.5f} for '{system_name}'")
 
     # for a given threshold on each system, calculate sliding window performances
@@ -307,7 +301,14 @@ def _eval_differences(
     )
 
     retval = visual_performances(
-        dataset, evaluate, perf_diff, size, stride, figure, nproc, outdir,
+        dataset,
+        evaluate,
+        perf_diff,
+        size,
+        stride,
+        figure,
+        nproc,
+        outdir,
     )
 
     # cache sliding window performance for later use, if necessary
@@ -487,8 +488,7 @@ def _eval_differences(
 @click.option(
     "--checkpoint-folder",
     "-k",
-    help="Path where to store checkpointed versions of sliding window "
-    "performances",
+    help="Path where to store checkpointed versions of sliding window " "performances",
     required=False,
     type=click.Path(),
     show_default=True,
@@ -560,22 +560,22 @@ def significance(
         checkpoint_folder,
     )
 
-    perf_diff = _eval_differences(
-        names,
-        (perf1, perf2),
-        evaluate,
-        dataset,
-        size,
-        stride,
-        (
-            output_folder
-            if output_folder is None
-            else os.path.join(output_folder, "diff")
-        ),
-        figure,
-        parallel,
-        checkpoint_folder,
-    )
+    # perf_diff = _eval_differences(
+    #     names,
+    #     (perf1, perf2),
+    #     evaluate,
+    #     dataset,
+    #     size,
+    #     stride,
+    #     (
+    #         output_folder
+    #         if output_folder is None
+    #         else os.path.join(output_folder, "diff")
+    #     ),
+    #     figure,
+    #     parallel,
+    #     checkpoint_folder,
+    # )
 
     # loads all figures for the given threshold
     stems = list(perf1.keys())

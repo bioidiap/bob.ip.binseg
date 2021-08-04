@@ -1,18 +1,16 @@
 #!/usr/bin/env python
 # coding=utf-8
 
-import os
+import logging
+
 import click
 
-from bob.extension.scripts.click_helper import (
-    verbosity_option,
-    ConfigCommand,
-    ResourceOption,
-)
+from bob.extension.scripts.click_helper import ConfigCommand
+from bob.extension.scripts.click_helper import ResourceOption
+from bob.extension.scripts.click_helper import verbosity_option
 
-from ..engine.evaluator import run, compare_annotators
-
-import logging
+from ..engine.evaluator import compare_annotators
+from ..engine.evaluator import run
 
 logger = logging.getLogger(__name__)
 
@@ -158,8 +156,7 @@ def evaluate(
     steps,
     **kwargs,
 ):
-    """Evaluates an FCN on a binary segmentation task.
-    """
+    """Evaluates an FCN on a binary segmentation task."""
 
     threshold = _validate_threshold(threshold, dataset)
 
@@ -175,9 +172,7 @@ def evaluate(
     if isinstance(threshold, str):
         # first run evaluation for reference dataset, do not save overlays
         logger.info(f"Evaluating threshold on '{threshold}' set")
-        threshold = run(
-            dataset[threshold], threshold, predictions_folder, steps=steps
-        )
+        threshold = run(dataset[threshold], threshold, predictions_folder, steps=steps)
         logger.info(f"Set --threshold={threshold:.5f}")
 
     # clean-up the overlayed path

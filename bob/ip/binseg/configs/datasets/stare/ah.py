@@ -10,5 +10,6 @@
 """
 
 from bob.ip.binseg.configs.datasets.stare import _maker
+
 dataset = _maker("ah")
 second_annotator = _maker("vk")
