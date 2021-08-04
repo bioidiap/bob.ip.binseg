@@ -4,8 +4,13 @@ repos:
   - repo: https://github.com/timothycrosley/isort
     rev: 5.9.3
     hooks:
-    - id: isort
-      args: [--sl, --line-length, "88"]
+      - id: isort
+        args: [
+          --force-single-line-imports,
+          --line-length, "88",
+          --order-by-type,
+          --lines-between-types, "1"
+        ]
   - repo: https://github.com/psf/black
     rev: 21.7b0
     hooks:
