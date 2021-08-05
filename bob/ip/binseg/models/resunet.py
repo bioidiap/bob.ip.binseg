@@ -7,10 +7,10 @@ import torch.nn
 
 from .backbones.resnet import resnet50_for_segmentation
 from .make_layers import (
-    conv_with_kaiming_uniform,
-    convtrans_with_kaiming_uniform,
     PixelShuffle_ICNR,
     UnetBlock,
+    conv_with_kaiming_uniform,
+    convtrans_with_kaiming_uniform,
 )
 
 

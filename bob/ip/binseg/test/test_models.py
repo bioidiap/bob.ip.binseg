@@ -26,7 +26,7 @@ def test_driu():
 
 def test_driu_bn():
 
-    from ..models.driu_bn import driu_bn, DRIUBN
+    from ..models.driu_bn import DRIUBN, driu_bn
 
     model = driu_bn(pretrained_backbone=True, progress=True)
     assert len(model) == 3
@@ -42,7 +42,7 @@ def test_driu_bn():
 
 def test_driu_od():
 
-    from ..models.driu_od import driu_od, DRIUOD
+    from ..models.driu_od import DRIUOD, driu_od
 
     model = driu_od(pretrained_backbone=True, progress=True)
     assert len(model) == 3
@@ -58,7 +58,7 @@ def test_driu_od():
 
 def test_driu_pix():
 
-    from ..models.driu_pix import driu_pix, DRIUPIX
+    from ..models.driu_pix import DRIUPIX, driu_pix
 
     model = driu_pix(pretrained_backbone=True, progress=True)
     assert len(model) == 3

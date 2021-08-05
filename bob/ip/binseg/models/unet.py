@@ -6,7 +6,7 @@ from collections import OrderedDict
 import torch.nn
 
 from .backbones.vgg import vgg16_for_segmentation
-from .make_layers import conv_with_kaiming_uniform, UnetBlock
+from .make_layers import UnetBlock, conv_with_kaiming_uniform
 
 
 class UNet(torch.nn.Module):
