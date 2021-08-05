@@ -53,7 +53,8 @@ def setup_pytorch_device(name):
         os.environ["CUDA_VISIBLE_DEVICES"] = name.split(":", 1)[1]
         if not torch.cuda.is_available():
             raise RuntimeError(
-                f"CUDA is not currently available, but " f"you set device to '{name}'"
+                f"CUDA is not currently available, but "
+                f"you set device to '{name}'"
             )
         # Let pytorch auto-select from environment variable
         return torch.device("cuda")

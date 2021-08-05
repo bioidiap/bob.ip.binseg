@@ -98,7 +98,8 @@ def _performance_summary(size, winperf, winsize, winstride, figure):
 
     # calculates the stacked performance
     layers = int(
-        numpy.ceil(winsize[0] / winstride[0]) * numpy.ceil(winsize[1] / winstride[1])
+        numpy.ceil(winsize[0] / winstride[0])
+        * numpy.ceil(winsize[1] / winstride[1])
     )
     # figindex = PERFORMANCE_FIGURES.index(figure)
     perf = numpy.zeros([layers] + final_size, dtype=winperf.dtype)
@@ -189,7 +190,9 @@ def _winperf_measures(pred, gt, mask, threshold, size, stride):
     if rem != 0:
         padding += (0, (stride[0] - rem))
 
-    pred_padded = torch.nn.functional.pad(pred, padding, mode="constant", value=0.0)
+    pred_padded = torch.nn.functional.pad(
+        pred, padding, mode="constant", value=0.0
+    )
     gt_padded = torch.nn.functional.pad(
         gt.squeeze(0), padding, mode="constant", value=0.0
     )
@@ -201,7 +204,9 @@ def _winperf_measures(pred, gt, mask, threshold, size, stride):
     pred_windows = pred_padded.unfold(0, size[0], stride[0]).unfold(
         1, size[1], stride[1]
     )
-    gt_windows = gt_padded.unfold(0, size[0], stride[0]).unfold(1, size[1], stride[1])
+    gt_windows = gt_padded.unfold(0, size[0], stride[0]).unfold(
+        1, size[1], stride[1]
+    )
     mask_windows = mask_padded.unfold(0, size[0], stride[0]).unfold(
         1, size[1], stride[1]
     )
@@ -513,7 +518,9 @@ def sliding_window_performances(
     return dict(data)
 
 
-def _visual_performances_for_sample(size, stride, dataset, k, winperf, figure, outdir):
+def _visual_performances_for_sample(
+    size, stride, dataset, k, winperf, figure, outdir
+):
     """
     Displays sliding windows performances per sample
 
@@ -855,12 +862,14 @@ def write_analysis_text(names, da, db, f):
 
     w, p = scipy.stats.wilcoxon(diff, alternative="greater")
     f.write(
-        f"    * H0 = med({names[0]}) < med({names[1]}): " f"W = {w:g}, p = {p:.5f}\n"
+        f"    * H0 = med({names[0]}) < med({names[1]}): "
+        f"W = {w:g}, p = {p:.5f}\n"
     )
 
     w, p = scipy.stats.wilcoxon(diff, alternative="less")
     f.write(
-        f"    * H0 = med({names[0]}) > med({names[1]}): " f"W = {w:g}, p = {p:.5f}\n"
+        f"    * H0 = med({names[0]}) > med({names[1]}): "
+        f"W = {w:g}, p = {p:.5f}\n"
     )
 
 

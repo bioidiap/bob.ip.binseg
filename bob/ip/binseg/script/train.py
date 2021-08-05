@@ -260,9 +260,9 @@ def train(
         multiproc_kwargs["num_workers"] = multiproc_data_loading
 
     if multiproc_kwargs["num_workers"] > 0 and sys.platform == "darwin":
-        multiproc_kwargs["multiprocessing_context"] = multiprocessing.get_context(
-            "spawn"
-        )
+        multiproc_kwargs[
+            "multiprocessing_context"
+        ] = multiprocessing.get_context("spawn")
 
     data_loader = DataLoader(
         dataset=use_dataset,

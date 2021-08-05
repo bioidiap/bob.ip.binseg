@@ -155,7 +155,9 @@ def test_winperf_measures_cross_with_padding_2():
     _check_window_measures(pred, gt, mask, threshold, size, stride, expected)
 
 
-def _check_performance_summary(pred, gt, mask, threshold, size, stride, s, figure):
+def _check_performance_summary(
+    pred, gt, mask, threshold, size, stride, s, figure
+):
 
     figsize = pred.shape
     pred = torch.tensor(pred)
@@ -185,7 +187,8 @@ def _check_performance_summary(pred, gt, mask, threshold, size, stride, s, figur
                 std_expected[y, x] = measures[figindex][entries].std(ddof=1)
 
     assert (n_actual == n_expected).all(), (
-        f"Actual N output:\n{n_actual}\n " f"**!=** Expected N output:\n{n_expected}"
+        f"Actual N output:\n{n_actual}\n "
+        f"**!=** Expected N output:\n{n_expected}"
     )
 
     assert numpy.allclose(avg_actual, avg_expected), (
@@ -286,7 +289,17 @@ def test_performance_summary_cross():
         [
             [(0, 0), (1, 0), (2, 0)],
             [(0, 0), (0, 1), (1, 0), (1, 1), (2, 0), (2, 1)],
-            [(0, 0), (0, 1), (0, 2), (1, 0), (1, 1), (1, 2), (2, 0), (2, 1), (2, 2)],
+            [
+                (0, 0),
+                (0, 1),
+                (0, 2),
+                (1, 0),
+                (1, 1),
+                (1, 2),
+                (2, 0),
+                (2, 1),
+                (2, 2),
+            ],
             [(0, 1), (0, 2), (1, 1), (1, 2), (2, 1), (2, 2)],
             [(0, 2), (1, 2), (2, 2)],
         ],

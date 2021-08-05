@@ -38,7 +38,9 @@ class ResNet4Segmentation(torchvision.models.resnet.ResNet):
         return outputs
 
 
-def _resnet_for_segmentation(arch, block, layers, pretrained, progress, **kwargs):
+def _resnet_for_segmentation(
+    arch, block, layers, pretrained, progress, **kwargs
+):
     model = ResNet4Segmentation(block, layers, **kwargs)
     if pretrained:
         state_dict = torchvision.models.resnet.load_state_dict_from_url(

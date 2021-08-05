@@ -9,7 +9,9 @@ import tempfile
 logger = logging.getLogger(__name__)
 
 TESTDB_TMPDIR = None
-_URL = "http://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/_testdb.zip"
+_URL = (
+    "http://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/_testdb.zip"
+)
 _RCKEY = "bob.ip.binseg.stare.datadir"
 
 

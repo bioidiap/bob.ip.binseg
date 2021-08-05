@@ -29,9 +29,13 @@ extensions = [
 ]
 
 # This allows sphinxcontrib-programoutput to work in buildout mode
-candidate_binpath = os.path.join(os.path.dirname(os.path.realpath(os.curdir)), "bin")
+candidate_binpath = os.path.join(
+    os.path.dirname(os.path.realpath(os.curdir)), "bin"
+)
 if os.path.exists(candidate_binpath):
-    os.environ["PATH"] = candidate_binpath + os.pathsep + os.environ.get("PATH", "")
+    os.environ["PATH"] = (
+        candidate_binpath + os.pathsep + os.environ.get("PATH", "")
+    )
 
 # Be picky about warnings
 nitpicky = True
@@ -246,14 +250,18 @@ from bob.extension.utils import load_requirements
 sphinx_requirements = "extra-intersphinx.txt"
 if os.path.exists(sphinx_requirements):
     intersphinx_mapping = link_documentation(
-        additional_packages=["python", "numpy"] + load_requirements(sphinx_requirements)
+        additional_packages=["python", "numpy"]
+        + load_requirements(sphinx_requirements)
     )
 else:
     intersphinx_mapping = link_documentation()
 
 intersphinx_mapping["torch"] = ("https://pytorch.org/docs/stable/", None)
 intersphinx_mapping["PIL"] = ("http://pillow.readthedocs.io/en/stable", None)
-intersphinx_mapping["pandas"] = ("https://pandas.pydata.org/pandas-docs/stable/", None)
+intersphinx_mapping["pandas"] = (
+    "https://pandas.pydata.org/pandas-docs/stable/",
+    None,
+)
 
 # Figures out the major click version we use
 import pkg_resources

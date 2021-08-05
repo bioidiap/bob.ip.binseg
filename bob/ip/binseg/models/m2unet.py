@@ -16,7 +16,9 @@ class DecoderBlock(torch.nn.Module):
     Decoder block: upsample and concatenate with features maps from the encoder part
     """
 
-    def __init__(self, up_in_c, x_in_c, upsamplemode="bilinear", expand_ratio=0.15):
+    def __init__(
+        self, up_in_c, x_in_c, upsamplemode="bilinear", expand_ratio=0.15
+    ):
         super().__init__()
         self.upsample = torch.nn.Upsample(
             scale_factor=2, mode=upsamplemode, align_corners=False
@@ -41,7 +43,9 @@ class LastDecoderBlock(torch.nn.Module):
         self.upsample = torch.nn.Upsample(
             scale_factor=2, mode=upsamplemode, align_corners=False
         )  # H, W -> 2H, 2W
-        self.ir1 = InvertedResidual(x_in_c, 1, stride=1, expand_ratio=expand_ratio)
+        self.ir1 = InvertedResidual(
+            x_in_c, 1, stride=1, expand_ratio=expand_ratio
+        )
 
     def forward(self, up_in, x_in):
         up_out = self.upsample(up_in)

@@ -60,7 +60,9 @@ def _disc_loader(sample):
     data = load_pil_rgb(os.path.join(_root_path, sample["data"]))
     label = load_pil_1(os.path.join(_root_path, sample["label"]))
     mask = load_pil_1(os.path.join(_root_path, sample["mask"]))
-    label = subtract_mode1_images(invert_mode1_image(label), invert_mode1_image(mask))
+    label = subtract_mode1_images(
+        invert_mode1_image(label), invert_mode1_image(mask)
+    )
     return dict(data=data, label=label, mask=mask)
 
 

@@ -13,7 +13,9 @@ from collections.abc import MutableSequence
 def _copy_attributes(s, d):
     """Copies attributes from a dictionary to self"""
     s.__dict__.update(
-        dict([k, v] for k, v in d.items() if k not in ("data", "load", "samples"))
+        dict(
+            [k, v] for k, v in d.items() if k not in ("data", "load", "samples")
+        )
     )
 
 

@@ -80,13 +80,18 @@ def performance_table(data, fmt):
 
         # AUC PR curve
         entry.append(
-            auc(v["df"]["mean_recall"].to_numpy(), v["df"]["mean_precision"].to_numpy())
+            auc(
+                v["df"]["mean_recall"].to_numpy(),
+                v["df"]["mean_precision"].to_numpy(),
+            )
         )
         lower_auc = auc(
-            v["df"]["lower_recall"].to_numpy(), v["df"]["lower_precision"].to_numpy()
+            v["df"]["lower_recall"].to_numpy(),
+            v["df"]["lower_precision"].to_numpy(),
         )
         upper_auc = auc(
-            v["df"]["upper_recall"].to_numpy(), v["df"]["upper_precision"].to_numpy()
+            v["df"]["upper_recall"].to_numpy(),
+            v["df"]["upper_precision"].to_numpy(),
         )
         entry.append(f"{lower_auc:.3f}-{upper_auc:.3f}")
 

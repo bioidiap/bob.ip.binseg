@@ -124,13 +124,16 @@ def check(dataset, limit, **kwargs):
     if not to_check:
         click.echo("No configured datasets matching specifications")
         click.echo(
-            "Try bob binseg dataset list --help to get help in " "configuring a dataset"
+            "Try bob binseg dataset list --help to get help in "
+            "configuring a dataset"
         )
     else:
         errors = 0
         for k in to_check:
             click.echo(f"Checking \"{k.group('name')}\" dataset...")
-            module = importlib.import_module(f"...data.{k.group('name')}", __name__)
+            module = importlib.import_module(
+                f"...data.{k.group('name')}", __name__
+            )
             errors += module.dataset.check(limit)
         if not errors:
             click.echo("No errors reported")

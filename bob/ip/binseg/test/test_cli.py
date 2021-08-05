@@ -62,7 +62,9 @@ def _check_experiment_stare(caplog, overlay, multiprocess=False):
         # re-write STARE dataset configuration for test
         config.write("from bob.ip.binseg.data.stare import _make_dataset\n")
         config.write(f"_raw = _make_dataset('{stare_datadir}')\n")
-        config.write("from bob.ip.binseg.configs.datasets.stare import _maker\n")
+        config.write(
+            "from bob.ip.binseg.configs.datasets.stare import _maker\n"
+        )
         config.write("dataset = _maker('ah', _raw)\n")
         config.write("second_annotator = _maker('vk', _raw)\n")
         config.flush()
@@ -91,7 +93,9 @@ def _check_experiment_stare(caplog, overlay, multiprocess=False):
         # check model was saved
         train_folder = os.path.join(output_folder, "model")
         assert os.path.exists(os.path.join(train_folder, "model_final.pth"))
-        assert os.path.exists(os.path.join(train_folder, "model_lowest_valid_loss.pth"))
+        assert os.path.exists(
+            os.path.join(train_folder, "model_lowest_valid_loss.pth")
+        )
         assert os.path.exists(os.path.join(train_folder, "last_checkpoint"))
         assert os.path.exists(os.path.join(train_folder, "constants.csv"))
         assert os.path.exists(os.path.join(train_folder, "trainlog.csv"))
@@ -144,7 +148,9 @@ def _check_experiment_stare(caplog, overlay, multiprocess=False):
         assert os.path.exists(traindir_sa)
         assert len(fnmatch.filter(os.listdir(traindir_sa), "*.csv")) == 10
 
-        assert os.path.exists(os.path.join(eval_folder, "second-annotator", "test.csv"))
+        assert os.path.exists(
+            os.path.join(eval_folder, "second-annotator", "test.csv")
+        )
         testdir_sa = os.path.join(
             eval_folder, "second-annotator", "test", "stare-images"
         )
@@ -242,7 +248,9 @@ def _check_train(caplog, runner):
         # single training set configuration
         config.write("from bob.ip.binseg.data.stare import _make_dataset\n")
         config.write(f"_raw = _make_dataset('{stare_datadir}')\n")
-        config.write("from bob.ip.binseg.configs.datasets.stare import _maker\n")
+        config.write(
+            "from bob.ip.binseg.configs.datasets.stare import _maker\n"
+        )
         config.write("dataset = _maker('ah', _raw)\n")
         config.flush()
 
@@ -300,7 +308,9 @@ def _check_predict(caplog, runner):
         # single training set configuration
         config.write("from bob.ip.binseg.data.stare import _make_dataset\n")
         config.write(f"_raw = _make_dataset('{stare_datadir}')\n")
-        config.write("from bob.ip.binseg.configs.datasets.stare import _maker\n")
+        config.write(
+            "from bob.ip.binseg.configs.datasets.stare import _maker\n"
+        )
         config.write("dataset = _maker('ah', _raw)['test']\n")
         config.flush()
 
@@ -355,7 +365,9 @@ def _check_evaluate(caplog, runner):
         # single training set configuration
         config.write("from bob.ip.binseg.data.stare import _make_dataset\n")
         config.write(f"_raw = _make_dataset('{stare_datadir}')\n")
-        config.write("from bob.ip.binseg.configs.datasets.stare import _maker\n")
+        config.write(
+            "from bob.ip.binseg.configs.datasets.stare import _maker\n"
+        )
         config.write("dataset = _maker('ah', _raw)['test']\n")
         config.write("second_annotator = _maker('vk', _raw)['test']\n")
         config.flush()
@@ -461,7 +473,9 @@ def _check_significance(caplog, runner):
 
         config.write("from bob.ip.binseg.data.stare import _make_dataset\n")
         config.write(f"_raw = _make_dataset('{stare_datadir}')\n")
-        config.write("from bob.ip.binseg.configs.datasets.stare import _maker\n")
+        config.write(
+            "from bob.ip.binseg.configs.datasets.stare import _maker\n"
+        )
         config.write("dataset = _maker('ah', _raw)\n")
         config.flush()
 

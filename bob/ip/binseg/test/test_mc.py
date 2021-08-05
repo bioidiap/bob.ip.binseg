@@ -45,11 +45,17 @@ def test_loading():
         assert len(data) == 2
 
         assert "data" in data
-        assert data["data"].size == image_size_1 or data["data"].size == image_size_2
+        assert (
+            data["data"].size == image_size_1
+            or data["data"].size == image_size_2
+        )
         assert data["data"].mode == "RGB"
 
         assert "label" in data
-        assert data["label"].size == image_size_1 or data["label"].size == image_size_2
+        assert (
+            data["label"].size == image_size_1
+            or data["label"].size == image_size_2
+        )
         assert data["label"].mode == "1"
 
         b, w = count_bw(data["label"])

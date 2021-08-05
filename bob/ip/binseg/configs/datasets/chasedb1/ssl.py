@@ -20,7 +20,9 @@ For details on datasets, consult:
 """
 
 from bob.ip.binseg.configs.datasets.chasedb1.covd import dataset as _covd
-from bob.ip.binseg.configs.datasets.chasedb1.first_annotator import dataset as _baseline
+from bob.ip.binseg.configs.datasets.chasedb1.first_annotator import (
+    dataset as _baseline,
+)
 from bob.ip.binseg.data.utils import SSLDataset
 
 # copy dictionary and replace only the augmented train dataset

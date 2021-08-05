@@ -104,7 +104,8 @@ def _load(data, threshold=None):
             if "threshold_a_priori" in df:
                 use_threshold = df.threshold[df.threshold_a_priori.idxmax()]
                 logger.info(
-                    f"Dataset '{name}': threshold (a priori) = " f"{use_threshold:.3f}'"
+                    f"Dataset '{name}': threshold (a priori) = "
+                    f"{use_threshold:.3f}'"
                 )
             else:
                 use_threshold = df.threshold[df.mean_f1_score.idxmax()]
@@ -176,13 +177,16 @@ def _load(data, threshold=None):
     required=False,
 )
 @verbosity_option()
-def compare(label_path, output_figure, table_format, output_table, threshold, **kwargs):
+def compare(
+    label_path, output_figure, table_format, output_table, threshold, **kwargs
+):
     """Compares multiple systems together"""
 
     # hack to get a dictionary from arguments passed to input
     if len(label_path) % 2 != 0:
         raise click.ClickException(
-            "Input label-paths should be doubles" " composed of name-path entries"
+            "Input label-paths should be doubles"
+            " composed of name-path entries"
         )
     data = dict(zip(label_path[::2], label_path[1::2]))
 

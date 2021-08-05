@@ -173,7 +173,11 @@ def make_dataset(subsets, transforms):
             # also use it for validation during training
             retval["__valid__"] = retval[key]
 
-    if ("__train__" in retval) and ("train" in retval) and ("__valid__" not in retval):
+    if (
+        ("__train__" in retval)
+        and ("train" in retval)
+        and ("__valid__" not in retval)
+    ):
         # if the dataset does not have a validation set, we use the unaugmented
         # training set as validation set
         retval["__valid__"] = retval["train"]

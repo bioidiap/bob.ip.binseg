@@ -71,7 +71,9 @@ class TestCheckpointer(unittest.TestCase):
                 fresh_checkpointer = Checkpointer(fresh_model, path=g)
                 assert not fresh_checkpointer.has_checkpoint()
                 assert fresh_checkpointer.last_checkpoint() is None
-                _ = fresh_checkpointer.load(os.path.join(f, "checkpoint_file.pth"))
+                _ = fresh_checkpointer.load(
+                    os.path.join(f, "checkpoint_file.pth")
+                )
 
         for trained_p, loaded_p in zip(
             trained_model.parameters(), fresh_model.parameters()

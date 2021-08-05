@@ -23,7 +23,12 @@ class DRIUOD(torch.nn.Module):
 
     def __init__(self, in_channels_list=None):
         super(DRIUOD, self).__init__()
-        in_upsample2, in_upsample_4, in_upsample_8, in_upsample_16 = in_channels_list
+        (
+            in_upsample2,
+            in_upsample_4,
+            in_upsample_8,
+            in_upsample_16,
+        ) = in_channels_list
 
         self.upsample2 = UpsampleCropBlock(in_upsample2, 16, 4, 2, 0)
         # Upsample layers

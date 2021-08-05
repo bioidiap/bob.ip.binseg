@@ -67,21 +67,31 @@ def _concave_hull(x, y, lx, ux, ly, uy):
 
         # upper right part (0 -> 90 degrees)
         px = 2 * right * numpy.cos(angles)
-        py = (up / right) * numpy.sqrt(numpy.square(2 * right) - numpy.square(px))
+        py = (up / right) * numpy.sqrt(
+            numpy.square(2 * right) - numpy.square(px)
+        )
         # order: x increases and y decreases
-        points = numpy.vstack((points, numpy.flipud(numpy.array([_x + px, _y + py]).T)))
+        points = numpy.vstack(
+            (points, numpy.flipud(numpy.array([_x + px, _y + py]).T))
+        )
 
         # lower right part (180 -> 270 degrees)
         px = 2 * right * numpy.cos(angles)
-        py = (down / right) * numpy.sqrt(numpy.square(2 * right) - numpy.square(px))
+        py = (down / right) * numpy.sqrt(
+            numpy.square(2 * right) - numpy.square(px)
+        )
         # order: x increases and y decreases
         points = numpy.vstack((points, numpy.array([_x + px, _y - py]).T))
 
         # lower left part (180 -> 270 degrees)
         px = 2 * left * numpy.cos(angles)
-        py = (down / left) * numpy.sqrt(numpy.square(2 * left) - numpy.square(px))
+        py = (down / left) * numpy.sqrt(
+            numpy.square(2 * left) - numpy.square(px)
+        )
         # order: x decreases and y increases
-        points = numpy.vstack((points, numpy.flipud(numpy.array([_x - px, _y - py]).T)))
+        points = numpy.vstack(
+            (points, numpy.flipud(numpy.array([_x - px, _y - py]).T))
+        )
 
         return points
 

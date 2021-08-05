@@ -27,8 +27,14 @@ dataset = {
     "chasedb1 (test)": _xt["chasedb1 (test)"].copy(
         [CenterCrop((829, 960)), Resize(608)]
     ),
-    "hrf (train)": _xt["hrf (train)"].copy([Pad((0, 345, 0, 345)), Resize(608)]),
+    "hrf (train)": _xt["hrf (train)"].copy(
+        [Pad((0, 345, 0, 345)), Resize(608)]
+    ),
     "hrf (test)": _xt["hrf (test)"].copy([Pad((0, 345, 0, 345)), Resize(608)]),
-    "iostar (train)": _xt["iostar (train)"].copy([Pad((81, 0, 81, 0)), Resize(608)]),
-    "iostar (test)": _xt["iostar (test)"].copy([Pad((81, 0, 81, 0)), Resize(608)]),
+    "iostar (train)": _xt["iostar (train)"].copy(
+        [Pad((81, 0, 81, 0)), Resize(608)]
+    ),
+    "iostar (test)": _xt["iostar (test)"].copy(
+        [Pad((81, 0, 81, 0)), Resize(608)]
+    ),
 }

@@ -80,12 +80,20 @@ class UpsampleCropBlock(torch.nn.Module):
     ):
         super().__init__()
         # NOTE: Kaiming init, replace with torch.nn.Conv2d and torch.nn.ConvTranspose2d to get original DRIU impl.
-        self.conv = conv_with_kaiming_uniform(in_channels, out_channels, 3, 1, 1)
+        self.conv = conv_with_kaiming_uniform(
+            in_channels, out_channels, 3, 1, 1
+        )
         if pixelshuffle:
-            self.upconv = PixelShuffle_ICNR(out_channels, out_channels, scale=up_stride)
+            self.upconv = PixelShuffle_ICNR(
+                out_channels, out_channels, scale=up_stride
+            )
         else:
             self.upconv = convtrans_with_kaiming_uniform(
-                out_channels, out_channels, up_kernel_size, up_stride, up_padding
+                out_channels,
+                out_channels,
+                up_kernel_size,
+                up_stride,
+                up_padding,
             )
 
     def forward(self, x, input_res):
@@ -174,7 +182,9 @@ class PixelShuffle_ICNR(torch.nn.Module):
 
 
 class UnetBlock(torch.nn.Module):
-    def __init__(self, up_in_c, x_in_c, pixel_shuffle=False, middle_block=False):
+    def __init__(
+        self, up_in_c, x_in_c, pixel_shuffle=False, middle_block=False
+    ):
         super().__init__()
 
         # middle block for VGG based U-Net
@@ -188,7 +198,9 @@ class UnetBlock(torch.nn.Module):
         if pixel_shuffle:
             self.upsample = PixelShuffle_ICNR(up_in_c, up_out_c)
         else:
-            self.upsample = convtrans_with_kaiming_uniform(up_in_c, up_out_c, 2, 2)
+            self.upsample = convtrans_with_kaiming_uniform(
+                up_in_c, up_out_c, 2, 2
+            )
         self.convtrans1 = convtrans_with_kaiming_uniform(
             cat_channels, inner_channels, 3, 1, 1
         )

@@ -314,6 +314,8 @@ class CSVDataset:
             fileobj.seek(0)
 
         return [
-            self._loader(dict(subset=subset, order=n), dict(zip(self.fieldnames, k)))
+            self._loader(
+                dict(subset=subset, order=n), dict(zip(self.fieldnames, k))
+            )
             for n, k in enumerate(samples)
         ]

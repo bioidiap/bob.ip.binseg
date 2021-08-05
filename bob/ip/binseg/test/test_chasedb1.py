@@ -99,13 +99,17 @@ def test_loading():
 
     limit = None  # use this to limit testing to first images only
     subset = dataset.subsets("first-annotator")
-    proportions = [_check_sample(s, 0.08, 1.87) for s in subset["train"][:limit]]
+    proportions = [
+        _check_sample(s, 0.08, 1.87) for s in subset["train"][:limit]
+    ]
     # print(f"max label proportions = {max(proportions)}")
     proportions = [_check_sample(s, 0.10, 1.87) for s in subset["test"][:limit]]
     # print(f"max label proportions = {max(proportions)}")
 
     subset = dataset.subsets("second-annotator")
-    proportions = [_check_sample(s, 0.09, 1.87) for s in subset["train"][:limit]]
+    proportions = [
+        _check_sample(s, 0.09, 1.87) for s in subset["train"][:limit]
+    ]
     # print(f"max label proportions = {max(proportions)}")
     proportions = [_check_sample(s, 0.09, 1.87) for s in subset["test"][:limit]]
     # print(f"max label proportions = {max(proportions)}")

@@ -49,10 +49,14 @@ def list(verbose):
     entry_points = dict([(k.name, k) for k in entry_points])
 
     # all modules with configuration resources
-    modules = set(k.module_name.rsplit(".", 1)[0] for k in entry_points.values())
+    modules = set(
+        k.module_name.rsplit(".", 1)[0] for k in entry_points.values()
+    )
     keep_modules = []
     for k in sorted(modules):
-        if k not in keep_modules and not any(k.startswith(l) for l in keep_modules):
+        if k not in keep_modules and not any(
+            k.startswith(l) for l in keep_modules
+        ):
             keep_modules.append(k)
     modules = keep_modules
 

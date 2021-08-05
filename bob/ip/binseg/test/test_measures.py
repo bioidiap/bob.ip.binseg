@@ -52,7 +52,9 @@ class TestFrequentist(unittest.TestCase):
 
     def test_f1(self):
         p, r, s, a, j, f1 = base_measures(self.tp, self.fp, self.tn, self.fn)
-        self.assertEqual((2.0 * self.tp) / (2.0 * self.tp + self.fp + self.fn), f1)
+        self.assertEqual(
+            (2.0 * self.tp) / (2.0 * self.tp + self.fp + self.fn), f1
+        )
         self.assertAlmostEqual((2 * p * r) / (p + r), f1)  # base definition
 
 
@@ -135,17 +137,27 @@ class TestBayesian:
         fn = random.randint(100000, 1000000)
 
         _prec, _rec, _spec, _acc, _jac, _f1 = base_measures(tp, fp, tn, fn)
-        prec, rec, spec, acc, jac, f1 = bayesian_measures(tp, fp, tn, fn, 0.5, 0.95)
+        prec, rec, spec, acc, jac, f1 = bayesian_measures(
+            tp, fp, tn, fn, 0.5, 0.95
+        )
 
         # Notice that for very large k and l, the base frequentist measures
         # should be approximately the same as the bayesian mean and mode
         # extracted from the beta posterior.  We test that here.
-        assert numpy.isclose(_prec, prec[0]), f"freq: {_prec} <> bays: {prec[0]}"
-        assert numpy.isclose(_prec, prec[1]), f"freq: {_prec} <> bays: {prec[1]}"
+        assert numpy.isclose(
+            _prec, prec[0]
+        ), f"freq: {_prec} <> bays: {prec[0]}"
+        assert numpy.isclose(
+            _prec, prec[1]
+        ), f"freq: {_prec} <> bays: {prec[1]}"
         assert numpy.isclose(_rec, rec[0]), f"freq: {_rec} <> bays: {rec[0]}"
         assert numpy.isclose(_rec, rec[1]), f"freq: {_rec} <> bays: {rec[1]}"
-        assert numpy.isclose(_spec, spec[0]), f"freq: {_spec} <> bays: {spec[0]}"
-        assert numpy.isclose(_spec, spec[1]), f"freq: {_spec} <> bays: {spec[1]}"
+        assert numpy.isclose(
+            _spec, spec[0]
+        ), f"freq: {_spec} <> bays: {spec[0]}"
+        assert numpy.isclose(
+            _spec, spec[1]
+        ), f"freq: {_spec} <> bays: {spec[1]}"
         assert numpy.isclose(_acc, acc[0]), f"freq: {_acc} <> bays: {acc[0]}"
         assert numpy.isclose(_acc, acc[1]), f"freq: {_acc} <> bays: {acc[1]}"
         assert numpy.isclose(_jac, jac[0]), f"freq: {_jac} <> bays: {jac[0]}"
@@ -179,11 +191,21 @@ def test_auc():
 
     # basic tests
     assert math.isclose(auc([0.0, 0.5, 1.0], [1.0, 1.0, 1.0]), 1.0)
-    assert math.isclose(auc([0.0, 0.5, 1.0], [1.0, 0.5, 0.0]), 0.5, rel_tol=0.001)
-    assert math.isclose(auc([0.0, 0.5, 1.0], [0.0, 0.0, 0.0]), 0.0, rel_tol=0.001)
-    assert math.isclose(auc([0.0, 0.5, 1.0], [0.0, 1.0, 0.0]), 0.5, rel_tol=0.001)
-    assert math.isclose(auc([0.0, 0.5, 1.0], [0.0, 0.5, 0.0]), 0.25, rel_tol=0.001)
-    assert math.isclose(auc([0.0, 0.5, 1.0], [0.0, 0.5, 0.0]), 0.25, rel_tol=0.001)
+    assert math.isclose(
+        auc([0.0, 0.5, 1.0], [1.0, 0.5, 0.0]), 0.5, rel_tol=0.001
+    )
+    assert math.isclose(
+        auc([0.0, 0.5, 1.0], [0.0, 0.0, 0.0]), 0.0, rel_tol=0.001
+    )
+    assert math.isclose(
+        auc([0.0, 0.5, 1.0], [0.0, 1.0, 0.0]), 0.5, rel_tol=0.001
+    )
+    assert math.isclose(
+        auc([0.0, 0.5, 1.0], [0.0, 0.5, 0.0]), 0.25, rel_tol=0.001
+    )
+    assert math.isclose(
+        auc([0.0, 0.5, 1.0], [0.0, 0.5, 0.0]), 0.25, rel_tol=0.001
+    )
 
     # reversing tht is also true
     assert math.isclose(auc([0.0, 0.5, 1.0][::-1], [1.0, 1.0, 1.0][::-1]), 1.0)
@@ -206,7 +228,9 @@ def test_auc():
 
 def test_auc_raises_value_error():
 
-    with pytest.raises(ValueError, match=r".*neither increasing nor decreasing.*"):
+    with pytest.raises(
+        ValueError, match=r".*neither increasing nor decreasing.*"
+    ):
         # x is **not** monotonically increasing or decreasing
         assert math.isclose(auc([0.0, 0.5, 0.0], [1.0, 1.0, 1.0]), 1.0)
 

@@ -47,8 +47,12 @@ def _raw_data_loader(sample):
         data=load_pil_rgb(os.path.join(_root_path, sample["data"])),
         label=Image.fromarray(
             np.ma.mask_or(
-                np.asarray(load_pil_1(os.path.join(_root_path, sample["label_l"]))),
-                np.asarray(load_pil_1(os.path.join(_root_path, sample["label_r"]))),
+                np.asarray(
+                    load_pil_1(os.path.join(_root_path, sample["label_l"]))
+                ),
+                np.asarray(
+                    load_pil_1(os.path.join(_root_path, sample["label_r"]))
+                ),
             )
         ),
     )
@@ -61,7 +65,9 @@ def _loader(context, sample):
 
 
 dataset = JSONDataset(
-    protocols=_protocols, fieldnames=("data", "label_l", "label_r"), loader=_loader
+    protocols=_protocols,
+    fieldnames=("data", "label_l", "label_r"),
+    loader=_loader,
 )
 
 """Japanese Society of Radiological Technology dataset object"""

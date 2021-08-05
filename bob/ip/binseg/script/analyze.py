@@ -189,7 +189,9 @@ def analyze(
 
     predictions_folder = os.path.join(output_folder, "predictions")
     overlayed_folder = (
-        os.path.join(output_folder, "overlayed", "predictions") if overlayed else None
+        os.path.join(output_folder, "overlayed", "predictions")
+        if overlayed
+        else None
     )
 
     ctx.invoke(
@@ -211,7 +213,9 @@ def analyze(
     from .evaluate import evaluate
 
     overlayed_folder = (
-        os.path.join(output_folder, "overlayed", "analysis") if overlayed else None
+        os.path.join(output_folder, "overlayed", "analysis")
+        if overlayed
+        else None
     )
 
     # choosing the overlayed_threshold
@@ -260,7 +264,9 @@ def analyze(
     if second_annotator is not None:
         for k, v in second_annotator.items():
             if k.startswith("_"):
-                logger.info(f"Skipping second-annotator '{k}' " f"(not to be compared)")
+                logger.info(
+                    f"Skipping second-annotator '{k}' " f"(not to be compared)"
+                )
                 continue
             if k not in dataset:
                 logger.info(
@@ -274,7 +280,9 @@ def analyze(
                     f"(keys do not match `dataset[{k}]`?)"
                 )
                 continue
-            candidate = os.path.join(analysis_folder, "second-annotator", f"{k}.csv")
+            candidate = os.path.join(
+                analysis_folder, "second-annotator", f"{k}.csv"
+            )
             if not os.path.exists(candidate):
                 logger.error(
                     f"Skipping second-annotator '{k}' "

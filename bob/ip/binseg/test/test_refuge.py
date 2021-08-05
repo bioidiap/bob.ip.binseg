@@ -37,7 +37,9 @@ def test_protocol_consistency():
 @pytest.mark.skip_if_rc_var_not_set("bob.ip.binseg.refuge.datadir")
 @pytest.mark.slow
 def test_loading():
-    def _check_sample(s, image_size, glaucoma_label, entries, bw_threshold_label):
+    def _check_sample(
+        s, image_size, glaucoma_label, entries, bw_threshold_label
+    ):
 
         data = s.data
         assert isinstance(data, dict)
@@ -78,7 +80,8 @@ def test_loading():
     limit = None  # use this to limit testing to first images only
     subset = dataset.subsets("optic-disc")
     proportions = [
-        _check_sample(s, (2124, 2056), True, 3, 0.029) for s in subset["train"][:limit]
+        _check_sample(s, (2124, 2056), True, 3, 0.029)
+        for s in subset["train"][:limit]
     ]
     # print(f"max label proportions = {max(proportions)}")
     proportions = [
@@ -87,13 +90,15 @@ def test_loading():
     ]
     # print(f"max label proportions = {max(proportions)}")
     proportions = [
-        _check_sample(s, (1634, 1634), True, 3, 0.026) for s in subset["test"][:limit]
+        _check_sample(s, (1634, 1634), True, 3, 0.026)
+        for s in subset["test"][:limit]
     ]
     # print(f"max label proportions = {max(proportions)}")
 
     subset = dataset.subsets("optic-cup")
     proportions = [
-        _check_sample(s, (2124, 2056), True, 3, 0.018) for s in subset["train"][:limit]
+        _check_sample(s, (2124, 2056), True, 3, 0.018)
+        for s in subset["train"][:limit]
     ]
     # print(f"max label proportions = {max(proportions)}")
     proportions = [
@@ -102,7 +107,8 @@ def test_loading():
     ]
     # print(f"max label proportions = {max(proportions)}")
     proportions = [
-        _check_sample(s, (1634, 1634), True, 3, 0.017) for s in subset["test"][:limit]
+        _check_sample(s, (1634, 1634), True, 3, 0.017)
+        for s in subset["test"][:limit]
     ]
     # print(f"max label proportions = {max(proportions)}")
     del proportions  # only to satisfy flake8

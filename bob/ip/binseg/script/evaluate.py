@@ -172,7 +172,9 @@ def evaluate(
     if isinstance(threshold, str):
         # first run evaluation for reference dataset, do not save overlays
         logger.info(f"Evaluating threshold on '{threshold}' set")
-        threshold = run(dataset[threshold], threshold, predictions_folder, steps=steps)
+        threshold = run(
+            dataset[threshold], threshold, predictions_folder, steps=steps
+        )
         logger.info(f"Set --threshold={threshold:.5f}")
 
     # clean-up the overlayed path

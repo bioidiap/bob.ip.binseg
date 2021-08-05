@@ -359,7 +359,9 @@ def test_16bit_autolevel():
     # the way to load a 16-bit PNG image correctly, according to:
     # https://stackoverflow.com/questions/32622658/read-16-bit-png-image-file-using-python
     # https://github.com/python-pillow/Pillow/issues/3011
-    img = PIL.Image.fromarray(numpy.array(PIL.Image.open(path)).astype("uint16"))
+    img = PIL.Image.fromarray(
+        numpy.array(PIL.Image.open(path)).astype("uint16")
+    )
     assert img.mode == "I;16"
     assert img.getextrema() == (0, 65281)
 

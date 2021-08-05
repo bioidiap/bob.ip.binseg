@@ -242,7 +242,9 @@ class MixJacLoss(_Loss):
         self.labeled_loss = SoftJaccardBCELogitsLoss(alpha=jacalpha)
         self.unlabeled_loss = torch.nn.BCEWithLogitsLoss()
 
-    def forward(self, input, target, unlabeled_input, unlabeled_target, ramp_up_factor):
+    def forward(
+        self, input, target, unlabeled_input, unlabeled_target, ramp_up_factor
+    ):
         """
         Parameters
         ----------

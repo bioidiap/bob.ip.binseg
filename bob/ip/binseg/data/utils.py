@@ -17,7 +17,9 @@ from .transforms import ToTensor
 def invert_mode1_image(img):
     """Inverts a binary PIL image (mode == ``"1"``)"""
 
-    return PIL.ImageOps.invert(img.convert("RGB")).convert(mode="1", dither=None)
+    return PIL.ImageOps.invert(img.convert("RGB")).convert(
+        mode="1", dither=None
+    )
 
 
 def subtract_mode1_images(img1, img2):

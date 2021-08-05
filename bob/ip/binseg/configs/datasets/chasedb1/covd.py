@@ -19,8 +19,12 @@ For details on those datasets, consult:
 from torch.utils.data import ConcatDataset
 
 from bob.ip.binseg.configs.datasets import augment_subset as _augment
-from bob.ip.binseg.configs.datasets.chasedb1.first_annotator import dataset as _baseline
-from bob.ip.binseg.configs.datasets.chasedb1.first_annotator import second_annotator
+from bob.ip.binseg.configs.datasets.chasedb1.first_annotator import (
+    dataset as _baseline,
+)
+from bob.ip.binseg.configs.datasets.chasedb1.first_annotator import (
+    second_annotator,
+)
 from bob.ip.binseg.configs.datasets.chasedb1.mtest import dataset as _mtest
 
 dataset = dict(**_baseline)

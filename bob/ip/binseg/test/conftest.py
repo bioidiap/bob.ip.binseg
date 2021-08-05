@@ -28,7 +28,8 @@ def pytest_runtest_setup(item):
     # iterates over all markers for the item being examined, get the first
     # argument and accumulate these names
     rc_names = [
-        mark.args[0] for mark in item.iter_markers(name="skip_if_rc_var_not_set")
+        mark.args[0]
+        for mark in item.iter_markers(name="skip_if_rc_var_not_set")
     ]
 
     # checks all names mentioned are set in ~/.bobrc, otherwise, skip the test

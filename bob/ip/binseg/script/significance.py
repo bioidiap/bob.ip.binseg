@@ -163,7 +163,9 @@ def _eval_sliding_windows(
             f"Evaluating threshold on '{threshold}' set for "
             f"'{system_name}' using {steps} steps"
         )
-        threshold = run_evaluation(dataset[threshold], threshold, preddir, steps=steps)
+        threshold = run_evaluation(
+            dataset[threshold], threshold, preddir, steps=steps
+        )
         logger.info(f"Set --threshold={threshold:.5f} for '{system_name}'")
 
     # for a given threshold on each system, calculate sliding window performances
@@ -488,7 +490,8 @@ def _eval_differences(
 @click.option(
     "--checkpoint-folder",
     "-k",
-    help="Path where to store checkpointed versions of sliding window " "performances",
+    help="Path where to store checkpointed versions of sliding window "
+    "performances",
     required=False,
     type=click.Path(),
     show_default=True,

@@ -57,7 +57,8 @@ def run_nvidia_smi(query, rename=None):
             assert len(rename) == len(query)
 
         values = subprocess.getoutput(
-            "%s --query-gpu=%s --format=csv,noheader" % (_nvidia_smi, ",".join(query))
+            "%s --query-gpu=%s --format=csv,noheader"
+            % (_nvidia_smi, ",".join(query))
         )
         values = [k.strip() for k in values.split(",")]
         t_values = []

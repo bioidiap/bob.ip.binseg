@@ -174,7 +174,8 @@ def _sample_measures(pred, gt, mask, steps):
 
     step_size = 1.0 / steps
     data = [
-        (index, threshold) + sample_measures_for_threshold(pred, gt, mask, threshold)
+        (index, threshold)
+        + sample_measures_for_threshold(pred, gt, mask, threshold)
         for index, threshold in enumerate(numpy.arange(0.0, 1.0, step_size))
     ]
 
@@ -473,13 +474,17 @@ def run(
         logger.info(f"Output folder: {output_folder}")
         os.makedirs(output_folder, exist_ok=True)
         measures_path = os.path.join(output_folder, f"{name}.csv")
-        logger.info(f"Saving measures over all input images at {measures_path}...")
+        logger.info(
+            f"Saving measures over all input images at {measures_path}..."
+        )
         measures.to_csv(measures_path)
 
     return maxf1_threshold
 
 
-def compare_annotators(baseline, other, name, output_folder, overlayed_folder=None):
+def compare_annotators(
+    baseline, other, name, output_folder, overlayed_folder=None
+):
     """
     Compares annotations on the **same** dataset
 
@@ -558,7 +563,9 @@ def compare_annotators(baseline, other, name, output_folder, overlayed_folder=No
     measures = _summarize(data)
     measures.drop(0, inplace=True)  # removes threshold == 0.0, keeps 0.5 only
 
-    measures_path = os.path.join(output_folder, "second-annotator", f"{name}.csv")
+    measures_path = os.path.join(
+        output_folder, "second-annotator", f"{name}.csv"
+    )
     os.makedirs(os.path.dirname(measures_path), exist_ok=True)
     logger.info(f"Saving summaries over all input images at {measures_path}...")
     measures.to_csv(measures_path)

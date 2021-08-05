@@ -26,7 +26,9 @@ class UNet(torch.nn.Module):
         c_decode1, c_decode2, c_decode3, c_decode4, c_decode5 = in_channels_list
 
         # build layers
-        self.decode4 = UnetBlock(c_decode5, c_decode4, pixel_shuffle, middle_block=True)
+        self.decode4 = UnetBlock(
+            c_decode5, c_decode4, pixel_shuffle, middle_block=True
+        )
         self.decode3 = UnetBlock(c_decode4, c_decode3, pixel_shuffle)
         self.decode2 = UnetBlock(c_decode3, c_decode2, pixel_shuffle)
         self.decode1 = UnetBlock(c_decode2, c_decode1, pixel_shuffle)

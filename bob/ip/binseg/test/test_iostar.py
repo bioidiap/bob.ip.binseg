@@ -100,7 +100,9 @@ def test_loading():
 
     limit = None  # use this to limit testing to first images only
     subset = dataset.subsets("vessel")
-    proportions = [_check_sample(s, 0.11, 3.19) for s in subset["train"][:limit]]
+    proportions = [
+        _check_sample(s, 0.11, 3.19) for s in subset["train"][:limit]
+    ]
     # print(f"max label proportions = {max(k[0] for k in proportions)}")
     # print(f"min mask proportions = {min(k[1] for k in proportions)}")
     proportions = [_check_sample(s, 0.10, 3.27) for s in subset["test"][:limit]]
@@ -108,10 +110,14 @@ def test_loading():
     # print(f"min mask proportions = {min(k[1] for k in proportions)}")
 
     subset = dataset.subsets("optic-disc")
-    proportions = [_check_sample(s, 0.023, 3.19) for s in subset["train"][:limit]]
+    proportions = [
+        _check_sample(s, 0.023, 3.19) for s in subset["train"][:limit]
+    ]
     # print(f"max label proportions = {max(k[0] for k in proportions)}")
     # print(f"min mask proportions = {min(k[1] for k in proportions)}")
-    proportions = [_check_sample(s, 0.033, 3.27) for s in subset["test"][:limit]]
+    proportions = [
+        _check_sample(s, 0.033, 3.27) for s in subset["test"][:limit]
+    ]
     # print(f"max label proportions = {max(k[0] for k in proportions)}")
     # print(f"min mask proportions = {min(k[1] for k in proportions)}")
     del proportions  # only to satisfy flake8

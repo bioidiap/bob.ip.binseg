@@ -29,14 +29,18 @@ def test_protocol_consistency():
         assert len(subset["train"]) == 50
         for s in subset["train"]:
             assert s.key.startswith(
-                os.path.join("Drishti-GS1_files", "Training", "Images", "drishtiGS_")
+                os.path.join(
+                    "Drishti-GS1_files", "Training", "Images", "drishtiGS_"
+                )
             )
 
         assert "test" in subset
         assert len(subset["test"]) == 51
         for s in subset["test"]:
             assert s.key.startswith(
-                os.path.join("Drishti-GS1_files", "Test", "Images", "drishtiGS_")
+                os.path.join(
+                    "Drishti-GS1_files", "Test", "Images", "drishtiGS_"
+                )
             )
 
 

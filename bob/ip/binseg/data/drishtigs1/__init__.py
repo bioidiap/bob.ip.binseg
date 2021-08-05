@@ -33,10 +33,18 @@ from ..loader import load_pil_rgb
 from ..loader import make_delayed
 
 _protocols = {
-    "optic-disc-all": pkg_resources.resource_filename(__name__, "optic-disc.json"),
-    "optic-cup-all": pkg_resources.resource_filename(__name__, "optic-cup.json"),
-    "optic-disc-any": pkg_resources.resource_filename(__name__, "optic-disc.json"),
-    "optic-cup-any": pkg_resources.resource_filename(__name__, "optic-cup.json"),
+    "optic-disc-all": pkg_resources.resource_filename(
+        __name__, "optic-disc.json"
+    ),
+    "optic-cup-all": pkg_resources.resource_filename(
+        __name__, "optic-cup.json"
+    ),
+    "optic-disc-any": pkg_resources.resource_filename(
+        __name__, "optic-disc.json"
+    ),
+    "optic-cup-any": pkg_resources.resource_filename(
+        __name__, "optic-cup.json"
+    ),
 }
 
 _root_path = bob.extension.rc.get(
@@ -47,7 +55,9 @@ _root_path = bob.extension.rc.get(
 def _raw_data_loader_all(sample):
     retval = dict(
         data=load_pil_rgb(os.path.join(_root_path, sample["data"])),
-        label=load_pil_rgb(os.path.join(_root_path, sample["label"])).convert("L"),
+        label=load_pil_rgb(os.path.join(_root_path, sample["label"])).convert(
+            "L"
+        ),
     )
     retval["label"] = retval["label"].point(lambda p: p > 254, mode="1")
     return retval
@@ -56,7 +66,9 @@ def _raw_data_loader_all(sample):
 def _raw_data_loader_any(sample):
     retval = dict(
         data=load_pil_rgb(os.path.join(_root_path, sample["data"])),
-        label=load_pil_rgb(os.path.join(_root_path, sample["label"])).convert("L"),
+        label=load_pil_rgb(os.path.join(_root_path, sample["label"])).convert(
+            "L"
+        ),
     )
     retval["label"] = retval["label"].point(lambda p: p > 0, mode="1")
     return retval

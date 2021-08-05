@@ -41,7 +41,9 @@ class ResUNet(torch.nn.Module):
         if pixel_shuffle:
             self.decode0 = PixelShuffle_ICNR(c_decode0, c_decode0)
         else:
-            self.decode0 = convtrans_with_kaiming_uniform(c_decode0, c_decode0, 2, 2)
+            self.decode0 = convtrans_with_kaiming_uniform(
+                c_decode0, c_decode0, 2, 2
+            )
         self.final = conv_with_kaiming_uniform(c_decode0, 1, 1)
 
     def forward(self, x):

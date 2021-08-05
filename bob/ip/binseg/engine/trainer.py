@@ -208,7 +208,9 @@ def run(
             start_epoch_time = time.time()
 
             # progress bar only on interactive jobs
-            for samples in tqdm(data_loader, desc="batch", leave=False, disable=None):
+            for samples in tqdm(
+                data_loader, desc="batch", leave=False, disable=None
+            ):
 
                 # data forwarding on the existing network
                 images = samples[1].to(
@@ -272,10 +274,14 @@ def run(
             if checkpoint_period and (epoch % checkpoint_period == 0):
                 checkpointer.save(f"model_{epoch:03d}", **arguments)
 
-            if valid_losses is not None and valid_losses.avg < lowest_validation_loss:
+            if (
+                valid_losses is not None
+                and valid_losses.avg < lowest_validation_loss
+            ):
                 lowest_validation_loss = valid_losses.avg
                 logger.info(
-                    f"Found new low on validation set:" f" {lowest_validation_loss:.6f}"
+                    f"Found new low on validation set:"
+                    f" {lowest_validation_loss:.6f}"
                 )
                 checkpointer.save("model_lowest_valid_loss", **arguments)
 
