@@ -25,7 +25,7 @@ extensions = [
     "sphinx.ext.viewcode",
     "sphinx.ext.mathjax",
     "sphinxcontrib.programoutput",
-    #'matplotlib.sphinxext.plot_directive'
+    # 'matplotlib.sphinxext.plot_directive'
 ]
 
 # This allows sphinxcontrib-programoutput to work in buildout mode
