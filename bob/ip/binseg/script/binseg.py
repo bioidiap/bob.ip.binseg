@@ -16,6 +16,7 @@ import click
 import numpy
 import pkg_resources
 import torch
+
 from click_plugins import with_plugins
 from tqdm import tqdm
 

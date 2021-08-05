@@ -5,6 +5,7 @@ from collections import OrderedDict
 
 import torch
 import torch.nn
+
 from torchvision.models.mobilenet import InvertedResidual
 
 from .backbones.mobilenetv2 import mobilenet_v2_for_segmentation
