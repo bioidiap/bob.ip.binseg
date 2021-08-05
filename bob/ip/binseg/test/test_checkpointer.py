@@ -3,7 +3,6 @@
 
 import os
 import unittest
-
 from collections import OrderedDict
 from tempfile import TemporaryDirectory
 

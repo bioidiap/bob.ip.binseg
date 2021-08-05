@@ -3,7 +3,6 @@
 
 import contextlib
 import logging
-
 from itertools import cycle
 
 import matplotlib

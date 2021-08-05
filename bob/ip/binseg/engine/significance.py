@@ -11,7 +11,6 @@ import numpy
 import scipy.stats
 import tabulate
 import torch.nn
-
 from tqdm import tqdm
 
 from .evaluator import sample_measures_for_threshold
@@ -900,7 +899,6 @@ def write_analysis_figures(names, da, db, fname):
     """
 
     import matplotlib.pyplot as plt
-
     from matplotlib.backends.backend_pdf import PdfPages
 
     diff = da - db

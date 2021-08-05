@@ -5,8 +5,6 @@
 [tool.isort]
     profile = "black"
     line_length = 80
-    order_by_type = true
-    lines_between_types = 1
 
 [tool.black]
     line-length = 80

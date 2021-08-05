@@ -23,7 +23,6 @@ import os
 
 import numpy as np
 import pkg_resources
-
 from PIL import Image
 
 import bob.extension

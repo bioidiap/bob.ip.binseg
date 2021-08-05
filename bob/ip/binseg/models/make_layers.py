@@ -3,7 +3,6 @@
 
 import torch
 import torch.nn
-
 from torch.nn import Conv2d, ConvTranspose2d
 
 

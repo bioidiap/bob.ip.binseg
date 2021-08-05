@@ -11,7 +11,6 @@ import time
 
 import numpy
 import torch
-
 from tqdm import tqdm
 
 from ..utils.measure import SmoothedValue

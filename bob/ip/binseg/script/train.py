@@ -7,7 +7,6 @@ import sys
 
 import click
 import torch
-
 from torch.utils.data import DataLoader
 
 from bob.extension.scripts.click_helper import (
