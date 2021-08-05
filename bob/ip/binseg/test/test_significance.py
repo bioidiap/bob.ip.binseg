@@ -9,9 +9,9 @@ import pytest
 import torch
 
 from ..engine.significance import (
-    PERFORMANCE_FIGURES,
     _performance_summary,
     _winperf_measures,
+    PERFORMANCE_FIGURES,
 )
 from ..utils.measure import base_measures
 

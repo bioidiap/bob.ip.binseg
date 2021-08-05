@@ -15,8 +15,8 @@ from bob.extension.scripts.click_helper import (
 )
 
 from ..engine.significance import (
-    PERFORMANCE_FIGURES,
     index_of_outliers,
+    PERFORMANCE_FIGURES,
     sliding_window_performances,
     visual_performances,
     write_analysis_figures,
