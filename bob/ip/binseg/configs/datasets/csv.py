@@ -61,8 +61,7 @@ More information:
 import os
 
 from bob.ip.binseg.data.dataset import CSVDataset
-from bob.ip.binseg.data.loader import load_pil_1
-from bob.ip.binseg.data.loader import load_pil_rgb
+from bob.ip.binseg.data.loader import load_pil_1, load_pil_rgb
 from bob.ip.binseg.data.sample import Sample
 
 # How we use the loaders - "sample" is a dictionary where keys are defined

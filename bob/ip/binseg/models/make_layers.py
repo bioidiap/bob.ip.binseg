@@ -4,8 +4,7 @@
 import torch
 import torch.nn
 
-from torch.nn import Conv2d
-from torch.nn import ConvTranspose2d
+from torch.nn import Conv2d, ConvTranspose2d
 
 
 def conv_with_kaiming_uniform(

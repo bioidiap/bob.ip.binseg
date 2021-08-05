@@ -5,8 +5,7 @@
 def _maker_1168(protocol):
 
     from ....data.hrf import dataset as raw
-    from ....data.transforms import Crop
-    from ....data.transforms import Resize
+    from ....data.transforms import Crop, Resize
     from .. import make_dataset as mk
 
     return mk(raw.subsets(protocol), [Crop(0, 108, 2336, 3296), Resize(1168)])

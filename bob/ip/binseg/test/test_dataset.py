@@ -7,8 +7,7 @@ import os
 
 import pkg_resources
 
-from ..data.dataset import CSVDataset
-from ..data.dataset import JSONDataset
+from ..data.dataset import CSVDataset, JSONDataset
 from ..data.sample import Sample
 
 

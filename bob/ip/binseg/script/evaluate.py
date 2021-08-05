@@ -5,12 +5,13 @@ import logging
 
 import click
 
-from bob.extension.scripts.click_helper import ConfigCommand
-from bob.extension.scripts.click_helper import ResourceOption
-from bob.extension.scripts.click_helper import verbosity_option
+from bob.extension.scripts.click_helper import (
+    ConfigCommand,
+    ResourceOption,
+    verbosity_option,
+)
 
-from ..engine.evaluator import compare_annotators
-from ..engine.evaluator import run
+from ..engine.evaluator import compare_annotators, run
 
 logger = logging.getLogger(__name__)
 

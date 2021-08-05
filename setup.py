@@ -1,8 +1,6 @@
-from setuptools import dist
-from setuptools import setup
+from setuptools import dist, setup
 
-from bob.extension.utils import find_packages
-from bob.extension.utils import load_requirements
+from bob.extension.utils import find_packages, load_requirements
 
 dist.Distribution(dict(setup_requires=["bob.extension"]))
 install_requires = load_requirements()

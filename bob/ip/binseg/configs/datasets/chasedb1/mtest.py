@@ -8,9 +8,7 @@
 
 from bob.ip.binseg.configs.datasets.chasedb1.xtest import dataset as _xt
 from bob.ip.binseg.configs.datasets.chasedb1.xtest import second_annotator
-from bob.ip.binseg.data.transforms import CenterCrop
-from bob.ip.binseg.data.transforms import Pad
-from bob.ip.binseg.data.transforms import Resize
+from bob.ip.binseg.data.transforms import CenterCrop, Pad, Resize
 
 dataset = {
     "train": _xt["train"],

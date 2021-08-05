@@ -8,8 +8,7 @@ import shutil
 import click
 import pkg_resources
 
-from bob.extension.scripts.click_helper import AliasedGroup
-from bob.extension.scripts.click_helper import verbosity_option
+from bob.extension.scripts.click_helper import AliasedGroup, verbosity_option
 
 logger = logging.getLogger(__name__)
 

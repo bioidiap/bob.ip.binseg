@@ -15,13 +15,9 @@ import torch
 from tqdm import tqdm
 
 from ..utils.measure import SmoothedValue
-from ..utils.resources import cpu_constants
-from ..utils.resources import cpu_log
-from ..utils.resources import gpu_constants
-from ..utils.resources import gpu_log
+from ..utils.resources import cpu_constants, cpu_log, gpu_constants, gpu_log
 from ..utils.summary import summary
-from .trainer import PYTORCH_GE_110
-from .trainer import torch_evaluation
+from .trainer import PYTORCH_GE_110, torch_evaluation
 
 logger = logging.getLogger(__name__)
 

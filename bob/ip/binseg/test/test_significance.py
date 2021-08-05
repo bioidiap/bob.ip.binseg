@@ -8,9 +8,11 @@ import numpy
 import pytest
 import torch
 
-from ..engine.significance import PERFORMANCE_FIGURES
-from ..engine.significance import _performance_summary
-from ..engine.significance import _winperf_measures
+from ..engine.significance import (
+    PERFORMANCE_FIGURES,
+    _performance_summary,
+    _winperf_measures,
+)
 from ..utils.measure import base_measures
 
 

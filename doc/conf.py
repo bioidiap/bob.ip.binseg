@@ -244,8 +244,7 @@ autodoc_default_options = {
 
 
 # For inter-documentation mapping:
-from bob.extension.utils import link_documentation
-from bob.extension.utils import load_requirements
+from bob.extension.utils import link_documentation, load_requirements
 
 sphinx_requirements = "extra-intersphinx.txt"
 if os.path.exists(sphinx_requirements):

@@ -10,17 +10,19 @@ import pkg_resources
 import torch
 import torchvision.transforms.functional
 
-from ..data.transforms import CenterCrop
-from ..data.transforms import ColorJitter
-from ..data.transforms import Compose
-from ..data.transforms import Crop
-from ..data.transforms import Pad
-from ..data.transforms import RandomHorizontalFlip
-from ..data.transforms import RandomRotation
-from ..data.transforms import RandomVerticalFlip
-from ..data.transforms import Resize
-from ..data.transforms import SingleAutoLevel16to8
-from ..data.transforms import ToTensor
+from ..data.transforms import (
+    CenterCrop,
+    ColorJitter,
+    Compose,
+    Crop,
+    Pad,
+    RandomHorizontalFlip,
+    RandomRotation,
+    RandomVerticalFlip,
+    Resize,
+    SingleAutoLevel16to8,
+    ToTensor,
+)
 
 
 def _create_img(size):

@@ -8,16 +8,20 @@ import sys
 import click
 import numpy
 
-from bob.extension.scripts.click_helper import ConfigCommand
-from bob.extension.scripts.click_helper import ResourceOption
-from bob.extension.scripts.click_helper import verbosity_option
+from bob.extension.scripts.click_helper import (
+    ConfigCommand,
+    ResourceOption,
+    verbosity_option,
+)
 
-from ..engine.significance import PERFORMANCE_FIGURES
-from ..engine.significance import index_of_outliers
-from ..engine.significance import sliding_window_performances
-from ..engine.significance import visual_performances
-from ..engine.significance import write_analysis_figures
-from ..engine.significance import write_analysis_text
+from ..engine.significance import (
+    PERFORMANCE_FIGURES,
+    index_of_outliers,
+    sliding_window_performances,
+    visual_performances,
+    write_analysis_figures,
+    write_analysis_text,
+)
 from .evaluate import _validate_threshold
 from .evaluate import run as run_evaluation
 

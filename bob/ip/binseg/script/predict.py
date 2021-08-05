@@ -11,14 +11,15 @@ import torch
 
 from torch.utils.data import DataLoader
 
-from bob.extension.scripts.click_helper import ConfigCommand
-from bob.extension.scripts.click_helper import ResourceOption
-from bob.extension.scripts.click_helper import verbosity_option
+from bob.extension.scripts.click_helper import (
+    ConfigCommand,
+    ResourceOption,
+    verbosity_option,
+)
 
 from ..engine.predictor import run
 from ..utils.checkpointer import Checkpointer
-from .binseg import download_to_tempfile
-from .binseg import setup_pytorch_device
+from .binseg import download_to_tempfile, setup_pytorch_device
 
 logger = logging.getLogger(__name__)
 

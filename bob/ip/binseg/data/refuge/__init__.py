@@ -39,8 +39,7 @@ import pkg_resources
 import bob.extension
 
 from ..dataset import JSONDataset
-from ..loader import load_pil_rgb
-from ..loader import make_delayed
+from ..loader import load_pil_rgb, make_delayed
 
 _protocols = {
     "optic-disc": pkg_resources.resource_filename(__name__, "default.json"),

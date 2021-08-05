@@ -5,9 +5,7 @@
 def _maker(protocol):
 
     from ....data.refuge import dataset as raw
-    from ....data.transforms import CenterCrop
-    from ....data.transforms import Pad
-    from ....data.transforms import Resize
+    from ....data.transforms import CenterCrop, Pad, Resize
     from .. import make_dataset as mk
 
     # due to different sizes, we need to make the dataset twice

@@ -7,7 +7,6 @@ repos:
       - id: isort
         args: [
           --profile, "black",
-          --force-single-line-imports,
           --line-length, "80",
           --order-by-type,
           --lines-between-types, "1"

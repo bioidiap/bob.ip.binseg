@@ -10,8 +10,7 @@ import PIL.ImageOps
 import torch
 import torch.utils.data
 
-from .transforms import Compose
-from .transforms import ToTensor
+from .transforms import Compose, ToTensor
 
 
 def invert_mode1_image(img):

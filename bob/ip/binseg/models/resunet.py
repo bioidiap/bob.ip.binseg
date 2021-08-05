@@ -6,10 +6,12 @@ from collections import OrderedDict
 import torch.nn
 
 from .backbones.resnet import resnet50_for_segmentation
-from .make_layers import PixelShuffle_ICNR
-from .make_layers import UnetBlock
-from .make_layers import conv_with_kaiming_uniform
-from .make_layers import convtrans_with_kaiming_uniform
+from .make_layers import (
+    PixelShuffle_ICNR,
+    UnetBlock,
+    conv_with_kaiming_uniform,
+    convtrans_with_kaiming_uniform,
+)
 
 
 class ResUNet(torch.nn.Module):

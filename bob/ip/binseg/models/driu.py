@@ -7,8 +7,7 @@ import torch
 import torch.nn
 
 from .backbones.vgg import vgg16_for_segmentation
-from .make_layers import UpsampleCropBlock
-from .make_layers import conv_with_kaiming_uniform
+from .make_layers import UpsampleCropBlock, conv_with_kaiming_uniform
 
 
 class ConcatFuseBlock(torch.nn.Module):
