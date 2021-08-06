@@ -49,8 +49,8 @@ def _resnet_for_segmentation(
         model.load_state_dict(state_dict)
 
     # erase ResNet head (for classification), not used for segmentation
-    delattr(model, 'avgpool')
-    delattr(model, 'fc')
+    delattr(model, "avgpool")
+    delattr(model, "fc")
 
     return model
 

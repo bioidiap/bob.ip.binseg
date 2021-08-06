@@ -60,19 +60,15 @@ More information:
 
 import os
 
-# First, define how to access and load the raw data. Our package provides some
-# stock loaders we use for other datasets. You may have a look at the
-# documentation of that module for details.
-from bob.ip.binseg.data.loader import (
-    load_pil_rgb,
-    load_pil_1,
-)
-
+from bob.ip.binseg.data.dataset import CSVDataset
+from bob.ip.binseg.data.loader import load_pil_1, load_pil_rgb
 from bob.ip.binseg.data.sample import Sample
 
 # How we use the loaders - "sample" is a dictionary where keys are defined
 # below and map to the columns of the CSV files you input.  This one is
 # configured to load images and labels using PIL.
+
+
 def _loader(context, sample):
     # "context" is ignored in this case - database is homogeneous
     # it is a dictionary that passes e.g., the name of the subset
@@ -84,22 +80,21 @@ def _loader(context, sample):
     # it here.
     root_path = "/path/where/raw/files/sit"
 
-    data=load_pil_rgb(os.path.join(root_path, sample["data"]))
-    label=load_pil_1(os.path.join(root_path, sample["label"]))
+    data = load_pil_rgb(os.path.join(root_path, sample["data"]))
+    label = load_pil_1(os.path.join(root_path, sample["label"]))
 
     # You may also return DelayedSample to avoid data loading to take place
     # as the sample object itself is created.  Take a look at our own datasets
     # for examples.
     return Sample(
-            key=os.path.splitext(sample["data"])[0],
-            data=dict(data=data, label=label),
-            )
+        key=os.path.splitext(sample["data"])[0],
+        data=dict(data=data, label=label),
+    )
 
 
 # This is just a class that puts everything together: the CSV file, how to load
 # each sample defined in the dataset, and names for the various columns of the
 # CSV file.  Once created, this object can be called to generate sample lists.
-from bob.ip.binseg.data.dataset import CSVDataset
 
 _raw_dataset = CSVDataset(
     # path to the CSV file(s) - you may add as many subsets as you want:
@@ -109,10 +104,10 @@ _raw_dataset = CSVDataset(
     #   are also provided in such a set).  Data augmentation is NOT applied
     #   using our "make_dataset()" connector.
     subsets={
-        "__train__": "<path/to/train.csv>",  #applies data augmentation
-        "train": "<path/to/train.csv>",  #no data augmentation, evaluate it
-        "test": "<path/to/test.csv>",  #no data augmentation, evaluate it
-        },
+        "__train__": "<path/to/train.csv>",  # applies data augmentation
+        "train": "<path/to/train.csv>",  # no data augmentation, evaluate it
+        "test": "<path/to/test.csv>",  # no data augmentation, evaluate it
+    },
     fieldnames=("data", "label"),  # these are the column names
     loader=_loader,
 )
@@ -123,9 +118,10 @@ _raw_dataset = CSVDataset(
 # that is expected by our engines, after applying the (optional)
 # transformations you define.
 
+# from bob.ip.binseg.configs.datasets import make_dataset as _maker
+
 # Add/tune your (optional) transforms below - these are just examples
 # compatible with a model that requires image inputs of 544 x 544 pixels.
-from bob.ip.binseg.data.transforms import CenterCrop
-from bob.ip.binseg.configs.datasets import make_dataset as _maker
+# from bob.ip.binseg.data.transforms import CenterCrop
 
-#dataset = _maker(_raw_dataset.subsets(), [CenterCrop((544, 544))])
+# dataset = _maker(_raw_dataset.subsets(), [CenterCrop((544, 544))])

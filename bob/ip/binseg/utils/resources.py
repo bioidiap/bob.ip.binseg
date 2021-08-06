@@ -3,13 +3,11 @@
 
 """Tools for interacting with the running computer or GPU"""
 
-import os
-import subprocess
+import logging
 import shutil
+import subprocess
 
 import psutil
-
-import logging
 
 logger = logging.getLogger(__name__)
 
@@ -70,7 +68,7 @@ def run_nvidia_smi(query, rename=None):
             elif k.endswith("MiB"):
                 t_values.append(float(k[:-3].strip()) / 1024)
             else:
-                t_values.append(k)  #unchanged
+                t_values.append(k)  # unchanged
         return tuple(zip(rename, t_values))
 
 
@@ -200,7 +198,6 @@ def cpu_log():
     else:
         # check all cluster components and update process list
         # done so we can keep the cpu_percent() initialization
-        children = _CLUSTER[0].children()
         stored_children = set(_CLUSTER[1:])
         current_children = set(_CLUSTER[0].children())
         keep_children = stored_children - current_children

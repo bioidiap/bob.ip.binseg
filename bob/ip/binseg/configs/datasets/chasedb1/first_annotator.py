@@ -10,5 +10,6 @@
 """
 
 from bob.ip.binseg.configs.datasets.chasedb1 import _maker
+
 dataset = _maker("first-annotator")
 second_annotator = _maker("second-annotator")

@@ -13,11 +13,12 @@ Reference: [RONNEBERGER-2015]_
 """
 
 from torch.optim.lr_scheduler import MultiStepLR
-from bob.ip.binseg.models.unet import unet
-from bob.ip.binseg.models.losses import SoftJaccardBCELogitsLoss
-from bob.ip.binseg.engine.adabound import AdaBound
 
-##### Config #####
+from bob.ip.binseg.engine.adabound import AdaBound
+from bob.ip.binseg.models.losses import SoftJaccardBCELogitsLoss
+from bob.ip.binseg.models.unet import unet
+
+# config
 lr = 0.001
 betas = (0.9, 0.999)
 eps = 1e-08

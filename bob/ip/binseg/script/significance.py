@@ -1,31 +1,31 @@
 #!/usr/bin/env python
 # coding=utf-8
 
+import logging
 import os
 import sys
+
 import click
+import numpy
 
 from bob.extension.scripts.click_helper import (
-    verbosity_option,
     ConfigCommand,
     ResourceOption,
+    verbosity_option,
 )
 
-import numpy
-import logging
-
-logger = logging.getLogger(__name__)
-
-
-from .evaluate import _validate_threshold, run as run_evaluation
 from ..engine.significance import (
+    PERFORMANCE_FIGURES,
+    index_of_outliers,
     sliding_window_performances,
     visual_performances,
-    write_analysis_text,
     write_analysis_figures,
-    index_of_outliers,
-    PERFORMANCE_FIGURES,
+    write_analysis_text,
 )
+from .evaluate import _validate_threshold
+from .evaluate import run as run_evaluation
+
+logger = logging.getLogger(__name__)
 
 
 def _eval_sliding_windows(
@@ -307,7 +307,14 @@ def _eval_differences(
     )
 
     retval = visual_performances(
-        dataset, evaluate, perf_diff, size, stride, figure, nproc, outdir,
+        dataset,
+        evaluate,
+        perf_diff,
+        size,
+        stride,
+        figure,
+        nproc,
+        outdir,
     )
 
     # cache sliding window performance for later use, if necessary
@@ -560,22 +567,22 @@ def significance(
         checkpoint_folder,
     )
 
-    perf_diff = _eval_differences(
-        names,
-        (perf1, perf2),
-        evaluate,
-        dataset,
-        size,
-        stride,
-        (
-            output_folder
-            if output_folder is None
-            else os.path.join(output_folder, "diff")
-        ),
-        figure,
-        parallel,
-        checkpoint_folder,
-    )
+    # perf_diff = _eval_differences(
+    #     names,
+    #     (perf1, perf2),
+    #     evaluate,
+    #     dataset,
+    #     size,
+    #     stride,
+    #     (
+    #         output_folder
+    #         if output_folder is None
+    #         else os.path.join(output_folder, "diff")
+    #     ),
+    #     figure,
+    #     parallel,
+    #     checkpoint_folder,
+    # )
 
     # loads all figures for the given threshold
     stems = list(perf1.keys())

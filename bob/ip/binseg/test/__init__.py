@@ -3,8 +3,8 @@
 
 """Unit tests"""
 
-import tempfile
 import logging
+import tempfile
 
 logger = logging.getLogger(__name__)
 
@@ -30,8 +30,8 @@ def mock_dataset():
         logger.info("Test database already set up - not downloading")
     else:
         logger.info("Test database not available, downloading...")
-        import zipfile
         import urllib.request
+        import zipfile
 
         # Download the file from `url` and save it locally under `file_name`:
         with urllib.request.urlopen(_URL) as r, tempfile.TemporaryFile() as f:

@@ -21,12 +21,12 @@ baseline.
     * Test samples: 50
 """
 
-import os
 import csv
-import pkg_resources
+import os
 
 import PIL.Image
 import PIL.ImageDraw
+import pkg_resources
 
 import bob.extension
 
@@ -66,7 +66,10 @@ def _pad_right(img):
 def _raw_data_loader(sample):
     data = load_pil_rgb(os.path.join(_root_path, sample["data"]))
     label = _txt_to_pil_1(os.path.join(_root_path, sample["label"]), data.size)
-    return dict(data=data, label=label,)
+    return dict(
+        data=data,
+        label=label,
+    )
 
 
 def _sample_101_loader(sample):

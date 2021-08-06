@@ -3,10 +3,10 @@
 
 """Tests for our CLI applications"""
 
-import os
-import re
 import fnmatch
 import logging
+import os
+import re
 import tempfile
 
 from click.testing import CliRunner

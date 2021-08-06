@@ -5,14 +5,13 @@
 
 
 import numpy
-import pandas
-import torch
 import pytest
+import torch
 
 from ..engine.significance import (
-    _winperf_measures,
-    _performance_summary,
     PERFORMANCE_FIGURES,
+    _performance_summary,
+    _winperf_measures,
 )
 from ..utils.measure import base_measures
 
@@ -158,7 +157,9 @@ def test_winperf_measures_cross_with_padding_2():
     _check_window_measures(pred, gt, mask, threshold, size, stride, expected)
 
 
-def _check_performance_summary(pred, gt, mask, threshold, size, stride, s, figure):
+def _check_performance_summary(
+    pred, gt, mask, threshold, size, stride, s, figure
+):
 
     figsize = pred.shape
     pred = torch.tensor(pred)
@@ -239,7 +240,14 @@ def test_performance_summary_alltrue_accuracy():
 
     for fig in PERFORMANCE_FIGURES:
         _check_performance_summary(
-            pred, gt, mask, threshold, size, stride, stats, fig,
+            pred,
+            gt,
+            mask,
+            threshold,
+            size,
+            stride,
+            stats,
+            fig,
         )
 
 
@@ -264,20 +272,67 @@ def test_performance_summary_cross():
     # original image
     stats = [
         # first row of image
-        [[(0,0)], [(0,0),(0,1)], [(0,0),(0,1),(0,2)], [(0,1),(0,2)], [(0,2)]],
+        [
+            [(0, 0)],
+            [(0, 0), (0, 1)],
+            [(0, 0), (0, 1), (0, 2)],
+            [(0, 1), (0, 2)],
+            [(0, 2)],
+        ],
         # second row of image
-        [[(0,0),(1,0)], [(0,0),(0,1),(1,0),(1,1)], [(0,0),(0,1),(0,2),(1,0),(1,1),(1,2)], [(0,1),(0,2),(1,1),(1,2)], [(0,2),(1,2)]],
+        [
+            [(0, 0), (1, 0)],
+            [(0, 0), (0, 1), (1, 0), (1, 1)],
+            [(0, 0), (0, 1), (0, 2), (1, 0), (1, 1), (1, 2)],
+            [(0, 1), (0, 2), (1, 1), (1, 2)],
+            [(0, 2), (1, 2)],
+        ],
         # third row of image
-        [[(0,0),(1,0),(2,0)], [(0,0),(0,1),(1,0),(1,1),(2,0),(2,1)], [(0,0),(0,1),(0,2),(1,0),(1,1),(1,2),(2,0),(2,1),(2,2)], [(0,1),(0,2),(1,1),(1,2),(2,1),(2,2)], [(0,2),(1,2),(2,2)]],
+        [
+            [(0, 0), (1, 0), (2, 0)],
+            [(0, 0), (0, 1), (1, 0), (1, 1), (2, 0), (2, 1)],
+            [
+                (0, 0),
+                (0, 1),
+                (0, 2),
+                (1, 0),
+                (1, 1),
+                (1, 2),
+                (2, 0),
+                (2, 1),
+                (2, 2),
+            ],
+            [(0, 1), (0, 2), (1, 1), (1, 2), (2, 1), (2, 2)],
+            [(0, 2), (1, 2), (2, 2)],
+        ],
         # fourth row of image
-        [[(1,0),(2,0)], [(1,0),(1,1),(2,0),(2,1)], [(1,0),(1,1),(1,2),(2,0),(2,1),(2,2)], [(1,1),(1,2),(2,1),(2,2)], [(1,2),(2,2)]],
+        [
+            [(1, 0), (2, 0)],
+            [(1, 0), (1, 1), (2, 0), (2, 1)],
+            [(1, 0), (1, 1), (1, 2), (2, 0), (2, 1), (2, 2)],
+            [(1, 1), (1, 2), (2, 1), (2, 2)],
+            [(1, 2), (2, 2)],
+        ],
         # fifth row of image
-        [[(2,0)], [(2,0),(2,1)], [(2,0),(2,1),(2,2)], [(2,1),(2,2)], [(2,2)]],
+        [
+            [(2, 0)],
+            [(2, 0), (2, 1)],
+            [(2, 0), (2, 1), (2, 2)],
+            [(2, 1), (2, 2)],
+            [(2, 2)],
+        ],
     ]
 
     for fig in PERFORMANCE_FIGURES:
         _check_performance_summary(
-            pred, gt, mask, threshold, size, stride, stats, fig,
+            pred,
+            gt,
+            mask,
+            threshold,
+            size,
+            stride,
+            stats,
+            fig,
         )
 
 
@@ -299,22 +354,39 @@ def test_performance_summary_cross_with_padding():
     # original image
     stats = [
         # first row of image
-        [[(0,0)], [(0,0)], [(0,0),(0,1)], [(0,0),(0,1)], [(0,1)]],
+        [[(0, 0)], [(0, 0)], [(0, 0), (0, 1)], [(0, 0), (0, 1)], [(0, 1)]],
         # second row of image
-        [[(0,0)], [(0,0)], [(0,0),(0,1)], [(0,0),(0,1)], [(0,1)]],
+        [[(0, 0)], [(0, 0)], [(0, 0), (0, 1)], [(0, 0), (0, 1)], [(0, 1)]],
         # third row of image
-        [[(0,0),(1,0)], [(0,0),(1,0)], [(0,0),(0,1),(1,0),(1,1)],
-            [(0,0),(0,1),(1,0),(1,1)], [(0,1),(1,1)]],
+        [
+            [(0, 0), (1, 0)],
+            [(0, 0), (1, 0)],
+            [(0, 0), (0, 1), (1, 0), (1, 1)],
+            [(0, 0), (0, 1), (1, 0), (1, 1)],
+            [(0, 1), (1, 1)],
+        ],
         # fourth row of image
-        [[(0,0),(1,0)], [(0,0),(1,0)], [(0,0),(0,1),(1,0),(1,1)],
-            [(0,0),(0,1),(1,0),(1,1)], [(0,1),(1,1)]],
+        [
+            [(0, 0), (1, 0)],
+            [(0, 0), (1, 0)],
+            [(0, 0), (0, 1), (1, 0), (1, 1)],
+            [(0, 0), (0, 1), (1, 0), (1, 1)],
+            [(0, 1), (1, 1)],
+        ],
         # fifth row of image
-        [[(1,0)], [(1,0)], [(1,0),(1,1)], [(1,0),(1,1)], [(1,1)]],
+        [[(1, 0)], [(1, 0)], [(1, 0), (1, 1)], [(1, 0), (1, 1)], [(1, 1)]],
     ]
 
     for fig in PERFORMANCE_FIGURES:
         _check_performance_summary(
-            pred, gt, mask, threshold, size, stride, stats, fig,
+            pred,
+            gt,
+            mask,
+            threshold,
+            size,
+            stride,
+            stats,
+            fig,
         )
 
 
@@ -339,20 +411,37 @@ def test_performance_summary_cross_with_padding_2():
     # original image
     stats = [
         # first row of image
-        [[(0,0)], [(0,0)], [(0,0),(0,1)], [(0,0),(0,1)], [(0,1)]],
+        [[(0, 0)], [(0, 0)], [(0, 0), (0, 1)], [(0, 0), (0, 1)], [(0, 1)]],
         # second row of image
-        [[(0,0)], [(0,0)], [(0,0),(0,1)], [(0,0),(0,1)], [(0,1)]],
+        [[(0, 0)], [(0, 0)], [(0, 0), (0, 1)], [(0, 0), (0, 1)], [(0, 1)]],
         # third row of image
-        [[(0,0),(1,0)], [(0,0),(1,0)], [(0,0),(0,1),(1,0),(1,1)],
-            [(0,0),(0,1),(1,0),(1,1)], [(0,1),(1,1)]],
+        [
+            [(0, 0), (1, 0)],
+            [(0, 0), (1, 0)],
+            [(0, 0), (0, 1), (1, 0), (1, 1)],
+            [(0, 0), (0, 1), (1, 0), (1, 1)],
+            [(0, 1), (1, 1)],
+        ],
         # fourth row of image
-        [[(0,0),(1,0)], [(0,0),(1,0)], [(0,0),(0,1),(1,0),(1,1)],
-            [(0,0),(0,1),(1,0),(1,1)], [(0,1),(1,1)]],
+        [
+            [(0, 0), (1, 0)],
+            [(0, 0), (1, 0)],
+            [(0, 0), (0, 1), (1, 0), (1, 1)],
+            [(0, 0), (0, 1), (1, 0), (1, 1)],
+            [(0, 1), (1, 1)],
+        ],
         # fifth row of image
-        [[(1,0)], [(1,0)], [(1,0),(1,1)], [(1,0),(1,1)], [(1,1)]],
+        [[(1, 0)], [(1, 0)], [(1, 0), (1, 1)], [(1, 0), (1, 1)], [(1, 1)]],
     ]
 
     for fig in PERFORMANCE_FIGURES:
         _check_performance_summary(
-            pred, gt, mask, threshold, size, stride, stats, fig,
+            pred,
+            gt,
+            mask,
+            threshold,
+            size,
+            stride,
+            stats,
+            fig,
         )

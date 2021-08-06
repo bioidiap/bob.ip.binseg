@@ -4,6 +4,7 @@
 """Test code for datasets"""
 
 import os
+
 import pkg_resources
 
 from ..data.dataset import CSVDataset, JSONDataset
@@ -16,32 +17,32 @@ def _data_file(f):
 
 def _raw_data_loader(context, d):
     return Sample(
-            data=[
-                float(d["sepal_length"]),
-                float(d["sepal_width"]),
-                float(d["petal_length"]),
-                float(d["petal_width"]),
-                d["species"][5:],
-                ],
-            key=(context["subset"] + str(context["order"]))
-            )
+        data=[
+            float(d["sepal_length"]),
+            float(d["sepal_width"]),
+            float(d["petal_length"]),
+            float(d["petal_width"]),
+            d["species"][5:],
+        ],
+        key=(context["subset"] + str(context["order"])),
+    )
 
 
 def test_csv_loading():
 
     # tests if we can build a simple CSV loader for the Iris Flower dataset
     subsets = {
-            "train": _data_file("iris-train.csv"),
-            "test": _data_file("iris-train.csv")
-            }
+        "train": _data_file("iris-train.csv"),
+        "test": _data_file("iris-train.csv"),
+    }
 
     fieldnames = (
-            "sepal_length",
-            "sepal_width",
-            "petal_length",
-            "petal_width",
-            "species",
-            )
+        "sepal_length",
+        "sepal_width",
+        "petal_length",
+        "petal_width",
+        "species",
+    )
 
     dataset = CSVDataset(subsets, fieldnames, _raw_data_loader)
     dataset.check()
@@ -70,12 +71,12 @@ def test_json_loading():
     protocols = {"default": _data_file("iris.json")}
 
     fieldnames = (
-            "sepal_length",
-            "sepal_width",
-            "petal_length",
-            "petal_width",
-            "species",
-            )
+        "sepal_length",
+        "sepal_width",
+        "petal_length",
+        "petal_width",
+        "species",
+    )
 
     dataset = JSONDataset(protocols, fieldnames, _raw_data_loader)
     dataset.check()

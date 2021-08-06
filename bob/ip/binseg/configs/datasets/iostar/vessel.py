@@ -9,4 +9,5 @@
 """
 
 from bob.ip.binseg.configs.datasets.iostar import _maker
+
 dataset = _maker("vessel")

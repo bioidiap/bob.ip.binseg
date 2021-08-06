@@ -6,7 +6,7 @@ from collections import OrderedDict
 import torch.nn
 
 from .backbones.vgg import vgg16_for_segmentation
-from .make_layers import conv_with_kaiming_uniform, UnetBlock
+from .make_layers import UnetBlock, conv_with_kaiming_uniform
 
 
 class UNet(torch.nn.Module):
@@ -25,7 +25,9 @@ class UNet(torch.nn.Module):
         c_decode1, c_decode2, c_decode3, c_decode4, c_decode5 = in_channels_list
 
         # build layers
-        self.decode4 = UnetBlock(c_decode5, c_decode4, pixel_shuffle, middle_block=True)
+        self.decode4 = UnetBlock(
+            c_decode5, c_decode4, pixel_shuffle, middle_block=True
+        )
         self.decode3 = UnetBlock(c_decode4, c_decode3, pixel_shuffle)
         self.decode2 = UnetBlock(c_decode3, c_decode2, pixel_shuffle)
         self.decode1 = UnetBlock(c_decode2, c_decode1, pixel_shuffle)
@@ -75,7 +77,8 @@ def unet(pretrained_backbone=True, progress=True):
     """
 
     backbone = vgg16_for_segmentation(
-        pretrained=pretrained_backbone, progress=progress,
+        pretrained=pretrained_backbone,
+        progress=progress,
         return_features=[3, 8, 14, 22, 29],
     )
     head = UNet([64, 128, 256, 512, 512], pixel_shuffle=False)
@@ -83,6 +86,7 @@ def unet(pretrained_backbone=True, progress=True):
     order = [("backbone", backbone), ("head", head)]
     if pretrained_backbone:
         from .normalizer import TorchVisionNormalizer
+
         order = [("normalizer", TorchVisionNormalizer())] + order
 
     model = torch.nn.Sequential(OrderedDict(order))

@@ -2,20 +2,15 @@
 # -*- coding: utf-8 -*-
 
 import contextlib
-from itertools import cycle
-
-import numpy
-import pandas
-
-import matplotlib
-
-matplotlib.use("agg")
-
-import matplotlib.pyplot as plt
-from matplotlib.patches import Arc
-
 import logging
 
+from itertools import cycle
+
+import matplotlib
+import matplotlib.pyplot as plt
+import numpy
+
+matplotlib.use("agg")
 logger = logging.getLogger(__name__)
 
 
@@ -61,41 +56,53 @@ def _concave_hull(x, y, lx, ux, ly, uy):
         left = _x - _lx
         right = _ux - _x
 
-        angles = numpy.arange(0, numpy.pi/2, step=2*numpy.pi/steps)
+        angles = numpy.arange(0, numpy.pi / 2, step=2 * numpy.pi / steps)
         points = numpy.ndarray((0, 2))
 
         # upper left part (90 -> 180 degrees)
-        px = 2*left * numpy.cos(angles)
-        py = (up/left) * numpy.sqrt(numpy.square(2*left) - numpy.square(px))
+        px = 2 * left * numpy.cos(angles)
+        py = (up / left) * numpy.sqrt(numpy.square(2 * left) - numpy.square(px))
         # order: x and y increase
-        points = numpy.vstack((points, numpy.array([_x-px, _y+py]).T))
+        points = numpy.vstack((points, numpy.array([_x - px, _y + py]).T))
 
         # upper right part (0 -> 90 degrees)
-        px = 2*right * numpy.cos(angles)
-        py = (up/right) * numpy.sqrt(numpy.square(2*right) - numpy.square(px))
+        px = 2 * right * numpy.cos(angles)
+        py = (up / right) * numpy.sqrt(
+            numpy.square(2 * right) - numpy.square(px)
+        )
         # order: x increases and y decreases
-        points = numpy.vstack((points, numpy.flipud(numpy.array([_x+px,
-            _y+py]).T)))
+        points = numpy.vstack(
+            (points, numpy.flipud(numpy.array([_x + px, _y + py]).T))
+        )
 
         # lower right part (180 -> 270 degrees)
-        px = 2*right * numpy.cos(angles)
-        py = (down/right) * numpy.sqrt(numpy.square(2*right) - numpy.square(px))
+        px = 2 * right * numpy.cos(angles)
+        py = (down / right) * numpy.sqrt(
+            numpy.square(2 * right) - numpy.square(px)
+        )
         # order: x increases and y decreases
-        points = numpy.vstack((points, numpy.array([_x+px, _y-py]).T))
+        points = numpy.vstack((points, numpy.array([_x + px, _y - py]).T))
 
         # lower left part (180 -> 270 degrees)
-        px = 2*left * numpy.cos(angles)
-        py = (down/left) * numpy.sqrt(numpy.square(2*left) - numpy.square(px))
+        px = 2 * left * numpy.cos(angles)
+        py = (down / left) * numpy.sqrt(
+            numpy.square(2 * left) - numpy.square(px)
+        )
         # order: x decreases and y increases
-        points = numpy.vstack((points, numpy.flipud(numpy.array([_x-px,
-            _y-py]).T)))
+        points = numpy.vstack(
+            (points, numpy.flipud(numpy.array([_x - px, _y - py]).T))
+        )
 
         return points
 
     retval = numpy.ndarray((0, 2))
     for (k, l, m, n, o, p) in zip(x, y, lx, ux, ly, uy):
         retval = numpy.vstack(
-            (retval, [numpy.nan, numpy.nan], _irregular_ellipse_points(k, l, m, n, o, p))
+            (
+                retval,
+                [numpy.nan, numpy.nan],
+                _irregular_ellipse_points(k, l, m, n, o, p),
+            )
         )
     return retval
 
@@ -267,7 +274,7 @@ def precision_recall_f1iso(data, credible=True):
             max_recall = df.mean_recall.idxmax()
             pi = df.mean_precision[max_recall:]
             ri = df.mean_recall[max_recall:]
-            valid = (pi + ri) > 0
+            # valid = (pi + ri) > 0
 
             # optimal point along the curve
             bins = len(df)
@@ -316,18 +323,22 @@ def precision_recall_f1iso(data, credible=True):
 
             if credible:
 
-                hull = _concave_hull(df.mean_recall, df.mean_precision,
-                        df.lower_recall, df.upper_recall,
-                        df.lower_precision, df.upper_precision,
-                        )
+                hull = _concave_hull(
+                    df.mean_recall,
+                    df.mean_precision,
+                    df.lower_recall,
+                    df.upper_recall,
+                    df.lower_precision,
+                    df.upper_precision,
+                )
                 p = plt.Polygon(
-                        hull,
-                        facecolor=color,
-                        alpha=0.2,
-                        edgecolor="none",
-                        lw=0.2,
-                        closed=True,
-                    )
+                    hull,
+                    facecolor=color,
+                    alpha=0.2,
+                    edgecolor="none",
+                    lw=0.2,
+                    closed=True,
+                )
                 axes.add_patch(p)
                 legend[-1][0].append(p)
 

@@ -9,4 +9,5 @@
 """
 
 from bob.ip.binseg.configs.datasets.refuge import _maker
+
 dataset = _maker("optic-cup")

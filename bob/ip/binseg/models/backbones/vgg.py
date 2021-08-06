@@ -59,8 +59,8 @@ def _vgg_for_segmentation(
         model.load_state_dict(state_dict)
 
     # erase VGG head (for classification), not used for segmentation
-    delattr(model, 'classifier')
-    delattr(model, 'avgpool')
+    delattr(model, "classifier")
+    delattr(model, "avgpool")
 
     return model
 

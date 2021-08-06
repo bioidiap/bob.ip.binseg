@@ -1,6 +1,7 @@
 """Loss implementations"""
 
 import torch
+
 from torch.nn.modules.loss import _Loss
 
 
@@ -155,8 +156,9 @@ class MultiWeightedBCELogitsLoss(WeightedBCELogitsLoss):
 
         return torch.cat(
             [
-                super(MultiWeightedBCELogitsLoss, self).forward(i, target,
-                    mask).unsqueeze(0)
+                super(MultiWeightedBCELogitsLoss, self)
+                .forward(i, target, mask)
+                .unsqueeze(0)
                 for i in input
             ]
         ).mean()
@@ -180,7 +182,7 @@ class MultiSoftJaccardBCELogitsLoss(SoftJaccardBCELogitsLoss):
     def __init__(self, alpha=0.7):
         super(MultiSoftJaccardBCELogitsLoss, self).__init__(alpha=alpha)
 
-    def forward(self, input, target , mask):
+    def forward(self, input, target, mask):
         """
         Parameters
         ----------
@@ -207,9 +209,9 @@ class MultiSoftJaccardBCELogitsLoss(SoftJaccardBCELogitsLoss):
 
         return torch.cat(
             [
-                super(MultiSoftJaccardBCELogitsLoss, self).forward(
-                    i, target, mask
-                ).unsqueeze(0)
+                super(MultiSoftJaccardBCELogitsLoss, self)
+                .forward(i, target, mask)
+                .unsqueeze(0)
                 for i in input
             ]
         ).mean()

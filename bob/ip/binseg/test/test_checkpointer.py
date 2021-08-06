@@ -3,20 +3,18 @@
 
 import os
 import unittest
+
 from collections import OrderedDict
 from tempfile import TemporaryDirectory
 
 import torch
-import pytest
 
 from ..utils.checkpointer import Checkpointer
 
 
 class TestCheckpointer(unittest.TestCase):
     def create_model(self):
-        return torch.nn.Sequential(
-            torch.nn.Linear(2, 3), torch.nn.Linear(3, 1)
-        )
+        return torch.nn.Sequential(torch.nn.Linear(2, 3), torch.nn.Linear(3, 1))
 
     def create_complex_model(self):
         m = torch.nn.Module()
@@ -72,7 +70,7 @@ class TestCheckpointer(unittest.TestCase):
             with TemporaryDirectory() as g:
                 fresh_checkpointer = Checkpointer(fresh_model, path=g)
                 assert not fresh_checkpointer.has_checkpoint()
-                assert fresh_checkpointer.last_checkpoint() == None
+                assert fresh_checkpointer.last_checkpoint() is None
                 _ = fresh_checkpointer.load(
                     os.path.join(f, "checkpoint_file.pth")
                 )

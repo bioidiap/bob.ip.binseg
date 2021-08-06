@@ -4,14 +4,9 @@
 """Shenzhen cross-evaluation dataset
 """
 
-from bob.ip.binseg.configs.datasets.Shenzhen.default import (
-    dataset as _shenzhen
-)
 from bob.ip.binseg.configs.datasets.JSRT.default import dataset as _jsrt
-from bob.ip.binseg.configs.datasets.MC.default import (
-    dataset as _mc,
-)
-
+from bob.ip.binseg.configs.datasets.MC.default import dataset as _mc
+from bob.ip.binseg.configs.datasets.Shenzhen.default import dataset as _shenzhen
 
 dataset = {
     "train": _shenzhen["train"],
@@ -22,5 +17,5 @@ dataset = {
     "MC (test)": _mc["test"],
     "JSRT (train)": _jsrt["train"],
     "JSRT (validation)": _jsrt["validation"],
-    "JSRT (test)": _jsrt["test"]
+    "JSRT (test)": _jsrt["test"],
 }

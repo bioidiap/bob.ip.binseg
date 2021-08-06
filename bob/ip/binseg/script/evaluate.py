@@ -1,18 +1,17 @@
 #!/usr/bin/env python
 # coding=utf-8
 
-import os
+import logging
+
 import click
 
 from bob.extension.scripts.click_helper import (
-    verbosity_option,
     ConfigCommand,
     ResourceOption,
+    verbosity_option,
 )
 
-from ..engine.evaluator import run, compare_annotators
-
-import logging
+from ..engine.evaluator import compare_annotators, run
 
 logger = logging.getLogger(__name__)
 
@@ -158,8 +157,7 @@ def evaluate(
     steps,
     **kwargs,
 ):
-    """Evaluates an FCN on a binary segmentation task.
-    """
+    """Evaluates an FCN on a binary segmentation task."""
 
     threshold = _validate_threshold(threshold, dataset)
 

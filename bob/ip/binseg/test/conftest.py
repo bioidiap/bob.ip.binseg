@@ -2,6 +2,7 @@
 # coding=utf-8
 
 import pytest
+
 import bob.extension
 
 
@@ -13,7 +14,6 @@ def pytest_configure(config):
         "skip_if_rc_var_not_set(name): this mark skips the test if a certain "
         "~/.bobrc variable is not set",
     )
-
 
     config.addinivalue_line("markers", "slow: this mark indicates slow tests")
 
@@ -36,8 +36,10 @@ def pytest_runtest_setup(item):
     if rc_names:
         missing = [k for k in rc_names if (k not in bob.extension.rc)]
         if any(missing):
-            pytest.skip(f"Test skipped because {', '.join(missing)} are **not** "
-                    f"set in ~/.bobrc")
+            pytest.skip(
+                f"Test skipped because {', '.join(missing)} are **not** "
+                f"set in ~/.bobrc"
+            )
 
 
 def rc_variable_set(name):

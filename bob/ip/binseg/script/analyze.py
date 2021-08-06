@@ -1,19 +1,18 @@
 #!/usr/bin/env python
 # coding=utf-8
 
+import logging
 import os
 
 import click
 
 from bob.extension.scripts.click_helper import (
-    verbosity_option,
     ConfigCommand,
     ResourceOption,
+    verbosity_option,
 )
 
 from .binseg import save_sh_command
-
-import logging
 
 logger = logging.getLogger(__name__)
 
@@ -145,39 +144,39 @@ def analyze(
 ):
     """Runs a complete evaluation from prediction to comparison
 
-    This script is just a wrapper around the individual scripts for running
-    prediction and evaluating FCN models.  It organises the output in a
-    preset way::
+        This script is just a wrapper around the individual scripts for running
+        prediction and evaluating FCN models.  It organises the output in a
+        preset way::
 
-\b
-       └─ <output-folder>/
-          ├── predictions/  #the prediction outputs for the train/test set
-          ├── overlayed/  #the overlayed outputs for the train/test set
-             ├── predictions/  #predictions overlayed on the input images
-             ├── analysis/  #predictions overlayed on the input images
-             ├              #including analysis of false positives, negatives
-             ├              #and true positives
-             └── second-annotator/  #if set, store overlayed images for the
-                                    #second annotator here
-          └── analysis /  #the outputs of the analysis of both train/test sets
-                          #includes second-annotator "mesures" as well, if
-                          # configured
+    \b
+           └─ <output-folder>/
+              ├── predictions/  #the prediction outputs for the train/test set
+              ├── overlayed/  #the overlayed outputs for the train/test set
+                 ├── predictions/  #predictions overlayed on the input images
+                 ├── analysis/  #predictions overlayed on the input images
+                 ├              #including analysis of false positives, negatives
+                 ├              #and true positives
+                 └── second-annotator/  #if set, store overlayed images for the
+                                        #second annotator here
+              └── analysis /  #the outputs of the analysis of both train/test sets
+                              #includes second-annotator "mesures" as well, if
+                              # configured
 
-    N.B.: The tool is designed to prevent analysis bias and allows one to
-    provide separate subsets for training and evaluation.  Instead of using
-    simple datasets, datasets for full experiment running should be
-    dictionaries with specific subset names:
+        N.B.: The tool is designed to prevent analysis bias and allows one to
+        provide separate subsets for training and evaluation.  Instead of using
+        simple datasets, datasets for full experiment running should be
+        dictionaries with specific subset names:
 
-    * ``__train__``: dataset used for training, prioritarily.  It is typically
-      the dataset containing data augmentation pipelines.
-    * ``train`` (optional): a copy of the ``__train__`` dataset, without data
-      augmentation, that will be evaluated alongside other sets available
-    * ``*``: any other name, not starting with an underscore character (``_``),
-      will be considered a test set for evaluation.
+        * ``__train__``: dataset used for training, prioritarily.  It is typically
+          the dataset containing data augmentation pipelines.
+        * ``train`` (optional): a copy of the ``__train__`` dataset, without data
+          augmentation, that will be evaluated alongside other sets available
+        * ``*``: any other name, not starting with an underscore character (``_``),
+          will be considered a test set for evaluation.
 
-    N.B.2: The threshold used for calculating the F1-score on the test set, or
-    overlay analysis (false positives, negatives and true positives overprinted
-    on the original image) also follows the logic above.
+        N.B.2: The threshold used for calculating the F1-score on the test set, or
+        overlay analysis (false positives, negatives and true positives overprinted
+        on the original image) also follows the logic above.
     """
 
     command_sh = os.path.join(output_folder, "command.sh")
@@ -185,9 +184,7 @@ def analyze(
         # only save if experiment has not saved yet something similar
         save_sh_command(command_sh)
 
-
-
-    ## Prediction
+    # Prediction
     logger.info("Started prediction")
 
     from .predict import predict
@@ -212,7 +209,7 @@ def analyze(
     )
     logger.info("Ended prediction")
 
-    ## Evaluation
+    # Evaluation
     logger.info("Started evaluation")
 
     from .evaluate import evaluate
@@ -247,7 +244,7 @@ def analyze(
 
     logger.info("Ended evaluation")
 
-    ## Comparison
+    # Comparison
     logger.info("Started comparison")
 
     # compare performances on the various sets
@@ -260,29 +257,39 @@ def analyze(
             continue
         candidate = os.path.join(analysis_folder, f"{k}.csv")
         if not os.path.exists(candidate):
-            logger.error(f"Skipping dataset '{k}' " \
-                    f"(candidate CSV file `{candidate}` does not exist!)")
+            logger.error(
+                f"Skipping dataset '{k}' "
+                f"(candidate CSV file `{candidate}` does not exist!)"
+            )
             continue
         systems += [k, os.path.join(analysis_folder, f"{k}.csv")]
     if second_annotator is not None:
         for k, v in second_annotator.items():
             if k.startswith("_"):
-                logger.info(f"Skipping second-annotator '{k}' " \
-                        f"(not to be compared)")
+                logger.info(
+                    f"Skipping second-annotator '{k}' " f"(not to be compared)"
+                )
                 continue
             if k not in dataset:
-                logger.info(f"Skipping second-annotator '{k}' " \
-                        f"(no equivalent `dataset[{k}]`)")
+                logger.info(
+                    f"Skipping second-annotator '{k}' "
+                    f"(no equivalent `dataset[{k}]`)"
+                )
                 continue
             if not dataset[k].all_keys_match(v):
-                logger.warning(f"Skipping second-annotator '{k}' " \
-                        f"(keys do not match `dataset[{k}]`?)")
+                logger.warning(
+                    f"Skipping second-annotator '{k}' "
+                    f"(keys do not match `dataset[{k}]`?)"
+                )
                 continue
-            candidate = os.path.join(analysis_folder, "second-annotator",
-                    f"{k}.csv")
+            candidate = os.path.join(
+                analysis_folder, "second-annotator", f"{k}.csv"
+            )
             if not os.path.exists(candidate):
-                logger.error(f"Skipping second-annotator '{k}' " \
-                        f"(candidate CSV file `{candidate}` does not exist!)")
+                logger.error(
+                    f"Skipping second-annotator '{k}' "
+                    f"(candidate CSV file `{candidate}` does not exist!)"
+                )
                 continue
             systems += [f"{k} (2nd. annot.)", candidate]
 

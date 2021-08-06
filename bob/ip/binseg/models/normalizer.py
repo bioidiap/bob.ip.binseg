@@ -25,8 +25,8 @@ class TorchVisionNormalizer(torch.nn.Module):
         super(TorchVisionNormalizer, self).__init__()
         mean = torch.as_tensor([0.485, 0.456, 0.406])[None, :, None, None]
         std = torch.as_tensor([0.229, 0.224, 0.225])[None, :, None, None]
-        self.register_buffer('mean', mean)
-        self.register_buffer('std', std)
+        self.register_buffer("mean", mean)
+        self.register_buffer("std", std)
         self.name = "torchvision-normalizer"
 
     def forward(self, inputs):

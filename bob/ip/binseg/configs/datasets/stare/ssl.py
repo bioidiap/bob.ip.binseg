@@ -18,8 +18,8 @@ For details on datasets, consult:
 * :py:mod:`bob.ip.binseg.data.hrf`
 """
 
-from bob.ip.binseg.configs.datasets.stare.covd import dataset as _covd
 from bob.ip.binseg.configs.datasets.stare.ah import dataset as _baseline
+from bob.ip.binseg.configs.datasets.stare.covd import dataset as _covd
 from bob.ip.binseg.data.utils import SSLDataset
 
 # copy dictionary and replace only the augmented train dataset

@@ -20,13 +20,16 @@ normal cases.  It contains a total  of 138 resolution of 4020 x 4892, or
 """
 
 import os
-import pkg_resources
+
 import numpy as np
-import bob.extension
+import pkg_resources
+
 from PIL import Image
 
+import bob.extension
+
 from ..dataset import JSONDataset
-from ..loader import load_pil_rgb, load_pil_1, make_delayed
+from ..loader import load_pil_1, load_pil_rgb, make_delayed
 
 _protocols = [
     pkg_resources.resource_filename(__name__, "default.json"),
@@ -40,10 +43,18 @@ _root_path = bob.extension.rc.get(
 def _raw_data_loader(sample):
     return dict(
         data=load_pil_rgb(os.path.join(_root_path, sample["data"])),
-        label=Image.fromarray(np.ma.mask_or(np.asarray(load_pil_1(os.path.join(_root_path, sample["label_l"]))),
-                                            np.asarray(load_pil_1(os.path.join(_root_path, sample["label_r"])))
-        )),
+        label=Image.fromarray(
+            np.ma.mask_or(
+                np.asarray(
+                    load_pil_1(os.path.join(_root_path, sample["label_l"]))
+                ),
+                np.asarray(
+                    load_pil_1(os.path.join(_root_path, sample["label_r"]))
+                ),
+            )
+        ),
     )
+
 
 def _loader(context, sample):
     # "context" is ignored in this case - database is homogeneous
@@ -52,6 +63,9 @@ def _loader(context, sample):
 
 
 dataset = JSONDataset(
-    protocols=_protocols, fieldnames=("data", "label_l", "label_r"), loader=_loader)
-    
+    protocols=_protocols,
+    fieldnames=("data", "label_l", "label_r"),
+    loader=_loader,
+)
+
 """Montgomery County dataset object"""

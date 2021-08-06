@@ -3,22 +3,20 @@
 
 """Defines functionality for the evaluation of predictions"""
 
+import logging
 import os
 
-import PIL
+import h5py
 import numpy
 import pandas
-from tqdm import tqdm
-
+import PIL
 import torch
 import torch.nn.functional
 import torchvision.transforms.functional as VF
 
-import h5py
+from tqdm import tqdm
 
 from ..utils.measure import base_measures, bayesian_measures
-
-import logging
 
 logger = logging.getLogger(__name__)
 
@@ -347,7 +345,7 @@ def _summarize(data):
     # create a new dataframe with these
     measures = sums.apply(lambda r: _row_summary(r), axis=1)
 
-    ## merge sums and measures into a single dataframe
+    # merge sums and measures into a single dataframe
     return pandas.concat([sums, measures.reindex(sums.index)], axis=1).copy()
 
 
@@ -562,7 +560,7 @@ def compare_annotators(
             overlay_image.save(fullpath)
 
     measures = _summarize(data)
-    measures.drop(0, inplace=True)  #removes threshold == 0.0, keeps 0.5 only
+    measures.drop(0, inplace=True)  # removes threshold == 0.0, keeps 0.5 only
 
     measures_path = os.path.join(
         output_folder, "second-annotator", f"{name}.csv"

@@ -4,14 +4,25 @@
 import os
 import random
 
-import pkg_resources
-
 import numpy
 import PIL.Image
+import pkg_resources
 import torch
 import torchvision.transforms.functional
 
-from ..data.transforms import *
+from ..data.transforms import (
+    CenterCrop,
+    ColorJitter,
+    Compose,
+    Crop,
+    Pad,
+    RandomHorizontalFlip,
+    RandomRotation,
+    RandomVerticalFlip,
+    Resize,
+    SingleAutoLevel16to8,
+    ToTensor,
+)
 
 
 def _create_img(size):
@@ -54,7 +65,7 @@ def test_center_crop_uneven():
     # when the crop size is uneven, this is what happens - notice here that the
     # image height is uneven, and the crop width as well - the attributions of
     # extra pixels will depend on what is uneven (original image or crop)
-    idx = (slice(bh+1, -bh), slice(bw+1, -bw), slice(0, im_size[0]))
+    idx = (slice(bh + 1, -bh), slice(bw + 1, -bw), slice(0, im_size[0]))
     transforms = CenterCrop(crop_size)
     img, gt, mask = [_create_img(im_size) for i in range(3)]
     assert img.size == (im_size[2], im_size[1])  # confirms the above
@@ -92,7 +103,7 @@ def test_pad_default():
     # checks that the border introduced with padding is all about "fill"
     img_t = numpy.array(img_t)
     img_t[idx] = 0
-    border_size_plane = img_t[:, :, 0].size - numpy.array(img)[:, :, 0].size
+    # border_size_plane = img_t[:, :, 0].size - numpy.array(img)[:, :, 0].size
     assert img_t.sum() == 0
 
     gt_t = numpy.array(gt_t)
@@ -344,17 +355,20 @@ def test_compose():
 
 def test_16bit_autolevel():
 
-    path = pkg_resources.resource_filename(__name__, os.path.join("data",
-        "img-16bit.png"))
+    path = pkg_resources.resource_filename(
+        __name__, os.path.join("data", "img-16bit.png")
+    )
     # the way to load a 16-bit PNG image correctly, according to:
     # https://stackoverflow.com/questions/32622658/read-16-bit-png-image-file-using-python
     # https://github.com/python-pillow/Pillow/issues/3011
-    img = PIL.Image.fromarray(numpy.array(PIL.Image.open(path)).astype("uint16"))
+    img = PIL.Image.fromarray(
+        numpy.array(PIL.Image.open(path)).astype("uint16")
+    )
     assert img.mode == "I;16"
     assert img.getextrema() == (0, 65281)
 
     timg = SingleAutoLevel16to8()(img)
     assert timg.mode == "L"
     assert timg.getextrema() == (0, 255)
-    #timg.show()
-    #import ipdb; ipdb.set_trace()
+    # timg.show()
+    # import ipdb; ipdb.set_trace()

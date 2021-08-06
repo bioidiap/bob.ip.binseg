@@ -1,0 +1,8 @@
+[flake8]
+max-line-length = 80
+ignore = E501,W503,E203,E302,E402
+per-file-ignores =
+    bob/ip/binseg/test/test_measures.py:E741
+    bob/ip/binseg/engine/ssltrainer.py:E741
+    bob/ip/binseg/utils/measure.py:E741
+    bob/ip/binseg/script/config.py:E741

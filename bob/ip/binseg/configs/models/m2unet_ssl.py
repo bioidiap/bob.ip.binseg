@@ -18,11 +18,12 @@ References: [SANDLER-2018]_, [RONNEBERGER-2015]_
 """
 
 from torch.optim.lr_scheduler import MultiStepLR
-from bob.ip.binseg.models.m2unet import m2unet
-from bob.ip.binseg.models.losses import MixJacLoss
-from bob.ip.binseg.engine.adabound import AdaBound
 
-##### Config #####
+from bob.ip.binseg.engine.adabound import AdaBound
+from bob.ip.binseg.models.losses import MixJacLoss
+from bob.ip.binseg.models.m2unet import m2unet
+
+# config
 lr = 0.001
 betas = (0.9, 0.999)
 eps = 1e-08

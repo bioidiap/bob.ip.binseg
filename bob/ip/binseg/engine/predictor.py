@@ -1,22 +1,19 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import datetime
+import logging
 import os
 import time
-import datetime
 
-import PIL
+import h5py
 import numpy
-from tqdm import tqdm
-
 import torch
 import torchvision.transforms.functional as VF
 
-import h5py
+from tqdm import tqdm
 
 from ..data.utils import overlayed_image
-
-import logging
 
 logger = logging.getLogger(__name__)
 

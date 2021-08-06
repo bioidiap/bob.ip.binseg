@@ -1,8 +1,8 @@
-from setuptools import setup, dist
+from setuptools import dist, setup
+
+from bob.extension.utils import find_packages, load_requirements
 
 dist.Distribution(dict(setup_requires=["bob.extension"]))
-from bob.extension.utils import load_requirements, find_packages
-
 install_requires = load_requirements()
 
 
@@ -43,7 +43,6 @@ setup(
         ],
         # bob train configurations
         "bob.ip.binseg.config": [
-
             # models
             "driu = bob.ip.binseg.configs.models.driu",
             "driu-bn = bob.ip.binseg.configs.models.driu_bn",
@@ -56,10 +55,8 @@ setup(
             "unet = bob.ip.binseg.configs.models.unet",
             "resunet = bob.ip.binseg.configs.models.resunet",
             "lwnet = bob.ip.binseg.configs.models.lwnet",
-
             # example datasets
             "csv-dataset-example = bob.ip.binseg.configs.datasets.csv",
-
             # drive dataset
             "drive = bob.ip.binseg.configs.datasets.drive.default",
             "drive-2nd = bob.ip.binseg.configs.datasets.drive.second_annotator",
@@ -67,10 +64,8 @@ setup(
             "drive-mtest = bob.ip.binseg.configs.datasets.drive.mtest",
             "drive-covd = bob.ip.binseg.configs.datasets.drive.covd",
             "drive-ssl = bob.ip.binseg.configs.datasets.drive.ssl",
-
-	    # drhagis dataset
+            # drhagis dataset
             "drhagis = bob.ip.binseg.configs.datasets.drhagis.default",
-
             # stare dataset
             "stare = bob.ip.binseg.configs.datasets.stare.ah",
             "stare-2nd = bob.ip.binseg.configs.datasets.stare.vk",
@@ -78,7 +73,6 @@ setup(
             "stare-mtest = bob.ip.binseg.configs.datasets.stare.mtest",
             "stare-covd = bob.ip.binseg.configs.datasets.stare.covd",
             "stare-ssl = bob.ip.binseg.configs.datasets.stare.ssl",
-
             # iostar
             "iostar-vessel = bob.ip.binseg.configs.datasets.iostar.vessel",
             "iostar-vessel-xtest = bob.ip.binseg.configs.datasets.iostar.vessel_xtest",
@@ -86,7 +80,6 @@ setup(
             "iostar-disc = bob.ip.binseg.configs.datasets.iostar.optic_disc",
             "iostar-vessel-covd = bob.ip.binseg.configs.datasets.iostar.covd",
             "iostar-vessel-ssl = bob.ip.binseg.configs.datasets.iostar.ssl",
-
             # hrf
             "hrf = bob.ip.binseg.configs.datasets.hrf.default",
             "hrf-xtest = bob.ip.binseg.configs.datasets.hrf.xtest",
@@ -94,7 +87,6 @@ setup(
             "hrf-highres = bob.ip.binseg.configs.datasets.hrf.default_fullres",
             "hrf-covd = bob.ip.binseg.configs.datasets.hrf.covd",
             "hrf-ssl = bob.ip.binseg.configs.datasets.hrf.ssl",
-
             # chase-db1
             "chasedb1 = bob.ip.binseg.configs.datasets.chasedb1.first_annotator",
             "chasedb1-2nd = bob.ip.binseg.configs.datasets.chasedb1.second_annotator",
@@ -102,21 +94,17 @@ setup(
             "chasedb1-mtest = bob.ip.binseg.configs.datasets.chasedb1.mtest",
             "chasedb1-covd = bob.ip.binseg.configs.datasets.chasedb1.covd",
             "chasedb1-ssl = bob.ip.binseg.configs.datasets.chasedb1.ssl",
-
             # drionsdb
             "drionsdb = bob.ip.binseg.configs.datasets.drionsdb.expert1",
             "drionsdb-2nd = bob.ip.binseg.configs.datasets.drionsdb.expert2",
-
             # drishti-gs1
             "drishtigs1-disc = bob.ip.binseg.configs.datasets.drishtigs1.disc_all",
             "drishtigs1-cup = bob.ip.binseg.configs.datasets.drishtigs1.cup_all",
             "drishtigs1-disc-any = bob.ip.binseg.configs.datasets.drishtigs1.disc_any",
             "drishtigs1-cup-any = bob.ip.binseg.configs.datasets.drishtigs1.cup_any",
-
             # refuge
             "refuge-cup = bob.ip.binseg.configs.datasets.refuge.cup",
             "refuge-disc = bob.ip.binseg.configs.datasets.refuge.disc",
-
             # rim one r3
             "rimoner3-cup = bob.ip.binseg.configs.datasets.rimoner3.cup_exp1",
             "rimoner3-disc = bob.ip.binseg.configs.datasets.rimoner3.disc_exp1",

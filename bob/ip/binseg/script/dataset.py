@@ -1,35 +1,32 @@
 #!/usr/bin/env python
 # coding=utf-8
 
-import os
-import pkg_resources
 import importlib
+import logging
+import os
+
 import click
+import pkg_resources
 
 from bob.extension import rc
-from bob.extension.scripts.click_helper import (
-    verbosity_option,
-    AliasedGroup,
-)
+from bob.extension.scripts.click_helper import AliasedGroup, verbosity_option
 
-
-import logging
 logger = logging.getLogger(__name__)
 
 
 def _get_supported_datasets():
-    """Returns a list of supported dataset names
-    """
+    """Returns a list of supported dataset names"""
 
-    basedir = pkg_resources.resource_filename(__name__, '')
-    basedir = os.path.join(os.path.dirname(basedir), 'data')
+    basedir = pkg_resources.resource_filename(__name__, "")
+    basedir = os.path.join(os.path.dirname(basedir), "data")
 
     retval = []
     for k in os.listdir(basedir):
         candidate = os.path.join(basedir, k)
-        if os.path.isdir(candidate) and '__init__.py' in os.listdir(candidate):
+        if os.path.isdir(candidate) and "__init__.py" in os.listdir(candidate):
             retval.append(k)
     return retval
+
 
 def _get_installed_datasets():
     """Returns a list of installed datasets as regular expressions
@@ -40,7 +37,8 @@ def _get_installed_datasets():
     """
 
     import re
-    dataset_re = re.compile(r'^bob\.ip\.binseg\.(?P<name>[^\.]+)\.datadir$')
+
+    dataset_re = re.compile(r"^bob\.ip\.binseg\.(?P<name>[^\.]+)\.datadir$")
     return [dataset_re.match(k) for k in rc.keys() if dataset_re.match(k)]
 
 
@@ -79,7 +77,7 @@ def list(**kwargs):
     click.echo("Supported datasets:")
     for k in supported:
         if k in installed:
-            click.echo(f"- {k}: {installed[k]} = \"{rc.get(installed[k])}\"")
+            click.echo(f'- {k}: {installed[k]} = "{rc.get(installed[k])}"')
         else:
             click.echo(f"* {k}: bob.ip.binseg.{k}.datadir (not set)")
 
@@ -101,14 +99,14 @@ def list(**kwargs):
 """,
 )
 @click.argument(
-        'dataset',
-        nargs=-1,
-        )
+    "dataset",
+    nargs=-1,
+)
 @click.option(
     "--limit",
     "-l",
     help="Limit check to the first N samples in each dataset, making the "
-            "check sensibly faster.  Set it to zero to check everything.",
+    "check sensibly faster.  Set it to zero to check everything.",
     required=True,
     type=click.IntRange(0),
     default=0,
@@ -119,19 +117,22 @@ def check(dataset, limit, **kwargs):
 
     to_check = _get_installed_datasets()
 
-    if dataset:  #check only some
+    if dataset:  # check only some
         to_check = [k for k in to_check if k.group("name") in dataset]
 
     if not to_check:
         click.echo("No configured datasets matching specifications")
-        click.echo("Try bob binseg dataset list --help to get help in "
-                "configuring a dataset")
+        click.echo(
+            "Try bob binseg dataset list --help to get help in "
+            "configuring a dataset"
+        )
     else:
         errors = 0
         for k in to_check:
             click.echo(f"Checking \"{k.group('name')}\" dataset...")
-            module = importlib.import_module(f"...data.{k.group('name')}",
-                    __name__)
+            module = importlib.import_module(
+                f"...data.{k.group('name')}", __name__
+            )
             errors += module.dataset.check(limit)
         if not errors:
-            click.echo(f"No errors reported")
+            click.echo("No errors reported")

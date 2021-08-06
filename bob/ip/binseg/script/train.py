@@ -1,23 +1,23 @@
 #!/usr/bin/env python
 # coding=utf-8
 
-import sys
+import logging
 import multiprocessing
+import sys
 
 import click
 import torch
+
 from torch.utils.data import DataLoader
 
 from bob.extension.scripts.click_helper import (
-    verbosity_option,
     ConfigCommand,
     ResourceOption,
+    verbosity_option,
 )
 
 from ..utils.checkpointer import Checkpointer
-from .binseg import setup_pytorch_device, set_seeds
-
-import logging
+from .binseg import set_seeds, setup_pytorch_device
 
 logger = logging.getLogger(__name__)
 

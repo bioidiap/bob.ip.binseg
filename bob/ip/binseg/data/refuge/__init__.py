@@ -33,6 +33,7 @@ dataset of retinal fundus images.
 """
 
 import os
+
 import pkg_resources
 
 import bob.extension
@@ -80,7 +81,7 @@ def _loader(context, sample):
         # adds binary metadata for glaucoma/non-glaucoma patients
         sample["glaucoma"] = os.path.basename(sample["label"]).startswith("g")
     elif context["subset"] == "test":
-        sample["glaucoma"] = (sample["label"].split(os.sep)[-2] == "G")
+        sample["glaucoma"] = sample["label"].split(os.sep)[-2] == "G"
     elif context["subset"] == "validation":
         pass
     else:

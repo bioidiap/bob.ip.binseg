@@ -1,23 +1,23 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import os
-import sys
-import csv
-import time
-import shutil
-import datetime
 import contextlib
+import csv
+import datetime
 import distutils.version
+import logging
+import os
+import shutil
+import sys
+import time
 
 import torch
+
 from tqdm import tqdm
 
 from ..utils.measure import SmoothedValue
+from ..utils.resources import cpu_constants, cpu_log, gpu_constants, gpu_log
 from ..utils.summary import summary
-from ..utils.resources import cpu_constants, gpu_constants, cpu_log, gpu_log
-
-import logging
 
 logger = logging.getLogger(__name__)
 
@@ -280,7 +280,7 @@ def run(
                     f"Found new low on validation set:"
                     f" {lowest_validation_loss:.6f}"
                 )
-                checkpointer.save(f"model_lowest_valid_loss", **arguments)
+                checkpointer.save("model_lowest_valid_loss", **arguments)
 
             if epoch >= max_epoch:
                 checkpointer.save("model_final", **arguments)

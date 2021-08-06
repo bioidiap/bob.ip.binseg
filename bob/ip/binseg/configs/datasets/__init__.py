@@ -4,13 +4,10 @@
 """Standard configurations for dataset setup"""
 
 
-from ...data.transforms import (
-    RandomRotation as _rotation,
-    RandomHorizontalFlip as _hflip,
-    RandomVerticalFlip as _vflip,
-    ColorJitter as _jitter,
-)
-
+from ...data.transforms import ColorJitter as _jitter
+from ...data.transforms import RandomHorizontalFlip as _hflip
+from ...data.transforms import RandomRotation as _rotation
+from ...data.transforms import RandomVerticalFlip as _vflip
 
 RANDOM_ROTATION = [_rotation()]
 """Shared data augmentation based on random rotation only"""
@@ -167,16 +164,20 @@ def make_dataset(subsets, transforms):
     for key in subsets.keys():
         retval[key] = make_subset(subsets[key], transforms=transforms)
         if key == "train":
-            retval["__train__"] = make_subset(subsets[key],
-                    transforms=transforms,
-                    suffixes=(RANDOM_ROTATION + RANDOM_FLIP_JITTER),
-                    )
+            retval["__train__"] = make_subset(
+                subsets[key],
+                transforms=transforms,
+                suffixes=(RANDOM_ROTATION + RANDOM_FLIP_JITTER),
+            )
         if key == "validation":
             # also use it for validation during training
             retval["__valid__"] = retval[key]
 
-    if ("__train__" in retval) and ("train" in retval) \
-            and ("__valid__" not in retval):
+    if (
+        ("__train__" in retval)
+        and ("train" in retval)
+        and ("__valid__" not in retval)
+    ):
         # if the dataset does not have a validation set, we use the unaugmented
         # training set as validation set
         retval["__valid__"] = retval["train"]

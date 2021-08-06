@@ -50,11 +50,11 @@ def mobilenet_v2_for_segmentation(pretrained=False, progress=True, **kwargs):
         model.load_state_dict(state_dict)
 
     # erase MobileNetV2 head (for classification), not used for segmentation
-    delattr(model, 'classifier')
+    delattr(model, "classifier")
 
     return_features = kwargs.get("return_features")
     if return_features is not None:
-        model.features = model.features[:(max(return_features)+1)]
+        model.features = model.features[: (max(return_features) + 1)]
 
     return model
 

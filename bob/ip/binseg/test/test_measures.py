@@ -1,21 +1,21 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import math
 import random
 import unittest
-import math
 
 import numpy
-import torch
 import pytest
+import torch
 
+from ..engine.evaluator import sample_measures_for_threshold
 from ..utils.measure import (
+    auc,
     base_measures,
     bayesian_measures,
     beta_credible_region,
-    auc,
 )
-from ..engine.evaluator import sample_measures_for_threshold
 
 
 class TestFrequentist(unittest.TestCase):

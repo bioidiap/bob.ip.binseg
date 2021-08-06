@@ -4,7 +4,6 @@
 
 """Tests for Shenzhen"""
 
-import os
 import numpy
 import pytest
 
@@ -33,12 +32,11 @@ def test_protocol_consistency():
         assert s.key.startswith("ChinaSet_AllFiles")
 
 
-@pytest.mark.skip_if_rc_var_not_set('bob.ip.binseg.Shenzhen.datadir')
+@pytest.mark.skip_if_rc_var_not_set("bob.ip.binseg.Shenzhen.datadir")
 def test_loading():
 
     min_image_size = (1130, 948)
     max_image_size = (3001, 3001)
-
 
     def _check_sample(s, bw_threshold_label):
 
@@ -51,7 +49,6 @@ def test_loading():
 
         assert "label" in data
         assert data["label"].mode == "1"
-
 
         b, w = count_bw(data["label"])
         assert (b + w) >= numpy.prod(min_image_size), (
@@ -69,16 +66,16 @@ def test_loading():
             f"indicate a loading problem!"
         )
 
-        return w/b
+        return w / b
 
-    limit = None  #use this to limit testing to first images only
+    limit = None  # use this to limit testing to first images only
     subset = dataset.subsets("default")
     proportions = [_check_sample(s, 0.77) for s in subset["train"][:limit]]
     proportions = [_check_sample(s, 0.77) for s in subset["validation"][:limit]]
     proportions = [_check_sample(s, 0.77) for s in subset["test"][:limit]]
+    del proportions  # only to satisfy flake8
 
 
-
-@pytest.mark.skip_if_rc_var_not_set('bob.ip.binseg.Shenzhen.datadir')
+@pytest.mark.skip_if_rc_var_not_set("bob.ip.binseg.Shenzhen.datadir")
 def test_check():
     assert dataset.check() == 0

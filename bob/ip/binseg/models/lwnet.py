@@ -32,7 +32,7 @@ class ConvBlock(torch.nn.Module):
         """
 
         super(ConvBlock, self).__init__()
-        if shortcut == True:
+        if shortcut is True:
             self.shortcut = torch.nn.Sequential(
                 _conv1x1(in_c, out_c), torch.nn.BatchNorm2d(out_c)
             )
@@ -250,7 +250,7 @@ class LittleWNet(torch.nn.Module):
         return x1, x2
 
 
-def lunet(in_c=3, n_classes=1):
+def lunet(input_channels=3, output_classes=1):
     """Builds Little U-Net segmentation network (uninitialized)
 
 

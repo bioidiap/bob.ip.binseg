@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 # Adapted from https://github.com/pytorch/pytorch/issues/2001#issuecomment-405675488
-import sys
 from functools import reduce
 
 from torch.nn.modules.module import _addindent

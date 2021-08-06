@@ -31,4 +31,4 @@ def count_bw(b):
 
     boolean_array = numpy.array(b)
     white = boolean_array.sum()
-    return (boolean_array.size-white), white
+    return (boolean_array.size - white), white

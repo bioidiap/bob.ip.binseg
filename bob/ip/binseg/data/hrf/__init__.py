@@ -20,12 +20,13 @@ available.
 """
 
 import os
+
 import pkg_resources
 
 import bob.extension
 
 from ..dataset import JSONDataset
-from ..loader import load_pil_rgb, load_pil_1, make_delayed
+from ..loader import load_pil_1, load_pil_rgb, make_delayed
 
 _protocols = [
     pkg_resources.resource_filename(__name__, "default.json"),
@@ -51,6 +52,8 @@ def _loader(context, sample):
 
 
 dataset = JSONDataset(
-    protocols=_protocols, fieldnames=("data", "label", "mask"), loader=_loader,
+    protocols=_protocols,
+    fieldnames=("data", "label", "mask"),
+    loader=_loader,
 )
 """HRF dataset object"""

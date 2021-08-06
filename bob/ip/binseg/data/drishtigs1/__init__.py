@@ -23,6 +23,7 @@ and notching information.
 """
 
 import os
+
 import pkg_resources
 
 import bob.extension

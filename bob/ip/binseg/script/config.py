@@ -1,18 +1,15 @@
 #!/usr/bin/env python
 # coding=utf-8
 
-import shutil
 import inspect
+import logging
+import shutil
 
 import click
 import pkg_resources
 
-from bob.extension.scripts.click_helper import (
-    verbosity_option,
-    AliasedGroup,
-)
+from bob.extension.scripts.click_helper import AliasedGroup, verbosity_option
 
-import logging
 logger = logging.getLogger(__name__)
 
 
@@ -56,8 +53,9 @@ def list(verbose):
     )
     keep_modules = []
     for k in sorted(modules):
-        if k not in keep_modules and \
-                not any(k.startswith(l) for l in keep_modules):
+        if k not in keep_modules and not any(
+            k.startswith(l) for l in keep_modules
+        ):
             keep_modules.append(k)
     modules = keep_modules
 
@@ -126,7 +124,9 @@ Examples:
 """
 )
 @click.argument(
-    "name", required=True, nargs=-1,
+    "name",
+    required=True,
+    nargs=-1,
 )
 @verbosity_option()
 def describe(name, verbose):
@@ -150,7 +150,7 @@ def describe(name, verbose):
             print("Contents:")
             with open(fname, "r") as f:
                 print(f.read())
-        else:  #only output documentation
+        else:  # only output documentation
             print("Documentation:")
             print(inspect.getdoc(mod))
 
@@ -171,10 +171,14 @@ Examples:
 """
 )
 @click.argument(
-    "source", required=True, nargs=1,
+    "source",
+    required=True,
+    nargs=1,
 )
 @click.argument(
-    "destination", required=True, nargs=1,
+    "destination",
+    required=True,
+    nargs=1,
 )
 @verbosity_option()
 def copy(source, destination, verbose):
@@ -189,5 +193,5 @@ def copy(source, destination, verbose):
     ep = entry_points[source]
     mod = ep.load()
     src_name = inspect.getfile(mod)
-    logger.info('cp %s -> %s' % (src_name, destination))
+    logger.info("cp %s -> %s" % (src_name, destination))
     shutil.copyfile(src_name, destination)

@@ -17,9 +17,10 @@ For details on those datasets, consult:
 """
 
 from torch.utils.data import ConcatDataset
+
 from bob.ip.binseg.configs.datasets import augment_subset as _augment
-from bob.ip.binseg.configs.datasets.hrf.mtest import dataset as _mtest
 from bob.ip.binseg.configs.datasets.hrf.default import dataset as _baseline
+from bob.ip.binseg.configs.datasets.hrf.mtest import dataset as _mtest
 
 dataset = dict(**_baseline)
 dataset["__train__"] = ConcatDataset(

@@ -9,4 +9,5 @@
 """
 
 from bob.ip.binseg.configs.datasets.hrf import _maker
+
 dataset = _maker("default")
