@@ -273,6 +273,17 @@ class ColorJitter(torchvision.transforms.ColorJitter):
 def _expand2square(pil_img, background_color):
     """
     Function that pad the minimum between the height and the width to fit a square
+
+    Parameters
+    ----------
+
+    pil_img : PIL.Image.Image
+        A PIL image that represents the image for analysis.
+
+    background_color: py:class:`tuple`, Optional
+        A tuple to represent the color of the background of the image in order to pad with the same color.
+        If the image is an RGB image background_color should be a tuple of size 3 , if it's a grayscale image the variable can be represented with an integer.
+
     """
     width, height = pil_img.size
     if width == height:
