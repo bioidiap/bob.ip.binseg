@@ -284,6 +284,13 @@ def _expand2square(pil_img, background_color):
         A tuple to represent the color of the background of the image in order to pad with the same color.
         If the image is an RGB image background_color should be a tuple of size 3 , if it's a grayscale image the variable can be represented with an integer.
 
+    Returns
+    -------
+
+    image : PIL.Image.Image
+        A new image with height equal to width
+
+
     """
     width, height = pil_img.size
     if width == height:
