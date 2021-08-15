@@ -6,6 +6,8 @@ import random
 
 import numpy
 import PIL.Image
+import PIL.ImageDraw
+import PIL.ImageOps
 import pkg_resources
 import torch
 import torchvision.transforms.functional
@@ -20,6 +22,7 @@ from ..data.transforms import (
     RandomRotation,
     RandomVerticalFlip,
     Resize,
+    ResizeCrop,
     SingleAutoLevel16to8,
     ToTensor,
 )
@@ -372,3 +375,36 @@ def test_16bit_autolevel():
     assert timg.getextrema() == (0, 255)
     # timg.show()
     # import ipdb; ipdb.set_trace()
+
+
+def test_ResizeCrop():
+
+    # parameters
+    im_size = (3, 128, 140)  # (planes, height, width)
+    mask_gt_size = (1, 128, 140)  # (planes, height, width)
+    crop_size = (30, 30, 91, 91)  # (left,up , right ,down)
+    size_after_crop = (61, 61)
+
+    idx = (slice(crop_size[0], crop_size[2]), slice(crop_size[1], crop_size[3]))
+
+    # Create random image and a mask with a circle inside
+    img, gt = _create_img(im_size), _create_img(mask_gt_size)
+    mask = PIL.Image.new("L", (140, 128), "black")
+    dr = PIL.ImageDraw.Draw(mask)
+    dr.ellipse((30, 30, 90, 90), "white")
+
+    # Test
+    transform = ResizeCrop()
+    img_, gt_, mask_ = transform(img, gt, mask)
+
+    assert img_.size == size_after_crop
+    assert gt_.size == size_after_crop
+    assert mask_.size == size_after_crop
+
+    assert img_.mode == "RGB"
+    assert gt_.mode == "L"
+    assert mask_.mode == "L"
+
+    assert numpy.all(numpy.array(img_) == numpy.array(img)[idx])
+    assert numpy.all(numpy.array(gt_) == numpy.array(gt)[idx])
+    assert numpy.all(numpy.array(mask_) == numpy.array(mask)[idx])

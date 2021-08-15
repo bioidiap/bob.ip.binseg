@@ -15,10 +15,9 @@ import random
 
 import numpy
 import PIL.Image
+import PIL.ImageOps
 import torchvision.transforms
 import torchvision.transforms.functional
-
-from PIL import ImageOps
 
 
 class TupleMixin:
@@ -288,7 +287,7 @@ def _expand2square(pil_img, background_color):
     -------
 
     image : PIL.Image.Image
-        A new image with height equal to width
+        A new image with height equal to width.
 
 
     """
@@ -329,9 +328,9 @@ class ResizeCrop:
 
         border = (crop_left, crop_up, crop_right, crop_down)
 
-        new_mask = ImageOps.crop(mask, border)
-        new_img = ImageOps.crop(img, border)
-        new_label = ImageOps.crop(label, border)
+        new_mask = PIL.ImageOps.crop(mask, border)
+        new_img = PIL.ImageOps.crop(img, border)
+        new_label = PIL.ImageOps.crop(label, border)
 
         new_img = _expand2square(new_img, (0, 0, 0))
         new_label = _expand2square(new_label, 0)
