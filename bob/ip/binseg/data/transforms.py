@@ -15,6 +15,7 @@ import random
 
 import numpy
 import PIL.Image
+import PIL.ImageOps
 import torchvision.transforms
 import torchvision.transforms.functional
 
@@ -266,3 +267,75 @@ class ColorJitter(torchvision.transforms.ColorJitter):
     def __repr__(self):
         retval = super(ColorJitter, self).__repr__()
         return retval.replace("(", f"(p={self.p},", 1)
+
+
+def _expand2square(pil_img, background_color):
+    """
+    Function that pad the minimum between the height and the width to fit a square
+
+    Parameters
+    ----------
+
+    pil_img : PIL.Image.Image
+        A PIL image that represents the image for analysis.
+
+    background_color: py:class:`tuple`, Optional
+        A tuple to represent the color of the background of the image in order to pad with the same color.
+        If the image is an RGB image background_color should be a tuple of size 3 , if it's a grayscale image the variable can be represented with an integer.
+
+    Returns
+    -------
+
+    image : PIL.Image.Image
+        A new image with height equal to width.
+
+
+    """
+    width, height = pil_img.size
+    if width == height:
+        return pil_img
+    elif width > height:
+        result = PIL.Image.new(pil_img.mode, (width, width), background_color)
+        result.paste(pil_img, (0, (width - height) // 2))
+        return result
+    else:
+        result = PIL.Image.new(pil_img.mode, (height, height), background_color)
+        result.paste(pil_img, ((height - width) // 2, 0))
+        return result
+
+
+class ResizeCrop:
+    """
+    Crop all the images by removing the black pixels in the width and height until it finds a non-black pixel.
+
+    """
+
+    def __call__(self, *args):
+
+        img = args[0]
+        label = args[1]
+        mask = args[2]
+        mask_data = numpy.asarray(mask)
+        wid = numpy.sum(mask_data, axis=0)
+        heig = numpy.sum(mask_data, axis=1)
+
+        crop_left, crop_right = (wid != 0).argmax(axis=0), (
+            wid[::-1] != 0
+        ).argmax(axis=0)
+        crop_up, crop_down = (heig != 0).argmax(axis=0), (
+            heig[::-1] != 0
+        ).argmax(axis=0)
+
+        border = (crop_left, crop_up, crop_right, crop_down)
+
+        new_mask = PIL.ImageOps.crop(mask, border)
+        new_img = PIL.ImageOps.crop(img, border)
+        new_label = PIL.ImageOps.crop(label, border)
+
+        new_img = _expand2square(new_img, (0, 0, 0))
+        new_label = _expand2square(new_label, 0)
+        new_mask = _expand2square(new_mask, 0)
+
+        args = (new_img, new_label, new_mask)
+
+        return args
