@@ -39,6 +39,8 @@ F1 Scores (micro-level)
   generate the results displayed here.
 * HRF models were trained using half the full resolution (1168x1648)
 
+Blood Vessel Segmentation
+-------------------------
 
 .. list-table::
    :header-rows: 2
@@ -99,6 +101,75 @@ F1 Scores (micro-level)
      - `0.820 (0.018) <baselines_m2unet_iostar_>`_
      - `0.818 (0.020) <baselines_unet_iostar_>`_
      -  0.832
+
+Optic disc Optic cup Segmentation
+---------------------------------
+
+.. list-table::
+   :header-rows: 2
+
+  * -
+    - :py:mod:`driu <bob.ip.binseg.configs.models.driu>`
+    - :py:mod:`hed <bob.ip.binseg.configs.models.hed>`
+    - :py:mod:`m2unet <bob.ip.binseg.configs.models.m2unet>`
+    - :py:mod:`unet <bob.ip.binseg.configs.models.unet>`
+    - lwnet
+  * - Dataset
+    - 15M
+    - 14.7M
+    - 550k
+    - 25.8M
+    - 68k
+  * - :py:mod:`DRIONS-DB (OD) <bob.ip.binseg.configs.datasets.drionsdb.expert1>`
+    - 0.943
+    - 0.960
+    - 0.960
+    - 0.961
+    - 0.878
+  * - :py:mod:`IOSTAR_OD <bob.ip.binseg.configs.datasets.iostar.optic_disc>`
+    - 0.913
+    - 0.908
+    - 0.878
+    - 0.904
+    - 0.876
+  * - :py:mod:`REFUGE-Cup <bob.ip.binseg.configs.datasets.refuge.cup>`
+    -
+    -
+    - 0.206
+    -
+    - 0.610
+  * - :py:mod:`REFUGE-Disc <bob.ip.binseg.configs.datasets.refuge.disc>`
+    -
+    -
+    - 0.453
+    -
+    - 0.767
+  * - :py:mod:`Drishtigs-disc <bob.ip.binseg.configs.datasets.drishtigs1.disc_all>`
+    - 0.951
+    - 0.970
+    - 0.829
+    - 0.971
+    - 0.652
+  * - :py:mod:`Drishtigs-cup <bob.ip.binseg.configs.datasets.drishtigs1.cup_all>`
+    - 0.862
+    - 0.898
+    - 0.734
+    - 0.875
+    -
+  * - :py:mod:`Rimoner3-cup <bob.ip.binseg.configs.datasets.rimoner3.cup_exp1>`
+    - 0.701
+    - 0.790
+    - 0.563
+    - 0.739
+    - 0.603
+  * - :py:mod:`Rimoner3-disc <bob.ip.binseg.configs.datasets.rimoner3.disc_exp1>`
+    - 0.935
+    - 0.953
+    - 0.708
+    - 0.947
+    - 0.712
+
+
 
 Precision-Recall (PR) Curves
 ----------------------------
