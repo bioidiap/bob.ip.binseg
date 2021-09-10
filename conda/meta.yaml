@@ -24,12 +24,19 @@ requirements:
   host:
     - python {{ python }}
     - setuptools {{ setuptools }}
+    - bob.extension
     - numpy {{ numpy }}
     - scipy {{ scipy }}
     - h5py {{ h5py }}
     - pytorch {{ pytorch }}
     - torchvision  {{ torchvision }}
-    - bob.extension
+    - matplotlib {{ matplotlib }}
+    - pandas {{ pandas }}
+    - pillow {{ pillow }}
+    - psutil {{ psutil }}
+    - h5py {{ h5py }}
+    - tqdm {{ tqdm }}
+    - tabulate {{ tabulate }}
   run:
     - python
     - setuptools
@@ -37,13 +44,13 @@ requirements:
     - {{ pin_compatible('scipy') }}
     - {{ pin_compatible('pytorch') }}
     - {{ pin_compatible('torchvision') }}
-    - matplotlib
-    - pandas
-    - pillow
-    - psutil
-    - h5py
-    - tqdm
-    - tabulate
+    - {{ pin_compatible('matplotlib') }}
+    - {{ pin_compatible('pandas') }}
+    - {{ pin_compatible('pillow') }}
+    - {{ pin_compatible('psutil') }}
+    - {{ pin_compatible('h5py') }}
+    - {{ pin_compatible('tqdm') }}
+    - {{ pin_compatible('tabulate') }}
 
 test:
   imports:
@@ -57,14 +64,13 @@ test:
     - conda inspect linkages -p $PREFIX {{ name }}  # [not win]
     - conda inspect objects -p $PREFIX {{ name }}  # [osx]
   requires:
-    - bob-devel {{ bob_devel }}.*
-    - pytest
-    - pytest-cov
-    - sphinx
-    - sphinx_rtd_theme
-    - sphinxcontrib-programoutput
-    - graphviz
-    - font-ttf-dejavu-sans-mono
+    - pytest {{ pytest }}
+    - pytest-cov {{ pytest_cov }}
+    - sphinx {{ sphinx }}
+    - sphinx_rtd_theme {{ sphinx_rtd_theme }}
+    - sphinxcontrib-programoutput {{ sphinxcontrib_programoutput }}
+    - graphviz {{ graphviz }}
+    - font-ttf-dejavu-sans-mono {{ font_ttf_dejavu_sans_mono }}
 
 about:
   summary: Binary Segmentation Benchmark Package for Bob
