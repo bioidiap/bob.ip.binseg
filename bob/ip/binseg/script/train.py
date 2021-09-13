@@ -226,17 +226,17 @@ def train(
 ):
     """Trains an FCN to perform binary segmentation
 
-    Training is performed for a configurable number of epochs, and generates at
-    least a final_model.pth.  It may also generate a number of intermediate
-    checkpoints.  Checkpoints are model files (.pth files) that are stored
-    during the training and useful to resume the procedure in case it stops
-    abruptly.
-    
-   In case the model has been trained over a number of epochs, 
-   it is possible to add other epochs using the same command and changing
-   the number of epochs to a number greater than the number where
-   the training stopped
-    
+     Training is performed for a configurable number of epochs, and generates at
+     least a final_model.pth.  It may also generate a number of intermediate
+     checkpoints.  Checkpoints are model files (.pth files) that are stored
+     during the training and useful to resume the procedure in case it stops
+     abruptly.
+
+    In case the model has been trained over a number of epochs,
+    it is possible to add other epochs using the same command and changing
+    the number of epochs to a number greater than the number where
+    the training stopped
+
     """
 
     device = setup_pytorch_device(device)
