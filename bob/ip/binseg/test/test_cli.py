@@ -569,6 +569,12 @@ def test_significance_help():
     _check_help(significance)
 
 
+def test_mkmask_help():
+    from ..script.mkmask import mkmask
+
+    _check_help(mkmask)
+
+
 def test_config_help():
     from ..script.config import config
 
