@@ -232,8 +232,10 @@ def train(
     during the training and useful to resume the procedure in case it stops
     abruptly.
     
-   In case the model has been trained over a number of epochs, it is possible to add other epochs using the same command and changing
-   the number of epochs to a number greater than the number where the training stopped
+   In case the model has been trained over a number of epochs, 
+   it is possible to add other epochs using the same command and changing
+   the number of epochs to a number greater than the number where
+   the training stopped
     
     """
 
