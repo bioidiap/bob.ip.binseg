@@ -52,6 +52,69 @@ def torch_evaluation(model):
     model.train()
 
 
+def check_gpu(device):
+    if device.type == "cuda":
+        # asserts we do have a GPU
+        assert bool(
+            gpu_constants()
+        ), f"Device set to '{device}', but nvidia-smi is not installed"
+
+
+def save_model_summary(output_folder, model):
+    summary_path = os.path.join(output_folder, "model_summary.txt")
+    logger.info(f"Saving model summary at {summary_path}...")
+    with open(summary_path, "wt") as f:
+        r, n = summary(model)
+        logger.info(f"Model has {n} parameters...")
+        f.write(r)
+    return r, n
+
+
+def save_constant_csv(static_logfile_name):
+    if os.path.exists(static_logfile_name):
+        backup = static_logfile_name + "~"
+        if os.path.exists(backup):
+            os.unlink(backup)
+        shutil.move(static_logfile_name, backup)
+
+
+def static_information_to_csv(static_logfile_name, device, n):
+    save_constant_csv(static_logfile_name)
+    with open(static_logfile_name, "w", newline="") as f:
+        logdata = cpu_constants()
+        if device.type == "cuda":
+            logdata += gpu_constants()
+        logdata += (("model_size", n),)
+        logwriter = csv.DictWriter(f, fieldnames=[k[0] for k in logdata])
+        logwriter.writeheader()
+        logwriter.writerow(dict(k for k in logdata))
+
+
+def check_exist_logfile(logfile_name, arguments):
+    if arguments["epoch"] == 0 and os.path.exists(logfile_name):
+        backup = logfile_name + "~"
+        if os.path.exists(backup):
+            os.unlink(backup)
+        shutil.move(logfile_name, backup)
+
+
+def generate_logfile_fields(valid_loader, device):
+    logfile_fields = (
+        "epoch",
+        "total_time",
+        "eta",
+        "average_loss",
+        "median_loss",
+        "learning_rate",
+    )
+    if valid_loader is not None:
+        logfile_fields += ("validation_average_loss", "validation_median_loss")
+    logfile_fields += tuple([k[0] for k in cpu_log()])
+    if device.type == "cuda":
+        logfile_fields += tuple([k[0] for k in gpu_log()])
+    return logfile_fields
+
+
 def run(
     model,
     data_loader,
@@ -113,60 +176,24 @@ def run(
     start_epoch = arguments["epoch"]
     max_epoch = arguments["max_epoch"]
 
-    if device.type == "cuda":
-        # asserts we do have a GPU
-        assert bool(
-            gpu_constants()
-        ), f"Device set to '{device}', but nvidia-smi is not installed"
+    check_gpu(device)
 
     os.makedirs(output_folder, exist_ok=True)
 
     # Save model summary
-    summary_path = os.path.join(output_folder, "model_summary.txt")
-    logger.info(f"Saving model summary at {summary_path}...")
-    with open(summary_path, "wt") as f:
-        r, n = summary(model)
-        logger.info(f"Model has {n} parameters...")
-        f.write(r)
+    r, n = save_model_summary(output_folder, model)
 
     # write static information to a CSV file
     static_logfile_name = os.path.join(output_folder, "constants.csv")
-    if os.path.exists(static_logfile_name):
-        backup = static_logfile_name + "~"
-        if os.path.exists(backup):
-            os.unlink(backup)
-        shutil.move(static_logfile_name, backup)
-    with open(static_logfile_name, "w", newline="") as f:
-        logdata = cpu_constants()
-        if device.type == "cuda":
-            logdata += gpu_constants()
-        logdata += (("model_size", n),)
-        logwriter = csv.DictWriter(f, fieldnames=[k[0] for k in logdata])
-        logwriter.writeheader()
-        logwriter.writerow(dict(k for k in logdata))
+
+    static_information_to_csv(static_logfile_name, device, n)
 
     # Log continous information to (another) file
     logfile_name = os.path.join(output_folder, "trainlog.csv")
 
-    if arguments["epoch"] == 0 and os.path.exists(logfile_name):
-        backup = logfile_name + "~"
-        if os.path.exists(backup):
-            os.unlink(backup)
-        shutil.move(logfile_name, backup)
+    check_exist_logfile(logfile_name, arguments)
 
-    logfile_fields = (
-        "epoch",
-        "total_time",
-        "eta",
-        "average_loss",
-        "median_loss",
-        "learning_rate",
-    )
-    if valid_loader is not None:
-        logfile_fields += ("validation_average_loss", "validation_median_loss")
-    logfile_fields += tuple([k[0] for k in cpu_log()])
-    if device.type == "cuda":
-        logfile_fields += tuple([k[0] for k in gpu_log()])
+    logfile_fields = generate_logfile_fields(valid_loader, device)
 
     # the lowest validation loss obtained so far - this value is updated only
     # if a validation set is available
