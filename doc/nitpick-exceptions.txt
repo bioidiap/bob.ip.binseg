@@ -1,2 +1,3 @@
+py:obj torch.utils.data.dataset.T_co
 py:class torch.nn.modules.loss._Loss
 py:class Module
