@@ -243,16 +243,17 @@ autodoc_default_options = {
 }
 
 
-# For inter-documentation mapping:
-from bob.extension.utils import link_documentation, load_requirements
+# For inter-documentation mapping: notice sphinx changes to the current
+# directory to build the documentation
+from bob.extension.utils import link_documentation
 
-sphinx_requirements = "extra-intersphinx.txt"
-if os.path.exists(sphinx_requirements):
+if os.path.exists("requirements.txt"):
+    # building on the CI, with a copy of requirements.txt
     intersphinx_mapping = link_documentation(
-        additional_packages=["python", "numpy"]
-        + load_requirements(sphinx_requirements)
+        requirements_file="requirements.txt"
     )
 else:
+    # building locally
     intersphinx_mapping = link_documentation()
 
 # Add our private index (for extras and fixes)
