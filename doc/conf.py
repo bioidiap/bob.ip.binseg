@@ -255,22 +255,5 @@ if os.path.exists(sphinx_requirements):
 else:
     intersphinx_mapping = link_documentation()
 
-intersphinx_mapping["torch"] = ("https://pytorch.org/docs/stable/", None)
-intersphinx_mapping["PIL"] = ("http://pillow.readthedocs.io/en/stable", None)
-intersphinx_mapping["pandas"] = (
-    "https://pandas.pydata.org/pandas-docs/stable/",
-    None,
-)
-
-# Figures out the major click version we use
-import pkg_resources
-
-click_version = pkg_resources.require("click")[0].version.split(".")[0]
-click_version += ".x"
-intersphinx_mapping["click"] = (
-    "https://click.palletsprojects.com/en/%s/" % (click_version,),
-    None,
-)
-
 # Add our private index (for extras and fixes)
 intersphinx_mapping["extras"] = ("", "extras.inv")
