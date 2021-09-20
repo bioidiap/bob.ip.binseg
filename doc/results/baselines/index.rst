@@ -39,6 +39,8 @@ F1 Scores (micro-level)
   generate the results displayed here.
 * HRF models were trained using half the full resolution (1168x1648)
 
+Retinal Vessel Segmentation
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. list-table::
    :header-rows: 2
@@ -99,6 +101,29 @@ F1 Scores (micro-level)
      - `0.820 (0.018) <baselines_m2unet_iostar_>`_
      - `0.818 (0.020) <baselines_unet_iostar_>`_
      -  0.832
+
+
+Lung Segmentation
+~~~~~~~~~~~~~~~~~
+
+.. list-table::
+   :header-rows: 2
+
+   * -
+     - :py:mod:`m2unet <bob.ip.binseg.configs.models.m2unet>`
+     - lwnet
+   * - Dataset
+     - 550k
+     - 68k
+   * - :py:mod:`MC <bob.ip.binseg.configs.datasets.MC.default>`
+     -  0.982
+     -  0.975
+   * - :py:mod:`JSRT <bob.ip.binseg.configs.datasets.JSRT.default>`
+     -  0.982
+     -  0.977
+   * - :py:mod:`Shenzhen <bob.ip.binseg.configs.datasets.Shenzhen.default>`
+     -  0.955
+     -  0.952
 
 Precision-Recall (PR) Curves
 ----------------------------
