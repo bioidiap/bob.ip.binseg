@@ -38,7 +38,7 @@ requirements:
     - h5py {{ h5py }}
     - tqdm {{ tqdm }}
     - tabulate {{ tabulate }}
-    - scikit-image {{ scikit-image }}
+    - scikit-image 
   run:
     - python
     - setuptools
@@ -53,6 +53,7 @@ requirements:
     - {{ pin_compatible('h5py') }}
     - {{ pin_compatible('tqdm') }}
     - {{ pin_compatible('tabulate') }}
+    - {{ pin_compatible('scikit-image') }}
 
 test:
   imports:
