@@ -115,21 +115,34 @@ def gpu_log():
           :py:class:`float`)
         * ``memory.free``, as ``gpu_memory_free`` (transformed to gigabytes,
           :py:class:`float`)
-        * ``utilization.memory``, as ``gpu_memory_percent``,
+        * ``100*memory.used/memory.total``, as ``gpu_memory_percent``,
           (:py:class:`float`, in percent)
-        * ``utilization.gpu``, as ``gpu_utilization``,
+        * ``utilization.gpu``, as ``gpu_percent``,
           (:py:class:`float`, in percent)
 
     """
 
-    return run_nvidia_smi(
-        ("memory.used", "memory.free", "utilization.memory", "utilization.gpu"),
+    retval = run_nvidia_smi(
         (
+            "memory.total",
+            "memory.used",
+            "memory.free",
+            "utilization.gpu",
+        ),
+        (
+            "gpu_memory_total",
             "gpu_memory_used",
             "gpu_memory_free",
-            "gpu_memory_percent",
             "gpu_percent",
         ),
+    )
+
+    # re-compose the output to generate expected values
+    return (
+        retval[1],  # gpu_memory_used
+        retval[2],  # gpu_memory_free
+        ("gpu_memory_percent", 100 * (retval[1][1] / retval[0][1])),
+        retval[3],  # gpu_percent
     )
 
 
