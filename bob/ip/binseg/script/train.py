@@ -133,7 +133,9 @@ logger = logging.getLogger(__name__)
 @click.option(
     "--epochs",
     "-e",
-    help="Number of epochs (complete training set passes) to train for",
+    help="Number of epochs (complete training set passes) to train for. "
+    "If continuing from a saved checkpoint, ensure to provide a greater "
+    "number of epochs than that saved on the checkpoint to be loaded. ",
     show_default=True,
     required=True,
     default=1000,
@@ -226,16 +228,16 @@ def train(
 ):
     """Trains an FCN to perform binary segmentation
 
-     Training is performed for a configurable number of epochs, and generates at
-     least a final_model.pth.  It may also generate a number of intermediate
-     checkpoints.  Checkpoints are model files (.pth files) that are stored
-     during the training and useful to resume the procedure in case it stops
-     abruptly.
+    Training is performed for a configurable number of epochs, and generates at
+    least a final_model.pth.  It may also generate a number of intermediate
+    checkpoints.  Checkpoints are model files (.pth files) that are stored
+    during the training and useful to resume the procedure in case it stops
+    abruptly.
 
-    In case the model has been trained over a number of epochs,
-    it is possible to add other epochs using the same command and changing
-    the number of epochs to a number greater than the number where
-    the training stopped
+    Tip: In case the model has been trained over a number of epochs, it is
+    possible to continue training, by simply relaunching the same command, and
+    changing the number of epochs to a number greater than the number where
+    the original training session stopped (or the last checkpoint was saved).
 
     """
 
