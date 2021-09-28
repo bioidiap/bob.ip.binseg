@@ -17,7 +17,7 @@ strategy.
 
    baselines/index
    xtest/index
-   covd/index
+   cod/index
    old/index
 
 
