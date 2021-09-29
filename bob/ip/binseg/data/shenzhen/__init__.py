@@ -11,7 +11,7 @@ available for 566 of the 662 images.
 * Reference: [SHENZHEN-2014]_
 * Original resolution (height x width): Approximately 3K x 3K (varies)
 * Configuration resolution: 512 x 512 (after rescaling)
-* Split reference: [GAÁL-2020]_
+* Split reference: [GAAL-2020]_
 * Protocol ``default``:
 
   * Training samples: 396 (including labels)
@@ -34,7 +34,7 @@ _protocols = [
 ]
 
 _root_path = bob.extension.rc.get(
-    "bob.ip.binseg.Shenzhen.datadir", os.path.realpath(os.curdir)
+    "bob.ip.binseg.shenzhen.datadir", os.path.realpath(os.curdir)
 )
 
 
@@ -55,4 +55,4 @@ dataset = JSONDataset(
     protocols=_protocols, fieldnames=("data", "label"), loader=_loader
 )
 
-"""Shenzhen dataset object"""
+"""Shenzhen CXR dataset object"""

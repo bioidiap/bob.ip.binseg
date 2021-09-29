@@ -4,7 +4,7 @@
 
 def _maker(protocol):
 
-    from ....data.JSRT import dataset as raw
+    from ....data.jsrt import dataset as raw
     from ....data.transforms import Resize
     from .. import make_dataset as mk
 

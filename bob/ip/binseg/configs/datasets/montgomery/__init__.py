@@ -4,7 +4,7 @@
 
 def _maker(protocol):
 
-    from ....data.MC import dataset as raw
+    from ....data.montgomery import dataset as raw
     from ....data.transforms import Resize
     from .. import make_dataset as mk
 

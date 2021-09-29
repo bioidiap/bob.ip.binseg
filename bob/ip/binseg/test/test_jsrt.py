@@ -7,7 +7,7 @@
 import numpy
 import pytest
 
-from ..data.JSRT import dataset
+from ..data.jsrt import dataset
 from .utils import count_bw
 
 
@@ -32,7 +32,7 @@ def test_protocol_consistency():
         assert s.key.startswith("JSRT")
 
 
-@pytest.mark.skip_if_rc_var_not_set("bob.ip.binseg.JSRT.datadir")
+@pytest.mark.skip_if_rc_var_not_set("bob.ip.binseg.jsrt.datadir")
 def test_loading():
 
     image_size = (2048, 2048)
@@ -74,6 +74,6 @@ def test_loading():
     del proportions  # only to satisfy flake8
 
 
-@pytest.mark.skip_if_rc_var_not_set("bob.ip.binseg.JSRT.datadir")
+@pytest.mark.skip_if_rc_var_not_set("bob.ip.binseg.jsrt.datadir")
 def test_check():
     assert dataset.check() == 0

@@ -1,21 +1,21 @@
 #!/usr/bin/env python
 # coding=utf-8
 
-"""Japanese Society of Radiological Technology dataset for Lung Segmentation
+"""Montgomery County dataset for Lung Segmentation
 
-The database includes 154 nodule and 93 non-nodule images.  It contains a total
-of 247 resolution of 2048 x 2048 One set of ground-truth lung annotations is
-available.
+The database includes 58 cases with	manifestation of tuberculosis, and 80
+normal cases.  It contains a total  of 138 resolution of 4020 x 4892, or
+4892 x 4020. One set of ground-truth lung annotations is available.
 
-* Reference: [JSRT-2000]_
-* Original resolution (height x width): 2048 x 2048
+* Reference: [MC-2014]_
+* Original resolution (height x width): 4020 x 4892, or 4892 x 4020
 * Configuration resolution: 512 x 512 (after rescaling)
-* Split reference: [GAÁL-2020]_
+* Split reference: [GAAL-2020]_
 * Protocol ``default``:
 
-  * Training samples: 172 (including labels)
-  * Validation samples: 25 (including labels)
-  * Test samples: 50 (including labels)
+  * Training samples: 96 (including labels)
+  * Validation samples: 14 (including labels)
+  * Test samples: 28 (including labels)
 
 """
 
@@ -36,7 +36,7 @@ _protocols = [
 ]
 
 _root_path = bob.extension.rc.get(
-    "bob.ip.binseg.JSRT.datadir", os.path.realpath(os.curdir)
+    "bob.ip.binseg.montgomery.datadir", os.path.realpath(os.curdir)
 )
 
 
@@ -68,4 +68,4 @@ dataset = JSONDataset(
     loader=_loader,
 )
 
-"""Japanese Society of Radiological Technology dataset object"""
+"""Montgomery County dataset object"""
