@@ -57,59 +57,69 @@ setup(
             "lwnet = bob.ip.binseg.configs.models.lwnet",
             # example datasets
             "csv-dataset-example = bob.ip.binseg.configs.datasets.csv",
-            # drive dataset
+            # drive dataset - retinography
             "drive = bob.ip.binseg.configs.datasets.drive.default",
             "drive-2nd = bob.ip.binseg.configs.datasets.drive.second_annotator",
             "drive-xtest = bob.ip.binseg.configs.datasets.drive.xtest",
             "drive-mtest = bob.ip.binseg.configs.datasets.drive.mtest",
             "drive-covd = bob.ip.binseg.configs.datasets.drive.covd",
             "drive-ssl = bob.ip.binseg.configs.datasets.drive.ssl",
-            # drhagis dataset
+            # drhagis dataset - retinography
             "drhagis = bob.ip.binseg.configs.datasets.drhagis.default",
-            # stare dataset
+            # stare dataset - retinography
             "stare = bob.ip.binseg.configs.datasets.stare.ah",
             "stare-2nd = bob.ip.binseg.configs.datasets.stare.vk",
             "stare-xtest = bob.ip.binseg.configs.datasets.stare.xtest",
             "stare-mtest = bob.ip.binseg.configs.datasets.stare.mtest",
             "stare-covd = bob.ip.binseg.configs.datasets.stare.covd",
             "stare-ssl = bob.ip.binseg.configs.datasets.stare.ssl",
-            # iostar
+            # iostar - retinography
             "iostar-vessel = bob.ip.binseg.configs.datasets.iostar.vessel",
             "iostar-vessel-xtest = bob.ip.binseg.configs.datasets.iostar.vessel_xtest",
             "iostar-vessel-mtest = bob.ip.binseg.configs.datasets.iostar.vessel_mtest",
             "iostar-disc = bob.ip.binseg.configs.datasets.iostar.optic_disc",
             "iostar-vessel-covd = bob.ip.binseg.configs.datasets.iostar.covd",
             "iostar-vessel-ssl = bob.ip.binseg.configs.datasets.iostar.ssl",
-            # hrf
+            # hrf - retinography
             "hrf = bob.ip.binseg.configs.datasets.hrf.default",
             "hrf-xtest = bob.ip.binseg.configs.datasets.hrf.xtest",
             "hrf-mtest = bob.ip.binseg.configs.datasets.hrf.mtest",
             "hrf-highres = bob.ip.binseg.configs.datasets.hrf.default_fullres",
             "hrf-covd = bob.ip.binseg.configs.datasets.hrf.covd",
             "hrf-ssl = bob.ip.binseg.configs.datasets.hrf.ssl",
-            # chase-db1
+            # chase-db1 - retinography
             "chasedb1 = bob.ip.binseg.configs.datasets.chasedb1.first_annotator",
             "chasedb1-2nd = bob.ip.binseg.configs.datasets.chasedb1.second_annotator",
             "chasedb1-xtest = bob.ip.binseg.configs.datasets.chasedb1.xtest",
             "chasedb1-mtest = bob.ip.binseg.configs.datasets.chasedb1.mtest",
             "chasedb1-covd = bob.ip.binseg.configs.datasets.chasedb1.covd",
             "chasedb1-ssl = bob.ip.binseg.configs.datasets.chasedb1.ssl",
-            # drionsdb
+            # drionsdb - retinography
             "drionsdb = bob.ip.binseg.configs.datasets.drionsdb.expert1",
             "drionsdb-2nd = bob.ip.binseg.configs.datasets.drionsdb.expert2",
-            # drishti-gs1
+            # drishti-gs1 - retinography
             "drishtigs1-disc = bob.ip.binseg.configs.datasets.drishtigs1.disc_all",
             "drishtigs1-cup = bob.ip.binseg.configs.datasets.drishtigs1.cup_all",
             "drishtigs1-disc-any = bob.ip.binseg.configs.datasets.drishtigs1.disc_any",
             "drishtigs1-cup-any = bob.ip.binseg.configs.datasets.drishtigs1.cup_any",
-            # refuge
+            # refuge - retinography
             "refuge-cup = bob.ip.binseg.configs.datasets.refuge.cup",
             "refuge-disc = bob.ip.binseg.configs.datasets.refuge.disc",
-            # rim one r3
+            # rim one r3 - retinography
             "rimoner3-cup = bob.ip.binseg.configs.datasets.rimoner3.cup_exp1",
             "rimoner3-disc = bob.ip.binseg.configs.datasets.rimoner3.disc_exp1",
             "rimoner3-cup-2nd = bob.ip.binseg.configs.datasets.rimoner3.cup_exp2",
             "rimoner3-disc-2nd = bob.ip.binseg.configs.datasets.rimoner3.disc_exp2",
+            # montgomery county - cxr
+            "montgomery = bob.ip.binseg.configs.datasets.montgomery.default",
+            "montgomery-xtest = bob.ip.binseg.configs.datasets.montgomery.xtest",
+            # shenzhen - cxr
+            "shenzhen = bob.ip.binseg.configs.datasets.shenzhen.default",
+            "shenzhen-small = bob.ip.binseg.configs.datasets.shenzhen.default_256",
+            "shenzhen-xtest = bob.ip.binseg.configs.datasets.shenzhen.xtest",
+            # jsrt - cxr
+            "jsrt = bob.ip.binseg.configs.datasets.jsrt.default",
+            "jsrt-xtest = bob.ip.binseg.configs.datasets.jsrt.xtest",
         ],
     },
     # check classifiers, add and remove as you see fit
