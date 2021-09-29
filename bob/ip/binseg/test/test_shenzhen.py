@@ -2,12 +2,12 @@
 # coding=utf-8
 
 
-"""Tests for Shenzhen"""
+"""Tests for Shenzhen CXR dataset"""
 
 import numpy
 import pytest
 
-from ..data.Shenzhen import dataset
+from ..data.shenzhen import dataset
 from .utils import count_bw
 
 
@@ -32,7 +32,7 @@ def test_protocol_consistency():
         assert s.key.startswith("ChinaSet_AllFiles")
 
 
-@pytest.mark.skip_if_rc_var_not_set("bob.ip.binseg.Shenzhen.datadir")
+@pytest.mark.skip_if_rc_var_not_set("bob.ip.binseg.shenzhen.datadir")
 def test_loading():
 
     min_image_size = (1130, 948)
@@ -76,6 +76,6 @@ def test_loading():
     del proportions  # only to satisfy flake8
 
 
-@pytest.mark.skip_if_rc_var_not_set("bob.ip.binseg.Shenzhen.datadir")
+@pytest.mark.skip_if_rc_var_not_set("bob.ip.binseg.shenzhen.datadir")
 def test_check():
     assert dataset.check() == 0

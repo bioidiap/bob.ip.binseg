@@ -7,32 +7,30 @@
 ===============================================
 
 Package to benchmark and evaluate a range of neural network architectures for
-binary segmentation tasks on 2D Eye Fundus Images (2DFI). It is build using
-PyTorch.
+binary segmentation tasks.  It is build using PyTorch.
 
-Please use the BibTeX reference below to cite this work:
+Please at least use the BibTeX references below to cite this work:
 
 .. code:: bibtex
 
-   @misc{laibacher_anjos_2019,
-      title         = {On the Evaluation and Real-World Usage Scenarios of Deep Vessel Segmentation for Retinography},
-      author        = {Tim Laibacher and Andr\'e Anjos},
-      year          = {2019},
-      eprint        = {1909.03856},
-      archivePrefix = {arXiv},
-      primaryClass  = {cs.CV},
-      url           = {https://arxiv.org/abs/1909.03856},
+   @inproceedings{renzo_2021,
+       title     = {Development of a lung segmentation algorithm for analog imaged chest X-Ray: preliminary results},
+       author    = {Matheus A. Renzo and Nat\'{a}lia Fernandez and Andr\'e Baceti and Natanael Nunes de Moura Junior and Andr\'e Anjos},
+       month     = {10},
+       booktitle = {XV Brazilian Congress on Computational Intelligence},
+       year      = {2021},
+       url       = {https://publications.idiap.ch/index.php/publications/show/4649},
    }
 
-
-Additional Material
--------------------
-
-The additional material referred to in the paper can be found under
-:ref:`bob.ip.binseg.results` and :download:`here <additionalresults.pdf>`
-
-
-.. todolist::
+   @misc{laibacher_2019,
+       title         = {On the Evaluation and Real-World Usage Scenarios of Deep Vessel Segmentation for Retinography},
+       author        = {Tim Laibacher and Andr\'e Anjos},
+       year          = {2019},
+       eprint        = {1909.03856},
+       archivePrefix = {arXiv},
+       primaryClass  = {cs.CV},
+       url           = {https://arxiv.org/abs/1909.03856},
+   }
 
 
 User Guide

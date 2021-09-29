@@ -101,7 +101,7 @@
    **MobileNetV2: Inverted Residuals and Linear Bottlenecks**, 2018.
    https://arxiv.org/abs/1801.04381
 
-.. [DAVIS-2006] *J. Davis and M. Goadrich*, **The relationship between
+.. .. [DAVIS-2006] *J. Davis and M. Goadrich*, **The relationship between
    Precision-Recall and ROC curves**. 23rd international conference on Machine
    learning (ICML’06), 2006. https://doi.org/10.1145/1143844.1143874
 
@@ -139,6 +139,6 @@
    pulmonary diseases.**, Quantitative imaging in medicine and surgery. 2014.
    https://doi:10.3978/j.issn.2223-4292.2014.11.20
 
-.. [GAÁL-2020] *G. Gaál, B. Maga, A. Lukács*, **Attention U-Net Based
+.. [GAAL-2020] *G. Gaál, B. Maga, A. Lukács*, **Attention U-Net Based
    Adversarial Architectures for Chest X-ray Lung Segmentation.**, 2020.
    https://arxiv.org/abs/2003.10304v1

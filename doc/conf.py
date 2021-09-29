@@ -25,6 +25,7 @@ extensions = [
     "sphinx.ext.viewcode",
     "sphinx.ext.mathjax",
     "sphinxcontrib.programoutput",
+    "sphinx_rtd_theme",
     # 'matplotlib.sphinxext.plot_directive'
 ]
 
