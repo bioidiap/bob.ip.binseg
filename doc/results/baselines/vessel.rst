@@ -2,13 +2,10 @@
 
 .. _bob.ip.binseg.results.baselines.vessel:
 
-=============================
- Retinal Vessel Segmentation
-=============================
+==============================================
+ Retinal Vessel Segmentation for Retinography
+==============================================
 
-* :ref:`Our baseline script <bob.ip.binseg.baseline-script>` was used to
-  generate the results displayed here.
-* HRF models were trained using half the full resolution (1168x1648)
 
 .. list-table::
    :header-rows: 2
@@ -69,6 +66,47 @@
      - `0.820 (0.018) <baselines_m2unet_iostar_>`_
      - `0.818 (0.020) <baselines_unet_iostar_>`_
      -  0.832
+
+
+Notes
+-----
+
+* HRF models were trained using half the full resolution (1168x1648)
+* The following table describes recommended batch sizes for 24Gb of RAM GPU
+  card:
+
+  .. list-table::
+
+    * - **Models / Datasets**
+      - :py:mod:`drive <bob.ip.binseg.configs.datasets.drive.default>`
+      - :py:mod:`stare <bob.ip.binseg.configs.datasets.stare.ah>`
+      - :py:mod:`chasedb1 <bob.ip.binseg.configs.datasets.chasedb1.first_annotator>`
+      - :py:mod:`iostar-vessel <bob.ip.binseg.configs.datasets.iostar.vessel>`
+      - :py:mod:`hrf <bob.ip.binseg.configs.datasets.hrf.default>`
+    * - :py:mod:`unet <bob.ip.binseg.configs.models.unet>`
+      - 4
+      - 2
+      - 2
+      - 2
+      - 1
+    * - :py:mod:`hed <bob.ip.binseg.configs.models.hed>`
+      - 8
+      - 4
+      - 4
+      - 4
+      - 1
+    * - :py:mod:`driu <bob.ip.binseg.configs.models.driu>` / :py:mod:`driu-bn <bob.ip.binseg.configs.models.driu_bn>`
+      - 8
+      - 5
+      - 4
+      - 4
+      - 1
+    * - :py:mod:`m2unet <bob.ip.binseg.configs.models.m2unet>`
+      - 16
+      - 6
+      - 6
+      - 6
+      - 1
 
 
 .. include:: ../../links.rst

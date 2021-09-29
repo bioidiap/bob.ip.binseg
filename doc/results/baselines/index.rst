@@ -33,8 +33,12 @@
 * For comparison purposes, we provide "second-annotator" performances on the
   same test set, where available.
 
+
+Tasks
+-----
+
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
 
    vessel
    lung

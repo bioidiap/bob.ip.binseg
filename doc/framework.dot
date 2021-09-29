@@ -49,7 +49,7 @@ digraph framework {
     ];
     {rank = max; figure; table; }
 
-    dataset:train -> train [headlabel="sample + label",labelangle=30];
+    dataset:train -> train [headlabel="sample + label [+ mask]",labelangle=30];
     dataset:test -> predict [headlabel="sample",labelangle=30];
     train -> predict [headlabel="model"];
     dataset:test -> evaluate [headlabel="label"];

@@ -9,7 +9,7 @@
 This section summarizes results that can be obtained with this package, and
 were presented in our paper.  We organize the result section in two parts, for
 covering baseline results (training and testing on the same dataset) and
-results using our Combined Vessel Dataset minus target dataset (COVD-) training
+results using our Combined Vessel Dataset minus target dataset (COD-) training
 strategy.
 
 .. toctree::

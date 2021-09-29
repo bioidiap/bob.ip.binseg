@@ -2,9 +2,9 @@
 
 .. _bob.ip.binseg.results.baselines.lung:
 
-===================
- Lung Segmentation
-===================
+=============================================
+ Lung Segmentation from Frontal Chest X-Rays
+=============================================
 
 .. list-table::
    :header-rows: 2
@@ -15,13 +15,13 @@
    * - Dataset
      - 550k
      - 68k
-   * - :py:mod:`MC <bob.ip.binseg.configs.datasets.MC.default>`
+   * - :py:mod:`montgomery <bob.ip.binseg.configs.datasets.montgomery.default>`
      -  0.982
      -  0.975
-   * - :py:mod:`JSRT <bob.ip.binseg.configs.datasets.JSRT.default>`
+   * - :py:mod:`jsrt <bob.ip.binseg.configs.datasets.jsrt.default>`
      -  0.982
      -  0.977
-   * - :py:mod:`Shenzhen <bob.ip.binseg.configs.datasets.Shenzhen.default>`
+   * - :py:mod:`shenzhen <bob.ip.binseg.configs.datasets.shenzhen.default>`
      -  0.955
      -  0.952
 

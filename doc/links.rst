@@ -24,9 +24,9 @@
 .. _drishti-gs1: http://cvit.iiit.ac.in/projects/mip/drishti-gs/mip-dataset2/Home.php
 .. _refuge: https://refuge.grand-challenge.org/Details/
 .. _drhagis: https://personalpages.manchester.ac.uk/staff/niall.p.mcloughlin/
-.. _MC: https://openi.nlm.nih.gov/faq#faq-tb-coll
-.. _JSRT: http://db.jsrt.or.jp/eng.php
-.. _Shenzhen: https://openi.nlm.nih.gov/faq#faq-tb-coll
+.. _montgomery county: https://openi.nlm.nih.gov/faq#faq-tb-coll
+.. _jsrt: http://db.jsrt.or.jp/eng.php
+.. _shenzhen: https://openi.nlm.nih.gov/faq#faq-tb-coll
 
 
 .. Software Tools

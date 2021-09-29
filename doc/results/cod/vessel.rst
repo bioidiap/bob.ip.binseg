@@ -2,9 +2,10 @@
 
 .. _bob.ip.binseg.results.cod.vessel:
 
-=====================
- Vessel Segmentation
-=====================
+==============================================
+ Retinal Vessel Segmentation for Retinography
+==============================================
+
 
 .. list-table::
    :header-rows: 2
@@ -51,6 +52,39 @@
      - `0.792 (0.020) <covd_hed_iostar_>`_
      - `0.788 (0.021) <covd_m2unet_iostar_>`_
      - `0.783 (0.019) <covd_unet_iostar_>`_
+
+
+Notes
+-----
+
+* The following table describes recommended batch sizes for 24Gb of RAM GPU
+  card, for supervised training of COD-systems:
+
+  .. code-block:: sh
+
+     # change <model> and <dataset> by one of items bellow
+     $ bob binseg experiment -vv <model> <dataset> --batch-size=<see-table> --device="cuda:0"
+
+  .. list-table::
+
+    * - **Models / Datasets**
+      - :py:mod:`drive-covd <bob.ip.binseg.configs.datasets.drive.covd>`
+      - :py:mod:`stare-covd <bob.ip.binseg.configs.datasets.stare.covd>`
+      - :py:mod:`chasedb1-covd <bob.ip.binseg.configs.datasets.chasedb1.covd>`
+      - :py:mod:`iostar-vessel-covd <bob.ip.binseg.configs.datasets.iostar.covd>`
+      - :py:mod:`hrf-covd <bob.ip.binseg.configs.datasets.hrf.covd>`
+    * - :py:mod:`driu <bob.ip.binseg.configs.models.driu>` / :py:mod:`driu-bn <bob.ip.binseg.configs.models.driu_bn>`
+      - 4
+      - 4
+      - 2
+      - 2
+      - 2
+    * - :py:mod:`m2unet <bob.ip.binseg.configs.models.m2unet>`
+      - 8
+      - 4
+      - 4
+      - 4
+      - 4
 
 
 .. include:: ../../links.rst

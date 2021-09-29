@@ -29,13 +29,11 @@
 * We only show results for select systems in :ref:`baseline analysis
   <bob.ip.binseg.results.baselines>`.  You may run analysis on the other models
   by downloading them from our website (via the ``--weight`` parameter on the
-  :ref:`analyze script <bob.ip.binseg.cli.analyze>`).  This script may help you
-  in this task, provided you created a directory structure as suggested by
-  :ref:`our baseline script <bob.ip.binseg.baseline-script>`:
+  :ref:`analyze script <bob.ip.binseg.cli.analyze>`).
 
-  .. literalinclude:: ../../scripts/xtest.sh
-     :language: bash
 
+Models on Specific Tasks
+------------------------
 
 .. toctree::
    :maxdepth: 2
