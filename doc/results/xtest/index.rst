@@ -40,6 +40,8 @@ Models on Specific Tasks
 
    vessel/driu
    vessel/m2unet
+   lung/lwnet
+   lung/m2unet
 
 
 .. include:: ../../links.rst

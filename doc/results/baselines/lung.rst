@@ -26,4 +26,26 @@
      -  `0.952 <baselines_lwnet_shenzhen_>`_
 
 
+Notes
+-----
+
+* The following table describes recommended batch sizes for 5Gb of RAM GPU
+  card:
+
+  .. list-table::
+
+    * - **Models / Datasets**
+      - :py:mod:`montgomery <bob.ip.binseg.configs.datasets.montgomery.default>`
+      - :py:mod:`jsrt <bob.ip.binseg.configs.datasets.jsrt.default>`
+      - :py:mod:`shenzhen <bob.ip.binseg.configs.datasets.shenzhen.default>`
+    * - :py:mod:`m2unet <bob.ip.binseg.configs.models.m2unet>`
+      - 8
+      - 8
+      - 8
+    * - :py:mod:`lwnet <bob.ip.binseg.configs.models.lwnet>`
+      - 8
+      - 8
+      - 8
+
+
 .. include:: ../../links.rst
