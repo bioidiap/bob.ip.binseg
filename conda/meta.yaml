@@ -12,9 +12,9 @@ build:
   script:
     - cd {{ project_dir }}
     {% if environ.get('BUILD_EGG') %}
-    - python setup.py sdist --formats=zip
+    - "{{ PYTHON }} setup.py sdist --formats=zip"
     {% endif %}
-    - python setup.py install --single-version-externally-managed --record record.txt
+    - "{{ PYTHON }} -m pip install . -vv"
     # installs the documentation source, readme to share/doc so it is available
     # during test time
     - install -d "${PREFIX}/share/doc/{{ name }}"
@@ -24,6 +24,7 @@ requirements:
   host:
     - python {{ python }}
     - setuptools {{ setuptools }}
+    - pip {{ pip }}
     - bob.extension
     - numpy {{ numpy }}
     - scipy {{ scipy }}
@@ -66,6 +67,7 @@ test:
   requires:
     - pytest {{ pytest }}
     - pytest-cov {{ pytest_cov }}
+    - coverage {{ coverage }}
     - sphinx {{ sphinx }}
     - sphinx_rtd_theme {{ sphinx_rtd_theme }}
     - sphinxcontrib-programoutput {{ sphinxcontrib_programoutput }}
