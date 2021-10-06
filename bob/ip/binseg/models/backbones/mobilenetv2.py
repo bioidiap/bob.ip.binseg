@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 # vim: set fileencoding=utf-8 :
 
-import torchvision.models.mobilenet
+import torchvision.models.mobilenetv2
 
 
-class MobileNetV24Segmentation(torchvision.models.mobilenet.MobileNetV2):
+class MobileNetV24Segmentation(torchvision.models.mobilenetv2.MobileNetV2):
     """Adaptation of base MobileNetV2 functionality to U-Net style segmentation
 
     This version of MobileNetV2 is slightly modified so it can be used through
@@ -43,8 +43,8 @@ def mobilenet_v2_for_segmentation(pretrained=False, progress=True, **kwargs):
     model = MobileNetV24Segmentation(**kwargs)
 
     if pretrained:
-        state_dict = torchvision.models.mobilenet.load_state_dict_from_url(
-            torchvision.models.mobilenet.model_urls["mobilenet_v2"],
+        state_dict = torchvision.models.mobilenetv2.load_state_dict_from_url(
+            torchvision.models.mobilenetv2.model_urls["mobilenet_v2"],
             progress=progress,
         )
         model.load_state_dict(state_dict)
@@ -60,5 +60,5 @@ def mobilenet_v2_for_segmentation(pretrained=False, progress=True, **kwargs):
 
 
 mobilenet_v2_for_segmentation.__doc__ = (
-    torchvision.models.mobilenet.mobilenet_v2.__doc__
+    torchvision.models.mobilenetv2.mobilenet_v2.__doc__
 )
