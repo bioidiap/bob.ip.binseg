@@ -140,6 +140,14 @@ Retinography
      - 19
      - 20
 
+.. note::
+
+  Refuge database directory (Training400/AMD) was replaced by an updated version
+  provided by the AMD Grand-Challenge https://amd.grand-challenge.org/.
+
+  The changes concern images A0012.jpg, which was damaged in REFUGE, and A0013.jpg,
+  which only exists in the AMD Grand-Challenge version.
+
 
 X-Ray
 -----
