@@ -196,13 +196,16 @@ class RandomRotation(torchvision.transforms.RandomRotation):
         defaults here for the underlying transform from torchvision:
 
         * ``degrees``: 15
-        * ``resample``: ``PIL.Image.BILINEAR``
+        * ``interpolation``: ``torchvision.transforms.functional.InterpolationMode.BILINEAR``
 
     """
 
     def __init__(self, p=0.5, **kwargs):
         kwargs.setdefault("degrees", 15)
-        kwargs.setdefault("resample", PIL.Image.BILINEAR)
+        kwargs.setdefault(
+            "interpolation",
+            torchvision.transforms.functional.InterpolationMode.BILINEAR,
+        )
         super(RandomRotation, self).__init__(**kwargs)
         self.p = p
 
@@ -212,7 +215,7 @@ class RandomRotation(torchvision.transforms.RandomRotation):
             angle = self.get_params(self.degrees)
             return [
                 torchvision.transforms.functional.rotate(
-                    img, angle, self.resample, self.expand, self.center
+                    img, angle, self.interpolation, self.expand, self.center
                 )
                 for img in args
             ]
