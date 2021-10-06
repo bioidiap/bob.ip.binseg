@@ -22,6 +22,7 @@ build:
 
 requirements:
   host:
+    - sysroot_linux-64 2.17  # [linux64]
     - python {{ python }}
     - setuptools {{ setuptools }}
     - pip {{ pip }}
