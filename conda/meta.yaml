@@ -21,8 +21,9 @@ build:
     - cp -R README.rst requirements.txt doc "${PREFIX}/share/doc/{{ name }}/"
 
 requirements:
-  host:
+  build:
     - sysroot_linux-64 2.17  # [linux64]
+  host:
     - python {{ python }}
     - setuptools {{ setuptools }}
     - pip {{ pip }}
