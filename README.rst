@@ -1,6 +1,6 @@
 .. -*- coding: utf-8 -*-
 
-.. image:: https://img.shields.io/badge/docs-available-orange.svg
+.. image:: https://img.shields.io/badge/docs-latest-orange.svg
    :target: https://www.idiap.ch/software/bob/docs/bob/bob.ip.binseg/master/index.html
 .. image:: https://gitlab.idiap.ch/bob/bob.ip.binseg/badges/master/pipeline.svg
    :target: https://gitlab.idiap.ch/bob/bob.ip.binseg/commits/master
