@@ -41,6 +41,7 @@ _protocols = [
 _root_path = bob.extension.rc.get(
     "bob.ip.binseg.rimoner3.datadir", os.path.realpath(os.curdir)
 )
+_pkg_path = pkg_resources.resource_filename(__name__, "masks")
 
 
 def _raw_data_loader(sample):
@@ -51,6 +52,9 @@ def _raw_data_loader(sample):
             (0, 0, 1072, 1424)
         ),
         label=load_pil_1(os.path.join(_root_path, sample["label"])).crop(
+            (0, 0, 1072, 1424)
+        ),
+        mask=load_pil_1(os.path.join(_pkg_path, sample["mask"])).crop(
             (0, 0, 1072, 1424)
         ),
     )
@@ -64,7 +68,7 @@ def _loader(context, sample):
 
 dataset = JSONDataset(
     protocols=_protocols,
-    fieldnames=("data", "label"),
+    fieldnames=("data", "label", "mask"),
     loader=_loader,
 )
 """RIM-ONE r3 dataset object"""

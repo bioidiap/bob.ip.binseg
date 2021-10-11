@@ -129,16 +129,19 @@ def process_glob(base_path, use_glob, output_path, threshold):
 
 \b
     1. Generate masks for supported dataset by bob. Ex: refuge.
+\b
+       $ bob binseg mkmask --dataset="refuge" --globs="Training400/*Glaucoma/*.jpg" --globs="Training400/*AMD/*.jpg" --threshold=5
+\b
+    Or you can generate the same results with this command
 
-       $ bob binseg mkmask --dataset="refuge" --globs="Training400/*Glaucoma/*.jpg" --globs="Training400/*AMD/*.jpg" --threshold=5 \n
+\b
+       $ bob binseg mkmask -d "refuge" -g "Training400/*Glaucoma/*.jpg" -g "Training400/*AMD/*.jpg" -t 5
 
-    Or you can generate the same results with this command \n
+\b
+    2. Generate masks for non supported dataset by bob
 
-       $ bob binseg mkmask -d "refuge" -g "Training400/*Glaucoma/*.jpg" -g "Training400/*AMD/*.jpg" -t 5 \n
-
-    2. Generate masks for non supported dataset by bob \n
-
-        $ bob binseg mkmask -d "Path/to/dataset" -g "glob1" -g "glob2" -g glob3  -t 4 \n
+\b
+        $ bob binseg mkmask -d "Path/to/dataset" -g "glob1" -g "glob2" -g glob3  -t 4
 
 
 """,
