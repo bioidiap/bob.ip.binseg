@@ -41,7 +41,7 @@ def test_loading():
 
         data = s.data
         assert isinstance(data, dict)
-        assert len(data) == 2
+        assert len(data) == 3
 
         assert "data" in data
         assert data["data"].size == image_size
@@ -50,6 +50,10 @@ def test_loading():
         assert "label" in data
         assert data["label"].size == image_size
         assert data["label"].mode == "1"
+
+        assert "mask" in data
+        assert data["mask"].size == image_size
+        assert data["mask"].mode == "1"
 
         b, w = count_bw(data["label"])
         assert (b + w) == numpy.prod(image_size), (

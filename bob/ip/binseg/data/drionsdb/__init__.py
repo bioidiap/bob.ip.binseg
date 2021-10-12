@@ -41,6 +41,7 @@ _protocols = [
 _root_path = bob.extension.rc.get(
     "bob.ip.binseg.drionsdb.datadir", os.path.realpath(os.curdir)
 )
+_pkg_path = pkg_resources.resource_filename(__name__, "masks")
 
 
 def _txt_to_pil_1(fname, size):
@@ -66,9 +67,11 @@ def _pad_right(img):
 def _raw_data_loader(sample):
     data = load_pil_rgb(os.path.join(_root_path, sample["data"]))
     label = _txt_to_pil_1(os.path.join(_root_path, sample["label"]), data.size)
+    mask = load_pil_1(os.path.join(_root_path, sample["mask"]))
     return dict(
         data=data,
         label=label,
+        mask=mask
     )
 
 
@@ -78,6 +81,7 @@ def _sample_101_loader(sample):
     retval = _raw_data_loader(sample)
     retval["data"] = _pad_right(retval["data"])
     retval["label"] = _pad_right(retval["label"])
+    retval["mask"] = _pad_right(retval["mask"])
     return retval
 
 
@@ -88,6 +92,6 @@ def _loader(context, sample):
 
 
 dataset = JSONDataset(
-    protocols=_protocols, fieldnames=("data", "label"), loader=_loader
+    protocols=_protocols, fieldnames=("data", "label" ,"mask"), loader=_loader
 )
 """DRIONSDB dataset object"""
