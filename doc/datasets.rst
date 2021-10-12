@@ -12,7 +12,11 @@ can be downloaded.  We include the reference of the data split protocols used
 to generate iterators for training and testing.
 
 
-.. list-table:: Supported Datasets (``*`` provided within this package)
+Retinography
+------------
+
+
+.. list-table:: Supported Retinography Datasets (``*``: provided within this package)
 
    * - Dataset
      - Reference
@@ -29,8 +33,8 @@ to generate iterators for training and testing.
      - [DRIVE-2004]_
      - 584 x 565
      - 40
-     - x
-     - x
+     - ``x``
+     - ``x``
      -
      -
      - [DRIVE-2004]_
@@ -40,8 +44,8 @@ to generate iterators for training and testing.
      - [STARE-2000]_
      - 605 x 700
      - 20
-     - *
-     - x
+     - ``*``
+     - ``x``
      -
      -
      - [MANINIS-2016]_
@@ -51,8 +55,8 @@ to generate iterators for training and testing.
      - [CHASEDB1-2012]_
      - 960 x 999
      - 28
-     - *
-     - x
+     - ``*``
+     - ``x``
      -
      -
      - [CHASEDB1-2012]_
@@ -62,8 +66,8 @@ to generate iterators for training and testing.
      - [HRF-2013]_
      - 2336 x 3504
      - 45
-     - x
-     - x
+     - ``x``
+     - ``x``
      -
      -
      - [ORLANDO-2017]_
@@ -73,9 +77,9 @@ to generate iterators for training and testing.
      - [IOSTAR-2016]_
      - 1024 x 1024
      - 30
-     - x
-     - x
-     - x
+     - ``x``
+     - ``x``
+     - ``x``
      -
      - [MEYER-2017]_
      - 20
@@ -86,7 +90,7 @@ to generate iterators for training and testing.
      - 110
      -
      -
-     - x
+     - ``x``
      -
      - [MANINIS-2016]_
      - 60
@@ -97,8 +101,8 @@ to generate iterators for training and testing.
      - 159
      -
      -
-     - x
-     - x
+     - ``x``
+     - ``x``
      - [MANINIS-2016]_
      - 99
      - 60
@@ -108,8 +112,8 @@ to generate iterators for training and testing.
      - 101
      -
      -
-     - x
-     - x
+     - ``x``
+     - ``x``
      - [DRISHTIGS1-2014]_
      - 50
      - 51
@@ -119,8 +123,8 @@ to generate iterators for training and testing.
      - 1200
      -
      -
-     - x
-     - x
+     - ``x``
+     - ``x``
      - [REFUGE-2018]_
      - 400 (+400)
      - 400
@@ -128,44 +132,59 @@ to generate iterators for training and testing.
      - [DRHAGIS-2017]_
      - Varying
      - 39
-     - x
-     - x
+     - ``x``
+     - ``x``
      -
      -
      - [DRHAGIS-2017]_
      - 19
      - 20
-   * - MC_
+
+.. warning:: **REFUGE Dataset Support**
+
+  The original directory ``Training400/AMD`` in REFUGE is considered to be
+  replaced by an updated version provided by the `AMD Grand-Challenge`_ (with
+  matching names).
+
+  The changes concerns images ``A0012.jpg``, which was corrupted in REFUGE, and
+  ``A0013.jpg``, which only exists in the AMD Grand-Challenge version.
+
+
+X-Ray
+-----
+
+.. list-table:: Supported X-Ray Datasets
+
+   * - Dataset
+     - Reference
+     - H x W
+     - Samples
+     - Mask
+     - Split Reference
+     - Train
+     - Test
+   * - `Montgomery County`_
      - [MC-2014]_
      - 4020 x 4892, or 4892 x 4020
      - 138
-     - x
-     -
-     -
-     -
-     - [GAÁL-2020]_
+     - ``x``
+     - [GAAL-2020]_
      - 96 (+14)
      - 28
    * - JSRT_
      - [JSRT-2000]_
      - 2048 x 2048
      - 247
-     - x
-     -
-     -
-     -
-     - [GAÁL-2020]_
+     - ``x``
+     - [GAAL-2020]_
      - 172 (+25)
      - 50
-   * - SHENZHEN_
+   * - Shenzhen_
      - [SHENZHEN-2014]_
      - Varying
      - 662
-     -
-     -
-     -
-     -
-     - [GAÁL-2020]_
+     - ``x``
+     - [GAAL-2020]_
      - 396 (+56)
      - 114
 

@@ -58,8 +58,16 @@ def test_center_crop():
 
 def test_center_crop_uneven():
 
-    # parameters
-    im_size = (3, 23, 20)  # (planes, height, width)
+    # parameters - WARNING: notice that modern implementations of centercrop in
+    # torchvision (noticed with version 0.10.x) may provide slightly different
+    # outputs depending on the multiplicity of pixels that need to be cropped
+    # from both sides.  In the current configuration, the output is such that
+    # the centercrop is 0.5 pixel to the right/bottom from an actual center
+    # crop.  With other configurations, it may be that the crop is 0.5 pixel to
+    # the left/top part of the image, which makes testing this function a bit
+    # hard.  If you have issues with this function, try different
+    # configurations here, or to change the setting of "idx" a few lines down.
+    im_size = (3, 21, 20)  # (planes, height, width)
     crop_size = (10, 13)  # (height, width)
 
     # test
@@ -68,7 +76,10 @@ def test_center_crop_uneven():
     # when the crop size is uneven, this is what happens - notice here that the
     # image height is uneven, and the crop width as well - the attributions of
     # extra pixels will depend on what is uneven (original image or crop)
+    # crop is 0.5 pixel to the right/bottom:
     idx = (slice(bh + 1, -bh), slice(bw + 1, -bw), slice(0, im_size[0]))
+    # crop is 0.5 pixel to the left/top:
+    # idx = (slice(bh, -(bh + 1)), slice(bw, -(bw + 1)), slice(0, im_size[0]))
     transforms = CenterCrop(crop_size)
     img, gt, mask = [_create_img(im_size) for i in range(3)]
     assert img.size == (im_size[2], im_size[1])  # confirms the above

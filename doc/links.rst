@@ -23,10 +23,11 @@
 .. _rim-one r3: http://medimrg.webs.ull.es/research/downloads/
 .. _drishti-gs1: http://cvit.iiit.ac.in/projects/mip/drishti-gs/mip-dataset2/Home.php
 .. _refuge: https://refuge.grand-challenge.org/Details/
+.. _amd grand-challenge: https://amd.grand-challenge.org/
 .. _drhagis: https://personalpages.manchester.ac.uk/staff/niall.p.mcloughlin/
-.. _MC: https://openi.nlm.nih.gov/faq#faq-tb-coll
-.. _JSRT: http://db.jsrt.or.jp/eng.php
-.. _Shenzhen: https://openi.nlm.nih.gov/faq#faq-tb-coll
+.. _montgomery county: https://openi.nlm.nih.gov/faq#faq-tb-coll
+.. _jsrt: http://db.jsrt.or.jp/eng.php
+.. _shenzhen: https://openi.nlm.nih.gov/faq#faq-tb-coll
 
 
 .. Software Tools
@@ -57,6 +58,13 @@
 .. _baselines_hed_iostar: https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/baselines/hed-iostar-vessel-37cfaee1.pth
 .. _baselines_m2unet_iostar: https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/baselines/m2unet-iostar-vessel-223b61ef.pth
 .. _baselines_unet_iostar: https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/baselines/unet-iostar-vessel-86c78e87.pth
+
+.. _baselines_m2unet_jsrt: https://bobconda.lab.idiap.ch/public/data/bob/bob.ip.binseg/master/baselines/m2unet-jsrt-5f062009.pth
+.. _baselines_m2unet_montgomery: https://bobconda.lab.idiap.ch/public/data/bob/bob.ip.binseg/master/baselines/m2unet-montgomery-1c24519a.pth
+.. _baselines_m2unet_shenzhen: https://bobconda.lab.idiap.ch/public/data/bob/bob.ip.binseg/master/baselines/m2unet-shenzhen-7c9688e6.pth
+.. _baselines_lwnet_jsrt: https://bobconda.lab.idiap.ch/public/data/bob/bob.ip.binseg/master/baselines/lwnet-jsrt-73807eb1.pth
+.. _baselines_lwnet_montgomery: https://bobconda.lab.idiap.ch/public/data/bob/bob.ip.binseg/master/baselines/lwnet-montgomery-9c6bf39b.pth
+.. _baselines_lwnet_shenzhen: https://bobconda.lab.idiap.ch/public/data/bob/bob.ip.binseg/master/baselines/lwnet-shenzhen-10196d9c.pth
 
 .. _covd_driu_drive: https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/covd/driu/drive/model.pth
 .. _covd_hed_drive: https://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/covd/hed/drive/model.pth

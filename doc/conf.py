@@ -243,34 +243,18 @@ autodoc_default_options = {
 }
 
 
-# For inter-documentation mapping:
-from bob.extension.utils import link_documentation, load_requirements
+# For inter-documentation mapping: notice sphinx changes to the current
+# directory to build the documentation
+from bob.extension.utils import link_documentation
 
-sphinx_requirements = "extra-intersphinx.txt"
-if os.path.exists(sphinx_requirements):
+if os.path.exists("requirements.txt"):
+    # building on the CI, with a copy of requirements.txt
     intersphinx_mapping = link_documentation(
-        additional_packages=["python", "numpy"]
-        + load_requirements(sphinx_requirements)
+        requirements_file="requirements.txt"
     )
 else:
+    # building locally
     intersphinx_mapping = link_documentation()
-
-intersphinx_mapping["torch"] = ("https://pytorch.org/docs/stable/", None)
-intersphinx_mapping["PIL"] = ("http://pillow.readthedocs.io/en/stable", None)
-intersphinx_mapping["pandas"] = (
-    "https://pandas.pydata.org/pandas-docs/stable/",
-    None,
-)
-
-# Figures out the major click version we use
-import pkg_resources
-
-click_version = pkg_resources.require("click")[0].version.split(".")[0]
-click_version += ".x"
-intersphinx_mapping["click"] = (
-    "https://click.palletsprojects.com/en/%s/" % (click_version,),
-    None,
-)
 
 # Add our private index (for extras and fixes)
 intersphinx_mapping["extras"] = ("", "extras.inv")

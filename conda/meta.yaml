@@ -12,9 +12,9 @@ build:
   script:
     - cd {{ project_dir }}
     {% if environ.get('BUILD_EGG') %}
-    - python setup.py sdist --formats=zip
+    - "{{ PYTHON }} setup.py sdist --formats=zip"
     {% endif %}
-    - python setup.py install --single-version-externally-managed --record record.txt
+    - "{{ PYTHON }} -m pip install . -vv"
     # installs the documentation source, readme to share/doc so it is available
     # during test time
     - install -d "${PREFIX}/share/doc/{{ name }}"
@@ -24,47 +24,57 @@ requirements:
   host:
     - python {{ python }}
     - setuptools {{ setuptools }}
+    - pip {{ pip }}
+    - bob.extension
     - numpy {{ numpy }}
     - scipy {{ scipy }}
     - h5py {{ h5py }}
     - pytorch {{ pytorch }}
     - torchvision  {{ torchvision }}
-    - bob.extension
+    - matplotlib {{ matplotlib }}
+    - pandas {{ pandas }}
+    - pillow {{ pillow }}
+    - psutil {{ psutil }}
+    - h5py {{ h5py }}
+    - tqdm {{ tqdm }}
+    - tabulate {{ tabulate }}
   run:
     - python
     - setuptools
     - {{ pin_compatible('numpy') }}
     - {{ pin_compatible('scipy') }}
-    - {{ pin_compatible('pytorch') }}
-    - {{ pin_compatible('torchvision') }}
-    - matplotlib
-    - pandas
-    - pillow
-    - psutil
-    - h5py
-    - tqdm
-    - tabulate
+    - {{ pin_compatible('pytorch', max_pin="x.x") }}
+    - {{ pin_compatible('torchvision', max_pin="x.x") }}
+    - {{ pin_compatible('matplotlib') }}
+    - {{ pin_compatible('pandas') }}
+    - {{ pin_compatible('pillow') }}
+    - {{ pin_compatible('psutil') }}
+    - {{ pin_compatible('h5py') }}
+    - {{ pin_compatible('tqdm') }}
+    - {{ pin_compatible('tabulate') }}
 
 test:
   imports:
     - {{ name }}
   commands:
+    - pip check
     # runs tests for package only, report only what is in the package
     # creates html and xml reports and place them in specific directories
-    - pytest --capture=no --verbose --cov {{ name }} --cov-report term-missing --cov-report html:{{ project_dir }}/sphinx/coverage --cov-report xml:{{ project_dir }}/coverage.xml --pyargs {{ name }}
+    - pytest --capture=no --verbose --cov {{ name }} --cov-config {{ project_dir }}/pyproject.toml --cov-report term-missing --cov-report html:{{ project_dir }}/sphinx/coverage --cov-report xml:{{ project_dir }}/coverage.xml --pyargs {{ name }}
     - sphinx-build -aEW {{ project_dir }}/doc {{ project_dir }}/sphinx
     - sphinx-build -aEb doctest {{ project_dir }}/doc sphinx
     - conda inspect linkages -p $PREFIX {{ name }}  # [not win]
     - conda inspect objects -p $PREFIX {{ name }}  # [osx]
   requires:
-    - bob-devel {{ bob_devel }}.*
-    - pytest
-    - pytest-cov
-    - sphinx
-    - sphinx_rtd_theme
-    - sphinxcontrib-programoutput
-    - graphviz
-    - font-ttf-dejavu-sans-mono
+    - pip {{ pip }}
+    - pytest {{ pytest }}
+    - pytest-cov {{ pytest_cov }}
+    - coverage {{ coverage }}
+    - sphinx {{ sphinx }}
+    - sphinx_rtd_theme {{ sphinx_rtd_theme }}
+    - sphinxcontrib-programoutput {{ sphinxcontrib_programoutput }}
+    - graphviz {{ graphviz }}
+    - font-ttf-dejavu-sans-mono {{ font_ttf_dejavu_sans_mono }}
 
 about:
   summary: Binary Segmentation Benchmark Package for Bob

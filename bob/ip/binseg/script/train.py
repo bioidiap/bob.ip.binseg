@@ -133,7 +133,9 @@ logger = logging.getLogger(__name__)
 @click.option(
     "--epochs",
     "-e",
-    help="Number of epochs (complete training set passes) to train for",
+    help="Number of epochs (complete training set passes) to train for. "
+    "If continuing from a saved checkpoint, ensure to provide a greater "
+    "number of epochs than that saved on the checkpoint to be loaded. ",
     show_default=True,
     required=True,
     default=1000,
@@ -231,6 +233,12 @@ def train(
     checkpoints.  Checkpoints are model files (.pth files) that are stored
     during the training and useful to resume the procedure in case it stops
     abruptly.
+
+    Tip: In case the model has been trained over a number of epochs, it is
+    possible to continue training, by simply relaunching the same command, and
+    changing the number of epochs to a number greater than the number where
+    the original training session stopped (or the last checkpoint was saved).
+
     """
 
     device = setup_pytorch_device(device)

@@ -11,6 +11,8 @@ import tempfile
 
 from click.testing import CliRunner
 
+from bob.extension.scripts.click_helper import assert_click_runner_result
+
 from . import mock_dataset
 
 stare_datadir, stare_dataset = mock_dataset()
@@ -18,9 +20,7 @@ stare_datadir, stare_dataset = mock_dataset()
 
 def _assert_exit_0(result):
 
-    assert (
-        result.exit_code == 0
-    ), f"Exit code {result.exit_code} != 0 -- Output:\n{result.output}"
+    assert_click_runner_result(result)
 
 
 def _check_help(entry_point):

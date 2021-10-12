@@ -1,6 +1,6 @@
 .. -*- coding: utf-8 -*-
 
-.. image:: https://img.shields.io/badge/docs-available-orange.svg
+.. image:: https://img.shields.io/badge/docs-latest-orange.svg
    :target: https://www.idiap.ch/software/bob/docs/bob/bob.ip.binseg/master/index.html
 .. image:: https://gitlab.idiap.ch/bob/bob.ip.binseg/badges/master/pipeline.svg
    :target: https://gitlab.idiap.ch/bob/bob.ip.binseg/commits/master
@@ -14,8 +14,8 @@
  Binary Segmentation Benchmark Package for Bob
 ===============================================
 
-This package is part of the signal-processing and machine learning toolbox
-Bob_.  It implements training and inference for binary segmentation tasks.
+Package to benchmark and evaluate a range of neural network architectures for
+binary segmentation tasks.  It is build using PyTorch.
 
 
 Installation
@@ -31,7 +31,16 @@ Citation
 --------
 
 If you use this software package in a publication, we would appreciate if you
-could cite our work::
+could cite one or both of these references::
+
+   @inproceedings{renzo_2021,
+       title     = {Development of a lung segmentation algorithm for analog imaged chest X-Ray: preliminary results},
+       author    = {Matheus A. Renzo and Nat\'{a}lia Fernandez and Andr\'e Baceti and Natanael Nunes de Moura Junior and Andr\'e Anjos},
+       month     = {10},
+       booktitle = {XV Brazilian Congress on Computational Intelligence},
+       year      = {2021},
+       url       = {https://publications.idiap.ch/index.php/publications/show/4649},
+   }
 
    @misc{laibacher_anjos_2019,
       title         = {On the Evaluation and Real-World Usage Scenarios of Deep Vessel Segmentation for Retinography},

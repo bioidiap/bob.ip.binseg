@@ -25,6 +25,9 @@ Data Manipulation
 Datasets
 --------
 
+Retinography
+============
+
 .. autosummary::
    :toctree: api/dataset
 
@@ -38,9 +41,17 @@ Datasets
    bob.ip.binseg.data.rimoner3
    bob.ip.binseg.data.drionsdb
    bob.ip.binseg.data.drhagis
-   bob.ip.binseg.data.MC
-   bob.ip.binseg.data.JSRT
-   bob.ip.binseg.data.Shenzhen
+
+
+Chest X-Ray
+===========
+
+.. autosummary::
+   :toctree: api/dataset
+
+   bob.ip.binseg.data.montgomery
+   bob.ip.binseg.data.jsrt
+   bob.ip.binseg.data.shenzhen
 
 
 Engines
@@ -193,11 +204,11 @@ Datasets
 
    bob.ip.binseg.configs.datasets.drhagis.default
 
-   bob.ip.binseg.configs.datasets.MC.default
+   bob.ip.binseg.configs.datasets.montgomery.default
 
-   bob.ip.binseg.configs.datasets.JSRT.default
+   bob.ip.binseg.configs.datasets.jsrt.default
 
-   bob.ip.binseg.configs.datasets.Shenzhen.default
-   bob.ip.binseg.configs.datasets.Shenzhen.default_256
+   bob.ip.binseg.configs.datasets.shenzhen.default
+   bob.ip.binseg.configs.datasets.shenzhen.default_256
 
 .. include:: links.rst

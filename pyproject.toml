@@ -10,3 +10,6 @@
 
 [tool.black]
     line-length = 80
+
+[tool.coverage.run]
+    relative_files = true

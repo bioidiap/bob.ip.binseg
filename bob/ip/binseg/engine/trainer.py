@@ -21,7 +21,7 @@ from ..utils.summary import summary
 
 logger = logging.getLogger(__name__)
 
-PYTORCH_GE_110 = distutils.version.StrictVersion(torch.__version__) >= "1.1.0"
+PYTORCH_GE_110 = distutils.version.LooseVersion(torch.__version__) >= "1.1.0"
 
 
 @contextlib.contextmanager

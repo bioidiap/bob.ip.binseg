@@ -7,22 +7,51 @@
    This section is outdated and needs re-factoring.
 
 
-============================
- COVD- and COVD-SLL Results
-============================
+=========================================
+ COVD- and COVD-SLL Results (Deprecated)
+=========================================
 
 In addition to the M2U-Net architecture, we also evaluated the larger DRIU
 network and a variation of it that contains batch normalization (DRIU+BN) on
 COVD- (Combined Vessel Dataset from all training data minus target test set)
-and COVD-SSL (COVD- and Semi-Supervised Learning). Perhaps surprisingly, for
-the majority of combinations, the performance of the DRIU variants are roughly
-equal or worse to the ones obtained with the much smaller M2U-Net.  We
-anticipate that one reason for this could be overparameterization of large
-VGG-16 models that are pretrained on ImageNet.
+and SSL (Semi-Supervised Learning). Perhaps surprisingly, for the majority of
+combinations, the performance of the DRIU variants are roughly equal or worse
+to the ones obtained with the much smaller M2U-Net.  We anticipate that one
+reason for this could be overparameterization of large VGG-16 models that are
+pretrained on ImageNet.
 
 
 F1 Scores
 ---------
+
+The following table describes recommended batch sizes for 24Gb of RAM GPU
+card, for semi-supervised learning of COVD- systems.  Use it like this:
+
+.. code-block:: sh
+
+   # change <model> and <dataset> by one of items bellow
+   $ bob binseg train -vv --ssl <model> <dataset> --batch-size=<see-table> --device="cuda:0"
+
+.. list-table::
+
+  * - **Models / Datasets**
+    - :py:mod:`drive-ssl <bob.ip.binseg.configs.datasets.drive.ssl>`
+    - :py:mod:`stare-ssl <bob.ip.binseg.configs.datasets.stare.ssl>`
+    - :py:mod:`chasedb1-ssl <bob.ip.binseg.configs.datasets.chasedb1.ssl>`
+    - :py:mod:`iostar-vessel-ssl <bob.ip.binseg.configs.datasets.iostar.ssl>`
+    - :py:mod:`hrf-ssl <bob.ip.binseg.configs.datasets.hrf.ssl>`
+  * - :py:mod:`driu-ssl <bob.ip.binseg.configs.models.driu_ssl>` / :py:mod:`driu-bn-ssl <bob.ip.binseg.configs.models.driu_bn_ssl>`
+    - 4
+    - 4
+    - 2
+    - 1
+    - 1
+  * - :py:mod:`m2unet-ssl <bob.ip.binseg.configs.models.m2unet_ssl>`
+    - 4
+    - 4
+    - 2
+    - 2
+    - 2
 
 Comparison of F1 Scores (micro-level and standard deviation) of DRIU and
 M2U-Net on COVD- and COVD-SSL.  Standard deviation across test-images in
@@ -75,48 +104,6 @@ brackets.
      - 0.797 (0.017)
      - 0.811 (0.074)
      - `0.785 (0.018) <m2unet_covd-iostar_ssl.pth>`_
-
-
-M2U-Net Precision vs. Recall Curves
------------------------------------
-
-Precision vs. recall curves for each evaluated dataset.  Note that here the
-F1-score is calculated on a macro level (see paper for more details).
-
-.. figure:: pr_CHASEDB1.png
-   :scale: 50 %
-   :align: center
-   :alt: model comparisons
-
-   CHASE_DB1: Precision vs Recall curve and F1 scores
-
-.. figure:: pr_DRIVE.png
-   :scale: 50 %
-   :align: center
-   :alt: model comparisons
-
-   DRIVE: Precision vs Recall curve and F1 scores
-
-.. figure:: pr_HRF.png
-   :scale: 50 %
-   :align: center
-   :alt: model comparisons
-
-   HRF: Precision vs Recall curve and F1 scores
-
-.. figure:: pr_IOSTARVESSEL.png
-   :scale: 50 %
-   :align: center
-   :alt: model comparisons
-
-   IOSTAR: Precision vs Recall curve and F1 scores
-
-.. figure:: pr_STARE.png
-   :scale: 50 %
-   :align: center
-   :alt: model comparisons
-
-   STARE: Precision vs Recall curve and F1 scores
 
 
 .. include:: ../../links.rst
