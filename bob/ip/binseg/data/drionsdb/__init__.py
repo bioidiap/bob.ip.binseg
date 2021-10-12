@@ -31,7 +31,7 @@ import pkg_resources
 import bob.extension
 
 from ..dataset import JSONDataset
-from ..loader import load_pil_rgb, make_delayed
+from ..loader import load_pil_1, load_pil_rgb, make_delayed
 
 _protocols = [
     pkg_resources.resource_filename(__name__, "expert1.json"),
@@ -68,11 +68,7 @@ def _raw_data_loader(sample):
     data = load_pil_rgb(os.path.join(_root_path, sample["data"]))
     label = _txt_to_pil_1(os.path.join(_root_path, sample["label"]), data.size)
     mask = load_pil_1(os.path.join(_root_path, sample["mask"]))
-    return dict(
-        data=data,
-        label=label,
-        mask=mask
-    )
+    return dict(data=data, label=label, mask=mask)
 
 
 def _sample_101_loader(sample):
@@ -92,6 +88,6 @@ def _loader(context, sample):
 
 
 dataset = JSONDataset(
-    protocols=_protocols, fieldnames=("data", "label" ,"mask"), loader=_loader
+    protocols=_protocols, fieldnames=("data", "label", "mask"), loader=_loader
 )
 """DRIONSDB dataset object"""
