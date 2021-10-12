@@ -201,7 +201,7 @@ def train_sample_process(samples, model, optimizer, losses, device, criterion):
 
     optimizer : :py:mod:`torch.optim`
 
-    losses : :py:class:'bob.ip.binseg.utils.measure.SmoothedValue'
+    losses : :py:class:`bob.ip.binseg.utils.measure.SmoothedValue`
 
     device : :py:class:`torch.device`
         device to use
@@ -212,7 +212,7 @@ def train_sample_process(samples, model, optimizer, losses, device, criterion):
     Returns
     -------
 
-    losses : :py:class:'bob.ip.binseg.utils.measure.SmoothedValue'
+    losses : :py:class:`bob.ip.binseg.utils.measure.SmoothedValue`
 
     optimizer : :py:mod:`torch.optim`
 
@@ -256,7 +256,7 @@ def valid_sample_process(samples, model, valid_losses, device, criterion):
 
     optimizer : :py:mod:`torch.optim`
 
-    valid_losses : :py:class:'bob.ip.binseg.utils.measure.SmoothedValue'
+    valid_losses : :py:class:`bob.ip.binseg.utils.measure.SmoothedValue`
 
     device : :py:class:`torch.device`
         device to use
@@ -267,7 +267,7 @@ def valid_sample_process(samples, model, valid_losses, device, criterion):
     Returns
     -------
 
-    valid_losses : :py:class:'bob.ip.binseg.utils.measure.SmoothedValue'
+    valid_losses : :py:class:`bob.ip.binseg.utils.measure.SmoothedValue`
 
     """
     images = samples[1].to(
@@ -315,7 +315,7 @@ def checkpointer_process(
         save a checkpoint every ``n`` epochs.  If set to ``0`` (zero), then do
         not save intermediary checkpoints
 
-    valid_losses : :py:class:'bob.ip.binseg.utils.measure.SmoothedValue'
+    valid_losses : :py:class:`bob.ip.binseg.utils.measure.SmoothedValue`
 
     lowest_validation_loss : float
         Keep track of the best (lowest) validation loss
@@ -369,9 +369,9 @@ def write_log_info(
     eta_seconds : float
         estimated time-of-arrival taking into consideration previous epoch performance
 
-    losses : :py:class:'bob.ip.binseg.utils.measure.SmoothedValue'
+    losses : :py:class:`bob.ip.binseg.utils.measure.SmoothedValue`
 
-    valid_losses : :py:class:'bob.ip.binseg.utils.measure.SmoothedValue'
+    valid_losses : :py:class:`bob.ip.binseg.utils.measure.SmoothedValue`
 
     optimizer : :py:mod:`torch.optim`
 
