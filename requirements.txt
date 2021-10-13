@@ -11,3 +11,4 @@ tabulate
 torch
 torchvision
 tqdm
+scikit-image

@@ -563,6 +563,12 @@ def test_compare_help():
     _check_help(compare)
 
 
+def test_mkmask_help():
+    from ..script.mkmask import mkmask
+
+    _check_help(mkmask)
+
+
 def test_significance_help():
     from ..script.significance import significance
 

@@ -40,6 +40,7 @@ setup(
             "significance =  bob.ip.binseg.script.significance:significance",
             "analyze =  bob.ip.binseg.script.analyze:analyze",
             "experiment =  bob.ip.binseg.script.experiment:experiment",
+            "mkmask = bob.ip.binseg.script.mkmask:mkmask",
         ],
         # bob train configurations
         "bob.ip.binseg.config": [

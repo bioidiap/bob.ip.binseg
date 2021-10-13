@@ -39,7 +39,7 @@ import pkg_resources
 import bob.extension
 
 from ..dataset import JSONDataset
-from ..loader import load_pil_rgb, make_delayed
+from ..loader import load_pil_1, load_pil_rgb, make_delayed
 
 _protocols = {
     "optic-disc": pkg_resources.resource_filename(__name__, "default.json"),
@@ -49,12 +49,14 @@ _protocols = {
 _root_path = bob.extension.rc.get(
     "bob.ip.binseg.refuge.datadir", os.path.realpath(os.curdir)
 )
+_pkg_path = pkg_resources.resource_filename(__name__, "masks")
 
 
 def _disc_loader(sample):
     retval = dict(
         data=load_pil_rgb(os.path.join(_root_path, sample["data"])),
         label=load_pil_rgb(os.path.join(_root_path, sample["label"])),
+        mask=load_pil_1(os.path.join(_pkg_path, sample["mask"])),
     )
     if "glaucoma" in sample:
         retval["glaucoma"] = sample["glaucoma"]
@@ -67,6 +69,7 @@ def _cup_loader(sample):
     retval = dict(
         data=load_pil_rgb(os.path.join(_root_path, sample["data"])),
         label=load_pil_rgb(os.path.join(_root_path, sample["label"])),
+        mask=load_pil_1(os.path.join(_pkg_path, sample["mask"])),
     )
     if "glaucoma" in sample:
         retval["glaucoma"] = sample["glaucoma"]
@@ -99,7 +102,7 @@ def _loader(context, sample):
 
 dataset = JSONDataset(
     protocols=_protocols,
-    fieldnames=("data", "label"),
+    fieldnames=("data", "label", "mask"),
     loader=_loader,
 )
 """REFUGE dataset object"""

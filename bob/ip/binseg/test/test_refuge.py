@@ -64,6 +64,10 @@ def test_loading():
             f"indicate a loading problem!"
         )
 
+        assert "mask" in data
+        assert data["mask"].size == image_size
+        assert data["mask"].mode == "1"
+
         if glaucoma_label:
             assert "glaucoma" in data
 
@@ -80,34 +84,34 @@ def test_loading():
     limit = None  # use this to limit testing to first images only
     subset = dataset.subsets("optic-disc")
     proportions = [
-        _check_sample(s, (2124, 2056), True, 3, 0.029)
+        _check_sample(s, (2124, 2056), True, 4, 0.029)
         for s in subset["train"][:limit]
     ]
     # print(f"max label proportions = {max(proportions)}")
     proportions = [
-        _check_sample(s, (1634, 1634), False, 2, 0.043)
+        _check_sample(s, (1634, 1634), False, 3, 0.043)
         for s in subset["validation"][:limit]
     ]
     # print(f"max label proportions = {max(proportions)}")
     proportions = [
-        _check_sample(s, (1634, 1634), True, 3, 0.026)
+        _check_sample(s, (1634, 1634), True, 4, 0.026)
         for s in subset["test"][:limit]
     ]
     # print(f"max label proportions = {max(proportions)}")
 
     subset = dataset.subsets("optic-cup")
     proportions = [
-        _check_sample(s, (2124, 2056), True, 3, 0.018)
+        _check_sample(s, (2124, 2056), True, 4, 0.018)
         for s in subset["train"][:limit]
     ]
     # print(f"max label proportions = {max(proportions)}")
     proportions = [
-        _check_sample(s, (1634, 1634), False, 2, 0.030)
+        _check_sample(s, (1634, 1634), False, 3, 0.030)
         for s in subset["validation"][:limit]
     ]
     # print(f"max label proportions = {max(proportions)}")
     proportions = [
-        _check_sample(s, (1634, 1634), True, 3, 0.017)
+        _check_sample(s, (1634, 1634), True, 4, 0.017)
         for s in subset["test"][:limit]
     ]
     # print(f"max label proportions = {max(proportions)}")

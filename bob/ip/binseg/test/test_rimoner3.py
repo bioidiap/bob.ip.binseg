@@ -46,7 +46,7 @@ def test_loading():
 
         data = s.data
         assert isinstance(data, dict)
-        assert len(data) == 2
+        assert len(data) == 3
 
         assert "data" in data
         assert data["data"].size == image_size
@@ -66,6 +66,10 @@ def test_loading():
             f"of {bw_threshold_label} at '{s.key}':label - this could "
             f"indicate a loading problem!"
         )
+
+        assert "mask" in data
+        assert data["mask"].size == image_size
+        assert data["mask"].mode == "1"
 
         # to visualize images, uncomment the folowing code
         # it should display an image with a faded background representing the

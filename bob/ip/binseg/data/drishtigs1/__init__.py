@@ -29,7 +29,7 @@ import pkg_resources
 import bob.extension
 
 from ..dataset import JSONDataset
-from ..loader import load_pil_rgb, make_delayed
+from ..loader import load_pil_1, load_pil_rgb, make_delayed
 
 _protocols = {
     "optic-disc-all": pkg_resources.resource_filename(
@@ -49,6 +49,7 @@ _protocols = {
 _root_path = bob.extension.rc.get(
     "bob.ip.binseg.drishtigs1.datadir", os.path.realpath(os.curdir)
 )
+_pkg_path = pkg_resources.resource_filename(__name__, "masks")
 
 
 def _raw_data_loader_all(sample):
@@ -57,6 +58,7 @@ def _raw_data_loader_all(sample):
         label=load_pil_rgb(os.path.join(_root_path, sample["label"])).convert(
             "L"
         ),
+        mask=load_pil_1(os.path.join(_pkg_path, sample["mask"])),
     )
     retval["label"] = retval["label"].point(lambda p: p > 254, mode="1")
     return retval
@@ -68,6 +70,7 @@ def _raw_data_loader_any(sample):
         label=load_pil_rgb(os.path.join(_root_path, sample["label"])).convert(
             "L"
         ),
+        mask=load_pil_1(os.path.join(_pkg_path, sample["mask"])),
     )
     retval["label"] = retval["label"].point(lambda p: p > 0, mode="1")
     return retval
@@ -85,6 +88,6 @@ def _loader(context, sample):
 
 
 dataset = JSONDataset(
-    protocols=_protocols, fieldnames=("data", "label"), loader=_loader
+    protocols=_protocols, fieldnames=("data", "label", "mask"), loader=_loader
 )
 """Drishti-GS1 dataset object"""
