@@ -29,7 +29,7 @@ requirements:
     - numpy {{ numpy }}
     - scipy {{ scipy }}
     - h5py {{ h5py }}
-    - pytorch 1.9.1
+    - pytorch {{ pytorch }}
     - torchvision  {{ torchvision }}
     - matplotlib {{ matplotlib }}
     - pandas {{ pandas }}
