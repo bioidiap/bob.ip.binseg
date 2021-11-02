@@ -330,7 +330,7 @@ def checkpointer_process(
 
     """
     if checkpoint_period and (epoch % checkpoint_period == 0):
-        checkpointer.save(f"model_periodic_save", **arguments)
+        checkpointer.save("model_periodic_save", **arguments)
 
     if valid_losses is not None and valid_losses.avg < lowest_validation_loss:
         lowest_validation_loss = valid_losses.avg
