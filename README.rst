@@ -1,11 +1,11 @@
 .. -*- coding: utf-8 -*-
 
-.. image:: https://img.shields.io/badge/docs-v1.4.0-orange.svg
-   :target: https://www.idiap.ch/software/bob/docs/bob/bob.ip.binseg/v1.4.0/index.html
-.. image:: https://gitlab.idiap.ch/bob/bob.ip.binseg/badges/v1.4.0/pipeline.svg
-   :target: https://gitlab.idiap.ch/bob/bob.ip.binseg/commits/v1.4.0
-.. image:: https://gitlab.idiap.ch/bob/bob.ip.binseg/badges/v1.4.0/coverage.svg
-   :target: https://www.idiap.ch/software/bob/docs/bob/bob.ip.binseg/v1.4.0/coverage/index.html
+.. image:: https://img.shields.io/badge/docs-latest-orange.svg
+   :target: https://www.idiap.ch/software/bob/docs/bob/bob.ip.binseg/master/index.html
+.. image:: https://gitlab.idiap.ch/bob/bob.ip.binseg/badges/master/pipeline.svg
+   :target: https://gitlab.idiap.ch/bob/bob.ip.binseg/commits/master
+.. image:: https://gitlab.idiap.ch/bob/bob.ip.binseg/badges/master/coverage.svg
+   :target: https://www.idiap.ch/software/bob/docs/bob/bob.ip.binseg/master/coverage/index.html
 .. image:: https://img.shields.io/badge/gitlab-project-0000c0.svg
    :target: https://gitlab.idiap.ch/bob/bob.ip.binseg
 
