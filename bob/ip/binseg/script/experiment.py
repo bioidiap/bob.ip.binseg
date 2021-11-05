@@ -337,7 +337,7 @@ def experiment(
         train_output_folder, "model_lowest_valid_loss.pth"
     )
     if not os.path.exists(model_file):
-        model_file = os.path.join(train_output_folder, "model_final.pth")
+        model_file = os.path.join(train_output_folder, "model_final_epoch.pth")
 
     ctx.invoke(
         analyze,

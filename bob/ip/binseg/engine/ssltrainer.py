@@ -423,7 +423,7 @@ def run(
                 checkpointer.save("model_lowest_valid_loss", **arguments)
 
             if epoch >= max_epoch:
-                checkpointer.save("model_final", **arguments)
+                checkpointer.save("model_final_epoch", **arguments)
 
             # computes ETA (estimated time-of-arrival; end of training) taking
             # into consideration previous epoch performance
