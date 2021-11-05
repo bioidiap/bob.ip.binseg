@@ -92,7 +92,9 @@ def _check_experiment_stare(caplog, overlay, multiprocess=False):
 
         # check model was saved
         train_folder = os.path.join(output_folder, "model")
-        assert os.path.exists(os.path.join(train_folder, "model_final.pth"))
+        assert os.path.exists(
+            os.path.join(train_folder, "model_final_epoch.pth")
+        )
         assert os.path.exists(
             os.path.join(train_folder, "model_lowest_valid_loss.pth")
         )
@@ -268,7 +270,9 @@ def _check_train(caplog, runner):
         )
         _assert_exit_0(result)
 
-        assert os.path.exists(os.path.join(output_folder, "model_final.pth"))
+        assert os.path.exists(
+            os.path.join(output_folder, "model_final_epoch.pth")
+        )
         assert os.path.exists(
             os.path.join(output_folder, "model_lowest_valid_loss.pth")
         )
@@ -284,7 +288,7 @@ def _check_train(caplog, runner):
             r"^Saving model summary at.*$": 1,
             r"^Model has.*$": 1,
             r"^Saving checkpoint to .*/model_lowest_valid_loss.pth$": 1,
-            r"^Saving checkpoint to .*/model_final.pth$": 1,
+            r"^Saving checkpoint to .*/model_final_epoch.pth$": 1,
             r"^Total training time:": 1,
         }
 
@@ -323,7 +327,7 @@ def _check_predict(caplog, runner):
                 config.name,
                 "-vv",
                 "--batch-size=1",
-                "--weight=results/model_final.pth",
+                "--weight=results/model_final_epoch.pth",
                 f"--output-folder={output_folder}",
                 f"--overlayed={overlay_folder}",
             ],
