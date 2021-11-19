@@ -60,6 +60,7 @@ setup(
             "csv-dataset-example = bob.ip.binseg.configs.datasets.csv",
             # drive dataset - retinography
             "drive = bob.ip.binseg.configs.datasets.drive.default",
+            "drive-768 = bob.ip.binseg.configs.datasets.drive.default_768",
             "drive-2nd = bob.ip.binseg.configs.datasets.drive.second_annotator",
             "drive-xtest = bob.ip.binseg.configs.datasets.drive.xtest",
             "drive-mtest = bob.ip.binseg.configs.datasets.drive.mtest",
@@ -69,6 +70,7 @@ setup(
             "drhagis = bob.ip.binseg.configs.datasets.drhagis.default",
             # stare dataset - retinography
             "stare = bob.ip.binseg.configs.datasets.stare.ah",
+            "stare-768 = bob.ip.binseg.configs.datasets.stare.ah_768",
             "stare-2nd = bob.ip.binseg.configs.datasets.stare.vk",
             "stare-xtest = bob.ip.binseg.configs.datasets.stare.xtest",
             "stare-mtest = bob.ip.binseg.configs.datasets.stare.mtest",
@@ -76,13 +78,16 @@ setup(
             "stare-ssl = bob.ip.binseg.configs.datasets.stare.ssl",
             # iostar - retinography
             "iostar-vessel = bob.ip.binseg.configs.datasets.iostar.vessel",
+            "iostar-vessel-768 = bob.ip.binseg.configs.datasets.iostar.vessel_768",
             "iostar-vessel-xtest = bob.ip.binseg.configs.datasets.iostar.vessel_xtest",
             "iostar-vessel-mtest = bob.ip.binseg.configs.datasets.iostar.vessel_mtest",
             "iostar-disc = bob.ip.binseg.configs.datasets.iostar.optic_disc",
+            "iostar-disc-512 = bob.ip.binseg.configs.datasets.iostar.optic_disc_512",
             "iostar-vessel-covd = bob.ip.binseg.configs.datasets.iostar.covd",
             "iostar-vessel-ssl = bob.ip.binseg.configs.datasets.iostar.ssl",
             # hrf - retinography
             "hrf = bob.ip.binseg.configs.datasets.hrf.default",
+            "hrf-768 = bob.ip.binseg.configs.datasets.hrf.default_768",
             "hrf-xtest = bob.ip.binseg.configs.datasets.hrf.xtest",
             "hrf-mtest = bob.ip.binseg.configs.datasets.hrf.mtest",
             "hrf-highres = bob.ip.binseg.configs.datasets.hrf.default_fullres",
@@ -90,6 +95,7 @@ setup(
             "hrf-ssl = bob.ip.binseg.configs.datasets.hrf.ssl",
             # chase-db1 - retinography
             "chasedb1 = bob.ip.binseg.configs.datasets.chasedb1.first_annotator",
+            "chasedb1-768 = bob.ip.binseg.configs.datasets.chasedb1.first_annotator_768",
             "chasedb1-2nd = bob.ip.binseg.configs.datasets.chasedb1.second_annotator",
             "chasedb1-xtest = bob.ip.binseg.configs.datasets.chasedb1.xtest",
             "chasedb1-mtest = bob.ip.binseg.configs.datasets.chasedb1.mtest",
@@ -97,18 +103,26 @@ setup(
             "chasedb1-ssl = bob.ip.binseg.configs.datasets.chasedb1.ssl",
             # drionsdb - retinography
             "drionsdb = bob.ip.binseg.configs.datasets.drionsdb.expert1",
+            "drionsdb-512 = bob.ip.binseg.configs.datasets.drionsdb.expert1_512",
             "drionsdb-2nd = bob.ip.binseg.configs.datasets.drionsdb.expert2",
+            "drionsdb-2nd-512 = bob.ip.binseg.configs.datasets.drionsdb.expert2_512",
             # drishti-gs1 - retinography
             "drishtigs1-disc = bob.ip.binseg.configs.datasets.drishtigs1.disc_all",
+            "drishtigs1-disc-512 = bob.ip.binseg.configs.datasets.drishtigs1.disc_all_512",
             "drishtigs1-cup = bob.ip.binseg.configs.datasets.drishtigs1.cup_all",
+            "drishtigs1-cup-512 = bob.ip.binseg.configs.datasets.drishtigs1.cup_all_512",
             "drishtigs1-disc-any = bob.ip.binseg.configs.datasets.drishtigs1.disc_any",
             "drishtigs1-cup-any = bob.ip.binseg.configs.datasets.drishtigs1.cup_any",
             # refuge - retinography
             "refuge-cup = bob.ip.binseg.configs.datasets.refuge.cup",
+            "refuge-cup-512 = bob.ip.binseg.configs.datasets.refuge.cup_512",
             "refuge-disc = bob.ip.binseg.configs.datasets.refuge.disc",
+            "refuge-disc-512 = bob.ip.binseg.configs.datasets.refuge.disc_512",
             # rim one r3 - retinography
             "rimoner3-cup = bob.ip.binseg.configs.datasets.rimoner3.cup_exp1",
             "rimoner3-disc = bob.ip.binseg.configs.datasets.rimoner3.disc_exp1",
+            "rimoner3-cup-512 = bob.ip.binseg.configs.datasets.rimoner3.cup_exp1_512",
+            "rimoner3-disc-512 = bob.ip.binseg.configs.datasets.rimoner3.disc_exp1_512",
             "rimoner3-cup-2nd = bob.ip.binseg.configs.datasets.rimoner3.cup_exp2",
             "rimoner3-disc-2nd = bob.ip.binseg.configs.datasets.rimoner3.disc_exp2",
             # montgomery county - cxr

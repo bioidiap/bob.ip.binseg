@@ -18,3 +18,12 @@ def _maker(protocol):
     from .. import make_dataset as mk
 
     return mk(raw.subsets(protocol), [Crop(0, 108, 2336, 3296)])
+
+
+def _maker_square(protocol):
+
+    from ....data.hrf import dataset as raw
+    from ....data.transforms import Pad, Resize
+    from .. import make_dataset as mk
+
+    return mk(raw.subsets(protocol), [Pad((0, 584)), Resize((768, 768))])
