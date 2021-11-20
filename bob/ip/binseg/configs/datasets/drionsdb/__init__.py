@@ -9,3 +9,12 @@ def _maker(protocol):
     from .. import make_dataset as mk
 
     return mk(raw.subsets(protocol), [Pad((4, 8, 4, 8))])
+
+
+def _maker_square(protocol):
+
+    from ....data.drionsdb import dataset as raw
+    from ....data.transforms import Pad, Resize
+    from .. import make_dataset as mk
+
+    return mk(raw.subsets(protocol), [Pad((0, 100)), Resize((512, 512))])
