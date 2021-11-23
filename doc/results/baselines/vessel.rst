@@ -107,6 +107,113 @@ Notes
       - 6
       - 6
       - 1
+    * - :py:mod:`m2unet <bob.ip.binseg.configs.models.lwnet>`
+      - 4
+      - 4
+      - 4
+      - 4
+      - 4
 
+Results for datasets with (768x768 resolution)
+
+.. list-table::
+   :header-rows: 2
+
+   * -
+     -
+     - :py:mod:`driu <bob.ip.binseg.configs.models.driu>`
+     - :py:mod:`hed <bob.ip.binseg.configs.models.hed>`
+     - :py:mod:`m2unet <bob.ip.binseg.configs.models.m2unet>`
+     - :py:mod:`unet <bob.ip.binseg.configs.models.unet>`
+     - :py:mod:`lwnet <bob.ip.binseg.configs.models.lwnet>`
+   * - Dataset
+     - 2nd. Annot.
+     - 15M
+     - 14.7M
+     - 550k
+     - 25.8M
+     - 68k
+   * - :py:mod:`drive <bob.ip.binseg.configs.datasets.drive.default_768>`
+     - 
+     - `0.813 
+     - `0.803  
+     - `0.799  
+     - `0.816  
+     -  0.807
+   * - :py:mod:`stare <bob.ip.binseg.configs.datasets.stare.ah_768>`
+     - 
+     - `0.823  
+     - `0.817  
+     - `0.813  
+     - `0.824  
+     -  0.815
+   * - :py:mod:`chasedb1 <bob.ip.binseg.configs.datasets.chasedb1.first_annotator_768>`
+     - 
+     - `0.812 
+     - `0.807 
+     - `0.794 
+     - `0.801 
+     -  0.804
+   * - :py:mod:`hrf <bob.ip.binseg.configs.datasets.hrf.default_768>` (1168x1648)
+     -
+     - `0.803 
+     - `0.786 
+     - `0.785 
+     - `0.802 
+     -  0.804
+   * - :py:mod:`iostar-vessel <bob.ip.binseg.configs.datasets.iostar.vessel_768>`
+     -
+     - `0.824 
+     - `0.821 
+     - `0.812 
+     - `0.820 
+     -  0.820
+
+
+Notes
+-----
+
+* The following table describes recommended batch sizes for 24Gb of RAM GPU
+  card:
+
+  .. list-table::
+
+    * - **Models / Datasets**
+      - :py:mod:`drive <bob.ip.binseg.configs.datasets.drive.default_768>`
+      - :py:mod:`stare <bob.ip.binseg.configs.datasets.stare.ah_768>`
+      - :py:mod:`chasedb1 <bob.ip.binseg.configs.datasets.chasedb1.first_annotator_768>`
+      - :py:mod:`iostar-vessel <bob.ip.binseg.configs.datasets.iostar.vessel_768>`
+      - :py:mod:`hrf <bob.ip.binseg.configs.datasets.hrf.default_768>`
+    * - :py:mod:`unet <bob.ip.binseg.configs.models.unet>`
+      - 4
+      - 2
+      - 2
+      - 4
+      - 3
+    * - :py:mod:`hed <bob.ip.binseg.configs.models.hed>`
+      - 10
+      - 4
+      - 4
+      - 4
+      - 3
+    * - :py:mod:`driu <bob.ip.binseg.configs.models.driu>` / :py:mod:`driu-bn <bob.ip.binseg.configs.models.driu_bn>`
+      - 5
+      - 5
+      - 4
+      - 4
+      - 3
+    * - :py:mod:`m2unet <bob.ip.binseg.configs.models.m2unet>`
+      - 10
+      - 6
+      - 6
+      - 6
+      - 3
+    * - :py:mod:`m2unet <bob.ip.binseg.configs.models.lwnet>`
+      - 10
+      - 4
+      - 4
+      - 6
+      - 5
+      
 
 .. include:: ../../links.rst
