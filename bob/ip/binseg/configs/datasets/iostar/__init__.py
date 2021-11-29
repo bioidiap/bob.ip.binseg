@@ -10,7 +10,7 @@ def _maker(protocol):
     return mk(raw.subsets(protocol), [])
 
 
-def _maker_vessel_square(protocol):
+def _maker_square_768(protocol):
 
     from ....data.iostar import dataset as raw
     from ....data.transforms import Resize
@@ -19,7 +19,7 @@ def _maker_vessel_square(protocol):
     return mk(raw.subsets(protocol), [Resize((768, 768))])
 
 
-def _maker_od_square(protocol):
+def _maker_square_512(protocol):
 
     from ....data.iostar import dataset as raw
     from ....data.transforms import Resize

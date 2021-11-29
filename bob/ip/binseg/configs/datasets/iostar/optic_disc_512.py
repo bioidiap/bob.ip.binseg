@@ -7,6 +7,6 @@ Configuration resolution: 512 x 512 (Resized )
 
 """
 
-from bob.ip.binseg.configs.datasets.iostar import _maker_od_square
+from bob.ip.binseg.configs.datasets.iostar import _maker_square_512
 
-dataset = _maker_od_square("optic-disc")
+dataset = _maker_square_512("optic-disc")

@@ -7,6 +7,6 @@ Configuration resolution: 512x512 (after padding and resizing)
 
 """
 
-from bob.ip.binseg.configs.datasets.drionsdb import _maker_square
+from bob.ip.binseg.configs.datasets.drionsdb import _maker_square_512
 
-dataset = _maker_square("expert1")
+dataset = _maker_square_512("expert1")
