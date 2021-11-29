@@ -84,31 +84,31 @@ Notes
      - :py:mod:`m2unet <bob.ip.binseg.configs.models.m2unet>`
      - :py:mod:`unet <bob.ip.binseg.configs.models.unet>`
      - :py:mod:`lwnet <bob.ip.binseg.configs.models.lwnet>`
-   * - :py:mod:`drive <bob.ip.binseg.configs.datasets.drive.default_768>`
+   * - :py:mod:`drive <bob.ip.binseg.configs.datasets.drive.default>`
      - 8
      - 8
      - 16
      - 4
      - 4
-   * - :py:mod:`stare <bob.ip.binseg.configs.datasets.stare.ah_768>`
+   * - :py:mod:`stare <bob.ip.binseg.configs.datasets.stare.ah>`
      - 5
      - 4
      - 6
      - 2
      - 4
-   * - :py:mod:`chasedb1 <bob.ip.binseg.configs.datasets.chasedb1.first_annotator_768>`
+   * - :py:mod:`chasedb1 <bob.ip.binseg.configs.datasets.chasedb1.first_annotator>`
      - 4
      - 4
      - 6
      - 2
      - 4
-   * - :py:mod:`hrf <bob.ip.binseg.configs.datasets.hrf.default_768>`
+   * - :py:mod:`hrf <bob.ip.binseg.configs.datasets.hrf.default>`
      - 1
      - 1
      - 1
      - 1
      - 4
-   * - :py:mod:`iostar-vessel <bob.ip.binseg.configs.datasets.iostar.vessel_768>`
+   * - :py:mod:`iostar-vessel <bob.ip.binseg.configs.datasets.iostar.vessel>`
      - 4
      - 4
      - 6

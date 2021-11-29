@@ -25,35 +25,35 @@ Optic Disc
      - 25.8M
      - 68k
      - 15.2M
-   * - :py:mod:`drionsdb <bob.ip.binseg.configs.datasets.drionsdb.expert1>`
+   * - :py:mod:`drionsdb <bob.ip.binseg.configs.datasets.drionsdb.expert1_512>`
      - 0.958
      - 0.961
      - 0.960
      - 0.961
      - 0.922
      - 0.960
-   * - :py:mod:`drishtigs1-disc <bob.ip.binseg.configs.datasets.drishtigs1.disc_all>`
+   * - :py:mod:`drishtigs1-disc <bob.ip.binseg.configs.datasets.drishtigs1.disc_all_512>`
      - 0.973
      - 0.975
      - 0.974
      - 0.975
      - 0.965
      - 0.972
-   * - :py:mod:`iostar-disc <bob.ip.binseg.configs.datasets.iostar.optic_disc>`
+   * - :py:mod:`iostar-disc <bob.ip.binseg.configs.datasets.iostar.optic_disc_512>`
      - 0.894
      - 0.922
      - 0.913
      - 0.921
      - 0.893
      - 0.921
-   * - :py:mod:`refuge-disc <bob.ip.binseg.configs.datasets.refuge.disc>`
+   * - :py:mod:`refuge-disc <bob.ip.binseg.configs.datasets.refuge.disc_512>`
      - 0.921
      - 0.939
      - 0.942
      - 0.945
      - 0.894
      - 0.941
-   * - :py:mod:`rimoner3-disc <bob.ip.binseg.configs.datasets.rimoner3.disc_exp1>`
+   * - :py:mod:`rimoner3-disc <bob.ip.binseg.configs.datasets.rimoner3.disc_exp1_512>`
      - 0.950
      - 0.955
      - 0.953
@@ -78,35 +78,35 @@ Notes
      - :py:mod:`unet <bob.ip.binseg.configs.models.unet>`
      - :py:mod:`lwnet <bob.ip.binseg.configs.models.lwnet>`
      - :py:mod:`driu-od <bob.ip.binseg.configs.models.driu_od>`
-   * - :py:mod:`drionsdb <bob.ip.binseg.configs.datasets.drionsdb.expert1>`
+   * - :py:mod:`drionsdb <bob.ip.binseg.configs.datasets.drionsdb.expert1_512>`
      - 4
      - 4
      - 6
      - 2
      - 6
      - 4
-   * - :py:mod:`drishtigs1-disc <bob.ip.binseg.configs.datasets.drishtigs1.disc_all>`
+   * - :py:mod:`drishtigs1-disc <bob.ip.binseg.configs.datasets.drishtigs1.disc_all_512>`
      - 4
      - 4
      - 5
      - 2
      - 5
      - 4
-   * - :py:mod:`iostar-disc <bob.ip.binseg.configs.datasets.iostar.optic_disc>`
+   * - :py:mod:`iostar-disc <bob.ip.binseg.configs.datasets.iostar.optic_disc_512>`
      - 4
      - 4
      - 6
      - 4
      - 6
      - 4
-   * - :py:mod:`refuge-disc <bob.ip.binseg.configs.datasets.refuge.disc>`
+   * - :py:mod:`refuge-disc <bob.ip.binseg.configs.datasets.refuge.disc_512>`
      - 5
      - 5
      - 10
      - 5
      - 20
      - 5
-   * - :py:mod:`rimoner3-disc <bob.ip.binseg.configs.datasets.rimoner3.disc_exp1>`
+   * - :py:mod:`rimoner3-disc <bob.ip.binseg.configs.datasets.rimoner3.disc_exp1_512>`
      - 4
      - 4
      - 5
@@ -133,21 +133,21 @@ Optic Cup
      - 25.8M
      - 68k
      - 15.2M
-   * - :py:mod:`drishtigs1-cup <bob.ip.binseg.configs.datasets.drishtigs1.cup_all>`
+   * - :py:mod:`drishtigs1-cup <bob.ip.binseg.configs.datasets.drishtigs1.cup_all_512>`
      - 0.903
      - 0.910
      - 0.912
      - 0.913
      - 0.877
      - 0.913
-   * - :py:mod:`refuge-cup <bob.ip.binseg.configs.datasets.refuge.cup>`
+   * - :py:mod:`refuge-cup <bob.ip.binseg.configs.datasets.refuge.cup_512>`
      - 0.861
      -
      - 0.831
      - 0.863
      - 0.700
      - 0.854
-   * - :py:mod:`rimoner3-cup <bob.ip.binseg.configs.datasets.rimoner3.cup_exp1>`
+   * - :py:mod:`rimoner3-cup <bob.ip.binseg.configs.datasets.rimoner3.cup_exp1_512>`
      - 0.799
      - 0.819
      - 0.829
@@ -172,21 +172,21 @@ Notes
      - :py:mod:`unet <bob.ip.binseg.configs.models.unet>`
      - :py:mod:`lwnet <bob.ip.binseg.configs.models.lwnet>`
      - :py:mod:`driu-od <bob.ip.binseg.configs.models.driu_od>`
-   * - :py:mod:`drishtigs1-cup <bob.ip.binseg.configs.datasets.drishtigs1.cup_all>`
+   * - :py:mod:`drishtigs1-cup <bob.ip.binseg.configs.datasets.drishtigs1.cup_all_512>`
      - 4
      - 4
      - 5
      - 2
      - 5
      - 4
-   * - :py:mod:`refuge-cup <bob.ip.binseg.configs.datasets.refuge.cup>`
+   * - :py:mod:`refuge-cup <bob.ip.binseg.configs.datasets.refuge.cup_512>`
      - 5
      - 5
      - 10
      - 5
      - 20
      - 5
-   * - :py:mod:`rimoner3-cup <bob.ip.binseg.configs.datasets.rimoner3.cup_exp1>`
+   * - :py:mod:`rimoner3-cup <bob.ip.binseg.configs.datasets.rimoner3.cup_exp1_512>`
      - 4
      - 4
      - 5
