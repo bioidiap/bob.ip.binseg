@@ -36,19 +36,23 @@ def _maker_augmented(protocol):
                 if key == "validation":
                     retval["__valid__"] = retval[key]
 
-        if (
-            ("__train__" in retval)
-            and ("__valid__" not in retval)
-        ):
+        if ("__train__" in retval) and ("__valid__" not in retval):
             retval["__valid__"] = retval["__train__"]
 
         return retval
 
-    return mk_aug_subset(subsets=raw.subsets(protocol),
-                         all_transforms=[_resize((256, 256))],
-                         train_transforms=[_compose([
-                                           _resize((256, 256)),
-                                           _rotation(degrees=15, p=0.5),
-                                           _hflip(p=0.5),
-                                           _jitter(p=0.5),
-                                           _blur(p=0.5)])])
+    return mk_aug_subset(
+        subsets=raw.subsets(protocol),
+        all_transforms=[_resize((256, 256))],
+        train_transforms=[
+            _compose(
+                [
+                    _resize((256, 256)),
+                    _rotation(degrees=15, p=0.5),
+                    _hflip(p=0.5),
+                    _jitter(p=0.5),
+                    _blur(p=0.5),
+                ]
+            )
+        ],
+    )
