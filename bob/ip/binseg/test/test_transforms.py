@@ -17,6 +17,7 @@ from ..data.transforms import (
     ColorJitter,
     Compose,
     Crop,
+    GaussianBlur,
     Pad,
     RandomHorizontalFlip,
     RandomRotation,
@@ -347,6 +348,24 @@ def test_color_jitter():
     assert numpy.any(numpy.array(img1_t2) != numpy.array(img1_t))
     assert numpy.all(numpy.array(img2_t2) == numpy.array(img))
     assert numpy.all(numpy.array(img3_t2) == numpy.array(img))
+
+
+def test_blur():
+
+    im_size = (3, 24, 42)  # (planes, height, width)
+    transforms = GaussianBlur(p=1)
+    img = _create_img(im_size)
+
+    # asserts only the first image is blurred
+    # and it is different from the original
+    # all others match the input data
+    random.seed(42)
+    img1_t, img2_t, img3_t = transforms(img, img, img)
+    assert img1_t.size == (im_size[2], im_size[1])
+    assert numpy.any(numpy.array(img1_t) != numpy.array(img))
+    assert numpy.any(numpy.array(img1_t) != numpy.array(img2_t))
+    assert numpy.all(numpy.array(img2_t) == numpy.array(img3_t))
+    assert numpy.all(numpy.array(img2_t) == numpy.array(img))
 
 
 def test_compose():
