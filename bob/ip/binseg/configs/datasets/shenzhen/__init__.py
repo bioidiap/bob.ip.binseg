@@ -14,13 +14,13 @@ def _maker(protocol, n):
 def _maker_augmented(protocol, n):
 
     from ....data.shenzhen import dataset as raw
-    from .. import make_subset
-    from ....data.transforms import Compose as _compose
-    from ....data.transforms import Resize as _resize
     from ....data.transforms import ColorJitter as _jitter
+    from ....data.transforms import Compose as _compose
+    from ....data.transforms import GaussianBlur as _blur
     from ....data.transforms import RandomHorizontalFlip as _hflip
     from ....data.transforms import RandomRotation as _rotation
-    from ....data.transforms import GaussianBlur as _blur
+    from ....data.transforms import Resize as _resize
+    from .. import make_subset
 
     def mk_aug_subset(subsets, train_transforms, all_transforms):
         retval = {}
