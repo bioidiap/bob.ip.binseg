@@ -342,3 +342,44 @@ class ResizeCrop:
         args = (new_img, new_label, new_mask)
 
         return args
+
+
+class GaussianBlur(torchvision.transforms.GaussianBlur):
+    """Randomly applies a gaussian blur transformation on the **first** image
+
+    Notice this transform extension, unlike others in this module, only affects
+    the first image passed as input argument.  Unlike the current torchvision
+    implementation, we also accept a probability for applying the blur.
+
+
+    Parameters
+    ----------
+
+    p : :py:class:`float`, Optional
+        probability at which the operation is applied
+
+    **kwargs : dict
+        passed to parent.  Notice that, if not set, we use the following
+        defaults here for the underlying transform from torchvision:
+
+        * ``kernel_size``: (5, 5)
+        * ``sigma``: (0.1, 5)
+    """
+
+    def __init__(self, p=0.5, **kwargs):
+        kwargs.setdefault("kernel_size", (5, 5))
+        kwargs.setdefault("sigma", (0.1, 5))
+
+        super(GaussianBlur, self).__init__(**kwargs)
+        self.p = p
+
+    def __call__(self, *args):
+        if random.random() < self.p:
+            # applies gaussian blur only to the input image not ground-truth
+            return [super(GaussianBlur, self).__call__(args[0]), *args[1:]]
+        else:
+            return args
+
+    def __repr__(self):
+        retval = super(GaussianBlur, self).__repr__()
+        return retval.replace("(", f"(p={self.p},", 1)

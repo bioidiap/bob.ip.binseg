@@ -183,3 +183,90 @@ def make_dataset(subsets, transforms):
         retval["__valid__"] = retval["train"]
 
     return retval
+
+
+    def make_augmented_dataset(subsets, train_transforms, all_transforms):
+    """Creates a new configuration dataset from dictionary and transforms,
+    being able to use different transformations for the train and 
+    test split of the data.
+
+    This function takes as input a dictionary as those that can be returned by
+    :py:meth:`bob.ip.binseg.data.dataset.JSONDataset.subsets`,  or
+    :py:meth:`bob.ip.binseg.data.dataset.CSVDataset.subsets`, mapping protocol
+    names (such as ``train``, ``dev`` and ``test``) to
+    :py:class:`bob.ip.binseg.data.sample.DelayedSample` lists, and a set of
+    transforms, and returns a dictionary applying
+    :py:class:`bob.ip.binseg.data.utils.SampleListDataset` to these
+    lists, and our standard data augmentation if a ``train`` set exists.
+
+    For example, if ``subsets`` is composed of two sets named ``train`` and
+    ``test``, this function will yield a dictionary with the following entries:
+
+    * ``__train__``: Wraps the ``train`` subset, includes data augmentation
+      (note: datasets with names starting with ``_`` (underscore) are excluded
+      from prediction and evaluation by default, as they contain data
+      augmentation transformations.)
+    * ``train``: Wraps the ``train`` subset, **without** data augmentation
+    * ``train``: Wraps the ``test`` subset, **without** data augmentation
+
+    .. note::
+
+       This is a convenience function for our own dataset definitions inside
+       this module, guaranteeting homogenity between dataset definitions
+       provided in this package.  It assumes certain strategies for data
+       augmentation that may not be translatable to other applications.
+
+
+    Parameters
+    ----------
+
+    subsets : dict
+        A dictionary that contains the delayed sample lists for a number of
+        named lists.  If one of the keys is ``train``, our standard dataset
+        augmentation transforms are appended to the definition of that subset.
+        All other subsets remain un-augmented.  If one of the keys is
+        ``validation``, then this dataset will be also copied to the
+        ``__valid__`` hidden dataset and will be used for validation during
+        training.  Otherwise, if no ``valid`` subset is available, we set
+        ``__valid__`` to be the same as the unaugmented ``train`` subset, if
+        one is available.
+
+    train_transforms : list
+        A list of transforms that needs to be applied to all samples in the train
+        split
+
+    all_transforms : list
+        A list of transforms that needs to be applied to all samples in the set
+
+    Returns
+    -------
+
+    dataset : dict
+        A pre-formatted dataset that can be fed to one of our engines. It maps
+        string names to
+        :py:class:`bob.ip.binseg.data.utils.SampleListDataset`'s.
+
+    """
+    retval = {}
+
+    for key in subsets.keys():
+        retval[key] = make_subset(subsets[key], transforms=all_transforms)
+        if key == "train":
+            retval["__train__"] = make_subset(
+                subsets[key],
+                transforms=train_transforms,
+            )
+        else:
+            # also use it for validation during training
+            if key == "validation":
+                retval["__valid__"] = retval[key]
+
+    if (
+        ("__train__" in retval)
+        and ("__valid__" not in retval)
+    ):
+        # if the dataset does not have a validation set, we use the unaugmented
+        # training set as validation set
+        retval["__valid__"] = retval["__train__"]
+
+    return retval
