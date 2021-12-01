@@ -22,7 +22,7 @@ def _maker_augmented(protocol, n):
     from ....data.transforms import RandomRotation as _rotation
     from ....data.transforms import GaussianBlur as _blur
 
-    def make_augmented_dataset(subsets, train_transforms, all_transforms):
+    def mk_aug_subset(subsets, train_transforms, all_transforms):
         retval = {}
 
         for key in subsets.keys():
@@ -33,7 +33,6 @@ def _maker_augmented(protocol, n):
                     transforms=train_transforms,
                 )
             else:
-                # also use it for validation during training
                 if key == "validation":
                     retval["__valid__"] = retval[key]
 
@@ -41,19 +40,16 @@ def _maker_augmented(protocol, n):
             ("__train__" in retval)
             and ("__valid__" not in retval)
         ):
-            # if the dataset does not have a validation set, we use the unaugmented
-            # training set as validation set
+
             retval["__valid__"] = retval["__train__"]
 
         return retval
 
-
-    return make_augmented_dataset(
-               subsets=raw.subsets(protocol),
-               all_transforms=[_resize((n, n))],
-               train_transforms=[_compose([
-                                          _resize((n, n)),
-                                          _rotation(degrees=15, p=0.5),
-                                          _hflip(p=0.5),
-                                          _jitter(p=0.5),
-                                          _blur(p=0.5)])])
+    return mk_aug_subset(subsets=raw.subsets(protocol),
+                         all_transforms=[_resize((n, n))],
+                         train_transforms=[_compose([
+                                           _resize((n, n)),
+                                           _rotation(degrees=15, p=0.5),
+                                           _hflip(p=0.5),
+                                           _jitter(p=0.5),
+                                           _blur(p=0.5)])])
