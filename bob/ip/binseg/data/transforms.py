@@ -379,7 +379,3 @@ class GaussianBlur(torchvision.transforms.GaussianBlur):
             return [super(GaussianBlur, self).__call__(args[0]), *args[1:]]
         else:
             return args
-
-    def __repr__(self):
-        retval = super(GaussianBlur, self).__repr__()
-        return retval.replace("(", f"(p={self.p},", 1)
