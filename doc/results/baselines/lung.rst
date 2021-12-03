@@ -21,7 +21,6 @@
      -   0.982
      -  `0.980 <baselines_m2unet_montgomery_>`_
      -  `0.978 <baselines_lwnet_montgomery_>`_
-     - 
    * - :py:mod:`jsrt <bob.ip.binseg.configs.datasets.jsrt.default>`
      -   0.982
      -  `0.982 <baselines_m2unet_jsrt_>`_

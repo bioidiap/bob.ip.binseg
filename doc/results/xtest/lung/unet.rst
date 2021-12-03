@@ -18,11 +18,11 @@
      - 256 x 256
      - 256 x 256
      - 256 x 256
-   * - :py:mod:`montgomery <bob.ip.binseg.configs.datasets.montgomery.default>` 
+   * - :py:mod:`montgomery <bob.ip.binseg.configs.datasets.montgomery.default>`
      - **0.982**
      - 0.970
      - 0.963
-   * - :py:mod:`jsrt <bob.ip.binseg.configs.datasets.jsrt.default>` 
+   * - :py:mod:`jsrt <bob.ip.binseg.configs.datasets.jsrt.default>`
      - 0.973
      - **0.982**
      - 0.963
