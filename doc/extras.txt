@@ -18,6 +18,7 @@ torchvision.transforms.transforms.ToTensor py:class 1 https://pytorch.org/vision
 torchvision.transforms.transforms.Resize py:class 1 https://pytorch.org/vision/stable/transforms.html#torchvision.transforms.Resize -
 torchvision.transforms.transforms.Pad py:class 1 https://pytorch.org/vision/stable/transforms.html#torchvision.transforms.Pad -
 torchvision.transforms.transforms.CenterCrop py:class 1 https://pytorch.org/vision/stable/transforms.html#torchvision.transforms.CenterCrop -
+torchvision.transforms.transforms.GaussianBlur py:class 1 https://pytorch.org/vision/master/generated/torchvision.transforms.GaussianBlur.html#gaussianblur -
 torchvision.transforms py:module 1 https://pytorch.org/vision/stable/transforms.html -
 torchvision.models.mobilenetv2.MobileNetV2 py:class 1 https://pytorch.org/vision/stable/models.html#mobilenet-v2 -
 torchvision.models.resnet.ResNet py:class 1 https://pytorch.org/vision/stable/models.html#id10 -
