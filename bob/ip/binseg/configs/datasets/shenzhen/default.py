@@ -4,10 +4,10 @@
 """Shenzhen dataset for Lung Segmentation (default protocol)
 
 * Split reference: [GAAL-2020]_
-* Configuration resolution: 512 x 512
+* Configuration resolution: 256 x 256
 * See :py:mod:`bob.ip.binseg.data.shenzhen` for dataset details
 """
 
-from bob.ip.binseg.configs.datasets.shenzhen import _maker
+from bob.ip.binseg.configs.datasets.shenzhen import _maker_augmented
 
-dataset = _maker("default", 512)
+dataset = _maker_augmented("default", 256)

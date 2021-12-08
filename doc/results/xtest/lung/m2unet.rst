@@ -15,21 +15,21 @@
      - jsrt
      - shenzhen
    * - Model / W x H
-     - 512 x 512
-     - 512 x 512
-     - 512 x 512
+     - 256 x 256
+     - 256 x 256
+     - 256 x 256
    * - :py:mod:`montgomery <bob.ip.binseg.configs.datasets.montgomery.default>` (`model <baselines_m2unet_montgomery_>`_)
-     - **0.982**
+     - **0.980**
      - 0.970
-     - 0.959
+     - 0.962
    * - :py:mod:`jsrt <bob.ip.binseg.configs.datasets.jsrt.default>` (`model <baselines_m2unet_jsrt_>`_)
-     - 0.973
+     - 0.971
      - **0.982**
-     - 0.961
+     - 0.967
    * - :py:mod:`shenzhen <bob.ip.binseg.configs.datasets.shenzhen.default>` (`model <baselines_m2unet_shenzhen_>`_)
-     - 0.935
-     - 0.944
-     - **0.955**
+     - 0.942
+     - 0.945
+     - **0.952**
 
 
 .. include:: ../../../links.rst
