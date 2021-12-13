@@ -7,6 +7,6 @@
 
 """
 
-from bob.ip.binseg.configs.datasets.refuge import _maker_square
+from bob.ip.binseg.configs.datasets.refuge import _maker_square_512
 
-dataset = _maker_square("optic-cup")
+dataset = _maker_square_512("optic-cup")
