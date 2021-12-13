@@ -189,7 +189,7 @@ def test_stare():
             assert s[1].min() >= 0.0
 
     # hack to allow testing on the CI
-    from ..configs.datasets.stare import _maker
+    from ..configs.datasets.stare import _maker, _maker_square
 
     for protocol in "ah", "vk":
         dataset = _maker(protocol, stare_dataset)
@@ -198,14 +198,14 @@ def test_stare():
         _check_subset(dataset["train"], 10, 608, 704)
         _check_subset(dataset["test"], 10, 608, 704)
 
-    from ..configs.datasets.stare.ah_768 import dataset
-
+    dataset = _maker_square("ah", 768, stare_dataset)
+    assert len(dataset) == 4
     _check_subset(dataset["__train__"], 10, 768, 768)
     _check_subset(dataset["train"], 10, 768, 768)
     _check_subset(dataset["test"], 10, 768, 768)
 
-    from ..configs.datasets.stare.ah_1024 import dataset
-
+    dataset = _maker_square("ah", 1024, stare_dataset)
+    assert len(dataset) == 4
     _check_subset(dataset["__train__"], 10, 1024, 1024)
     _check_subset(dataset["train"], 10, 1024, 1024)
     _check_subset(dataset["test"], 10, 1024, 1024)
