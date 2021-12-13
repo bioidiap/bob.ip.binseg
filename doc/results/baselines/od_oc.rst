@@ -142,7 +142,7 @@ Optic Cup
      - 0.913
    * - :py:mod:`refuge-cup <bob.ip.binseg.configs.datasets.refuge.cup_512>`
      - 0.861
-     -
+     - 0.853
      - 0.831
      - 0.863
      - 0.700
