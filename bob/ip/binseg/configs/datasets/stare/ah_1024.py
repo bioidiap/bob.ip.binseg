@@ -6,6 +6,6 @@
 Configuration resolution: 1024 x 1024 (after padding and resizing)
 
 """
-from bob.ip.binseg.configs.datasets.stare import _maker_square_1024
+from bob.ip.binseg.configs.datasets.stare import _maker_square
 
-dataset = _maker_square_1024("ah")
+dataset = _maker_square("ah", 1024)

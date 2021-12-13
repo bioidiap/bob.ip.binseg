@@ -7,6 +7,6 @@ Configuration resolution: 768 x 768 (after padding and resizing)
 
 """
 
-from bob.ip.binseg.configs.datasets.rimoner3 import _maker_square_768
+from bob.ip.binseg.configs.datasets.rimoner3 import _maker_square
 
-dataset = _maker_square_768("optic-disc-exp1")
+dataset = _maker_square("optic-disc-exp1", 768)

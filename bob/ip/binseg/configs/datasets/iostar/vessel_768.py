@@ -7,6 +7,6 @@ Configuration resolution: 768 x 768 (Resize)
 
 """
 
-from bob.ip.binseg.configs.datasets.iostar import _maker_square_768
+from bob.ip.binseg.configs.datasets.iostar import _maker_square
 
-dataset = _maker_square_768("vessel")
+dataset = _maker_square("vessel", 768)

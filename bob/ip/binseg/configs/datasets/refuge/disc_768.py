@@ -7,6 +7,6 @@
 
 """
 
-from bob.ip.binseg.configs.datasets.drishtigs1 import _maker_square_768
+from bob.ip.binseg.configs.datasets.refuge import _maker_square
 
-dataset = _maker_square_768("optic-disc-all")
+dataset = _maker_square("optic-disc", 768)

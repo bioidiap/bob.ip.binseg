@@ -7,6 +7,6 @@ Configuration resolution: 768 x 768 (Pad + Resize)
 
 """
 
-from bob.ip.binseg.configs.datasets.hrf import _maker_square_768
+from bob.ip.binseg.configs.datasets.hrf import _maker_square
 
-dataset = _maker_square_768("default")
+dataset = _maker_square("default", 768)
