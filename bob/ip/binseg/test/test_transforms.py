@@ -352,7 +352,7 @@ def test_color_jitter():
 
 def test_blur():
 
-    im_size = (3, 24, 42)  # (planes, height, width)
+    im_size = (1, 256, 256)  # (planes, height, width)
     transforms = GaussianBlur(p=1)
     img = _create_img(im_size)
 
@@ -362,6 +362,7 @@ def test_blur():
     random.seed(42)
     img1_t, img2_t, img3_t = transforms(img, img, img)
     assert img1_t.size == (im_size[2], im_size[1])
+    assert numpy.any(numpy.array(img1_t) != numpy.array(img))
     assert numpy.any(numpy.array(img1_t) != numpy.array(img2_t))
     assert numpy.all(numpy.array(img2_t) == numpy.array(img3_t))
     assert numpy.all(numpy.array(img2_t) == numpy.array(img))
