@@ -67,7 +67,7 @@ def _pad_right(img):
 def _raw_data_loader(sample):
     data = load_pil_rgb(os.path.join(_root_path, sample["data"]))
     label = _txt_to_pil_1(os.path.join(_root_path, sample["label"]), data.size)
-    mask = load_pil_1(os.path.join(_root_path, sample["mask"]))
+    mask = load_pil_1(os.path.join(_pkg_path, sample["mask"]))
     return dict(data=data, label=label, mask=mask)
 
 

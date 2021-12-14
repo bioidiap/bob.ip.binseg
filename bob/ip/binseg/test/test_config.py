@@ -18,16 +18,16 @@ N = 10
 
 @pytest.mark.skip_if_rc_var_not_set("bob.ip.binseg.drive.datadir")
 def test_drive():
-    def _check_subset(samples, size):
+    def _check_subset(samples, size, height, width):
         assert len(samples) == size
         for s in samples:
             assert len(s) == 4
             assert isinstance(s[0], str)
-            assert s[1].shape, (3, 544 == 544)  # planes, height, width
+            assert s[1].shape, (3, height == height)  # planes, height, width
             assert s[1].dtype == torch.float32
-            assert s[2].shape, (1, 544 == 544)  # planes, height, width
+            assert s[2].shape, (1, height == width)  # planes, height, width
             assert s[2].dtype == torch.float32
-            assert s[3].shape, (1, 544 == 544)  # planes, height, width
+            assert s[3].shape, (1, height == width)  # planes, height, width
             assert s[3].dtype == torch.float32
             assert s[1].max() <= 1.0
             assert s[1].min() >= 0.0
@@ -35,15 +35,29 @@ def test_drive():
     from ..configs.datasets.drive.default import dataset
 
     assert len(dataset) == 4
-    _check_subset(dataset["__train__"], 20)
-    _check_subset(dataset["__valid__"], 20)
-    _check_subset(dataset["train"], 20)
-    _check_subset(dataset["test"], 20)
+    _check_subset(dataset["__train__"], 20, 544, 544)
+    _check_subset(dataset["__valid__"], 20, 544, 544)
+    _check_subset(dataset["train"], 20, 544, 544)
+    _check_subset(dataset["test"], 20, 544, 544)
 
     from ..configs.datasets.drive.second_annotator import dataset
 
     assert len(dataset) == 1
-    _check_subset(dataset["test"], 20)
+    _check_subset(dataset["test"], 20, 544, 544)
+
+    from ..configs.datasets.drive.default_768 import dataset
+
+    _check_subset(dataset["__train__"], 20, 768, 768)
+    _check_subset(dataset["__valid__"], 20, 768, 768)
+    _check_subset(dataset["train"], 20, 768, 768)
+    _check_subset(dataset["test"], 20, 768, 768)
+
+    from ..configs.datasets.drive.default_1024 import dataset
+
+    _check_subset(dataset["__train__"], 20, 1024, 1024)
+    _check_subset(dataset["__valid__"], 20, 1024, 1024)
+    _check_subset(dataset["train"], 20, 1024, 1024)
+    _check_subset(dataset["test"], 20, 1024, 1024)
 
 
 @pytest.mark.skip_if_rc_var_not_set("bob.ip.binseg.drive.datadir")
@@ -160,29 +174,41 @@ def test_stare_augmentation_manipulation():
 
 
 def test_stare():
-    def _check_subset(samples, size):
+    def _check_subset(samples, size, height, width):
         assert len(samples) == size
         for s in samples:
             assert len(s) == 4
             assert isinstance(s[0], str)
-            assert s[1].shape, (3, 608 == 704)  # planes, height, width
+            assert s[1].shape, (3, height == width)  # planes, height, width
             assert s[1].dtype == torch.float32
-            assert s[2].shape, (1, 608 == 704)  # planes, height, width
+            assert s[2].shape, (1, height == width)  # planes, height, width
             assert s[2].dtype == torch.float32
-            assert s[3].shape, (1, 608 == 704)  # planes, height, width
+            assert s[3].shape, (1, height == width)  # planes, height, width
             assert s[3].dtype == torch.float32
             assert s[1].max() <= 1.0
             assert s[1].min() >= 0.0
 
     # hack to allow testing on the CI
-    from ..configs.datasets.stare import _maker
+    from ..configs.datasets.stare import _maker, _maker_square
 
     for protocol in "ah", "vk":
         dataset = _maker(protocol, stare_dataset)
         assert len(dataset) == 4
-        _check_subset(dataset["__train__"], 10)
-        _check_subset(dataset["train"], 10)
-        _check_subset(dataset["test"], 10)
+        _check_subset(dataset["__train__"], 10, 608, 704)
+        _check_subset(dataset["train"], 10, 608, 704)
+        _check_subset(dataset["test"], 10, 608, 704)
+
+    dataset = _maker_square("ah", 768, stare_dataset)
+    assert len(dataset) == 4
+    _check_subset(dataset["__train__"], 10, 768, 768)
+    _check_subset(dataset["train"], 10, 768, 768)
+    _check_subset(dataset["test"], 10, 768, 768)
+
+    dataset = _maker_square("ah", 1024, stare_dataset)
+    assert len(dataset) == 4
+    _check_subset(dataset["__train__"], 10, 1024, 1024)
+    _check_subset(dataset["train"], 10, 1024, 1024)
+    _check_subset(dataset["test"], 10, 1024, 1024)
 
 
 @pytest.mark.skip_if_rc_var_not_set("bob.ip.binseg.drive.datadir")
@@ -247,16 +273,16 @@ def test_stare_covd():
 
 @pytest.mark.skip_if_rc_var_not_set("bob.ip.binseg.chasedb1.datadir")
 def test_chasedb1():
-    def _check_subset(samples, size):
+    def _check_subset(samples, size, height, width):
         assert len(samples) == size
         for s in samples:
             assert len(s) == 4
             assert isinstance(s[0], str)
-            assert s[1].shape, (3, 960 == 960)  # planes, height, width
+            assert s[1].shape, (3, height == width)  # planes, height, width
             assert s[1].dtype == torch.float32
-            assert s[2].shape, (1, 960 == 960)  # planes, height, width
+            assert s[2].shape, (1, height == width)  # planes, height, width
             assert s[2].dtype == torch.float32
-            assert s[3].shape, (1, 960 == 960)  # planes, height, width
+            assert s[3].shape, (1, height == width)  # planes, height, width
             assert s[3].dtype == torch.float32
             assert s[1].max() <= 1.0
             assert s[1].min() >= 0.0
@@ -266,10 +292,26 @@ def test_chasedb1():
             f"...configs.datasets.chasedb1.{m}", package=__name__
         ).dataset
         assert len(d) == 4
-        _check_subset(d["__train__"], 8)
-        _check_subset(d["__valid__"], 8)
-        _check_subset(d["train"], 8)
-        _check_subset(d["test"], 20)
+        _check_subset(d["__train__"], 8, 960, 960)
+        _check_subset(d["__valid__"], 8, 960, 960)
+        _check_subset(d["train"], 8, 960, 960)
+        _check_subset(d["test"], 20, 960, 960)
+
+    from ..configs.datasets.chasedb1.first_annotator_768 import dataset
+
+    assert len(dataset) == 4
+    _check_subset(dataset["__train__"], 8, 768, 768)
+    _check_subset(dataset["__valid__"], 8, 768, 768)
+    _check_subset(dataset["train"], 8, 768, 768)
+    _check_subset(dataset["test"], 20, 768, 768)
+
+    from ..configs.datasets.chasedb1.first_annotator_1024 import dataset
+
+    assert len(dataset) == 4
+    _check_subset(dataset["__train__"], 8, 1024, 1024)
+    _check_subset(dataset["__valid__"], 8, 1024, 1024)
+    _check_subset(dataset["train"], 8, 1024, 1024)
+    _check_subset(dataset["test"], 20, 1024, 1024)
 
 
 @pytest.mark.skip_if_rc_var_not_set("bob.ip.binseg.drive.datadir")
@@ -334,16 +376,16 @@ def test_chasedb1_covd():
 
 @pytest.mark.skip_if_rc_var_not_set("bob.ip.binseg.hrf.datadir")
 def test_hrf():
-    def _check_subset(samples, size):
+    def _check_subset(samples, size, height, width):
         assert len(samples) == size
         for s in samples:
             assert len(s) == 4
             assert isinstance(s[0], str)
-            assert s[1].shape, (3, 1168 == 1648)  # planes, height, width
+            assert s[1].shape, (3, height == width)  # planes, height, width
             assert s[1].dtype == torch.float32
-            assert s[2].shape, (1, 1168 == 1648)  # planes, height, width
+            assert s[2].shape, (1, height == width)  # planes, height, width
             assert s[2].dtype == torch.float32
-            assert s[3].shape, (1, 1168 == 1648)  # planes, height, width
+            assert s[3].shape, (1, height == width)  # planes, height, width
             assert s[3].dtype == torch.float32
             assert s[1].max() <= 1.0
             assert s[1].min() >= 0.0
@@ -365,11 +407,25 @@ def test_hrf():
     from ..configs.datasets.hrf.default import dataset
 
     assert len(dataset) == 6
-    _check_subset(dataset["__train__"], 15)
-    _check_subset(dataset["train"], 15)
-    _check_subset(dataset["test"], 30)
+    _check_subset(dataset["__train__"], 15, 1168, 1648)
+    _check_subset(dataset["train"], 15, 1168, 1648)
+    _check_subset(dataset["test"], 30, 1168, 1648)
     _check_subset_fullres(dataset["train (full resolution)"], 15)
     _check_subset_fullres(dataset["test (full resolution)"], 30)
+
+    from ..configs.datasets.hrf.default_768 import dataset
+
+    assert len(dataset) == 4
+    _check_subset(dataset["__train__"], 15, 768, 768)
+    _check_subset(dataset["train"], 15, 768, 768)
+    _check_subset(dataset["test"], 30, 768, 768)
+
+    from ..configs.datasets.hrf.default_1024 import dataset
+
+    assert len(dataset) == 4
+    _check_subset(dataset["__train__"], 15, 1024, 1024)
+    _check_subset(dataset["train"], 15, 1024, 1024)
+    _check_subset(dataset["test"], 30, 1024, 1024)
 
 
 @pytest.mark.skip_if_rc_var_not_set("bob.ip.binseg.drive.datadir")
@@ -442,16 +498,16 @@ def test_hrf_covd():
 
 @pytest.mark.skip_if_rc_var_not_set("bob.ip.binseg.iostar.datadir")
 def test_iostar():
-    def _check_subset(samples, size):
+    def _check_subset(samples, size, height, width):
         assert len(samples) == size
         for s in samples:
             assert len(s) == 4
             assert isinstance(s[0], str)
-            assert s[1].shape, (3, 1024 == 1024)  # planes, height, width
+            assert s[1].shape, (3, height == width)  # planes, height, width
             assert s[1].dtype == torch.float32
-            assert s[2].shape, (1, 1024 == 1024)  # planes, height, width
+            assert s[2].shape, (1, height == width)  # planes, height, width
             assert s[2].dtype == torch.float32
-            assert s[3].shape, (1, 1024 == 1024)  # planes, height, width
+            assert s[3].shape, (1, height == width)  # planes, height, width
             assert s[3].dtype == torch.float32
             assert s[1].max() <= 1.0
             assert s[1].min() >= 0.0
@@ -461,9 +517,25 @@ def test_iostar():
             f"...configs.datasets.iostar.{m}", package=__name__
         ).dataset
         assert len(d) == 4
-        _check_subset(d["__train__"], 20)
-        _check_subset(d["train"], 20)
-        _check_subset(d["test"], 10)
+        _check_subset(d["__train__"], 20, 1024, 1024)
+        _check_subset(d["train"], 20, 1024, 1024)
+        _check_subset(d["test"], 10, 1024, 1024)
+
+    for m in ("vessel_768", "optic_disc_768"):
+        d = importlib.import_module(
+            f"...configs.datasets.iostar.{m}", package=__name__
+        ).dataset
+        assert len(d) == 4
+        _check_subset(d["__train__"], 20, 768, 768)
+        _check_subset(d["train"], 20, 768, 768)
+        _check_subset(d["test"], 10, 768, 768)
+
+    from ..configs.datasets.iostar.optic_disc_512 import dataset
+
+    assert len(dataset) == 4
+    _check_subset(dataset["__train__"], 20, 512, 512)
+    _check_subset(dataset["train"], 20, 512, 512)
+    _check_subset(dataset["test"], 10, 512, 512)
 
 
 @pytest.mark.skip_if_rc_var_not_set("bob.ip.binseg.drive.datadir")
@@ -528,14 +600,14 @@ def test_iostar_covd():
 
 @pytest.mark.skip_if_rc_var_not_set("bob.ip.binseg.refuge.datadir")
 def test_refuge():
-    def _check_subset(samples, size):
+    def _check_subset(samples, size, height, width):
         assert len(samples) == size
         for s in samples[:N]:
-            assert len(s) == 3
+            assert len(s) == 4
             assert isinstance(s[0], str)
-            assert s[1].shape, (3, 1632 == 1632)  # planes, height, width
+            assert s[1].shape, (3, height == width)  # planes, height, width
             assert s[1].dtype == torch.float32
-            assert s[2].shape, (1, 1632 == 1632)  # planes, height, width
+            assert s[2].shape, (1, height == width)  # planes, height, width
             assert s[2].dtype == torch.float32
             assert s[1].max() <= 1.0
             assert s[1].min() >= 0.0
@@ -545,22 +617,42 @@ def test_refuge():
             f"...configs.datasets.refuge.{m}", package=__name__
         ).dataset
         assert len(d) == 5
-        _check_subset(d["__train__"], 400)
-        _check_subset(d["train"], 400)
-        _check_subset(d["validation"], 400)
-        _check_subset(d["test"], 400)
+        _check_subset(d["__train__"], 400, 1632, 1632)
+        _check_subset(d["train"], 400, 1632, 1632)
+        _check_subset(d["validation"], 400, 1632, 1632)
+        _check_subset(d["test"], 400, 1632, 1632)
+
+    for m in ("disc_512", "cup_512"):
+        d = importlib.import_module(
+            f"...configs.datasets.refuge.{m}", package=__name__
+        ).dataset
+        assert len(d) == 5
+        _check_subset(d["__train__"], 400, 512, 512)
+        _check_subset(d["train"], 400, 512, 512)
+        _check_subset(d["validation"], 400, 512, 512)
+        _check_subset(d["test"], 400, 512, 512)
+
+    for m in ("disc_768", "cup_768"):
+        d = importlib.import_module(
+            f"...configs.datasets.refuge.{m}", package=__name__
+        ).dataset
+        assert len(d) == 5
+        _check_subset(d["__train__"], 400, 768, 768)
+        _check_subset(d["train"], 400, 768, 768)
+        _check_subset(d["validation"], 400, 768, 768)
+        _check_subset(d["test"], 400, 768, 768)
 
 
 @pytest.mark.skip_if_rc_var_not_set("bob.ip.binseg.drishtigs1.datadir")
 def test_drishtigs1():
-    def _check_subset(samples, size):
+    def _check_subset(samples, size, height, width):
         assert len(samples) == size
         for s in samples[:N]:
-            assert len(s) == 3
+            assert len(s) == 4
             assert isinstance(s[0], str)
-            assert s[1].shape, (3, 1760 == 2048)  # planes, height, width
+            assert s[1].shape, (3, height == width)  # planes, height, width
             assert s[1].dtype == torch.float32
-            assert s[2].shape, (1, 1760 == 2048)  # planes, height, width
+            assert s[2].shape, (1, height == width)  # planes, height, width
             assert s[2].dtype == torch.float32
             assert s[1].max() <= 1.0
             assert s[1].min() >= 0.0
@@ -570,21 +662,38 @@ def test_drishtigs1():
             f"...configs.datasets.drishtigs1.{m}", package=__name__
         ).dataset
         assert len(d) == 4
-        _check_subset(d["__train__"], 50)
-        _check_subset(d["train"], 50)
-        _check_subset(d["test"], 51)
+        _check_subset(d["__train__"], 50, 1760, 2048)
+        _check_subset(d["train"], 50, 1760, 2048)
+        _check_subset(d["test"], 51, 1760, 2048)
+
+    for m in ("disc_all_512", "cup_all_512"):
+        d = importlib.import_module(
+            f"...configs.datasets.drishtigs1.{m}", package=__name__
+        ).dataset
+        assert len(d) == 4
+        _check_subset(d["__train__"], 50, 512, 512)
+        _check_subset(d["train"], 50, 512, 512)
+        _check_subset(d["test"], 51, 512, 512)
+    for m in ("disc_all_768", "cup_all_768"):
+        d = importlib.import_module(
+            f"...configs.datasets.drishtigs1.{m}", package=__name__
+        ).dataset
+        assert len(d) == 4
+        _check_subset(d["__train__"], 50, 768, 768)
+        _check_subset(d["train"], 50, 768, 768)
+        _check_subset(d["test"], 51, 768, 768)
 
 
 @pytest.mark.skip_if_rc_var_not_set("bob.ip.binseg.rimoner3.datadir")
 def test_rimoner3():
-    def _check_subset(samples, size):
+    def _check_subset(samples, size, height, width):
         assert len(samples) == size
         for s in samples[:N]:
-            assert len(s) == 3
+            assert len(s) == 4
             assert isinstance(s[0], str)
-            assert s[1].shape, (3, 1440 == 1088)  # planes, height, width
+            assert s[1].shape, (3, height == width)  # planes, height, width
             assert s[1].dtype == torch.float32
-            assert s[2].shape, (1, 1440 == 1088)  # planes, height, width
+            assert s[2].shape, (1, height == width)  # planes, height, width
             assert s[2].dtype == torch.float32
             assert s[1].max() <= 1.0
             assert s[1].min() >= 0.0
@@ -594,21 +703,39 @@ def test_rimoner3():
             f"...configs.datasets.rimoner3.{m}", package=__name__
         ).dataset
         assert len(d) == 4
-        _check_subset(d["__train__"], 99)
-        _check_subset(d["train"], 99)
-        _check_subset(d["test"], 60)
+        _check_subset(d["__train__"], 99, 1440, 1088)
+        _check_subset(d["train"], 99, 1440, 1088)
+        _check_subset(d["test"], 60, 1440, 1088)
+
+    for m in ("disc_exp1_512", "cup_exp1_512"):
+        d = importlib.import_module(
+            f"...configs.datasets.rimoner3.{m}", package=__name__
+        ).dataset
+        assert len(d) == 4
+        _check_subset(d["__train__"], 99, 512, 512)
+        _check_subset(d["train"], 99, 512, 512)
+        _check_subset(d["test"], 60, 512, 512)
+
+    for m in ("disc_exp1_768", "cup_exp1_768"):
+        d = importlib.import_module(
+            f"...configs.datasets.rimoner3.{m}", package=__name__
+        ).dataset
+        assert len(d) == 4
+        _check_subset(d["__train__"], 99, 768, 768)
+        _check_subset(d["train"], 99, 768, 768)
+        _check_subset(d["test"], 60, 768, 768)
 
 
 @pytest.mark.skip_if_rc_var_not_set("bob.ip.binseg.drionsdb.datadir")
 def test_drionsdb():
-    def _check_subset(samples, size):
+    def _check_subset(samples, size, height, width):
         assert len(samples) == size
         for s in samples[:N]:
-            assert len(s) == 3
+            assert len(s) == 4
             assert isinstance(s[0], str)
-            assert s[1].shape, (3, 416 == 608)  # planes, height, width
+            assert s[1].shape, (3, height == width)  # planes, height, width
             assert s[1].dtype == torch.float32
-            assert s[2].shape, (1, 416 == 608)  # planes, height, width
+            assert s[2].shape, (1, height == width)  # planes, height, width
             assert s[2].dtype == torch.float32
             assert s[1].max() <= 1.0
             assert s[1].min() >= 0.0
@@ -618,6 +745,24 @@ def test_drionsdb():
             f"...configs.datasets.drionsdb.{m}", package=__name__
         ).dataset
         assert len(d) == 4
-        _check_subset(d["__train__"], 60)
-        _check_subset(d["train"], 60)
-        _check_subset(d["test"], 50)
+        _check_subset(d["__train__"], 60, 416, 608)
+        _check_subset(d["train"], 60, 416, 608)
+        _check_subset(d["test"], 50, 416, 608)
+
+    for m in ("expert1_512", "expert2_512"):
+        d = importlib.import_module(
+            f"...configs.datasets.drionsdb.{m}", package=__name__
+        ).dataset
+        assert len(d) == 4
+        _check_subset(d["__train__"], 60, 512, 512)
+        _check_subset(d["train"], 60, 512, 512)
+        _check_subset(d["test"], 50, 512, 512)
+
+    for m in ("expert1_768", "expert2_768"):
+        d = importlib.import_module(
+            f"...configs.datasets.drionsdb.{m}", package=__name__
+        ).dataset
+        assert len(d) == 4
+        _check_subset(d["__train__"], 60, 768, 768)
+        _check_subset(d["train"], 60, 768, 768)
+        _check_subset(d["test"], 50, 768, 768)

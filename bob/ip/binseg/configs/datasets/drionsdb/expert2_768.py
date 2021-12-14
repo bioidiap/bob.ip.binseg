@@ -3,10 +3,10 @@
 
 """DRIONS-DB for Optic Disc Segmentation (expert #2 annotations)
 
-Configuration resolution: 512x512 (after padding and resizing)
+Configuration resolution: 768x768 (after padding and resizing)
 
 """
 
 from bob.ip.binseg.configs.datasets.drionsdb import _maker_square
 
-dataset = _maker_square("expert2", 512)
+dataset = _maker_square("expert2", 768)
