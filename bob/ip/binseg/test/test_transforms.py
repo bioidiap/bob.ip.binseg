@@ -362,7 +362,6 @@ def test_blur():
     random.seed(42)
     img1_t, img2_t, img3_t = transforms(img, img, img)
     assert img1_t.size == (im_size[2], im_size[1])
-    assert numpy.any(numpy.array(img1_t) != numpy.array(img))
     assert numpy.any(numpy.array(img1_t) != numpy.array(img2_t))
     assert numpy.all(numpy.array(img2_t) == numpy.array(img3_t))
     assert numpy.all(numpy.array(img2_t) == numpy.array(img))
