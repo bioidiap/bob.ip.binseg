@@ -152,6 +152,8 @@ Datasets
    bob.ip.binseg.configs.datasets.csv
 
    bob.ip.binseg.configs.datasets.chasedb1.first_annotator
+   bob.ip.binseg.configs.datasets.chasedb1.first_annotator_768
+   bob.ip.binseg.configs.datasets.chasedb1.first_annotator_1024
    bob.ip.binseg.configs.datasets.chasedb1.second_annotator
    bob.ip.binseg.configs.datasets.chasedb1.xtest
    bob.ip.binseg.configs.datasets.chasedb1.mtest
@@ -159,6 +161,8 @@ Datasets
    bob.ip.binseg.configs.datasets.chasedb1.ssl
 
    bob.ip.binseg.configs.datasets.drive.default
+   bob.ip.binseg.configs.datasets.drive.default_768
+   bob.ip.binseg.configs.datasets.drive.default_1024
    bob.ip.binseg.configs.datasets.drive.second_annotator
    bob.ip.binseg.configs.datasets.drive.xtest
    bob.ip.binseg.configs.datasets.drive.mtest
@@ -166,6 +170,8 @@ Datasets
    bob.ip.binseg.configs.datasets.drive.ssl
 
    bob.ip.binseg.configs.datasets.hrf.default
+   bob.ip.binseg.configs.datasets.hrf.default_768
+   bob.ip.binseg.configs.datasets.hrf.default_1024
    bob.ip.binseg.configs.datasets.hrf.xtest
    bob.ip.binseg.configs.datasets.hrf.mtest
    bob.ip.binseg.configs.datasets.hrf.default_fullres
@@ -173,13 +179,18 @@ Datasets
    bob.ip.binseg.configs.datasets.hrf.ssl
 
    bob.ip.binseg.configs.datasets.iostar.vessel
+   bob.ip.binseg.configs.datasets.iostar.vessel_768
    bob.ip.binseg.configs.datasets.iostar.vessel_xtest
    bob.ip.binseg.configs.datasets.iostar.vessel_mtest
    bob.ip.binseg.configs.datasets.iostar.optic_disc
+   bob.ip.binseg.configs.datasets.iostar.optic_disc_768
+   bob.ip.binseg.configs.datasets.iostar.optic_disc_512
    bob.ip.binseg.configs.datasets.iostar.covd
    bob.ip.binseg.configs.datasets.iostar.ssl
 
    bob.ip.binseg.configs.datasets.stare.ah
+   bob.ip.binseg.configs.datasets.stare.ah_768
+   bob.ip.binseg.configs.datasets.stare.ah_1024
    bob.ip.binseg.configs.datasets.stare.vk
    bob.ip.binseg.configs.datasets.stare.xtest
    bob.ip.binseg.configs.datasets.stare.mtest
@@ -188,19 +199,35 @@ Datasets
 
    bob.ip.binseg.configs.datasets.refuge.cup
    bob.ip.binseg.configs.datasets.refuge.disc
+   bob.ip.binseg.configs.datasets.refuge.cup_512
+   bob.ip.binseg.configs.datasets.refuge.cup_768
+   bob.ip.binseg.configs.datasets.refuge.disc_512
+   bob.ip.binseg.configs.datasets.refuge.disc_768
 
    bob.ip.binseg.configs.datasets.rimoner3.cup_exp1
    bob.ip.binseg.configs.datasets.rimoner3.cup_exp2
    bob.ip.binseg.configs.datasets.rimoner3.disc_exp1
    bob.ip.binseg.configs.datasets.rimoner3.disc_exp2
+   bob.ip.binseg.configs.datasets.rimoner3.cup_exp1_512
+   bob.ip.binseg.configs.datasets.rimoner3.disc_exp1_512
 
+   bob.ip.binseg.configs.datasets.rimoner3.cup_exp1_768
+   bob.ip.binseg.configs.datasets.rimoner3.disc_exp1_768
    bob.ip.binseg.configs.datasets.drishtigs1.cup_all
+   bob.ip.binseg.configs.datasets.drishtigs1.cup_all_512
+   bob.ip.binseg.configs.datasets.drishtigs1.cup_all_768
    bob.ip.binseg.configs.datasets.drishtigs1.cup_any
    bob.ip.binseg.configs.datasets.drishtigs1.disc_all
+   bob.ip.binseg.configs.datasets.drishtigs1.disc_all_512
+   bob.ip.binseg.configs.datasets.drishtigs1.disc_all_768
    bob.ip.binseg.configs.datasets.drishtigs1.disc_any
 
    bob.ip.binseg.configs.datasets.drionsdb.expert1
    bob.ip.binseg.configs.datasets.drionsdb.expert2
+   bob.ip.binseg.configs.datasets.drionsdb.expert1_512
+   bob.ip.binseg.configs.datasets.drionsdb.expert2_512
+   bob.ip.binseg.configs.datasets.drionsdb.expert1_768
+   bob.ip.binseg.configs.datasets.drionsdb.expert2_768
 
    bob.ip.binseg.configs.datasets.drhagis.default
 

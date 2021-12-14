@@ -11,7 +11,7 @@ def _maker(protocol):
     return mk(raw.subsets(protocol), [ccrop((1760, 2048))])
 
 
-def _maker_square(protocol):
+def _maker_square(protocol, size):
 
     from ....data.drishtigs1 import dataset as raw
     from ....data.transforms import CenterCrop as ccrop
@@ -20,5 +20,5 @@ def _maker_square(protocol):
 
     return mk(
         raw.subsets(protocol),
-        [ccrop((1760, 2048)), Pad((0, 144)), Resize((512, 512))],
+        [ccrop((1760, 2048)), Pad((0, 144)), Resize((size, size))],
     )

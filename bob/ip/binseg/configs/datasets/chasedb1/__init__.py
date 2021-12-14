@@ -11,10 +11,12 @@ def _maker(protocol):
     return mk(raw.subsets(protocol), [Crop(0, 18, 960, 960)])
 
 
-def _maker_square(protocol):
+def _maker_square(protocol, size):
 
     from ....data.chasedb1 import dataset as raw
     from ....data.transforms import Pad, Resize
     from .. import make_dataset as mk
 
-    return mk(raw.subsets(protocol), [Pad((1, 20, 0, 20)), Resize((768, 768))])
+    return mk(
+        raw.subsets(protocol), [Pad((1, 20, 0, 20)), Resize((size, size))]
+    )
