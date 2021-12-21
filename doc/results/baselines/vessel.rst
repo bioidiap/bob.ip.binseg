@@ -136,37 +136,37 @@ Results for datasets with (768x768 resolution)
      - 68k
    * - :py:mod:`drive <bob.ip.binseg.configs.datasets.drive.default_768>`
      -
-     - 0.813
-     - 0.803
-     - 0.799
-     - 0.816
+     - 0.812
+     - 0.806
+     - 0.800
+     - 0.814
      - 0.807
    * - :py:mod:`stare <bob.ip.binseg.configs.datasets.stare.ah_768>`
      -
-     - 0.823
+     - 0.819
+     - 0.812
+     - 0.793
+     - 0.829
      - 0.817
-     - 0.813
-     - 0.824
-     - 0.815
    * - :py:mod:`chasedb1 <bob.ip.binseg.configs.datasets.chasedb1.first_annotator_768>`
      -
-     - 0.812
-     - 0.807
-     - 0.794
-     - 0.801
-     - 0.804
+     - 0.809
+     - 0.790
+     - 0.793
+     - 0.803
+     - 0.797
    * - :py:mod:`hrf <bob.ip.binseg.configs.datasets.hrf.default_768>`
      -
-     - 0.803
-     - 0.786
-     - 0.785
-     - 0.802
+     - 0.799
+     - 0.774
+     - 0.773
      - 0.804
+     - 0.800
    * - :py:mod:`iostar-vessel <bob.ip.binseg.configs.datasets.iostar.vessel_768>`
      -
-     - 0.824
-     - 0.821
-     - 0.812
+     - 0.825
+     - 0.818
+     - 0.813
      - 0.820
      - 0.820
 
@@ -187,34 +187,138 @@ Notes
      - :py:mod:`unet <bob.ip.binseg.configs.models.unet>`
      - :py:mod:`lwnet <bob.ip.binseg.configs.models.lwnet>`
    * - :py:mod:`drive <bob.ip.binseg.configs.datasets.drive.default_768>`
-     - 5
-     - 10
-     - 10
+     - 8
+     - 8
+     - 8
      - 4
-     - 10
+     - 8
    * - :py:mod:`stare <bob.ip.binseg.configs.datasets.stare.ah_768>`
-     - 5
+     - 8
+     - 8
+     - 8
      - 4
-     - 6
-     - 2
-     - 4
+     - 8
    * - :py:mod:`chasedb1 <bob.ip.binseg.configs.datasets.chasedb1.first_annotator_768>`
+     - 8
+     - 8
+     - 8
      - 4
-     - 4
-     - 6
-     - 2
-     - 4
+     - 8
    * - :py:mod:`hrf <bob.ip.binseg.configs.datasets.hrf.default_768>`
-     - 3
-     - 3
-     - 3
-     - 3
-     - 5
+     - 8
+     - 8
+     - 8
+     - 4
+     - 8
    * - :py:mod:`iostar-vessel <bob.ip.binseg.configs.datasets.iostar.vessel_768>`
+     - 8
+     - 8
+     - 8
      - 4
+     - 8
+
+Results for datasets with (1024x1024 resolution)
+
+.. list-table::
+   :header-rows: 2
+
+   * -
+     -
+     - :py:mod:`driu <bob.ip.binseg.configs.models.driu>`
+     - :py:mod:`hed <bob.ip.binseg.configs.models.hed>`
+     - :py:mod:`m2unet <bob.ip.binseg.configs.models.m2unet>`
+     - :py:mod:`unet <bob.ip.binseg.configs.models.unet>`
+     - :py:mod:`lwnet <bob.ip.binseg.configs.models.lwnet>`
+   * - Dataset
+     - 2nd. Annot.
+     - 15M
+     - 14.7M
+     - 550k
+     - 25.8M
+     - 68k
+   * - :py:mod:`drive <bob.ip.binseg.configs.datasets.drive.default_1024>`
+     -
+     - 0.813
+     - 0.806
+     - 0.804
+     - 0.815
+     - 0.809
+   * - :py:mod:`stare <bob.ip.binseg.configs.datasets.stare.ah_1024>`
+     -
+     - 0.821
+     - 0.812
+     - 0.816
+     - 0.820
+     - 0.814
+   * - :py:mod:`chasedb1 <bob.ip.binseg.configs.datasets.chasedb1.first_annotator_1024>`
+     -
+     - 0.806
+     - 0.806
+     - 0.790
+     - 0.806
+     - 0.793
+   * - :py:mod:`hrf <bob.ip.binseg.configs.datasets.hrf.default_1024>`
+     -
+     - 0.805
+     - 0.793
+     - 0.786
+     - 0.807
+     - 0.805
+   * - :py:mod:`iostar-vessel <bob.ip.binseg.configs.datasets.iostar.vessel>`
+     -
+     - 0.829
+     - 0.825
+     - 0.817
+     - 0.825
+     - 0.824
+
+
+Notes
+-----
+
+* The following table describes recommended batch sizes for 24Gb of RAM GPU
+  card:
+
+.. list-table::
+   :header-rows: 1
+
+   * -
+     - :py:mod:`driu <bob.ip.binseg.configs.models.driu>`
+     - :py:mod:`hed <bob.ip.binseg.configs.models.hed>`
+     - :py:mod:`m2unet <bob.ip.binseg.configs.models.m2unet>`
+     - :py:mod:`unet <bob.ip.binseg.configs.models.unet>`
+     - :py:mod:`lwnet <bob.ip.binseg.configs.models.lwnet>`
+   * - :py:mod:`drive <bob.ip.binseg.configs.datasets.drive.default_1024>`
+     - 8
+     - 8
+     - 8
      - 4
-     - 6
+     - 8
+   * - :py:mod:`stare <bob.ip.binseg.configs.datasets.stare.ah_1024>`
+     - 8
+     - 8
+     - 8
      - 4
-     - 6
+     - 8
+   * - :py:mod:`chasedb1 <bob.ip.binseg.configs.datasets.chasedb1.first_annotator_1024>`
+     - 8
+     - 8
+     - 8
+     - 4
+     - 8
+   * - :py:mod:`hrf <bob.ip.binseg.configs.datasets.hrf.default_1024>`
+     - 8
+     - 8
+     - 8
+     - 4
+     - 8
+   * - :py:mod:`iostar-vessel <bob.ip.binseg.configs.datasets.iostar.vessel>`
+     - 8
+     - 8
+     - 8
+     - 4
+     - 8
+
+
 
 .. include:: ../../links.rst
