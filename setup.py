@@ -138,11 +138,11 @@ setup(
             "rimoner3-cup-2nd = bob.ip.binseg.configs.datasets.rimoner3.cup_exp2",
             "rimoner3-disc-2nd = bob.ip.binseg.configs.datasets.rimoner3.disc_exp2",
             # combined vessels - retinography
-            "combined-vessels = bob.ip.binseg.configs.datasets.combined.vessel_combined",
+            "combined-vessels = bob.ip.binseg.configs.datasets.combined.vessel",
             # combined discs - retinography
-            "combined-disc = bob.ip.binseg.configs.datasets.combined.od_combined",
+            "combined-disc = bob.ip.binseg.configs.datasets.combined.od",
             # combined cups - retinography
-            "combined-cup = bob.ip.binseg.configs.datasets.combined.oc_combined",
+            "combined-cup = bob.ip.binseg.configs.datasets.combined.oc",
             # montgomery county - cxr
             "montgomery = bob.ip.binseg.configs.datasets.montgomery.default",
             "montgomery-xtest = bob.ip.binseg.configs.datasets.montgomery.xtest",

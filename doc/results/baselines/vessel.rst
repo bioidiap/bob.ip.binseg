@@ -169,7 +169,13 @@ Results for datasets with (768x768 resolution)
      - 0.813
      - 0.820
      - 0.820
-
+   * - Combined datasets
+     -
+     - 0.811
+     - 0.798
+     - 0.798
+     - 0.813
+     - 0.804
 
 Notes
 -----
