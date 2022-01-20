@@ -766,3 +766,29 @@ def test_drionsdb():
         _check_subset(d["__train__"], 60, 768, 768)
         _check_subset(d["train"], 60, 768, 768)
         _check_subset(d["test"], 50, 768, 768)
+
+
+@pytest.mark.skip_if_rc_var_not_set("bob.ip.binseg.drive.datadir")
+@pytest.mark.skip_if_rc_var_not_set("bob.ip.binseg.chasedb1.datadir")
+@pytest.mark.skip_if_rc_var_not_set("bob.ip.binseg.hrf.datadir")
+@pytest.mark.skip_if_rc_var_not_set("bob.ip.binseg.iostar.datadir")
+def test_combined_vessels():
+    def _check_subset(samples, size, height, width):
+        assert len(samples) == size
+        for s in samples[:N]:
+            assert len(s) == 4
+            assert isinstance(s[0], str)
+            assert s[1].shape, (3, height == width)  # planes, height, width
+            assert s[1].dtype == torch.float32
+            assert s[2].shape, (1, height == width)  # planes, height, width
+            assert s[2].dtype == torch.float32
+            assert s[1].max() <= 1.0
+            assert s[1].min() >= 0.0
+
+    from ..configs.datasets.combined.vessel_combined import dataset
+
+    assert len(dataset) == 4
+    _check_subset(dataset["__train__"], 73, 768, 768)
+    _check_subset(dataset["__valid__"], 73, 768, 768)
+    _check_subset(dataset["train"], 73, 768, 768)
+    _check_subset(dataset["test"], 90, 768, 768)
