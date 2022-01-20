@@ -40,6 +40,13 @@ Models on Specific Tasks
 
    vessel/driu
    vessel/m2unet
+   vessel/unet
+   disc/hed
+   disc/m2unet
+   disc/unet
+   cup/hed
+   cup/m2unet
+   cup/unet
    lung/lwnet
    lung/m2unet
    lung/unet
