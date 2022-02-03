@@ -154,6 +154,9 @@ setup(
             # jsrt - cxr
             "jsrt = bob.ip.binseg.configs.datasets.jsrt.default",
             "jsrt-xtest = bob.ip.binseg.configs.datasets.jsrt.xtest",
+            # cxr8 - cxr
+            "cxr8 = bob.ip.binseg.configs.datasets.cxr8.default",
+            "cxr8-xtest = bob.ip.binseg.configs.datasets.cxr8.xtest",
         ],
     },
     # check classifiers, add and remove as you see fit
