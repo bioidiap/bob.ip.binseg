@@ -17,5 +17,5 @@ dataset = {
     "jsrt (test)": _jsrt["test"],
     "shenzhen (train)": _shenzhen["train"],
     "shenzhen (validation)": _shenzhen["validation"],
-    "shenzhen (test)": _shenzhen["test"]
-        }
+    "shenzhen (test)": _shenzhen["test"],
+}
