@@ -22,7 +22,6 @@ def _maker_augmented(protocol, n):
     from ....data.transforms import Resize as _resize
     from .. import make_subset
 
-
     def mk_aug_subset(subsets, train_transforms, all_transforms):
         retval = {}
 

@@ -3,7 +3,7 @@
 
 """CXR8 Dataset
 
-The database contains a total  of 112120 images. Image size for each X-ray is 
+The database contains a total  of 112120 images. Image size for each X-ray is
 1024 x 1024. One set of mask annotations is available for all images.
 
 * Reference: [WANG-2017]_
@@ -20,15 +20,15 @@ The database contains a total  of 112120 images. Image size for each X-ray is
 
 import os
 
+import numpy as np
 import pkg_resources
+
+from PIL import Image
 
 import bob.extension
 
-import numpy as np
-
 from ..dataset import JSONDataset
-from ..loader import load_pil_1, load_pil_rgb, make_delayed
-from PIL import Image
+from ..loader import load_pil_rgb, make_delayed
 
 _protocols = [
     pkg_resources.resource_filename(__name__, "default.json"),
@@ -40,7 +40,7 @@ _root_path = bob.extension.rc.get(
 
 
 def _raw_data_loader(sample):
-    retval =  dict(
+    retval = dict(
         data=load_pil_rgb(os.path.join(_root_path, sample["data"])),
         label=np.array(Image.open(os.path.join(_root_path, sample["label"]))),
     )
