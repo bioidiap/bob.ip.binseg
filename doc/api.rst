@@ -52,6 +52,7 @@ Chest X-Ray
    bob.ip.binseg.data.montgomery
    bob.ip.binseg.data.jsrt
    bob.ip.binseg.data.shenzhen
+   bob.ip.binseg.data.cxr8
 
 
 Engines
@@ -237,5 +238,7 @@ Datasets
 
    bob.ip.binseg.configs.datasets.shenzhen.default
    bob.ip.binseg.configs.datasets.shenzhen.default_256
+
+   bob.ip.binseg.configs.datasets.cxr8.default
 
 .. include:: links.rst

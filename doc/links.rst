@@ -28,6 +28,7 @@
 .. _montgomery county: https://openi.nlm.nih.gov/faq#faq-tb-coll
 .. _jsrt: http://db.jsrt.or.jp/eng.php
 .. _shenzhen: https://openi.nlm.nih.gov/faq#faq-tb-coll
+.. _cxr8: https://nihcc.app.box.com/v/ChestXray-NIHCC
 
 
 .. Software Tools

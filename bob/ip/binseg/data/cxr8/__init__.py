@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 # coding=utf-8
 
-"""CXR8 Dataset
+"""ChestX-ray8: Hospital-scale Chest X-ray Dataset
 
 The database contains a total  of 112120 images. Image size for each X-ray is
 1024 x 1024. One set of mask annotations is available for all images.
 
-* Reference: [WANG-2017]_
+* Reference: [CXR8-2017]_
 * Original resolution (height x width): 1024 x 1024
 * Configuration resolution: 256 x 256 (after rescaling)
 * Split reference: [GAAL-2020]_
@@ -60,4 +60,4 @@ dataset = JSONDataset(
     protocols=_protocols, fieldnames=("data", "label"), loader=_loader
 )
 
-"""CXR8 dataset object"""
+"""ChestX-ray8: Hospital-scale Chest X-ray Dataset object"""

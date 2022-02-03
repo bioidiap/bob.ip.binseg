@@ -142,3 +142,8 @@
 .. [GAAL-2020] *G. Gaál, B. Maga, A. Lukács*, **Attention U-Net Based
    Adversarial Architectures for Chest X-ray Lung Segmentation.**, 2020.
    https://arxiv.org/abs/2003.10304v1
+
+.. [CXR8-2017] *Xiaosong Wang, Yifan Peng, Le Lu, Zhiyong Lu, Mohammadhadi Bagheri, 
+   Ronald Summers*, **ChestX-ray8: Hospital-scale Chest X-ray Database and Benchmarks 
+   on Weakly-Supervised Classification and Localization of Common Thorax Diseases.**, 
+   IEEE CVPR, pp. 3462-3471, 2017. https://arxiv.org/abs/1705.02315
