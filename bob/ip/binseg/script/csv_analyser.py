@@ -51,7 +51,7 @@ def csv_analyser(output_folder, batch_size, **kwargs):
     """
     av_loss = "average_loss"
     val_av_loss = "validation_average_loss"
-    path = output_folder + "/model/trainlog.csv"
+    path = output_folder + "/trainlog.csv"
     pdf_path = output_folder + "/analyse.pdf"
     trainlog_csv = pd.read_csv(path)
     plot_(trainlog_csv, "epoch", av_loss, label=av_loss)
