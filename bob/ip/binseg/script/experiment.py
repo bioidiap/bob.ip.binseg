@@ -356,8 +356,6 @@ def experiment(
 
     ctx.invoke(
         csv_analyser,
-        model=model,
-        dataset=dataset,
-        output_folder=output_folder,
+        output_folder=train_output_folder,
         batch_size=batch_size,
     )
