@@ -27,22 +27,6 @@ def plot_(df, x, y, label):
     cls=ResourceOption,
 )
 @click.option(
-    "--dataset",
-    "-d",
-    help="""The base path to the dataset to which we want to generate the masks. \\
-    In case you have already configured the path for the datasets supported by bob, \\
-    you can just use the name of the dataset as written in the config. """,
-    required=True,
-    cls=ResourceOption,
-)
-@click.option(
-    "--model",
-    "-m",
-    help="""Model used to analyze \\ """,
-    required=True,
-    cls=ResourceOption,
-)
-@click.option(
     "--batch-size",
     "-b",
     help="Number of samples in every batch (this parameter affects "
@@ -61,7 +45,7 @@ def plot_(df, x, y, label):
     cls=ResourceOption,
 )
 @verbosity_option(cls=ResourceOption)
-def csv_analyser(model, output_folder, batch_size, **kwargs):
+def csv_analyser(output_folder, batch_size, **kwargs):
     """
     Run an alayze on the trainlog.csv where it creates a pdf file with a plot describing the validation and training losses.
     """
@@ -72,7 +56,7 @@ def csv_analyser(model, output_folder, batch_size, **kwargs):
     trainlog_csv = pd.read_csv(path)
     plot_(trainlog_csv, "epoch", av_loss, label=av_loss)
     plot_(trainlog_csv, "epoch", val_av_loss, label=val_av_loss)
-    plt.title(model.name, y=-0.01)
+    plt.title("Trainlog analyser", y=-0.01)
     mean_gpu_percent = np.mean(trainlog_csv["gpu_percent"])
     mean_gpu_memory_percent = np.mean(trainlog_csv["gpu_memory_percent"])
 
