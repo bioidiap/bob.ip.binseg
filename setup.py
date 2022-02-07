@@ -41,6 +41,7 @@ setup(
             "analyze =  bob.ip.binseg.script.analyze:analyze",
             "experiment =  bob.ip.binseg.script.experiment:experiment",
             "mkmask = bob.ip.binseg.script.mkmask:mkmask",
+            "csv_analyze = bob.ip.binseg.script.csv_analyzer:csv_analyzer",
         ],
         # bob train configurations
         "bob.ip.binseg.config": [

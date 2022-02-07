@@ -351,3 +351,13 @@ def experiment(
         steps=steps,
         verbose=verbose,
     )
+
+    from .csv_analyzer import csv_analyzer
+
+    ctx.invoke(
+        csv_analyzer,
+        model=model,
+        dataset=dataset,
+        output_folder=output_folder,
+        batch_size=batch_size,
+    )
