@@ -198,9 +198,9 @@ X-Ray
 
 .. warning:: **SHENZHEN/CXR8 Dataset Support**
 
-  For the ``SHENZHEN``/``CXR8`` datasets (in which the annotations/masks are 
-  downloaded separately from the dataset with the original images), both the 
-  original images and annotations must be downloaded and placed inside the same 
+  For the ``SHENZHEN``/``CXR8`` datasets (in which the annotations/masks are
+  downloaded separately from the dataset with the original images), both the
+  original images and annotations must be downloaded and placed inside the same
   directory, in order to match the dataset reference dictionary's path.
 
 
