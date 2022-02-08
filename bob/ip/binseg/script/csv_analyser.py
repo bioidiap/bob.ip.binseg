@@ -57,25 +57,31 @@ def csv_analyser(output_folder, batch_size, **kwargs):
     plot_(trainlog_csv, "epoch", av_loss, label=av_loss)
     plot_(trainlog_csv, "epoch", val_av_loss, label=val_av_loss)
     plt.title("Trainlog analyser", y=-0.01)
-    mean_gpu_percent = np.mean(trainlog_csv["gpu_percent"])
-    mean_gpu_memory_percent = np.mean(trainlog_csv["gpu_memory_percent"])
+    columns = list(trainlog_csv.columns)
+    suptitle = "batch size = " + str(batch_size)
+
+    if "gpu_percent" in columns:
+        mean_gpu_percent = np.mean(trainlog_csv["gpu_percent"])
+        suptitle += "\n Gpu : " + str(float("{:.2f}".format(mean_gpu_percent)))
+
+    if "gpu_memory_percent" in columns:
+        mean_gpu_memory_percent = np.mean(trainlog_csv["gpu_memory_percent"])
+        suptitle += "%, Gpu ram : " + str(
+            float("{:.2f}".format(mean_gpu_memory_percent))
+        )
+        +"%"
 
     epoch_with_best_validation = trainlog_csv["epoch"][
         np.argmin(trainlog_csv["validation_average_loss"])
     ]
+    suptitle += "\n Epoch with best validation = " + str(
+        epoch_with_best_validation
+    )
 
     plt.axvline(x=epoch_with_best_validation, color="red", label="best_model")
     plt.legend()
-    plt.suptitle(
-        "batch size = "
-        + str(batch_size)
-        + "\n Gpu : "
-        + str(float("{:.2f}".format(mean_gpu_percent)))
-        + "%,Gpu ram :"
-        + str(float("{:.2f}".format(mean_gpu_memory_percent)))
-        + "%"
-        + "\n Epoch with best validation = "
-        + str(epoch_with_best_validation)
-    )
+
+    plt.suptitle(suptitle)
+
     plt.savefig(pdf_path)
     plt.clf()
