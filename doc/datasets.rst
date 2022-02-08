@@ -167,7 +167,7 @@ X-Ray
      - [MC-2014]_
      - 4020 x 4892, or 4892 x 4020
      - 138
-     - ``x``
+     - ``*``
      - [GAAL-2020]_
      - 96 (+14)
      - 28
@@ -175,7 +175,7 @@ X-Ray
      - [JSRT-2000]_
      - 2048 x 2048
      - 247
-     - ``x``
+     - ``*``
      - [GAAL-2020]_
      - 172 (+25)
      - 50
@@ -183,7 +183,7 @@ X-Ray
      - [SHENZHEN-2014]_
      - Varying
      - 662
-     - ``x``
+     - ``*``
      - [GAAL-2020]_
      - 396 (+56)
      - 114
@@ -195,5 +195,13 @@ X-Ray
      - [GAAL-2020]_
      - 78484 (+11212)
      - 22424
+
+.. warning:: **SHENZHEN/CXR8 Dataset Support**
+
+  For the ``SHENZHEN``/``CXR8`` datasets (in which the annotations/masks are 
+  downloaded separately from the dataset with the original images), both the 
+  original images and annotations must be downloaded and placed inside the same 
+  directory, in order to match the dataset reference dictionary's path.
+
 
 .. include:: links.rst
