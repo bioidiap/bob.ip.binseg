@@ -352,10 +352,10 @@ def experiment(
         verbose=verbose,
     )
 
-    from .csv_analyser import csv_analyser
+    from .train_analysis import train_analysis
 
     ctx.invoke(
-        csv_analyser,
+        train_analysis,
         output_folder=train_output_folder,
         batch_size=batch_size,
     )
