@@ -45,14 +45,14 @@ def plot_(df, x, y, label):
     cls=ResourceOption,
 )
 @verbosity_option(cls=ResourceOption)
-def csv_analyser(output_folder, batch_size, **kwargs):
+def train_analysis(output_folder, batch_size, **kwargs):
     """
-    Run an alayze on the trainlog.csv where it creates a pdf file with a plot describing the validation and training losses.
+    Analyzes the training logs for loss evolution and resource utilisation
     """
     av_loss = "average_loss"
     val_av_loss = "validation_average_loss"
     path = output_folder + "/trainlog.csv"
-    pdf_path = output_folder + "/analyse.pdf"
+    pdf_path = output_folder + "/trainlog.pdf"
     trainlog_csv = pd.read_csv(path)
     plot_(trainlog_csv, "epoch", av_loss, label=av_loss)
     plot_(trainlog_csv, "epoch", val_av_loss, label=val_av_loss)
