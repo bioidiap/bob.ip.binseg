@@ -127,10 +127,10 @@ def _precision_recall_canvas(title=None):
     Yields
     ------
 
-    figure : matplotlib.figure.Figure
+    figure : :py:class:`matplotlib.figure.Figure`
         The figure that should be finally returned to the user
 
-    axes : matplotlib.figure.Axes
+    axes : :py:class:`matplotlib.figure.Axes`
         An axis set where to precision-recall plots should be added to
 
     """
@@ -239,7 +239,7 @@ def precision_recall_f1iso(data, credible=True):
     Returns
     -------
 
-    figure : matplotlib.figure.Figure
+    figure : :py:class:`matplotlib.figure.Figure`
         A matplotlib figure you can save or display (uses an ``agg`` backend)
 
     """
@@ -367,7 +367,7 @@ def loss_curve(df):
     Returns
     -------
 
-    figure : matplotlib.figure.Figure
+    figure : :py:class:`matplotlib.figure.Figure`
         A figure, that may be saved or displayed
 
     """
