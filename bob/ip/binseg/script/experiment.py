@@ -351,3 +351,11 @@ def experiment(
         steps=steps,
         verbose=verbose,
     )
+
+    from .train_analysis import train_analysis
+
+    ctx.invoke(
+        train_analysis,
+        output_folder=train_output_folder,
+        batch_size=batch_size,
+    )
