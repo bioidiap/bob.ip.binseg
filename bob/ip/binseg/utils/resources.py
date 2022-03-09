@@ -212,7 +212,7 @@ def cpu_log():
         # check all cluster components and update process list
         # done so we can keep the cpu_percent() initialization
         stored_children = set(_CLUSTER[1:])
-        current_children = set(_CLUSTER[0].children())
+        current_children = set(_CLUSTER[0].children(recursive=True))
         keep_children = stored_children - current_children
         new_children = current_children - stored_children
         [k.cpu_percent(interval=None) for k in new_children]
