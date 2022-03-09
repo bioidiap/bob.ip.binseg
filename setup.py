@@ -156,6 +156,7 @@ setup(
             "jsrt-xtest = bob.ip.binseg.configs.datasets.jsrt.xtest",
             # cxr8 - cxr
             "cxr8 = bob.ip.binseg.configs.datasets.cxr8.default",
+            "cxr8-idiap = bob.ip.binseg.configs.datasets.cxr8.idiap",
             "cxr8-xtest = bob.ip.binseg.configs.datasets.cxr8.xtest",
         ],
     },

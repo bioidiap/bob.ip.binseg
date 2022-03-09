@@ -16,6 +16,12 @@ The database contains a total  of 112120 images. Image size for each X-ray is
   * Validation samples: 11212 (including labels)
   * Test samples: 22424 (including labels)
 
+* Protocol ``idiap``:
+
+  * Exactly the same as ``default``, except it uses the file organisation
+  suitable to the Idiap Research Institute (where there is limit of 1k files
+  per directory)
+
 """
 
 import os
@@ -32,6 +38,7 @@ from ..loader import load_pil_rgb, make_delayed
 
 _protocols = [
     pkg_resources.resource_filename(__name__, "default.json"),
+    pkg_resources.resource_filename(__name__, "idiap.json"),
 ]
 
 _root_path = bob.extension.rc.get(
