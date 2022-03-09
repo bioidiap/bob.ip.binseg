@@ -4,11 +4,15 @@
 """CXR8 cross-evaluation dataset
 """
 
+from bob.ip.binseg.configs.datasets.cxr8.default import dataset as _cxr8
 from bob.ip.binseg.configs.datasets.jsrt.default import dataset as _jsrt
 from bob.ip.binseg.configs.datasets.montgomery.default import dataset as _mc
 from bob.ip.binseg.configs.datasets.shenzhen.default import dataset as _shenzhen
 
 dataset = {
+    "train": _cxr8["train"],
+    "validation": _cxr8["validation"],
+    "test": _cxr8["test"],
     "montgomery (train)": _mc["train"],
     "montgomery (validation)": _mc["validation"],
     "montgomery (test)": _mc["test"],
