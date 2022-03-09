@@ -19,8 +19,8 @@ The database contains a total  of 112120 images. Image size for each X-ray is
 * Protocol ``idiap``:
 
   * Exactly the same as ``default``, except it uses the file organisation
-  suitable to the Idiap Research Institute (where there is limit of 1k files
-  per directory)
+    suitable to the Idiap Research Institute (where there is limit of 1k files
+    per directory)
 
 """
 
