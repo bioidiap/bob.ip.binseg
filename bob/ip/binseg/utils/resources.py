@@ -282,7 +282,7 @@ def _gpu_monitor_worker(interval, stop, queue):
             time.sleep(interval)
         queue.put(ra.summary())
     except Exception as e:
-        print(f"GPU logging is not working properly... {e}")
+        print(f"GPU logging is not working properly: {e}")
         queue.put(None)
 
 
@@ -305,6 +305,7 @@ class GPUResourceMonitor:
         self.q = multiprocessing.Queue()
         self.monitor = multiprocessing.Process(
             target=_gpu_monitor_worker,
+            name="GPU Monitor",
             args=(self.interval, self.event, self.q),
         )
 
@@ -316,12 +317,12 @@ class GPUResourceMonitor:
         """Stops the monitoring process and returns the summary of observations"""
         self.event.set()
         self.monitor.join()
-        retval = self.q.get(timeout=2*self.interval)
+        retval = self.q.get(timeout=2 * self.interval)
         if retval is None:
             logger.warn(
                 f"GPU resource monitor did not return anything when "
-                f"joined (even after a {self.interval} second timeout - "
-                f"may be the configured interval is too long?"
+                f"joined (even after a {2*self.interval}-second timeout - "
+                f"check if a GPU is available and if the interval is adequate"
             )
             return None
 
