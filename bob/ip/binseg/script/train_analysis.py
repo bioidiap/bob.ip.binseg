@@ -1,13 +1,13 @@
 #!/usr/bin/env python
 # coding=utf-8
 
-import os
 import logging
+import os
 
 import click
+import matplotlib.pyplot as plt
 import numpy
 import pandas
-import matplotlib.pyplot as plt
 
 from bob.extension.scripts.click_helper import (
     ConfigCommand,
@@ -85,7 +85,9 @@ def train_analysis(log, batch_size, output_pdf, verbose, **kwargs):
         numpy.argmin(trainlog_csv["validation_average_loss"])
     ]
 
-    plt.axvline(x=epoch_with_best_validation, color="red", label="lowest validation")
+    plt.axvline(
+        x=epoch_with_best_validation, color="red", label="lowest validation"
+    )
 
     plt.suptitle("Trainlog analysis")
     plt.title(title)

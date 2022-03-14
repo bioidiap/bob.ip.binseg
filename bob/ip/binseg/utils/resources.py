@@ -4,9 +4,13 @@
 """Tools for interacting with the running computer or GPU"""
 
 import logging
+import multiprocessing
+import queue
 import shutil
 import subprocess
+import time
 
+import numpy
 import psutil
 
 logger = logging.getLogger(__name__)
@@ -175,7 +179,7 @@ def cpu_constants():
 def cpu_log():
     """Returns process (+child) information using ``psutil``.
 
-    This call examines the current process plus any spawn child and returns the
+    This call examines the current process plus any spawned child and returns the
     combined resource usage summary for the process group.
 
 
@@ -228,3 +232,95 @@ def cpu_log():
         ("cpu_processes", len(_CLUSTER)),
         ("cpu_open_files", sum(len(k.open_files()) for k in _CLUSTER)),
     )
+
+
+class _GPUResourceAverager:
+    """A averaging resource monitor for the GPU"""
+
+    def __init__(self):
+        self.keys = [k[0] for k in gpu_log()]
+        self.data = [[] for _ in self.keys]
+
+    def reset(self):
+        """Resets the internal state"""
+
+    def acc(self):
+        """Accumulates another measurement"""
+        for i, k in enumerate(gpu_log()):
+            self.data[i].append(k)
+
+    def mean(self):
+        """Averages and returns the current data"""
+
+        retval = []
+        for k, values in zip(self.keys, self.data):
+            retval.append((k, numpy.mean(values)))
+        return tuple(retval)
+
+
+def _gpu_monitor_worker(interval, stop, queue):
+    """A monitoring worker that measures resources and returns lists
+
+    Parameters
+    ==========
+
+    interval : int, float
+        Number of seconds to wait between each measurement (maybe a floating
+        point number as accepted by :py:func:`time.sleep`)
+
+    stop : :py:class:`multiprocessing.Event`
+        Indicates if we should continue running or stop
+
+    queue : :py:class:`queue.Queue`
+        A queue, to send monitoring information back to the spawner
+
+    """
+
+    ra = _GPUResourceAverager()
+    while not stop.is_set():
+        ra.acc()
+        time.sleep(interval)
+    queue.put(ra.mean())
+
+
+class GPUResourceMonitor:
+    """A GPU resource monitor that watches GPU utilization from a non-blocking
+    (external) process
+
+    Parameters
+    ----------
+
+    interval : int, float
+        Number of seconds to wait between each measurement (maybe a floating
+        point number as accepted by :py:func:`time.sleep`)
+
+    """
+
+    def __init__(self, interval):
+        self.interval = interval
+        self.event = multiprocessing.Event()
+        self.q = queue.Queue()
+        self.monitor = multiprocessing.Process(
+            target=_gpu_monitor_worker,
+            args=(self.interval, self.event, self.q),
+        )
+
+    def start(self):
+        """Starts the monitoring process"""
+        self.monitor.start()
+
+    def stop(self):
+        """Stops the monitoring process and returns the summary of observations"""
+        self.event.set()
+        self.monitor.join()
+        retval = self.q.get(timeout=self.interval)
+        if retval is None:
+            logger.warn(
+                f"GPU resource monitor did not return anything when "
+                f"joined (even after a {self.interval} second timeout - "
+                f"may be the configured interval is too long?"
+            )
+        else:
+            self.q.task_done()
+            self.q.join()  # ensures it is empty
+        return retval

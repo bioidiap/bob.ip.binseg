@@ -16,7 +16,13 @@ import torch
 from tqdm import tqdm
 
 from ..utils.measure import SmoothedValue
-from ..utils.resources import cpu_constants, cpu_log, gpu_constants, gpu_log
+from ..utils.resources import (
+    GPUResourceMonitor,
+    cpu_constants,
+    cpu_log,
+    gpu_constants,
+    gpu_log,
+)
 from ..utils.summary import summary
 
 logger = logging.getLogger(__name__)
@@ -358,7 +364,7 @@ def write_log_info(
     optimizer,
     logwriter,
     logfile,
-    device,
+    gpu_data,
 ):
     """
     Write log info in trainlog.csv
@@ -384,14 +390,13 @@ def write_log_info(
     logwriter : csv.DictWriter
         Dictionary writer that give the ability to write on the trainlog.csv
 
-    logfile: io.TextIOWrapper
+    logfile : io.TextIOWrapper
 
-    device : :py:class:`torch.device`
-        device to use
-
-
+    gpu_data : tuple
+        If set, it will contain GPU data logged through the training step
 
     """
+
     logdata = (
         ("epoch", f"{epoch}"),
         (
@@ -403,14 +408,16 @@ def write_log_info(
         ("median_loss", f"{losses.median:.6f}"),
         ("learning_rate", f"{optimizer.param_groups[0]['lr']:.6f}"),
     )
+
     if valid_losses is not None:
         logdata += (
             ("validation_average_loss", f"{valid_losses.avg:.6f}"),
             ("validation_median_loss", f"{valid_losses.median:.6f}"),
         )
         logdata += cpu_log()
-    if device.type == "cuda":
-        logdata += gpu_log()
+
+    if gpu_data is not None:
+        logdata += gpu_data
 
     logwriter.writerow(dict(k for k in logdata))
     logfile.flush()
@@ -524,6 +531,12 @@ def run(
             leave=False,
             disable=None,
         ):
+
+            gpu_monitor = None
+            if device.type == "cuda":
+                gpu_monitor = GPUResourceMonitor(5)
+                gpu_monitor.start()
+
             if not PYTORCH_GE_110:
                 scheduler.step()
             losses = SmoothedValue(len(data_loader))
@@ -560,6 +573,12 @@ def run(
                             samples, model, valid_losses, device, criterion
                         )
 
+            # after training and validation runs, summarize GPU utilization
+            if gpu_monitor is not None:
+                gpu_log = gpu_monitor.stop()
+            else:
+                gpu_log = None
+
             lowest_validation_loss = checkpointer_process(
                 checkpointer,
                 checkpoint_period,
@@ -585,7 +604,7 @@ def run(
                 optimizer,
                 logwriter,
                 logfile,
-                device,
+                gpu_log,
             )
 
         total_training_time = time.time() - start_training_time
