@@ -1,14 +1,19 @@
 #!/usr/bin/env python
 # coding=utf-8
 
+import os
 import logging
 
 import click
+import numpy
+import pandas
 import matplotlib.pyplot as plt
-import numpy as np
-import pandas as pd
 
-from bob.extension.scripts.click_helper import ResourceOption, verbosity_option
+from bob.extension.scripts.click_helper import (
+    ConfigCommand,
+    ResourceOption,
+    verbosity_option,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -17,71 +22,80 @@ def plot_(df, x, y, label):
     plt.plot(df[x].values, df[y].values, label=label)
 
 
-@click.option(
-    "--output-folder",
-    "-o",
-    help="Path where to store the generated model (created if does not exist)",
-    required=True,
-    type=click.Path(),
-    default="results",
-    cls=ResourceOption,
+@click.command(
+    entry_point_group="bob.ip.binseg.config",
+    cls=ConfigCommand,
+    epilog="""Examples:
+
+\b
+    1. Analyzes a training log and produces various plots:
+
+       $ bob binseg train-analysis -vv --batch-size=16 log.csv
+
+""",
+)
+@click.argument(
+    "log",
+    type=click.Path(dir_okay=False, exists=True),
 )
 @click.option(
     "--batch-size",
     "-b",
-    help="Number of samples in every batch (this parameter affects "
-    "memory requirements for the network).  If the number of samples in "
-    "the batch is larger than the total number of samples available for "
-    "training, this value is truncated.  If this number is smaller, then "
-    "batches of the specified size are created and fed to the network "
-    "until there are no more new samples to feed (epoch is finished).  "
-    "If the total number of training samples is not a multiple of the "
-    "batch-size, the last batch will be smaller than the first, unless "
-    "--drop-incomplete--batch is set, in which case this batch is not used.",
+    help="Number of samples in every batch.",
+    required=True,
+    type=click.IntRange(min=1),
+)
+@click.option(
+    "--output-pdf",
+    "-o",
+    help="Name of the output file to dump",
     required=True,
     show_default=True,
-    default=2,
-    type=click.IntRange(min=1),
-    cls=ResourceOption,
+    default="trainlog.pdf",
 )
 @verbosity_option(cls=ResourceOption)
-def train_analysis(output_folder, batch_size, **kwargs):
+def train_analysis(log, batch_size, output_pdf, verbose, **kwargs):
     """
     Analyzes the training logs for loss evolution and resource utilisation
     """
+
     av_loss = "average_loss"
     val_av_loss = "validation_average_loss"
-    path = output_folder + "/trainlog.csv"
-    pdf_path = output_folder + "/trainlog.pdf"
-    trainlog_csv = pd.read_csv(path)
+
+    trainlog_csv = pandas.read_csv(log)
+
     plot_(trainlog_csv, "epoch", av_loss, label=av_loss)
     plot_(trainlog_csv, "epoch", val_av_loss, label=val_av_loss)
-    plt.title("Trainlog analyser", y=-0.01)
+
     columns = list(trainlog_csv.columns)
-    suptitle = "batch size = " + str(batch_size)
+
+    title = ""
+    if batch_size is not None:
+        title += f"batch:{batch_size}"
 
     if "gpu_percent" in columns:
-        mean_gpu_percent = np.mean(trainlog_csv["gpu_percent"])
-        suptitle += "\n Gpu : " + str(float("{:.2f}".format(mean_gpu_percent)))
+        mean_gpu_percent = numpy.mean(trainlog_csv["gpu_percent"])
+        title += f" | GPU: {mean_gpu_percent:.0f}%"
 
     if "gpu_memory_percent" in columns:
-        mean_gpu_memory_percent = np.mean(trainlog_csv["gpu_memory_percent"])
-        suptitle += "%, Gpu ram : " + str(
-            float("{:.2f}".format(mean_gpu_memory_percent))
-        )
-        +"%"
+        mean_gpu_memory_percent = numpy.mean(trainlog_csv["gpu_memory_percent"])
+        title += f" | GPU-mem: {mean_gpu_memory_percent:.0f}%"
 
     epoch_with_best_validation = trainlog_csv["epoch"][
-        np.argmin(trainlog_csv["validation_average_loss"])
+        numpy.argmin(trainlog_csv["validation_average_loss"])
     ]
-    suptitle += "\n Epoch with best validation = " + str(
-        epoch_with_best_validation
-    )
 
-    plt.axvline(x=epoch_with_best_validation, color="red", label="best_model")
-    plt.legend()
+    plt.axvline(x=epoch_with_best_validation, color="red", label="lowest validation")
 
-    plt.suptitle(suptitle)
+    plt.suptitle("Trainlog analysis")
+    plt.title(title)
+    plt.legend(loc="best")
+    plt.grid(alpha=0.6)
+    plt.tight_layout()
 
-    plt.savefig(pdf_path)
-    plt.clf()
+    # makes sure the directory to save the output PDF is there
+    dirname = os.path.dirname(os.path.realpath(output_pdf))
+    if not os.path.exists(dirname):
+        os.makedirs(dirname)
+
+    plt.savefig(output_pdf)
