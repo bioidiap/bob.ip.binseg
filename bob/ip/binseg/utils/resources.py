@@ -5,7 +5,6 @@
 
 import logging
 import multiprocessing
-import queue
 import shutil
 import subprocess
 import time
@@ -247,14 +246,14 @@ class _GPUResourceAverager:
     def acc(self):
         """Accumulates another measurement"""
         for i, k in enumerate(gpu_log()):
-            self.data[i].append(k)
+            self.data[i].append(k[1])
 
-    def mean(self):
-        """Averages and returns the current data"""
+    def summary(self):
+        """Returns the current data"""
 
         retval = []
         for k, values in zip(self.keys, self.data):
-            retval.append((k, numpy.mean(values)))
+            retval.append((k, values))
         return tuple(retval)
 
 
@@ -276,11 +275,15 @@ def _gpu_monitor_worker(interval, stop, queue):
 
     """
 
-    ra = _GPUResourceAverager()
-    while not stop.is_set():
-        ra.acc()
-        time.sleep(interval)
-    queue.put(ra.mean())
+    try:
+        ra = _GPUResourceAverager()
+        while not stop.is_set():
+            ra.acc()
+            time.sleep(interval)
+        queue.put(ra.summary())
+    except Exception as e:
+        print(f"GPU logging is not working properly... {e}")
+        queue.put(None)
 
 
 class GPUResourceMonitor:
@@ -299,7 +302,7 @@ class GPUResourceMonitor:
     def __init__(self, interval):
         self.interval = interval
         self.event = multiprocessing.Event()
-        self.q = queue.Queue()
+        self.q = multiprocessing.Queue()
         self.monitor = multiprocessing.Process(
             target=_gpu_monitor_worker,
             args=(self.interval, self.event, self.q),
@@ -313,14 +316,20 @@ class GPUResourceMonitor:
         """Stops the monitoring process and returns the summary of observations"""
         self.event.set()
         self.monitor.join()
-        retval = self.q.get(timeout=self.interval)
+        retval = self.q.get(timeout=2*self.interval)
         if retval is None:
             logger.warn(
                 f"GPU resource monitor did not return anything when "
                 f"joined (even after a {self.interval} second timeout - "
                 f"may be the configured interval is too long?"
             )
-        else:
-            self.q.task_done()
-            self.q.join()  # ensures it is empty
-        return retval
+            return None
+
+        # summarize the returned data by creating means
+        summary = []
+        for k, values in retval:
+            if values:
+                summary.append((k, numpy.mean(values)))
+            else:
+                summary.append((k, 0.0))
+        return tuple(summary)
