@@ -256,7 +256,7 @@ class _InformationGatherer:
         self.cpu_keys_len = len(self.keys)
         self.has_gpu = has_gpu
         if self.has_gpu:
-            self.keys = [k[0] for k in gpu_log()]
+            self.keys += [k[0] for k in gpu_log()]
         self.data = [[] for _ in self.keys]
 
     def acc(self):
