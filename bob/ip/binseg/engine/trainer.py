@@ -17,11 +17,9 @@ from tqdm import tqdm
 
 from ..utils.measure import SmoothedValue
 from ..utils.resources import (
-    GPUResourceMonitor,
+    ResourceMonitor,
     cpu_constants,
-    cpu_log,
     gpu_constants,
-    gpu_log,
 )
 from ..utils.summary import summary
 
@@ -187,9 +185,9 @@ def create_logfile_fields(valid_loader, device):
     )
     if valid_loader is not None:
         logfile_fields += ("validation_average_loss", "validation_median_loss")
-    logfile_fields += tuple([k[0] for k in cpu_log()])
-    if device.type == "cuda":
-        logfile_fields += tuple([k[0] for k in gpu_log()])
+    logfile_fields += tuple(
+        ResourceMonitor.monitored_keys(device.type == "cuda")
+    )
     return logfile_fields
 
 
@@ -364,7 +362,7 @@ def write_log_info(
     optimizer,
     logwriter,
     logfile,
-    gpu_data,
+    resource_data,
 ):
     """
     Write log info in trainlog.csv
@@ -392,8 +390,8 @@ def write_log_info(
 
     logfile : io.TextIOWrapper
 
-    gpu_data : tuple
-        If set, it will contain GPU data logged through the training step
+    resource_data : tuple
+        Monitored resources at the machine (CPU and GPU)
 
     """
 
@@ -414,10 +412,8 @@ def write_log_info(
             ("validation_average_loss", f"{valid_losses.avg:.6f}"),
             ("validation_median_loss", f"{valid_losses.median:.6f}"),
         )
-        logdata += cpu_log()
 
-    if gpu_data is not None:
-        logdata += gpu_data
+    logdata += resource_data
 
     logwriter.writerow(dict(k for k in logdata))
     logfile.flush()
@@ -532,52 +528,49 @@ def run(
             disable=None,
         ):
 
-            gpu_monitor = None
-            if device.type == "cuda":
-                gpu_monitor = GPUResourceMonitor(5)
-                gpu_monitor.start()
+            with ResourceMonitor(
+                interval=5,
+                has_gpu=(device.type == "cuda"),
+                main_pid=os.getpid(),
+            ) as resource_monitor:
+                if not PYTORCH_GE_110:
+                    scheduler.step()
+                losses = SmoothedValue(len(data_loader))
+                epoch = epoch + 1
+                arguments["epoch"] = epoch
 
-            if not PYTORCH_GE_110:
-                scheduler.step()
-            losses = SmoothedValue(len(data_loader))
-            epoch = epoch + 1
-            arguments["epoch"] = epoch
+                # Epoch time
+                start_epoch_time = time.time()
 
-            # Epoch time
-            start_epoch_time = time.time()
+                # progress bar only on interactive jobs
+                for samples in tqdm(
+                    data_loader, desc="batch", leave=False, disable=None
+                ):
+                    # data forwarding on the existing network
+                    losses, optimizer = train_sample_process(
+                        samples, model, optimizer, losses, device, criterion
+                    )
 
-            # progress bar only on interactive jobs
-            for samples in tqdm(
-                data_loader, desc="batch", leave=False, disable=None
-            ):
-                # data forwarding on the existing network
-                losses, optimizer = train_sample_process(
-                    samples, model, optimizer, losses, device, criterion
-                )
+                if PYTORCH_GE_110:
+                    scheduler.step()
 
-            if PYTORCH_GE_110:
-                scheduler.step()
+                # calculates the validation loss if necessary
+                valid_losses = None
+                if valid_loader is not None:
 
-            # calculates the validation loss if necessary
-            valid_losses = None
-            if valid_loader is not None:
+                    with torch.no_grad(), torch_evaluation(model):
 
-                with torch.no_grad(), torch_evaluation(model):
-
-                    valid_losses = SmoothedValue(len(valid_loader))
-                    for samples in tqdm(
-                        valid_loader, desc="valid", leave=False, disable=None
-                    ):
-                        # data forwarding on the existing network
-                        valid_losses = valid_sample_process(
-                            samples, model, valid_losses, device, criterion
-                        )
-
-            # after training and validation runs, summarize GPU utilization
-            if gpu_monitor is not None:
-                gpu_log = gpu_monitor.stop()
-            else:
-                gpu_log = None
+                        valid_losses = SmoothedValue(len(valid_loader))
+                        for samples in tqdm(
+                            valid_loader,
+                            desc="valid",
+                            leave=False,
+                            disable=None,
+                        ):
+                            # data forwarding on the existing network
+                            valid_losses = valid_sample_process(
+                                samples, model, valid_losses, device, criterion
+                            )
 
             lowest_validation_loss = checkpointer_process(
                 checkpointer,
@@ -604,7 +597,7 @@ def run(
                 optimizer,
                 logwriter,
                 logfile,
-                gpu_log,
+                resource_monitor.data,
             )
 
         total_training_time = time.time() - start_training_time

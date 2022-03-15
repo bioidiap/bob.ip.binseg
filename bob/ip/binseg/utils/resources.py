@@ -149,10 +149,6 @@ def gpu_log():
     )
 
 
-_CLUSTER = []
-"""List of processes currently being monitored"""
-
-
 def cpu_constants():
     """Returns static CPU information about the current system.
 
@@ -175,78 +171,101 @@ def cpu_constants():
     )
 
 
-def cpu_log():
-    """Returns process (+child) information using ``psutil``.
-
-    This call examines the current process plus any spawned child and returns the
-    combined resource usage summary for the process group.
+class CPULogger:
+    """Logs CPU information using :py:mod:`psutil`
 
 
-    Returns
-    -------
+    Parameters
+    ----------
 
-    data : tuple
-        An ordered dictionary (organized as 2-tuples) containing these entries:
-
-        0. ``cpu_memory_used`` (:py:class:`float`): total memory used from
-           the system, in gigabytes
-        1. ``cpu_rss`` (:py:class:`float`):  RAM currently used by
-           process and children, in gigabytes
-        2. ``cpu_vms`` (:py:class:`float`):  total memory (RAM + swap) currently
-           used by process and children, in gigabytes
-        3. ``cpu_percent`` (:py:class:`float`): percentage of the total CPU
-           used by this process and children (recursively) since last call
-           (first time called should be ignored).  This number depends on the
-           number of CPUs in the system and can be greater than 100%
-        4. ``cpu_processes`` (:py:class:`int`): total number of processes
-           including self and children (recursively)
-        5. ``cpu_open_files`` (:py:class:`int`): total number of open files by
-           self and children
+    pid : :py:class:`int`, Optional
+        Process identifier of the main process (parent process) to observe
 
     """
 
-    global _CLUSTER
-    if (not _CLUSTER) or (_CLUSTER[0] != psutil.Process()):  # initialization
-        this = psutil.Process()
-        _CLUSTER = [this] + this.children(recursive=True)
-        # touch cpu_percent() at least once for all
-        [k.cpu_percent(interval=None) for k in _CLUSTER]
-    else:
+    def __init__(self, pid=None):
+        this = psutil.Process(pid=pid)
+        self.cluster = [this] + this.children(recursive=True)
+        # touch cpu_percent() at least once for all processes in the cluster
+        [k.cpu_percent(interval=None) for k in self.cluster]
+
+    def log(self):
+        """Returns current process cluster information
+
+        Returns
+        -------
+
+        data : tuple
+            An ordered dictionary (organized as 2-tuples) containing these entries:
+
+            0. ``cpu_memory_used`` (:py:class:`float`): total memory used from
+               the system, in gigabytes
+            1. ``cpu_rss`` (:py:class:`float`):  RAM currently used by
+               process and children, in gigabytes
+            2. ``cpu_vms`` (:py:class:`float`):  total memory (RAM + swap) currently
+               used by process and children, in gigabytes
+            3. ``cpu_percent`` (:py:class:`float`): percentage of the total CPU
+               used by this process and children (recursively) since last call
+               (first time called should be ignored).  This number depends on the
+               number of CPUs in the system and can be greater than 100%
+            4. ``cpu_processes`` (:py:class:`int`): total number of processes
+               including self and children (recursively)
+            5. ``cpu_open_files`` (:py:class:`int`): total number of open files by
+               self and children
+
+        """
+
         # check all cluster components and update process list
         # done so we can keep the cpu_percent() initialization
-        stored_children = set(_CLUSTER[1:])
-        current_children = set(_CLUSTER[0].children(recursive=True))
+        stored_children = set(self.cluster[1:])
+        current_children = set(self.cluster[0].children(recursive=True))
         keep_children = stored_children - current_children
         new_children = current_children - stored_children
         [k.cpu_percent(interval=None) for k in new_children]
-        _CLUSTER = _CLUSTER[:1] + list(keep_children) + list(new_children)
+        self.cluster = self.cluster[:1] + list(keep_children) + list(new_children)
 
-    memory_info = [k.memory_info() for k in _CLUSTER]
+        memory_info = [k.memory_info() for k in self.cluster]
 
-    return (
-        ("cpu_memory_used", psutil.virtual_memory().used / GB),
-        ("cpu_rss", sum([k.rss for k in memory_info]) / GB),
-        ("cpu_vms", sum([k.vms for k in memory_info]) / GB),
-        ("cpu_percent", sum(k.cpu_percent(interval=None) for k in _CLUSTER)),
-        ("cpu_processes", len(_CLUSTER)),
-        ("cpu_open_files", sum(len(k.open_files()) for k in _CLUSTER)),
-    )
+        return (
+            ("cpu_memory_used", psutil.virtual_memory().used / GB),
+            ("cpu_rss", sum([k.rss for k in memory_info]) / GB),
+            ("cpu_vms", sum([k.vms for k in memory_info]) / GB),
+            ("cpu_percent", sum(k.cpu_percent(interval=None) for k in self.cluster)),
+            ("cpu_processes", len(self.cluster)),
+            ("cpu_open_files", sum(len(k.open_files()) for k in self.cluster)),
+            )
 
 
-class _GPUResourceAverager:
-    """A averaging resource monitor for the GPU"""
+class _InformationGatherer:
+    """A container to store monitoring information
 
-    def __init__(self):
-        self.keys = [k[0] for k in gpu_log()]
+    Parameters
+    ----------
+
+    has_gpu : bool
+        A flag indicating if we have a GPU installed on the platform or not
+
+    main_pid : int
+        The main process identifier to monitor
+
+    """
+
+    def __init__(self, has_gpu, main_pid):
+        self.cpu_logger = CPULogger(main_pid)
+        self.keys = [k[0] for k in self.cpu_logger.log()]
+        self.cpu_keys_len = len(self.keys)
+        self.has_gpu = has_gpu
+        if self.has_gpu:
+            self.keys = [k[0] for k in gpu_log()]
         self.data = [[] for _ in self.keys]
-
-    def reset(self):
-        """Resets the internal state"""
 
     def acc(self):
         """Accumulates another measurement"""
-        for i, k in enumerate(gpu_log()):
+        for i, k in enumerate(self.cpu_logger.log()):
             self.data[i].append(k[1])
+        if self.has_gpu:
+            for i, k in enumerate(gpu_log()):
+                self.data[i+self.cpu_keys_len].append(k[1])
 
     def summary(self):
         """Returns the current data"""
@@ -257,7 +276,7 @@ class _GPUResourceAverager:
         return tuple(retval)
 
 
-def _gpu_monitor_worker(interval, stop, queue):
+def _monitor_worker(interval, has_gpu, main_pid, stop, queue):
     """A monitoring worker that measures resources and returns lists
 
     Parameters
@@ -266,6 +285,12 @@ def _gpu_monitor_worker(interval, stop, queue):
     interval : int, float
         Number of seconds to wait between each measurement (maybe a floating
         point number as accepted by :py:func:`time.sleep`)
+
+    has_gpu : bool
+        A flag indicating if we have a GPU installed on the platform or not
+
+    main_pid : int
+        The main process identifier to monitor
 
     stop : :py:class:`multiprocessing.Event`
         Indicates if we should continue running or stop
@@ -276,19 +301,18 @@ def _gpu_monitor_worker(interval, stop, queue):
     """
 
     try:
-        ra = _GPUResourceAverager()
+        ra = _InformationGatherer(has_gpu, main_pid)
         while not stop.is_set():
             ra.acc()
             time.sleep(interval)
         queue.put(ra.summary())
     except Exception as e:
-        print(f"GPU logging is not working properly: {e}")
+        print(f"CPU/GPU logging is not working properly: {e}")
         queue.put(None)
 
 
-class GPUResourceMonitor:
-    """A GPU resource monitor that watches GPU utilization from a non-blocking
-    (external) process
+class ResourceMonitor:
+    """An external, non-blocking CPU/GPU resource monitor
 
     Parameters
     ----------
@@ -297,40 +321,65 @@ class GPUResourceMonitor:
         Number of seconds to wait between each measurement (maybe a floating
         point number as accepted by :py:func:`time.sleep`)
 
+    has_gpu : bool
+        A flag indicating if we have a GPU installed on the platform or not
+
+    main_pid : int
+        The main process identifier to monitor
+
     """
 
-    def __init__(self, interval):
+    def __init__(self, interval, has_gpu, main_pid):
+
         self.interval = interval
+        self.has_gpu = has_gpu
+        self.main_pid = main_pid
         self.event = multiprocessing.Event()
         self.q = multiprocessing.Queue()
+
         self.monitor = multiprocessing.Process(
-            target=_gpu_monitor_worker,
-            name="GPU Monitor",
-            args=(self.interval, self.event, self.q),
+            target=_monitor_worker,
+            name="ResourceMonitorProcess",
+            args=(self.interval, self.has_gpu, self.main_pid, self.event, self.q),
         )
 
-    def start(self):
-        """Starts the monitoring process"""
-        self.monitor.start()
+        self.data = None
 
-    def stop(self):
+    @staticmethod
+    def monitored_keys(has_gpu):
+
+        return _InformationGatherer(has_gpu, None).keys
+
+    def __enter__(self):
+        """Starts the monitoring process"""
+
+        self.monitor.start()
+        return self
+
+    def __exit__(self, *exc):
         """Stops the monitoring process and returns the summary of observations"""
+
         self.event.set()
         self.monitor.join()
-        retval = self.q.get(timeout=2 * self.interval)
-        if retval is None:
-            logger.warn(
-                f"GPU resource monitor did not return anything when "
-                f"joined (even after a {2*self.interval}-second timeout - "
-                f"check if a GPU is available and if the interval is adequate"
-            )
-            return None
 
-        # summarize the returned data by creating means
-        summary = []
-        for k, values in retval:
-            if values:
-                summary.append((k, numpy.mean(values)))
-            else:
-                summary.append((k, 0.0))
-        return tuple(summary)
+        data = self.q.get(timeout=2 * self.interval)
+
+        if data is None:
+            logger.warn(
+                f"CPU/GPU resource monitor did not return anything when "
+                f"joined (even after a {2*self.interval}-second timeout - "
+                f"check if the interval is adequate."
+            )
+
+        else:
+            # summarize the returned data by creating means
+            summary = []
+            for k, values in data:
+                if values:
+                    if k in ("cpu_processes", "cpu_open_files"):
+                        summary.append((k, numpy.max(values)))
+                    else:
+                        summary.append((k, numpy.mean(values)))
+                else:
+                    summary.append((k, 0.0))
+            self.data = tuple(summary)
