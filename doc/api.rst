@@ -63,7 +63,6 @@ Engines
 
    bob.ip.binseg.engine
    bob.ip.binseg.engine.trainer
-   bob.ip.binseg.engine.ssltrainer
    bob.ip.binseg.engine.predictor
    bob.ip.binseg.engine.evaluator
    bob.ip.binseg.engine.adabound
@@ -128,12 +127,9 @@ Models
 
    bob.ip.binseg.configs.models.driu
    bob.ip.binseg.configs.models.driu_bn
-   bob.ip.binseg.configs.models.driu_bn_ssl
    bob.ip.binseg.configs.models.driu_od
-   bob.ip.binseg.configs.models.driu_ssl
    bob.ip.binseg.configs.models.hed
    bob.ip.binseg.configs.models.m2unet
-   bob.ip.binseg.configs.models.m2unet_ssl
    bob.ip.binseg.configs.models.resunet
    bob.ip.binseg.configs.models.unet
    bob.ip.binseg.configs.models.lwnet
@@ -159,7 +155,6 @@ Datasets
    bob.ip.binseg.configs.datasets.chasedb1.xtest
    bob.ip.binseg.configs.datasets.chasedb1.mtest
    bob.ip.binseg.configs.datasets.chasedb1.covd
-   bob.ip.binseg.configs.datasets.chasedb1.ssl
 
    bob.ip.binseg.configs.datasets.drive.default
    bob.ip.binseg.configs.datasets.drive.default_768
@@ -168,7 +163,6 @@ Datasets
    bob.ip.binseg.configs.datasets.drive.xtest
    bob.ip.binseg.configs.datasets.drive.mtest
    bob.ip.binseg.configs.datasets.drive.covd
-   bob.ip.binseg.configs.datasets.drive.ssl
 
    bob.ip.binseg.configs.datasets.hrf.default
    bob.ip.binseg.configs.datasets.hrf.default_768
@@ -177,7 +171,6 @@ Datasets
    bob.ip.binseg.configs.datasets.hrf.mtest
    bob.ip.binseg.configs.datasets.hrf.default_fullres
    bob.ip.binseg.configs.datasets.hrf.covd
-   bob.ip.binseg.configs.datasets.hrf.ssl
 
    bob.ip.binseg.configs.datasets.iostar.vessel
    bob.ip.binseg.configs.datasets.iostar.vessel_768
@@ -187,7 +180,6 @@ Datasets
    bob.ip.binseg.configs.datasets.iostar.optic_disc_768
    bob.ip.binseg.configs.datasets.iostar.optic_disc_512
    bob.ip.binseg.configs.datasets.iostar.covd
-   bob.ip.binseg.configs.datasets.iostar.ssl
 
    bob.ip.binseg.configs.datasets.stare.ah
    bob.ip.binseg.configs.datasets.stare.ah_768
@@ -196,7 +188,6 @@ Datasets
    bob.ip.binseg.configs.datasets.stare.xtest
    bob.ip.binseg.configs.datasets.stare.mtest
    bob.ip.binseg.configs.datasets.stare.covd
-   bob.ip.binseg.configs.datasets.stare.ssl
 
    bob.ip.binseg.configs.datasets.refuge.cup
    bob.ip.binseg.configs.datasets.refuge.disc
