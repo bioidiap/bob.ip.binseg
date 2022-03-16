@@ -17,7 +17,7 @@ from tqdm import tqdm
 from ..utils.measure import SmoothedValue
 from ..utils.resources import cpu_constants, cpu_log, gpu_constants, gpu_log
 from ..utils.summary import summary
-from .trainer import PYTORCH_GE_110, torch_evaluation
+from .trainer import torch_evaluation
 
 logger = logging.getLogger(__name__)
 
@@ -315,8 +315,6 @@ def run(
             leave=False,
             disable=None,
         ):
-            if not PYTORCH_GE_110:
-                scheduler.step()
             losses = SmoothedValue(len(data_loader))
             labelled_loss = SmoothedValue(len(data_loader))
             unlabelled_loss = SmoothedValue(len(data_loader))
@@ -372,8 +370,7 @@ def run(
                 unlabelled_loss.update(ul)
                 logger.debug(f"batch loss: {loss.item()}")
 
-            if PYTORCH_GE_110:
-                scheduler.step()
+            scheduler.step()
 
             # calculates the validation loss if necessary
             # note: validation does not comprise "unlabelled" losses
