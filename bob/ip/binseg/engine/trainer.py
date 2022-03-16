@@ -425,6 +425,7 @@ def run(
     device,
     arguments,
     output_folder,
+    monitoring_interval,
 ):
     """
     Fits an FCN model using supervised learning and save it to disk.
@@ -469,6 +470,11 @@ def run(
 
     output_folder : str
         output path
+
+    monitoring_interval : int, flaot
+        interval, in seconds (or fractions), through which we should monitor
+        resources during training.
+
     """
 
     start_epoch = arguments["epoch"]
@@ -522,7 +528,7 @@ def run(
         ):
 
             with ResourceMonitor(
-                interval=5,
+                interval=monitoring_interval,
                 has_gpu=(device.type == "cuda"),
                 main_pid=os.getpid(),
             ) as resource_monitor:

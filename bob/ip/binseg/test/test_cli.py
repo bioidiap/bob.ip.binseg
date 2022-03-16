@@ -78,6 +78,7 @@ def _check_experiment_stare(caplog, overlay, multiprocess=False):
             "--batch-size=1",
             "--steps=10",
             f"--output-folder={output_folder}",
+            "--monitoring-interval=2",
         ]
         if overlay:
             options += ["--overlayed"]

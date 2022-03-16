@@ -41,10 +41,6 @@ logger = logging.getLogger(__name__)
 
        $ bob binseg train -vv m2unet covd-drive --batch-size=8
 
-    4. Trains a DRIU model with SSL on the COVD-HRF dataset on the CPU:
-
-       $ bob binseg train -vv --ssl driu-ssl covd-drive-ssl --batch-size=1
-
 """,
 )
 @click.option(
@@ -176,24 +172,6 @@ logger = logging.getLogger(__name__)
     cls=ResourceOption,
 )
 @click.option(
-    "--ssl/--no-ssl",
-    help="Switch ON/OFF semi-supervised training mode",
-    show_default=True,
-    required=True,
-    default=False,
-    cls=ResourceOption,
-)
-@click.option(
-    "--rampup",
-    "-r",
-    help="Ramp-up length in epochs (for SSL training only)",
-    show_default=True,
-    required=True,
-    default=900,
-    type=click.IntRange(min=0),
-    cls=ResourceOption,
-)
-@click.option(
     "--multiproc-data-loading",
     "-P",
     help="""Use multiprocessing for data loading: if set to -1 (default),
@@ -204,6 +182,22 @@ logger = logging.getLogger(__name__)
     show_default=True,
     required=True,
     default=-1,
+    cls=ResourceOption,
+)
+@click.option(
+    "--monitoring-interval",
+    "-I",
+    help="""Time between checks for the use of resources during each training
+    epoch.  An interval of 5 seconds, for example, will lead to CPU and GPU
+    resources being probed every 5 seconds during each training epoch.
+    Values registered in the training logs correspond to averages (or maxima)
+    observed through possibly many probes in each epoch.  Notice that setting a
+    very small value may cause the probing process to become extremely busy,
+    potentially biasing the overall perception of resource usage.""",
+    type=click.FloatRange(min=0.1),
+    show_default=True,
+    required=True,
+    default=5.0,
     cls=ResourceOption,
 )
 @verbosity_option(cls=ResourceOption)
@@ -220,9 +214,8 @@ def train(
     checkpoint_period,
     device,
     seed,
-    ssl,
-    rampup,
     multiproc_data_loading,
+    monitoring_interval,
     verbose,
     **kwargs,
 ):
@@ -304,37 +297,19 @@ def train(
     logger.info("Training for {} epochs".format(arguments["max_epoch"]))
     logger.info("Continuing from epoch {}".format(arguments["epoch"]))
 
-    if not ssl:
-        from ..engine.trainer import run
+    from ..engine.trainer import run
 
-        run(
-            model,
-            data_loader,
-            valid_loader,
-            optimizer,
-            criterion,
-            scheduler,
-            checkpointer,
-            checkpoint_period,
-            device,
-            arguments,
-            output_folder,
-        )
-
-    else:
-        from ..engine.ssltrainer import run
-
-        run(
-            model,
-            data_loader,
-            valid_loader,
-            optimizer,
-            criterion,
-            scheduler,
-            checkpointer,
-            checkpoint_period,
-            device,
-            arguments,
-            output_folder,
-            rampup,
-        )
+    run(
+        model,
+        data_loader,
+        valid_loader,
+        optimizer,
+        criterion,
+        scheduler,
+        checkpointer,
+        checkpoint_period,
+        device,
+        arguments,
+        output_folder,
+        monitoring_interval,
+    )
