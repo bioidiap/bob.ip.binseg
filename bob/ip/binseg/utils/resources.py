@@ -221,23 +221,41 @@ class CPULogger:
         current_children = set(self.cluster[0].children(recursive=True))
         keep_children = stored_children - current_children
         new_children = current_children - stored_children
-        [k.cpu_percent(interval=None) for k in new_children]
+        gone = set()
+        for k in new_children:
+            try:
+                k.cpu_percent(interval=None)
+            except (psutil.ZombieProcess, psutil.NoSuchProcess):
+                # child process is gone meanwhile
+                # update the intermediate list for this time
+                gone.add(k)
+        new_children = new_children - gone
         self.cluster = (
             self.cluster[:1] + list(keep_children) + list(new_children)
         )
 
-        memory_info = [k.memory_info() for k in self.cluster]
+        memory_info = []
+        cpu_percent = []
+        open_files = []
+        gone = set()
+        for k in self.cluster:
+            try:
+                memory_info.append(k.memory_info())
+                cpu_percent.append(k.cpu_percent(interval=None))
+                open_files.append(len(k.open_files()))
+            except (psutil.ZombieProcess, psutil.NoSuchProcess):
+                # child process is gone meanwhile, just ignore it
+                # it is too late to update any intermediate list
+                # at this point, but ensures to update counts later on
+                gone.add(k)
 
         return (
             ("cpu_memory_used", psutil.virtual_memory().used / GB),
             ("cpu_rss", sum([k.rss for k in memory_info]) / GB),
             ("cpu_vms", sum([k.vms for k in memory_info]) / GB),
-            (
-                "cpu_percent",
-                sum(k.cpu_percent(interval=None) for k in self.cluster),
-            ),
-            ("cpu_processes", len(self.cluster)),
-            ("cpu_open_files", sum(len(k.open_files()) for k in self.cluster)),
+            ("cpu_percent", sum(cpu_percent)),
+            ("cpu_processes", len(self.cluster) - len(gone)),
+            ("cpu_open_files", sum(open_files)),
         )
 
 
