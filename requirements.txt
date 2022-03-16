@@ -8,7 +8,7 @@ pillow
 psutil
 setuptools
 tabulate
-torch
-torchvision
+torch>=1.8
+torchvision>=0.10
 tqdm
 scikit-image
