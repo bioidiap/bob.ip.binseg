@@ -471,7 +471,7 @@ def run(
     output_folder : str
         output path
 
-    monitoring_interval : int, flaot
+    monitoring_interval : int, float
         interval, in seconds (or fractions), through which we should monitor
         resources during training.
 
