@@ -353,7 +353,7 @@ def experiment(
     ctx.invoke(
         train_analysis,
         log=os.path.join(train_output_folder, "trainlog.csv"),
-        batch_size=batch_size,
+        constants=os.path.join(train_output_folder, "constants.csv"),
         output_pdf=os.path.join(train_output_folder, "trainlog.pdf"),
         verbose=verbose,
     )
