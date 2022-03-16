@@ -307,9 +307,10 @@ def _monitor_worker(interval, has_gpu, main_pid, stop, queue):
 
     try:
         ra = _InformationGatherer(has_gpu, main_pid)
+        ra.acc()  # guarantees at least an entry will be available
         while not stop.is_set():
-            ra.acc()
             time.sleep(interval)
+            ra.acc()
         queue.put(ra.summary())
     except Exception as e:
         print(f"CPU/GPU logging is not working properly: {e}")
