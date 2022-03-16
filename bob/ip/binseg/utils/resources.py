@@ -222,7 +222,9 @@ class CPULogger:
         keep_children = stored_children - current_children
         new_children = current_children - stored_children
         [k.cpu_percent(interval=None) for k in new_children]
-        self.cluster = self.cluster[:1] + list(keep_children) + list(new_children)
+        self.cluster = (
+            self.cluster[:1] + list(keep_children) + list(new_children)
+        )
 
         memory_info = [k.memory_info() for k in self.cluster]
 
@@ -230,10 +232,13 @@ class CPULogger:
             ("cpu_memory_used", psutil.virtual_memory().used / GB),
             ("cpu_rss", sum([k.rss for k in memory_info]) / GB),
             ("cpu_vms", sum([k.vms for k in memory_info]) / GB),
-            ("cpu_percent", sum(k.cpu_percent(interval=None) for k in self.cluster)),
+            (
+                "cpu_percent",
+                sum(k.cpu_percent(interval=None) for k in self.cluster),
+            ),
             ("cpu_processes", len(self.cluster)),
             ("cpu_open_files", sum(len(k.open_files()) for k in self.cluster)),
-            )
+        )
 
 
 class _InformationGatherer:
@@ -265,7 +270,7 @@ class _InformationGatherer:
             self.data[i].append(k[1])
         if self.has_gpu:
             for i, k in enumerate(gpu_log()):
-                self.data[i+self.cpu_keys_len].append(k[1])
+                self.data[i + self.cpu_keys_len].append(k[1])
 
     def summary(self):
         """Returns the current data"""
@@ -340,7 +345,13 @@ class ResourceMonitor:
         self.monitor = multiprocessing.Process(
             target=_monitor_worker,
             name="ResourceMonitorProcess",
-            args=(self.interval, self.has_gpu, self.main_pid, self.event, self.q),
+            args=(
+                self.interval,
+                self.has_gpu,
+                self.main_pid,
+                self.event,
+                self.q,
+            ),
         )
 
         self.data = None
