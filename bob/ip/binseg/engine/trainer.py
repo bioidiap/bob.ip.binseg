@@ -4,7 +4,6 @@
 import contextlib
 import csv
 import datetime
-import distutils.version
 import logging
 import os
 import shutil
@@ -16,16 +15,10 @@ import torch
 from tqdm import tqdm
 
 from ..utils.measure import SmoothedValue
-from ..utils.resources import (
-    ResourceMonitor,
-    cpu_constants,
-    gpu_constants,
-)
+from ..utils.resources import ResourceMonitor, cpu_constants, gpu_constants
 from ..utils.summary import summary
 
 logger = logging.getLogger(__name__)
-
-PYTORCH_GE_110 = distutils.version.LooseVersion(torch.__version__) >= "1.1.0"
 
 
 @contextlib.contextmanager
@@ -533,8 +526,6 @@ def run(
                 has_gpu=(device.type == "cuda"),
                 main_pid=os.getpid(),
             ) as resource_monitor:
-                if not PYTORCH_GE_110:
-                    scheduler.step()
                 losses = SmoothedValue(len(data_loader))
                 epoch = epoch + 1
                 arguments["epoch"] = epoch
@@ -551,8 +542,7 @@ def run(
                         samples, model, optimizer, losses, device, criterion
                     )
 
-                if PYTORCH_GE_110:
-                    scheduler.step()
+                scheduler.step()
 
                 # calculates the validation loss if necessary
                 valid_losses = None
