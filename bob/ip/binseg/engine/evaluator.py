@@ -3,7 +3,9 @@
 
 """Defines functionality for the evaluation of predictions"""
 
+import itertools
 import logging
+import multiprocessing
 import os
 
 import h5py
@@ -349,6 +351,100 @@ def _summarize(data):
     return pandas.concat([sums, measures.reindex(sums.index)], axis=1).copy()
 
 
+def _evaluate_sample_worker(args):
+    """Runs all of the evaluation steps on a single sample
+
+
+    Parameters
+    ----------
+
+    args : tuple
+        A tuple containing the following sub-arguments:
+
+        sample : tuple
+            Sample to be processed, containing the stem of the filepath
+            relative to the database root, the image, the ground-truth, and
+            possibly the mask to define the region of interest to be processed.
+
+        name : str
+            the local name of the dataset (e.g. ``train``, or ``test``), to be
+            used when saving measures files.
+
+        steps : :py:class:`float`, Optional
+            number of threshold steps to consider when evaluating thresholds.
+
+        threshold : :py:class:`float`, Optional
+            if ``overlayed_folder``, then this should be threshold (floating
+            point) to apply to prediction maps to decide on positives and
+            negatives for overlaying analysis (graphical output).  This number
+            should come from the training set or a separate validation set.
+            Using a test set value may bias your analysis.  This number is also
+            used to print the a priori F1-score on the evaluated set.
+
+        use_predictions_folder : str
+            Folder where predictions for the dataset images have been
+            previously stored
+
+        output_folder : str, None
+            If not ``None``, then outputs a copy of the evaluation for this
+            sample in CSV format at this directory, but respecting the sample
+            ``stem``.
+
+        overlayed_folder : str, None
+            If not ``None``, then outputs a version of the input image with
+            predictions overlayed, in PNG format, but respecting the sample
+            ``stem``.
+
+
+    Returns
+    -------
+
+    stem : str
+        The unique sample stem
+
+    data : pandas.DataFrame
+        Dataframe containing the evaluation performance on this single sample
+
+    """
+
+    (
+        sample,
+        name,
+        steps,
+        threshold,
+        use_predictions_folder,
+        output_folder,
+        overlayed_folder,
+    ) = args
+
+    stem = sample[0]
+    image = sample[1]
+    gt = sample[2]
+    mask = None if len(sample) <= 3 else sample[3]
+    pred_fullpath = os.path.join(use_predictions_folder, stem + ".hdf5")
+    with h5py.File(pred_fullpath, "r") as f:
+        pred = f["array"][:]
+    pred = torch.from_numpy(pred)
+    retval = _sample_measures(pred, gt, mask, steps)
+
+    if output_folder is not None:
+        fullpath = os.path.join(output_folder, name, f"{stem}.csv")
+        tqdm.write(f"Saving {fullpath}...")
+        os.makedirs(os.path.dirname(fullpath), exist_ok=True)
+        retval.to_csv(fullpath)
+
+    if overlayed_folder is not None:
+        overlay_image = _sample_analysis(
+            image, pred, gt, mask, threshold=threshold, overlay=True
+        )
+        fullpath = os.path.join(overlayed_folder, name, f"{stem}.png")
+        tqdm.write(f"Saving {fullpath}...")
+        os.makedirs(os.path.dirname(fullpath), exist_ok=True)
+        overlay_image.save(fullpath)
+
+    return stem, retval
+
+
 def run(
     dataset,
     name,
@@ -357,6 +453,7 @@ def run(
     overlayed_folder=None,
     threshold=None,
     steps=1000,
+    parallel=-1,
 ):
     """
     Runs inference and calculates measures
@@ -373,7 +470,7 @@ def run(
         used when saving measures files.
 
     predictions_folder : str
-        folder where predictions for the dataset images has been previously
+        folder where predictions for the dataset images have been previously
         stored
 
     output_folder : :py:class:`str`, Optional
@@ -395,6 +492,13 @@ def run(
     steps : :py:class:`float`, Optional
         number of threshold steps to consider when evaluating thresholds.
 
+    parallel : :py:class:`int`, Optional
+        If set to a value different >= 0, uses multiprocessing for estimating
+        thresholds for each sample through a processing pool.  A value of zero
+        will create as many processes in the pool as cores in the machine.  A
+        negative value disables multiprocessing altogether.  A value greater
+        than zero will spawn as many processes as requested.
+
 
     Returns
     -------
@@ -411,35 +515,40 @@ def run(
     if not os.path.exists(use_predictions_folder):
         use_predictions_folder = predictions_folder
 
-    for sample in tqdm(dataset):
-        stem = sample[0]
-        image = sample[1]
-        gt = sample[2]
-        mask = None if len(sample) <= 3 else sample[3]
-        pred_fullpath = os.path.join(use_predictions_folder, stem + ".hdf5")
-        with h5py.File(pred_fullpath, "r") as f:
-            pred = f["array"][:]
-        pred = torch.from_numpy(pred)
-        if stem in data:
-            raise RuntimeError(
-                f"{stem} entry already exists in data. Cannot overwrite."
+    if parallel < 0:  # turns off multiprocessing
+        for sample in tqdm(dataset, desc="sample"):
+            k, v = _evaluate_sample_worker(
+                (
+                    sample,
+                    name,
+                    steps,
+                    threshold,
+                    use_predictions_folder,
+                    output_folder,
+                    overlayed_folder,
+                )
             )
-        data[stem] = _sample_measures(pred, gt, mask, steps)
-
-        if output_folder is not None:
-            fullpath = os.path.join(output_folder, name, f"{stem}.csv")
-            tqdm.write(f"Saving {fullpath}...")
-            os.makedirs(os.path.dirname(fullpath), exist_ok=True)
-            data[stem].to_csv(fullpath)
-
-        if overlayed_folder is not None:
-            overlay_image = _sample_analysis(
-                image, pred, gt, mask, threshold=threshold, overlay=True
-            )
-            fullpath = os.path.join(overlayed_folder, name, f"{stem}.png")
-            tqdm.write(f"Saving {fullpath}...")
-            os.makedirs(os.path.dirname(fullpath), exist_ok=True)
-            overlay_image.save(fullpath)
+            data[k] = v
+    else:
+        parallel = parallel or multiprocessing.cpu_count()
+        with multiprocessing.Pool(processes=parallel) as pool, tqdm(
+            total=len(dataset),
+            desc="sample",
+        ) as pbar:
+            for k, v in pool.imap_unordered(
+                _evaluate_sample_worker,
+                zip(
+                    dataset,
+                    itertools.repeat(name),
+                    itertools.repeat(steps),
+                    itertools.repeat(threshold),
+                    itertools.repeat(use_predictions_folder),
+                    itertools.repeat(output_folder),
+                    itertools.repeat(overlayed_folder),
+                ),
+            ):
+                pbar.update()
+                data[k] = v
 
     # Merges all dataframes together
     measures = _summarize(data)
@@ -481,8 +590,103 @@ def run(
     return maxf1_threshold
 
 
+def _compare_annotators_worker(args):
+    """Runs all of the comparison steps on a single sample pair
+
+
+    Parameters
+    ----------
+
+    args : tuple
+        A tuple containing the following sub-arguments:
+
+        baseline_sample : tuple
+            Baseline sample to be processed, containing the stem of the filepath
+            relative to the database root, the image, the ground-truth, and
+            possibly the mask to define the region of interest to be processed.
+
+        other_sample : tuple
+            Another sample that is identical to the first, but has a different
+            mask (drawn by a different annotator)
+
+        name : str
+            the local name of the dataset (e.g. ``train``, or ``test``), to be
+            used when saving measures files.
+
+        output_folder : str, None
+            If not ``None``, then outputs a copy of the evaluation for this
+            sample in CSV format at this directory, but respecting the sample
+            ``stem``.
+
+        overlayed_folder : str, None
+            If not ``None``, then outputs a version of the input image with
+            predictions overlayed, in PNG format, but respecting the sample
+            ``stem``.
+
+
+    Returns
+    -------
+
+    stem : str
+        The unique sample stem
+
+    data : pandas.DataFrame
+        Dataframe containing the evaluation performance on this single sample
+
+    """
+
+    (
+        baseline_sample,
+        other_sample,
+        name,
+        output_folder,
+        overlayed_folder,
+    ) = args
+
+    assert baseline_sample[0] == other_sample[0], (
+        f"Mismatch between "
+        f"datasets for second-annotator analysis "
+        f"({baseline_sample[0]} != {other_sample[0]}).  This "
+        f"typically occurs when the second annotator (`other`) "
+        f"comes from a different dataset than the `baseline` dataset"
+    )
+
+    stem = baseline_sample[0]
+    image = baseline_sample[1]
+    gt = baseline_sample[2]
+    pred = other_sample[2]  # works as a prediction
+    mask = None if len(baseline_sample) < 4 else baseline_sample[3]
+    retval = _sample_measures(pred, gt, mask, 2)
+
+    if output_folder is not None:
+        fullpath = os.path.join(
+            output_folder, "second-annotator", name, f"{stem}.csv"
+        )
+        tqdm.write(f"Saving {fullpath}...")
+        os.makedirs(os.path.dirname(fullpath), exist_ok=True)
+        retval.to_csv(fullpath)
+
+    if overlayed_folder is not None:
+        overlay_image = _sample_analysis(
+            image, pred, gt, mask, threshold=0.5, overlay=True
+        )
+        fullpath = os.path.join(
+            overlayed_folder, "second-annotator", name, f"{stem}.png"
+        )
+        tqdm.write(f"Saving {fullpath}...")
+        os.makedirs(os.path.dirname(fullpath), exist_ok=True)
+        overlay_image.save(fullpath)
+
+    return stem, retval
+
+
 def compare_annotators(
-    baseline, other, name, output_folder, overlayed_folder=None
+    baseline,
+    other,
+    name,
+    output_folder,
+    overlayed_folder=None,
+    parallel=-1,
 ):
     """
     Compares annotations on the **same** dataset
@@ -510,6 +714,13 @@ def compare_annotators(
         if not ``None``, then it should be the name of a folder where to store
         overlayed versions of the images and ground-truths
 
+    parallel : :py:class:`int`, Optional
+        If set to a value different >= 0, uses multiprocessing for estimating
+        thresholds for each sample through a processing pool.  A value of zero
+        will create as many processes in the pool as cores in the machine.  A
+        negative value disables multiprocessing altogether.  A value greater
+        than zero will spawn as many processes as requested.
+
     """
 
     logger.info(f"Output folder: {output_folder}")
@@ -518,46 +729,41 @@ def compare_annotators(
     # Collect overall measures
     data = {}
 
-    for baseline_sample, other_sample in tqdm(
-        list(zip(baseline, other)), desc="samples", leave=False, disable=None
-    ):
-        assert baseline_sample[0] == other_sample[0], (
-            f"Mismatch between "
-            f"datasets for second-annotator analysis "
-            f"({baseline_sample[0]} != {other_sample[0]}).  This "
-            f"typically occurs when the second annotator (`other`) "
-            f"comes from a different dataset than the `baseline` dataset"
-        )
-
-        stem = baseline_sample[0]
-        image = baseline_sample[1]
-        gt = baseline_sample[2]
-        pred = other_sample[2]  # works as a prediction
-        mask = None if len(baseline_sample) < 4 else baseline_sample[3]
-        if stem in data:
-            raise RuntimeError(
-                f"{stem} entry already exists in data. " f"Cannot overwrite."
+    if parallel < 0:  # turns off multiprocessing
+        for baseline_sample, other_sample in tqdm(
+            list(zip(baseline, other)),
+            desc="samples",
+            leave=False,
+            disable=None,
+        ):
+            k, v = _compare_annotators_worker(
+                (
+                    baseline_sample,
+                    other_sample,
+                    name,
+                    output_folder,
+                    overlayed_folder,
+                )
             )
-        data[stem] = _sample_measures(pred, gt, mask, 2)
-
-        if output_folder is not None:
-            fullpath = os.path.join(
-                output_folder, "second-annotator", name, f"{stem}.csv"
-            )
-            tqdm.write(f"Saving {fullpath}...")
-            os.makedirs(os.path.dirname(fullpath), exist_ok=True)
-            data[stem].to_csv(fullpath)
-
-        if overlayed_folder is not None:
-            overlay_image = _sample_analysis(
-                image, pred, gt, mask, threshold=0.5, overlay=True
-            )
-            fullpath = os.path.join(
-                overlayed_folder, "second-annotator", name, f"{stem}.png"
-            )
-            tqdm.write(f"Saving {fullpath}...")
-            os.makedirs(os.path.dirname(fullpath), exist_ok=True)
-            overlay_image.save(fullpath)
+            data[k] = v
+    else:
+        parallel = parallel or multiprocessing.cpu_count()
+        with multiprocessing.Pool(processes=parallel) as pool, tqdm(
+            total=len(baseline),
+            desc="sample",
+        ) as pbar:
+            for k, v in pool.imap_unordered(
+                _compare_annotators_worker,
+                zip(
+                    baseline,
+                    other,
+                    itertools.repeat(name),
+                    itertools.repeat(output_folder),
+                    itertools.repeat(overlayed_folder),
+                ),
+            ):
+                pbar.update()
+                data[k] = v
 
     measures = _summarize(data)
     measures.drop(0, inplace=True)  # removes threshold == 0.0, keeps 0.5 only

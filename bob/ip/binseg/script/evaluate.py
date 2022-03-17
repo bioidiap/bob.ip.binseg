@@ -146,6 +146,19 @@ def _validate_threshold(t, dataset):
     required=True,
     cls=ResourceOption,
 )
+@click.option(
+    "--parallel",
+    "-P",
+    help="""Use multiprocessing for data processing: if set to -1 (default),
+    disables multiprocessing.  Set to 0 to enable as many data loading
+    instances as processing cores as available in the system.  Set to >= 1 to
+    enable that many multiprocessing instances for data processing.""",
+    type=click.IntRange(min=-1),
+    show_default=True,
+    required=True,
+    default=-1,
+    cls=ResourceOption,
+)
 @verbosity_option(cls=ResourceOption)
 def evaluate(
     output_folder,
@@ -155,6 +168,7 @@ def evaluate(
     overlayed,
     threshold,
     steps,
+    parallel,
     **kwargs,
 ):
     """Evaluates an FCN on a binary segmentation task."""
@@ -196,6 +210,7 @@ def evaluate(
             overlayed,
             threshold,
             steps=steps,
+            parallel=parallel,
         )
         second = second_annotator.get(k)
         if second is not None:
@@ -206,4 +221,6 @@ def evaluate(
                     f"second-annotator comparisons for {k} subset"
                 )
             else:
-                compare_annotators(v, second, k, output_folder, overlayed)
+                compare_annotators(
+                    v, second, k, output_folder, overlayed, parallel=parallel
+                )

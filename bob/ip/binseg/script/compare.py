@@ -8,6 +8,8 @@ import click
 import pandas
 import tabulate
 
+from tqdm import tqdm
+
 from bob.extension.scripts.click_helper import verbosity_option
 
 from ..utils.plot import precision_recall_f1iso
@@ -94,7 +96,7 @@ def _load(data, threshold=None):
 
     # loads all data
     retval = {}
-    for name, measures_path in data.items():
+    for name, measures_path in tqdm(data.items(), desc="sample"):
 
         logger.info(f"Loading measures from {measures_path}...")
         df = pandas.read_csv(measures_path)

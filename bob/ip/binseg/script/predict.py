@@ -112,7 +112,7 @@ logger = logging.getLogger(__name__)
     cls=ResourceOption,
 )
 @click.option(
-    "--multiproc-data-loading",
+    "--parallel",
     "-P",
     help="""Use multiprocessing for data loading: if set to -1 (default),
     disables multiprocessing data loading.  Set to 0 to enable as many data
@@ -133,7 +133,7 @@ def predict(
     device,
     weight,
     overlayed,
-    multiproc_data_loading,
+    parallel,
     **kwargs,
 ):
     """Predicts vessel map (probabilities) on input images"""
@@ -164,13 +164,14 @@ def predict(
 
         logger.info(f"Running inference on '{k}' set...")
 
+        # PyTorch dataloader
         multiproc_kwargs = dict()
-        if multiproc_data_loading < 0:
+        if parallel < 0:
             multiproc_kwargs["num_workers"] = 0
-        elif multiproc_data_loading == 0:
-            multiproc_kwargs["num_workers"] = multiprocessing.cpu_count()
         else:
-            multiproc_kwargs["num_workers"] = multiproc_data_loading
+            multiproc_kwargs["num_workers"] = (
+                parallel or multiprocessing.cpu_count()
+            )
 
         if multiproc_kwargs["num_workers"] > 0 and sys.platform == "darwin":
             multiproc_kwargs[

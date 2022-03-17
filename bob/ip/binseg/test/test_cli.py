@@ -83,7 +83,7 @@ def _check_experiment_stare(caplog, overlay, multiprocess=False):
         if overlay:
             options += ["--overlayed"]
         if multiprocess:
-            options += ["--multiproc-data-loading=1"]
+            options += ["--parallel=1"]
 
         result = runner.invoke(experiment, options)
         _assert_exit_0(result)

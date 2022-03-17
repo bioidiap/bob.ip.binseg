@@ -168,12 +168,13 @@ logger = logging.getLogger(__name__)
     cls=ResourceOption,
 )
 @click.option(
-    "--multiproc-data-loading",
+    "--parallel",
     "-P",
-    help="""Use multiprocessing for data loading: if set to -1 (default),
-    disables multiprocessing data loading.  Set to 0 to enable as many data
-    loading instances as processing cores as available in the system.  Set to
-    >= 1 to enable that many multiprocessing instances for data loading.""",
+    help="""Use multiprocessing for data loading and processing: if set to -1
+    (default), disables multiprocessing altogether.  Set to 0 to enable as many
+    data loading instances as processing cores as available in the system.  Set
+    to >= 1 to enable that many multiprocessing instances for data
+    processing.""",
     type=click.IntRange(min=-1),
     show_default=True,
     required=True,
@@ -235,7 +236,7 @@ def experiment(
     checkpoint_period,
     device,
     seed,
-    multiproc_data_loading,
+    parallel,
     monitoring_interval,
     overlayed,
     steps,
@@ -318,7 +319,7 @@ def experiment(
         checkpoint_period=checkpoint_period,
         device=device,
         seed=seed,
-        multiproc_data_loading=multiproc_data_loading,
+        parallel=parallel,
         monitoring_interval=monitoring_interval,
         verbose=verbose,
     )
@@ -345,6 +346,7 @@ def experiment(
         overlayed=overlayed,
         weight=model_file,
         steps=steps,
+        parallel=parallel,
         verbose=verbose,
     )
 
