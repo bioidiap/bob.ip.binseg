@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 
 @contextlib.contextmanager
-def _precision_recall_canvas(title=None):
+def _precision_recall_canvas(title=None, limits=[0.0, 1.0, 0.0, 1.0]):
     """Generates a canvas to draw precision-recall curves
 
     Works like a context manager, yielding a figure and an axes set in which
@@ -29,6 +29,11 @@ def _precision_recall_canvas(title=None):
 
     title : :py:class:`str`, Optional
         Optional title to add to this plot
+
+    limits : :py:class:`tuple`, Optional
+        If set, a 4-tuple containing the bounds of the plot for the x and y
+        axis respectively (format: ``[x_low, x_high, y_low, y_high]``).  If not
+        set, use normal bounds (``[0, 1, 0, 1]``).
 
 
     Yields
@@ -47,8 +52,8 @@ def _precision_recall_canvas(title=None):
     # Names and bounds
     axes1.set_xlabel("Recall")
     axes1.set_ylabel("Precision")
-    axes1.set_xlim([0.0, 1.0])
-    axes1.set_ylim([0.0, 1.0])
+    axes1.set_xlim(limits[:2])
+    axes1.set_ylim(limits[2:])
 
     if title is not None:
         axes1.set_title(title)
@@ -79,8 +84,12 @@ def _precision_recall_canvas(title=None):
     # we should see some of axes 1 axes
     axes1.spines["right"].set_visible(False)
     axes1.spines["top"].set_visible(False)
-    axes1.spines["left"].set_position(("data", -0.015))
-    axes1.spines["bottom"].set_position(("data", -0.015))
+    axes1.spines["left"].set_position(
+        ("data", limits[0] - (0.015 * (limits[1] - limits[0])))
+    )
+    axes1.spines["bottom"].set_position(
+        ("data", limits[2] - (0.015 * (limits[3] - limits[2])))
+    )
 
     # we shouldn't see any of axes 2 axes
     axes2.spines["right"].set_visible(False)
@@ -137,10 +146,10 @@ def precision_recall_f1iso(data, limits):
           A threshold to graph with a dot for each set.    Specific
           threshold values do not affect "second-annotator" dataframes.
 
-    limits : :py:class:`tuple`, Optional
-        If set, a 4-tuple containing the bounds of the plot for the x and y
-        axis respectively (format: ``[x_low, x_high, y_low, y_high]``).  If not
-        set, use normal bounds (``[0, 1, 0, 1]``).
+    limits : tuple
+        A 4-tuple containing the bounds of the plot for the x and y axis
+        respectively (format: ``[x_low, x_high, y_low, y_high]``).  If not set,
+        use normal bounds (``[0, 1, 0, 1]``).
 
 
     Returns
@@ -167,7 +176,7 @@ def precision_recall_f1iso(data, limits):
     colorcycler = cycle(colors)
     linecycler = cycle(lines)
 
-    with _precision_recall_canvas(title=None) as (fig, axes):
+    with _precision_recall_canvas(title=None, limits=limits) as (fig, axes):
 
         legend = []
 
