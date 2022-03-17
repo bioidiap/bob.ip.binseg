@@ -139,6 +139,19 @@ logger = logging.getLogger(__name__)
     default=-1,
     cls=ResourceOption,
 )
+@click.option(
+    "--plot-limits",
+    "-L",
+    help="""If set, this option affects the performance comparison plots.  It
+    must be a 4-tuple containing the bounds of the plot for the x and y axis
+    respectively (format: x_low, x_high, y_low, y_high]).  If not set, use
+    normal bounds ([0, 1, 0, 1]) for the performance curve.""",
+    default=[0.0, 1.0, 0.0, 1.0],
+    show_default=True,
+    nargs=4,
+    type=float,
+    cls=ResourceOption,
+)
 @verbosity_option(cls=ResourceOption)
 @click.pass_context
 def analyze(
@@ -153,6 +166,7 @@ def analyze(
     weight,
     steps,
     parallel,
+    plot_limits,
     verbose,
     **kwargs,
 ):
@@ -318,6 +332,7 @@ def analyze(
         output_figure=output_figure,
         output_table=output_table,
         threshold=threshold,
+        plot_limits=plot_limits,
         verbose=verbose,
     )
 

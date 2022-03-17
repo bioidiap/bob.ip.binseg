@@ -14,99 +14,6 @@ matplotlib.use("agg")
 logger = logging.getLogger(__name__)
 
 
-def _concave_hull(x, y, lx, ux, ly, uy):
-    """Calculates a approximate (concave) hull from arc centers and sizes
-
-    Each ellipse is approximated as a number of discrete points distributed
-    over the ellipse border following an homogeneous angle distribution.
-
-
-    Parameters
-    ----------
-
-    x : numpy.ndarray
-        1D array with x coordinates of ellipse centers
-
-    y : numpy.ndarray
-        1D array with y coordinates of ellipse centers
-
-    lx, ux, ly, uy : numpy.ndarray
-        1D array(s) with upper and lower widths and heights for your deformed
-        ellipse
-
-
-    Returns
-    -------
-
-    points : numpy.ndarray
-        2D array containing the ``(x, y)`` coordinates of the concave hull
-        encompassing all defined arcs.
-
-    """
-
-    def _irregular_ellipse_points(_x, _y, _lx, _ux, _ly, _uy, steps=100):
-        """Generates border points for an irregular ellipse
-
-        This functions distributes points according to a rotation angle rather
-        than uniformily with respect to a particular axis.  The result is a
-        more homogeneous border representation for the ellipse.
-        """
-        up = _uy - _y
-        down = _y - _ly
-        left = _x - _lx
-        right = _ux - _x
-
-        angles = numpy.arange(0, numpy.pi / 2, step=2 * numpy.pi / steps)
-        points = numpy.ndarray((0, 2))
-
-        # upper left part (90 -> 180 degrees)
-        px = 2 * left * numpy.cos(angles)
-        py = (up / left) * numpy.sqrt(numpy.square(2 * left) - numpy.square(px))
-        # order: x and y increase
-        points = numpy.vstack((points, numpy.array([_x - px, _y + py]).T))
-
-        # upper right part (0 -> 90 degrees)
-        px = 2 * right * numpy.cos(angles)
-        py = (up / right) * numpy.sqrt(
-            numpy.square(2 * right) - numpy.square(px)
-        )
-        # order: x increases and y decreases
-        points = numpy.vstack(
-            (points, numpy.flipud(numpy.array([_x + px, _y + py]).T))
-        )
-
-        # lower right part (180 -> 270 degrees)
-        px = 2 * right * numpy.cos(angles)
-        py = (down / right) * numpy.sqrt(
-            numpy.square(2 * right) - numpy.square(px)
-        )
-        # order: x increases and y decreases
-        points = numpy.vstack((points, numpy.array([_x + px, _y - py]).T))
-
-        # lower left part (180 -> 270 degrees)
-        px = 2 * left * numpy.cos(angles)
-        py = (down / left) * numpy.sqrt(
-            numpy.square(2 * left) - numpy.square(px)
-        )
-        # order: x decreases and y increases
-        points = numpy.vstack(
-            (points, numpy.flipud(numpy.array([_x - px, _y - py]).T))
-        )
-
-        return points
-
-    retval = numpy.ndarray((0, 2))
-    for (k, l, m, n, o, p) in zip(x, y, lx, ux, ly, uy):
-        retval = numpy.vstack(
-            (
-                retval,
-                [numpy.nan, numpy.nan],
-                _irregular_ellipse_points(k, l, m, n, o, p),
-            )
-        )
-    return retval
-
-
 @contextlib.contextmanager
 def _precision_recall_canvas(title=None):
     """Generates a canvas to draw precision-recall curves
@@ -188,13 +95,12 @@ def _precision_recall_canvas(title=None):
     plt.tight_layout()
 
 
-def precision_recall_f1iso(data, credible=True):
-    """Creates a precision-recall plot with credible intervals
+def precision_recall_f1iso(data, limits):
+    """Creates a precision-recall plot
 
     This function creates and returns a Matplotlib figure with a
-    precision-recall plot containing shaded credible intervals (on the
-    precision-recall measurements).  The plot will be annotated with F1-score
-    iso-lines (in which the F1-score maintains the same value).
+    precision-recall plot.  The plot will be annotated with F1-score iso-lines
+    (in which the F1-score maintains the same value).
 
     This function specially supports "second-annotator" entries by plotting a
     line showing the comparison between the default annotator being analyzed
@@ -231,9 +137,10 @@ def precision_recall_f1iso(data, credible=True):
           A threshold to graph with a dot for each set.    Specific
           threshold values do not affect "second-annotator" dataframes.
 
-    credible : :py:class:`bool`, Optional
-        If set, draw credible intervals for each line, using ``upper_*`` and
-        ``lower_*`` entries.
+    limits : :py:class:`tuple`, Optional
+        If set, a 4-tuple containing the bounds of the plot for the x and y
+        axis respectively (format: ``[x_low, x_high, y_low, y_high]``).  If not
+        set, use normal bounds (``[0, 1, 0, 1]``).
 
 
     Returns
@@ -321,28 +228,11 @@ def precision_recall_f1iso(data, credible=True):
                 )
                 legend.append(([marker, line], label))
 
-            if credible:
+        if limits:
+            axes.set_xlim(limits[:2])
+            axes.set_ylim(limits[2:])
 
-                hull = _concave_hull(
-                    df.mean_recall,
-                    df.mean_precision,
-                    df.lower_recall,
-                    df.upper_recall,
-                    df.lower_precision,
-                    df.upper_precision,
-                )
-                p = plt.Polygon(
-                    hull,
-                    facecolor=color,
-                    alpha=0.2,
-                    edgecolor="none",
-                    lw=0.2,
-                    closed=True,
-                )
-                axes.add_patch(p)
-                legend[-1][0].append(p)
-
-        if len(label) > 1:
+        if len(legend) > 1:
             axes.legend(
                 [tuple(k[0]) for k in legend],
                 [k[1] for k in legend],
