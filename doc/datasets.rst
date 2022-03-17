@@ -201,7 +201,11 @@ X-Ray
   For the ``SHENZHEN``/``CXR8`` datasets (in which the annotations/masks are
   downloaded separately from the dataset with the original images), both the
   original images and annotations must be downloaded and placed inside the same
-  directory, in order to match the dataset reference dictionary's path.
+  directory, in order to match the dataset reference dictionary's path. For the
+  masks' directory, it should be named as ``segmentations``. The 
+  annotations for each dataset can be downloaded from the links below:
+  - `SHENZHEN ANNOTATIONS`_
+  - `CXR8 ANNOTATIONS`_
 
-
+  
 .. include:: links.rst

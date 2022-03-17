@@ -30,6 +30,10 @@
 .. _shenzhen: https://openi.nlm.nih.gov/faq#faq-tb-coll
 .. _cxr8: https://nihcc.app.box.com/v/ChestXray-NIHCC
 
+.. Annotation data websites
+.. _shenzhen annotations: https://www.kaggle.com/yoctoman/shcxr-lung-mask
+.. _cxr8 annotations: https://github.com/lucasmansilla/NIH_chest_xray14_segmentations
+
 
 .. Software Tools
 .. _maskrcnn-benchmark: https://github.com/facebookresearch/maskrcnn-benchmark
