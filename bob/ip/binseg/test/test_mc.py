@@ -19,17 +19,17 @@ def test_protocol_consistency():
     assert "train" in subset
     assert len(subset["train"]) == 96
     for s in subset["train"]:
-        assert s.key.startswith("MontgomerySet")
+        assert s.key.startswith("CXR_png")
 
     assert "validation" in subset
     assert len(subset["validation"]) == 14
     for s in subset["validation"]:
-        assert s.key.startswith("MontgomerySet")
+        assert s.key.startswith("CXR_png")
 
     assert "test" in subset
     assert len(subset["test"]) == 28
     for s in subset["test"]:
-        assert s.key.startswith("MontgomerySet")
+        assert s.key.startswith("CXR_png")
 
 
 @pytest.mark.skip_if_rc_var_not_set("bob.ip.binseg.montgomery.datadir")
