@@ -326,6 +326,10 @@ def checkpointer_process(
     max_epoch : int
         end_potch
 
+    Returns
+    -------
+
+    lowest_validation_loss : float
 
 
     """
@@ -341,6 +345,8 @@ def checkpointer_process(
 
     if epoch >= max_epoch:
         checkpointer.save("model_final_epoch", **arguments)
+
+    return lowest_validation_loss
 
 
 def write_log_info(
@@ -554,7 +560,7 @@ def run(
                             samples, model, valid_losses, device, criterion
                         )
 
-            checkpointer_process(
+            lowest_validation_loss = checkpointer_process(
                 checkpointer,
                 checkpoint_period,
                 valid_losses,
