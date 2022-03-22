@@ -326,6 +326,10 @@ def checkpointer_process(
     max_epoch : int
         end_potch
 
+    Returns
+    -------
+
+    lowest_validation_loss : float
 
 
     """
