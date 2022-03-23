@@ -82,3 +82,43 @@ class TestCheckpointer(unittest.TestCase):
             assert id(trained_p) != id(loaded_p)
             # same content
             assert trained_p.equal(loaded_p)
+
+    def test_checkpointer_process(self):
+        from ..configs.models.lwnet import model
+        from ..engine.trainer import checkpointer_process
+        from ..utils.measure import SmoothedValue
+
+        with TemporaryDirectory() as f:
+            checkpointer = Checkpointer(model, path=f)
+            lowest_validation_loss = 0.001
+            checkpoint_period = 0
+            valid_losses = SmoothedValue(2)
+            valid_losses.update(1.0)
+            valid_losses.update(2.0)
+            arguments = {"epoch": 0, "max_epoch": 10}
+            epoch = 1
+            max_epoch = 10
+            lowest_validation_loss = checkpointer_process(
+                checkpointer,
+                checkpoint_period,
+                valid_losses,
+                lowest_validation_loss,
+                arguments,
+                epoch,
+                max_epoch,
+            )
+
+            assert lowest_validation_loss == 0.001
+
+            lowest_validation_loss = 1000
+            lowest_validation_loss = checkpointer_process(
+                checkpointer,
+                checkpoint_period,
+                valid_losses,
+                lowest_validation_loss,
+                arguments,
+                epoch,
+                max_epoch,
+            )
+
+            assert lowest_validation_loss == 1.5
