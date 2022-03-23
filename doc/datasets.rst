@@ -158,6 +158,7 @@ X-Ray
    * - Dataset
      - Reference
      - H x W
+     - Radiography Type
      - Samples
      - Mask
      - Split Reference
@@ -166,6 +167,7 @@ X-Ray
    * - `Montgomery County`_
      - [MC-2014]_
      - 4020 x 4892, or 4892 x 4020
+     - Digital Radiography (DR)
      - 138
      - ``*``
      - [GAAL-2020]_
@@ -174,6 +176,7 @@ X-Ray
    * - JSRT_
      - [JSRT-2000]_
      - 2048 x 2048
+     - Digitized Radiography (laser digitizer)
      - 247
      - ``*``
      - [GAAL-2020]_
@@ -182,6 +185,7 @@ X-Ray
    * - Shenzhen_
      - [SHENZHEN-2014]_
      - Varying
+     - Computed Radiography (CR)
      - 662
      - ``*``
      - [GAAL-2020]_
@@ -190,6 +194,7 @@ X-Ray
    * - CXR8_
      - [CXR8-2017]_
      - 1024 x 1024
+     - Digital Radiography
      - 112120
      - ``x``
      - [GAAL-2020]_
