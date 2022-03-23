@@ -70,6 +70,14 @@ def test_loading():
             f"indicate a loading problem!"
         )
 
+        # to visualize images, uncomment the folowing code it should display an
+        # image with a faded background representing the original data, blended
+        # with green labels.
+        # from ..data.utils import overlayed_image
+        # display = overlayed_image(data["data"], data["label"])
+        # display.show()
+        # import ipdb; ipdb.set_trace()
+
         return w / b
 
     limit = None  # use this to limit testing to first images only

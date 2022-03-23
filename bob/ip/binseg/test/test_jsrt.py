@@ -19,24 +19,23 @@ def test_protocol_consistency():
     assert "train" in subset
     assert len(subset["train"]) == 172
     for s in subset["train"]:
-        assert s.key.startswith("JSRT")
+        assert s.key.startswith("All247images")
 
     assert "validation" in subset
     assert len(subset["validation"]) == 25
     for s in subset["validation"]:
-        assert s.key.startswith("JSRT")
+        assert s.key.startswith("All247images")
 
     assert "test" in subset
     assert len(subset["test"]) == 50
     for s in subset["test"]:
-        assert s.key.startswith("JSRT")
+        assert s.key.startswith("All247images")
 
 
 @pytest.mark.skip_if_rc_var_not_set("bob.ip.binseg.jsrt.datadir")
 def test_loading():
 
-    image_size = (2048, 2048)
-    label_size = (1024, 1024)
+    image_size = (1024, 1024)
 
     def _check_sample(s, bw_threshold_label):
 
@@ -49,13 +48,13 @@ def test_loading():
         assert data["data"].mode == "RGB"
 
         assert "label" in data
-        assert data["label"].size == label_size
+        assert data["label"].size == image_size
         assert data["label"].mode == "1"
 
         b, w = count_bw(data["label"])
-        assert (b + w) == numpy.prod(label_size), (
+        assert (b + w) == numpy.prod(image_size), (
             f"Counts of black + white ({b}+{w}) do not add up to total "
-            f"image size ({numpy.prod(label_size)}) at '{s.key}':label"
+            f"image size ({numpy.prod(image_size)}) at '{s.key}':label"
         )
         assert (w / b) < bw_threshold_label, (
             f"The proportion between black and white pixels "
@@ -63,6 +62,14 @@ def test_loading():
             f"of {bw_threshold_label} at '{s.key}':label - this could "
             f"indicate a loading problem!"
         )
+
+        # to visualize images, uncomment the folowing code it should display an
+        # image with a faded background representing the original data, blended
+        # with green labels.
+        # from ..data.utils import overlayed_image
+        # display = overlayed_image(data["data"], data["label"])
+        # display.show()
+        # import ipdb; ipdb.set_trace()
 
         return w / b
 

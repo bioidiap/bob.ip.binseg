@@ -224,12 +224,18 @@ Datasets
    bob.ip.binseg.configs.datasets.drhagis.default
 
    bob.ip.binseg.configs.datasets.montgomery.default
+   bob.ip.binseg.configs.datasets.montgomery.xtest
 
    bob.ip.binseg.configs.datasets.jsrt.default
+   bob.ip.binseg.configs.datasets.jsrt.xtest
 
    bob.ip.binseg.configs.datasets.shenzhen.default
    bob.ip.binseg.configs.datasets.shenzhen.default_256
+   bob.ip.binseg.configs.datasets.shenzhen.xtest
 
    bob.ip.binseg.configs.datasets.cxr8.default
+   bob.ip.binseg.configs.datasets.cxr8.idiap
+   bob.ip.binseg.configs.datasets.cxr8.xtest
+   bob.ip.binseg.configs.datasets.cxr8.xtest_idiap
 
 .. include:: links.rst

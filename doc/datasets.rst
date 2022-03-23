@@ -196,7 +196,7 @@ X-Ray
      - 78484 (+11212)
      - 22424
 
-.. warning:: **SHENZHEN/CXR8 Dataset Support**
+.. warning:: **SHENZHEN/JSRT/CXR8 Dataset Support**
 
   For some datasets (in which the annotations/masks are downloaded separately
   from the dataset with the original images), both the original images and
@@ -213,6 +213,11 @@ X-Ray
 
     - ``images/`` (directory containing the CXR images)
     - ``segmentations/`` (contains masks downloaded from `CXR8 Annotations`_)
+
+  * The JSRT_ root directory:
+
+    - ``All247images/`` (directory containing the CXR images, in raw format)
+    - ``scratch/`` (contains masks downloaded from `JSRT Annotations`_)
 
 
 .. include:: links.rst
