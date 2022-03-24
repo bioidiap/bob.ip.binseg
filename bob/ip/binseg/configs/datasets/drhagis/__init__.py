@@ -5,7 +5,10 @@
 def _maker(protocol):
 
     from ....data.drhagis import dataset as raw
-    from ....data.transforms import Resize, ResizeCrop
+    from ....data.transforms import Resize, ShrinkIntoSquare
     from .. import make_dataset as mk
 
-    return mk(raw.subsets(protocol), [ResizeCrop(), Resize((1760, 1760))])
+    return mk(
+        raw.subsets(protocol),
+        [ShrinkIntoSquare(reference=2, threshold=0), Resize((1760, 1760))],
+    )

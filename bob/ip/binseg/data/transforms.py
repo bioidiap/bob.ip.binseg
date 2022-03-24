@@ -283,8 +283,10 @@ def _expand2square(pil_img, background_color):
         A PIL image that represents the image for analysis.
 
     background_color: py:class:`tuple`, Optional
-        A tuple to represent the color of the background of the image in order to pad with the same color.
-        If the image is an RGB image background_color should be a tuple of size 3 , if it's a grayscale image the variable can be represented with an integer.
+        A tuple to represent the color of the background of the image in order
+        to pad with the same color. If the image is an RGB image
+        background_color should be a tuple of size 3 , if it's a grayscale
+        image the variable can be represented with an integer.
 
     Returns
     -------
@@ -292,8 +294,8 @@ def _expand2square(pil_img, background_color):
     image : PIL.Image.Image
         A new image with height equal to width.
 
-
     """
+
     width, height = pil_img.size
     if width == height:
         return pil_img
@@ -307,41 +309,49 @@ def _expand2square(pil_img, background_color):
         return result
 
 
-class ResizeCrop:
-    """
-    Crop all the images by removing the black pixels in the width and height until it finds a non-black pixel.
+class ShrinkIntoSquare:
+    """Crops black borders and then resize to a square with minimal padding
+
+    This transform can crop all the images by removing the black pixels in the
+    width and height until it finds a non-black pixel.  Then, expands the image
+    back until it makes a square with minimal size.
+
+
+    Parameters
+    ----------
+
+    reference : :py:class:`int`, Optional
+        Which reference part of the sample to use for cropping black borders.
+        If not set, use the first object on the sample (typically, the image).
+
+    threshold : :py:class:`int`, Optional
+        Threshold to use for when considering what is a "black" border
 
     """
+
+    def __init__(self, reference=0, threshold=0):
+        self.reference = reference
+        self.threshold = threshold
 
     def __call__(self, *args):
 
-        img = args[0]
-        label = args[1]
-        mask = args[2]
-        mask_data = numpy.asarray(mask)
-        wid = numpy.sum(mask_data, axis=0)
-        heig = numpy.sum(mask_data, axis=1)
+        ref = numpy.asarray(args[self.reference])
+        width = numpy.sum(ref, axis=0) > self.threshold
+        height = numpy.sum(ref, axis=1) > self.threshold
 
-        crop_left, crop_right = (wid != 0).argmax(axis=0), (
-            wid[::-1] != 0
-        ).argmax(axis=0)
-        crop_up, crop_down = (heig != 0).argmax(axis=0), (
-            heig[::-1] != 0
-        ).argmax(axis=0)
+        border = (
+            width.argmax(),
+            height.argmax(),
+            width[::-1].argmax(),
+            height[::-1].argmax(),
+        )
 
-        border = (crop_left, crop_up, crop_right, crop_down)
+        new_args = [PIL.ImageOps.crop(k, border) for k in args]
 
-        new_mask = PIL.ImageOps.crop(mask, border)
-        new_img = PIL.ImageOps.crop(img, border)
-        new_label = PIL.ImageOps.crop(label, border)
+        def _black_background(i):
+            return (0, 0, 0) if i.mode == "RGB" else 0
 
-        new_img = _expand2square(new_img, (0, 0, 0))
-        new_label = _expand2square(new_label, 0)
-        new_mask = _expand2square(new_mask, 0)
-
-        args = (new_img, new_label, new_mask)
-
-        return args
+        return [_expand2square(k, _black_background(k)) for k in new_args]
 
 
 class GaussianBlur(torchvision.transforms.GaussianBlur):
