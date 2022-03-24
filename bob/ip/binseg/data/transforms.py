@@ -335,7 +335,7 @@ class ShrinkIntoSquare:
 
     def __call__(self, *args):
 
-        ref = numpy.asarray(args[self.reference].convert('L'))
+        ref = numpy.asarray(args[self.reference].convert("L"))
         width = numpy.sum(ref, axis=0) > self.threshold
         height = numpy.sum(ref, axis=1) > self.threshold
 
