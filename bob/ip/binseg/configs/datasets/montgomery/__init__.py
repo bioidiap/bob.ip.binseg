@@ -5,10 +5,10 @@
 def _maker(protocol):
 
     from ....data.montgomery import dataset as raw
-    from ....data.transforms import Resize
+    from ....data.transforms import Resize, ShrinkIntoSquare
     from .. import make_dataset as mk
 
-    return mk(raw.subsets(protocol), [Resize((512, 512))])
+    return mk(raw.subsets(protocol), [ShrinkIntoSquare(), Resize((512, 512))])
 
 
 def _maker_augmented(protocol):
@@ -20,6 +20,7 @@ def _maker_augmented(protocol):
     from ....data.transforms import RandomHorizontalFlip as _hflip
     from ....data.transforms import RandomRotation as _rotation
     from ....data.transforms import Resize as _resize
+    from ....data.transforms import ShrinkIntoSquare as _shrinkintosq
     from .. import make_subset
 
     def mk_aug_subset(subsets, train_transforms, all_transforms):
@@ -43,10 +44,11 @@ def _maker_augmented(protocol):
 
     return mk_aug_subset(
         subsets=raw.subsets(protocol),
-        all_transforms=[_resize((256, 256))],
+        all_transforms=[_shrinkintosq(), _resize((256, 256))],
         train_transforms=[
             _compose(
                 [
+                    _shrinkintosq(),
                     _resize((256, 256)),
                     _rotation(degrees=15, p=0.5),
                     _hflip(p=0.5),
