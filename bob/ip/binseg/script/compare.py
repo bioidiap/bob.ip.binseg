@@ -221,7 +221,7 @@ def compare(
         os.makedirs(os.path.dirname(output_figure), exist_ok=True)
         fig = precision_recall_f1iso(data, limits=plot_limits)
         fig.savefig(output_figure)
-        fig.close()
+        fig.clear()
 
     logger.info("Tabulating performance summary...")
     table = performance_table(data, table_format)
