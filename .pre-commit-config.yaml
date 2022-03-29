@@ -2,27 +2,35 @@
 # See https://pre-commit.com/hooks.html for more hooks
 repos:
   - repo: https://github.com/timothycrosley/isort
-    rev: 5.9.3
+    rev: 5.10.1
     hooks:
       - id: isort
         args: [--settings-path, "pyproject.toml"]
   - repo: https://github.com/psf/black
-    rev: 21.7b0
+    rev: 22.3.0
     hooks:
       - id: black
+        exclude: bob/devtools/templates/setup.py
   - repo: https://gitlab.com/pycqa/flake8
-    rev: 3.9.2
+    rev: 4.0.1
     hooks:
       - id: flake8
-        exclude: bob/ip/binseg/configs
+        exclude: |
+              (?x)^(
+                  bob/devtools/templates/setup.py|
+                  deps/bob-devel/run_test.py
+              )$
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.0.1
+    rev: v4.1.0
     hooks:
       - id: check-ast
+        exclude: bob/devtools/templates/setup.py
       - id: check-case-conflict
       - id: trailing-whitespace
       - id: end-of-file-fixer
       - id: debug-statements
+        exclude: bob/devtools/templates/setup.py
       - id: check-added-large-files
+        exclude: bob/devtools/templates/setup.py
       - id: check-yaml
-        exclude: .*/meta.yaml
+        exclude: .*/meta.*.yaml
