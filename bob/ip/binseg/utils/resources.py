@@ -271,13 +271,17 @@ class _InformationGatherer:
     main_pid : int
         The main process identifier to monitor
 
+    logger : logging.Logger
+        A logger to be used for logging messages
+
     """
 
-    def __init__(self, has_gpu, main_pid):
+    def __init__(self, has_gpu, main_pid, logger):
         self.cpu_logger = CPULogger(main_pid)
         self.keys = [k[0] for k in self.cpu_logger.log()]
         self.cpu_keys_len = len(self.keys)
         self.has_gpu = has_gpu
+        self.logger = logger
         if self.has_gpu:
             self.keys += [k[0] for k in gpu_log()]
         self.data = [[] for _ in self.keys]
@@ -293,13 +297,15 @@ class _InformationGatherer:
     def summary(self):
         """Returns the current data"""
 
+        if len(self.data[0]) == 0:
+            self.logger.error("CPU/GPU logger was not able to collect any data")
         retval = []
         for k, values in zip(self.keys, self.data):
             retval.append((k, values))
         return tuple(retval)
 
 
-def _monitor_worker(interval, has_gpu, main_pid, stop, queue):
+def _monitor_worker(interval, has_gpu, main_pid, stop, queue, logging_level):
     """A monitoring worker that measures resources and returns lists
 
     Parameters
@@ -321,18 +327,22 @@ def _monitor_worker(interval, has_gpu, main_pid, stop, queue):
     queue : :py:class:`queue.Queue`
         A queue, to send monitoring information back to the spawner
 
+    logging_level: int
+        The logging level to use for logging from launched processes
+
     """
 
+    logger = multiprocessing.log_to_stderr(level=logging_level)
+
     try:
-        ra = _InformationGatherer(has_gpu, main_pid)
+        ra = _InformationGatherer(has_gpu, main_pid, logger)
         ra.acc()  # guarantees at least an entry will be available
         while not stop.is_set():
             time.sleep(interval)
             ra.acc()
         queue.put(ra.summary())
     except Exception as e:
-        print(f"CPU/GPU logging is not working properly: {e}")
-        queue.put(None)
+        logger.error("CPU/GPU logging is not working properly: %s", e)
 
 
 class ResourceMonitor:
@@ -351,15 +361,19 @@ class ResourceMonitor:
     main_pid : int
         The main process identifier to monitor
 
+    logging_level: int
+        The logging level to use for logging from launched processes
+
     """
 
-    def __init__(self, interval, has_gpu, main_pid):
+    def __init__(self, interval, has_gpu, main_pid, logging_level):
 
         self.interval = interval
         self.has_gpu = has_gpu
         self.main_pid = main_pid
         self.event = multiprocessing.Event()
         self.q = multiprocessing.Queue()
+        self.logging_level = logging_level
 
         self.monitor = multiprocessing.Process(
             target=_monitor_worker,
@@ -370,6 +384,7 @@ class ResourceMonitor:
                 self.main_pid,
                 self.event,
                 self.q,
+                self.logging_level,
             ),
         )
 
@@ -378,7 +393,7 @@ class ResourceMonitor:
     @staticmethod
     def monitored_keys(has_gpu):
 
-        return _InformationGatherer(has_gpu, None).keys
+        return _InformationGatherer(has_gpu, None, logger).keys
 
     def __enter__(self):
         """Starts the monitoring process"""
@@ -391,6 +406,11 @@ class ResourceMonitor:
 
         self.event.set()
         self.monitor.join()
+        if self.monitor.exitcode != 0:
+            logger.error(
+                f"CPU/GPU resource monitor process exited with code "
+                f"{self.monitor.exitcode}.  Check logs for errors!"
+            )
 
         data = self.q.get(timeout=2 * self.interval)
 

@@ -531,6 +531,7 @@ def run(
                 interval=monitoring_interval,
                 has_gpu=(device.type == "cuda"),
                 main_pid=os.getpid(),
+                logging_level=logging.ERROR,
             ) as resource_monitor:
                 losses = SmoothedValue(len(data_loader))
                 epoch = epoch + 1
