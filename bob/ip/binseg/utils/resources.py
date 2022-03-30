@@ -18,7 +18,7 @@ _nvidia_smi = shutil.which("nvidia-smi")
 """Location of the nvidia-smi program, if one exists"""
 
 
-GB = float(2 ** 30)
+GB = float(2**30)
 """The number of bytes in a gigabyte"""
 
 
