@@ -5,6 +5,7 @@
 
 import logging
 import multiprocessing
+import queue
 import shutil
 import subprocess
 import time
@@ -333,16 +334,20 @@ def _monitor_worker(interval, has_gpu, main_pid, stop, queue, logging_level):
     """
 
     logger = multiprocessing.log_to_stderr(level=logging_level)
+    ra = _InformationGatherer(has_gpu, main_pid, logger)
 
-    try:
-        ra = _InformationGatherer(has_gpu, main_pid, logger)
-        ra.acc()  # guarantees at least an entry will be available
-        while not stop.is_set():
+    while not stop.is_set():
+        try:
+            ra.acc()  # guarantees at least an entry will be available
             time.sleep(interval)
-            ra.acc()
-        queue.put(ra.summary())
-    except Exception as e:
-        logger.error("CPU/GPU logging is not working properly: %s", e)
+        except Exception:
+            logger.warning(
+                "Iterative CPU/GPU logging did not work properly " "this once",
+                exc_info=True,
+            )
+            time.sleep(0.5)  # wait half a second, and try again!
+
+    queue.put(ra.summary())
 
 
 class ResourceMonitor:
@@ -412,15 +417,16 @@ class ResourceMonitor:
                 f"{self.monitor.exitcode}.  Check logs for errors!"
             )
 
-        data = self.q.get(timeout=2 * self.interval)
-
-        if data is None:
+        try:
+            data = self.q.get(timeout=2 * self.interval)
+        except queue.Empty:
             logger.warn(
-                f"CPU/GPU resource monitor did not return anything when "
+                f"CPU/GPU resource monitor did not provide anything when "
                 f"joined (even after a {2*self.interval}-second timeout - "
-                f"check if the interval is adequate."
+                f"this is normally due to exceptions on the monitoring process. "
+                f"Check above for other exceptions."
             )
-
+            self.data = None
         else:
             # summarize the returned data by creating means
             summary = []
