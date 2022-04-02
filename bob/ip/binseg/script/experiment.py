@@ -339,6 +339,16 @@ def experiment(
     )
     logger.info("Ended training")
 
+    from .train_analysis import train_analysis
+
+    ctx.invoke(
+        train_analysis,
+        log=os.path.join(train_output_folder, "trainlog.csv"),
+        constants=os.path.join(train_output_folder, "constants.csv"),
+        output_pdf=os.path.join(train_output_folder, "trainlog.pdf"),
+        verbose=verbose,
+    )
+
     from .analyze import analyze
 
     # preferably, we use the best model on the validation set
@@ -362,15 +372,5 @@ def experiment(
         steps=steps,
         parallel=parallel,
         plot_limits=plot_limits,
-        verbose=verbose,
-    )
-
-    from .train_analysis import train_analysis
-
-    ctx.invoke(
-        train_analysis,
-        log=os.path.join(train_output_folder, "trainlog.csv"),
-        constants=os.path.join(train_output_folder, "constants.csv"),
-        output_pdf=os.path.join(train_output_folder, "trainlog.pdf"),
         verbose=verbose,
     )
