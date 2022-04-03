@@ -119,41 +119,6 @@ def test_drive_covd():
             assert sample[1].min() >= 0.0
 
 
-@pytest.mark.skip_if_rc_var_not_set("bob.ip.binseg.drive.datadir")
-@pytest.mark.skip_if_rc_var_not_set("bob.ip.binseg.chasedb1.datadir")
-@pytest.mark.skip_if_rc_var_not_set("bob.ip.binseg.hrf.datadir")
-@pytest.mark.skip_if_rc_var_not_set("bob.ip.binseg.iostar.datadir")
-def test_drive_ssl():
-
-    from ..configs.datasets.drive.ssl import dataset
-
-    assert len(dataset) == 4
-
-    from ..configs.datasets.drive.covd import dataset as covd
-
-    assert dataset["train"] == covd["train"]
-    assert dataset["train"] == dataset["__valid__"]
-    assert dataset["test"] == covd["test"]
-    assert dataset["__valid__"] == covd["__valid__"]
-
-    # these are the only different from the baseline
-    assert len(dataset["__train__"]) == 123
-    for sample in dataset["__train__"]:
-        assert len(sample) == 6
-        assert isinstance(sample[0], str)
-        assert sample[1].shape, (3, 544 == 544)  # planes, height, width
-        assert sample[1].dtype == torch.float32
-        assert sample[2].shape, (1, 544 == 544)  # planes, height, width
-        assert sample[2].dtype == torch.float32
-        assert sample[3].shape, (1, 544 == 544)  # planes, height, width
-        assert sample[3].dtype == torch.float32
-        assert isinstance(sample[4], str)
-        assert sample[5].shape, (3, 544 == 544)  # planes, height, width
-        assert sample[5].dtype == torch.float32
-        assert sample[1].max() <= 1.0
-        assert sample[1].min() >= 0.0
-
-
 def test_stare_augmentation_manipulation():
 
     # some tests to check our context management for dataset augmentation works

@@ -4,7 +4,6 @@
 import contextlib
 import csv
 import datetime
-import distutils.version
 import logging
 import os
 import shutil
@@ -16,12 +15,10 @@ import torch
 from tqdm import tqdm
 
 from ..utils.measure import SmoothedValue
-from ..utils.resources import cpu_constants, cpu_log, gpu_constants, gpu_log
+from ..utils.resources import ResourceMonitor, cpu_constants, gpu_constants
 from ..utils.summary import summary
 
 logger = logging.getLogger(__name__)
-
-PYTORCH_GE_110 = distutils.version.LooseVersion(torch.__version__) >= "1.1.0"
 
 
 @contextlib.contextmanager
@@ -181,9 +178,9 @@ def create_logfile_fields(valid_loader, device):
     )
     if valid_loader is not None:
         logfile_fields += ("validation_average_loss", "validation_median_loss")
-    logfile_fields += tuple([k[0] for k in cpu_log()])
-    if device.type == "cuda":
-        logfile_fields += tuple([k[0] for k in gpu_log()])
+    logfile_fields += tuple(
+        ResourceMonitor.monitored_keys(device.type == "cuda")
+    )
     return logfile_fields
 
 
@@ -358,7 +355,7 @@ def write_log_info(
     optimizer,
     logwriter,
     logfile,
-    device,
+    resource_data,
 ):
     """
     Write log info in trainlog.csv
@@ -384,14 +381,13 @@ def write_log_info(
     logwriter : csv.DictWriter
         Dictionary writer that give the ability to write on the trainlog.csv
 
-    logfile: io.TextIOWrapper
+    logfile : io.TextIOWrapper
 
-    device : :py:class:`torch.device`
-        device to use
-
-
+    resource_data : tuple
+        Monitored resources at the machine (CPU and GPU)
 
     """
+
     logdata = (
         ("epoch", f"{epoch}"),
         (
@@ -403,14 +399,14 @@ def write_log_info(
         ("median_loss", f"{losses.median:.6f}"),
         ("learning_rate", f"{optimizer.param_groups[0]['lr']:.6f}"),
     )
+
     if valid_losses is not None:
         logdata += (
             ("validation_average_loss", f"{valid_losses.avg:.6f}"),
             ("validation_median_loss", f"{valid_losses.median:.6f}"),
         )
-        logdata += cpu_log()
-    if device.type == "cuda":
-        logdata += gpu_log()
+
+    logdata += resource_data
 
     logwriter.writerow(dict(k for k in logdata))
     logfile.flush()
@@ -429,6 +425,7 @@ def run(
     device,
     arguments,
     output_folder,
+    monitoring_interval,
 ):
     """
     Fits an FCN model using supervised learning and save it to disk.
@@ -473,6 +470,11 @@ def run(
 
     output_folder : str
         output path
+
+    monitoring_interval : int, float
+        interval, in seconds (or fractions), through which we should monitor
+        resources during training.
+
     """
 
     start_epoch = arguments["epoch"]
@@ -524,41 +526,48 @@ def run(
             leave=False,
             disable=None,
         ):
-            if not PYTORCH_GE_110:
+
+            with ResourceMonitor(
+                interval=monitoring_interval,
+                has_gpu=(device.type == "cuda"),
+                main_pid=os.getpid(),
+                logging_level=logging.ERROR,
+            ) as resource_monitor:
+                losses = SmoothedValue(len(data_loader))
+                epoch = epoch + 1
+                arguments["epoch"] = epoch
+
+                # Epoch time
+                start_epoch_time = time.time()
+
+                # progress bar only on interactive jobs
+                for samples in tqdm(
+                    data_loader, desc="batch", leave=False, disable=None
+                ):
+                    # data forwarding on the existing network
+                    losses, optimizer = train_sample_process(
+                        samples, model, optimizer, losses, device, criterion
+                    )
+
                 scheduler.step()
-            losses = SmoothedValue(len(data_loader))
-            epoch = epoch + 1
-            arguments["epoch"] = epoch
 
-            # Epoch time
-            start_epoch_time = time.time()
+                # calculates the validation loss if necessary
+                valid_losses = None
+                if valid_loader is not None:
 
-            # progress bar only on interactive jobs
-            for samples in tqdm(
-                data_loader, desc="batch", leave=False, disable=None
-            ):
-                # data forwarding on the existing network
-                losses, optimizer = train_sample_process(
-                    samples, model, optimizer, losses, device, criterion
-                )
+                    with torch.no_grad(), torch_evaluation(model):
 
-            if PYTORCH_GE_110:
-                scheduler.step()
-
-            # calculates the validation loss if necessary
-            valid_losses = None
-            if valid_loader is not None:
-
-                with torch.no_grad(), torch_evaluation(model):
-
-                    valid_losses = SmoothedValue(len(valid_loader))
-                    for samples in tqdm(
-                        valid_loader, desc="valid", leave=False, disable=None
-                    ):
-                        # data forwarding on the existing network
-                        valid_losses = valid_sample_process(
-                            samples, model, valid_losses, device, criterion
-                        )
+                        valid_losses = SmoothedValue(len(valid_loader))
+                        for samples in tqdm(
+                            valid_loader,
+                            desc="valid",
+                            leave=False,
+                            disable=None,
+                        ):
+                            # data forwarding on the existing network
+                            valid_losses = valid_sample_process(
+                                samples, model, valid_losses, device, criterion
+                            )
 
             lowest_validation_loss = checkpointer_process(
                 checkpointer,
@@ -585,7 +594,7 @@ def run(
                 optimizer,
                 logwriter,
                 logfile,
-                device,
+                resource_monitor.data,
             )
 
         total_training_time = time.time() - start_training_time

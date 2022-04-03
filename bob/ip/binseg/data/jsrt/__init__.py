@@ -4,12 +4,12 @@
 """Japanese Society of Radiological Technology dataset for Lung Segmentation
 
 The database includes 154 nodule and 93 non-nodule images.  It contains a total
-of 247 resolution of 2048 x 2048 One set of ground-truth lung annotations is
+of 247 resolution of 2048 x 2048.  One set of ground-truth lung annotations is
 available.
 
 * Reference: [JSRT-2000]_
 * Original resolution (height x width): 2048 x 2048
-* Configuration resolution: 512 x 512 (after rescaling)
+* Configuration resolution: 1024 x 1024 (after rescaling)
 * Split reference: [GAAL-2020]_
 * Protocol ``default``:
 
@@ -21,7 +21,7 @@ available.
 
 import os
 
-import numpy as np
+import numpy
 import pkg_resources
 
 from PIL import Image
@@ -29,7 +29,7 @@ from PIL import Image
 import bob.extension
 
 from ..dataset import JSONDataset
-from ..loader import load_pil_1, load_pil_rgb, make_delayed
+from ..loader import load_pil_1, load_pil_raw_12bit_jsrt, make_delayed
 
 _protocols = [
     pkg_resources.resource_filename(__name__, "default.json"),
@@ -42,13 +42,15 @@ _root_path = bob.extension.rc.get(
 
 def _raw_data_loader(sample):
     return dict(
-        data=load_pil_rgb(os.path.join(_root_path, sample["data"])),
+        data=load_pil_raw_12bit_jsrt(
+            os.path.join(_root_path, sample["data"]), 1024
+        ),
         label=Image.fromarray(
-            np.ma.mask_or(
-                np.asarray(
+            numpy.ma.mask_or(
+                numpy.asarray(
                     load_pil_1(os.path.join(_root_path, sample["label_l"]))
                 ),
-                np.asarray(
+                numpy.asarray(
                     load_pil_1(os.path.join(_root_path, sample["label_r"]))
                 ),
             )
@@ -67,5 +69,4 @@ dataset = JSONDataset(
     fieldnames=("data", "label_l", "label_r"),
     loader=_loader,
 )
-
 """Japanese Society of Radiological Technology dataset object"""

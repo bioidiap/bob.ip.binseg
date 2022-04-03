@@ -8,6 +8,8 @@ import click
 import pandas
 import tabulate
 
+from tqdm import tqdm
+
 from bob.extension.scripts.click_helper import verbosity_option
 
 from ..utils.plot import precision_recall_f1iso
@@ -94,7 +96,7 @@ def _load(data, threshold=None):
 
     # loads all data
     retval = {}
-    for name, measures_path in data.items():
+    for name, measures_path in tqdm(data.items(), desc="sample"):
 
         logger.info(f"Loading measures from {measures_path}...")
         df = pandas.read_csv(measures_path)
@@ -176,9 +178,27 @@ def _load(data, threshold=None):
     show_default=False,
     required=False,
 )
+@click.option(
+    "--plot-limits",
+    "-L",
+    help="""If set, must be a 4-tuple containing the bounds of the plot for
+    the x and y axis respectively (format: x_low, x_high, y_low,
+    y_high]).  If not set, use normal bounds ([0, 1, 0, 1]) for the
+    performance curve.""",
+    default=[0.0, 1.0, 0.0, 1.0],
+    show_default=True,
+    nargs=4,
+    type=float,
+)
 @verbosity_option()
 def compare(
-    label_path, output_figure, table_format, output_table, threshold, **kwargs
+    label_path,
+    output_figure,
+    table_format,
+    output_table,
+    threshold,
+    plot_limits,
+    **kwargs,
 ):
     """Compares multiple systems together"""
 
@@ -199,8 +219,9 @@ def compare(
         output_figure = os.path.realpath(output_figure)
         logger.info(f"Creating and saving plot at {output_figure}...")
         os.makedirs(os.path.dirname(output_figure), exist_ok=True)
-        fig = precision_recall_f1iso(data, credible=True)
+        fig = precision_recall_f1iso(data, limits=plot_limits)
         fig.savefig(output_figure)
+        fig.clear()
 
     logger.info("Tabulating performance summary...")
     table = performance_table(data, table_format)
