@@ -5,10 +5,10 @@
 def _maker(protocol, n):
 
     from ....data.shenzhen import dataset as raw
-    from ....data.transforms import Resize
+    from ....data.transforms import Resize, ShrinkIntoSquare
     from .. import make_dataset as mk
 
-    return mk(raw.subsets(protocol), [Resize((n, n))])
+    return mk(raw.subsets(protocol), [ShrinkIntoSquare(), Resize((n, n))])
 
 
 def _maker_augmented(protocol, n):
@@ -20,6 +20,7 @@ def _maker_augmented(protocol, n):
     from ....data.transforms import RandomHorizontalFlip as _hflip
     from ....data.transforms import RandomRotation as _rotation
     from ....data.transforms import Resize as _resize
+    from ....data.transforms import ShrinkIntoSquare as _shrinkintosq
     from .. import make_subset
 
     def mk_aug_subset(subsets, train_transforms, all_transforms):
@@ -44,10 +45,11 @@ def _maker_augmented(protocol, n):
 
     return mk_aug_subset(
         subsets=raw.subsets(protocol),
-        all_transforms=[_resize((n, n))],
+        all_transforms=[_shrinkintosq(), _resize((n, n))],
         train_transforms=[
             _compose(
                 [
+                    _shrinkintosq(),
                     _resize((n, n)),
                     _rotation(degrees=15, p=0.5),
                     _hflip(p=0.5),

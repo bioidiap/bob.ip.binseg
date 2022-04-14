@@ -14,9 +14,9 @@ function run() {
     local cmd=(${BOB} binseg experiment)
     cmd+=("-vv" "--device=${device}" ${1} ${2})
     cmd+=("--batch-size=${3}" "--output-folder=${OUTDIR}/${1}/${2}")
-    # add --multiproc-data-loading=0 to increase data loading/transform speeds,
-    # but pay by making your results harder to reproduce (OS-random data loading)
-    #cmd+=("--multiproc-data-loading=0")
+    # add --parallel=0 to increase data loading/transform speeds, but pay by
+    # making your results harder to reproduce (OS-random data loading)
+    #cmd+=("--parallel=0")
 
     mkdir -pv ${OUTDIR}/${1}/${2}
 

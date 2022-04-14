@@ -19,17 +19,17 @@ def test_protocol_consistency():
     assert "train" in subset
     assert len(subset["train"]) == 396
     for s in subset["train"]:
-        assert s.key.startswith("ChinaSet_AllFiles")
+        assert s.key.startswith("CXR_png")
 
     assert "validation" in subset
     assert len(subset["validation"]) == 56
     for s in subset["validation"]:
-        assert s.key.startswith("ChinaSet_AllFiles")
+        assert s.key.startswith("CXR_png")
 
     assert "test" in subset
     assert len(subset["test"]) == 114
     for s in subset["test"]:
-        assert s.key.startswith("ChinaSet_AllFiles")
+        assert s.key.startswith("CXR_png")
 
 
 @pytest.mark.skip_if_rc_var_not_set("bob.ip.binseg.shenzhen.datadir")
@@ -65,6 +65,14 @@ def test_loading():
             f"of {bw_threshold_label} at '{s.key}':label - this could "
             f"indicate a loading problem!"
         )
+
+        # to visualize images, uncomment the folowing code it should display an
+        # image with a faded background representing the original data, blended
+        # with green labels.
+        # from ..data.utils import overlayed_image
+        # display = overlayed_image(data["data"], data["label"])
+        # display.show()
+        # import ipdb; ipdb.set_trace()
 
         return w / b
 

@@ -146,10 +146,10 @@ def icnr(x, scale=2, init=torch.nn.init.kaiming_normal_):
     """
 
     ni, nf, h, w = x.shape
-    ni2 = int(ni / (scale ** 2))
+    ni2 = int(ni / (scale**2))
     k = init(torch.zeros([ni2, nf, h, w])).transpose(0, 1)
     k = k.contiguous().view(ni2, nf, -1)
-    k = k.repeat(1, 1, scale ** 2)
+    k = k.repeat(1, 1, scale**2)
     k = k.contiguous().view([nf, ni, h, w]).transpose(0, 1)
     x.data.copy_(k)
 
@@ -164,7 +164,7 @@ class PixelShuffle_ICNR(torch.nn.Module):
     def __init__(self, ni: int, nf: int = None, scale: int = 2):
         super().__init__()
         nf = ifnone(nf, ni)
-        self.conv = conv_with_kaiming_uniform(ni, nf * (scale ** 2), 1)
+        self.conv = conv_with_kaiming_uniform(ni, nf * (scale**2), 1)
         icnr(self.conv.weight)
         self.shuf = torch.nn.PixelShuffle(scale)
         # Blurring over (h*w) kernel

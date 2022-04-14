@@ -168,34 +168,33 @@ logger = logging.getLogger(__name__)
     cls=ResourceOption,
 )
 @click.option(
-    "--ssl/--no-ssl",
-    help="Switch ON/OFF semi-supervised training mode",
-    show_default=True,
-    required=True,
-    default=False,
-    cls=ResourceOption,
-)
-@click.option(
-    "--rampup",
-    "-r",
-    help="Ramp-up length in epochs (for SSL training only)",
-    show_default=True,
-    required=True,
-    default=900,
-    type=click.IntRange(min=0),
-    cls=ResourceOption,
-)
-@click.option(
-    "--multiproc-data-loading",
+    "--parallel",
     "-P",
-    help="""Use multiprocessing for data loading: if set to -1 (default),
-    disables multiprocessing data loading.  Set to 0 to enable as many data
-    loading instances as processing cores as available in the system.  Set to
-    >= 1 to enable that many multiprocessing instances for data loading.""",
+    help="""Use multiprocessing for data loading and processing: if set to -1
+    (default), disables multiprocessing altogether.  Set to 0 to enable as many
+    data loading instances as processing cores as available in the system.  Set
+    to >= 1 to enable that many multiprocessing instances for data
+    processing.""",
     type=click.IntRange(min=-1),
     show_default=True,
     required=True,
     default=-1,
+    cls=ResourceOption,
+)
+@click.option(
+    "--monitoring-interval",
+    "-I",
+    help="""Time between checks for the use of resources during each training
+    epoch.  An interval of 5 seconds, for example, will lead to CPU and GPU
+    resources being probed every 5 seconds during each training epoch.
+    Values registered in the training logs correspond to averages (or maxima)
+    observed through possibly many probes in each epoch.  Notice that setting a
+    very small value may cause the probing process to become extremely busy,
+    potentially biasing the overall perception of resource usage.""",
+    type=click.FloatRange(min=0.1),
+    show_default=True,
+    required=True,
+    default=5.0,
     cls=ResourceOption,
 )
 @click.option(
@@ -220,6 +219,19 @@ logger = logging.getLogger(__name__)
     required=True,
     cls=ResourceOption,
 )
+@click.option(
+    "--plot-limits",
+    "-L",
+    help="""If set, this option affects the performance comparison plots.  It
+    must be a 4-tuple containing the bounds of the plot for the x and y axis
+    respectively (format: x_low, x_high, y_low, y_high]).  If not set, use
+    normal bounds ([0, 1, 0, 1]) for the performance curve.""",
+    default=[0.0, 1.0, 0.0, 1.0],
+    show_default=True,
+    nargs=4,
+    type=float,
+    cls=ResourceOption,
+)
 @verbosity_option(cls=ResourceOption)
 @click.pass_context
 def experiment(
@@ -237,11 +249,11 @@ def experiment(
     checkpoint_period,
     device,
     seed,
-    ssl,
-    rampup,
-    multiproc_data_loading,
+    parallel,
+    monitoring_interval,
     overlayed,
     steps,
+    plot_limits,
     verbose,
     **kwargs,
 ):
@@ -321,12 +333,21 @@ def experiment(
         checkpoint_period=checkpoint_period,
         device=device,
         seed=seed,
-        ssl=ssl,
-        rampup=rampup,
-        multiproc_data_loading=multiproc_data_loading,
+        parallel=parallel,
+        monitoring_interval=monitoring_interval,
         verbose=verbose,
     )
     logger.info("Ended training")
+
+    from .train_analysis import train_analysis
+
+    ctx.invoke(
+        train_analysis,
+        log=os.path.join(train_output_folder, "trainlog.csv"),
+        constants=os.path.join(train_output_folder, "constants.csv"),
+        output_pdf=os.path.join(train_output_folder, "trainlog.pdf"),
+        verbose=verbose,
+    )
 
     from .analyze import analyze
 
@@ -349,13 +370,7 @@ def experiment(
         overlayed=overlayed,
         weight=model_file,
         steps=steps,
+        parallel=parallel,
+        plot_limits=plot_limits,
         verbose=verbose,
-    )
-
-    from .train_analysis import train_analysis
-
-    ctx.invoke(
-        train_analysis,
-        output_folder=train_output_folder,
-        batch_size=batch_size,
     )

@@ -23,7 +23,7 @@ from ..data.transforms import (
     RandomRotation,
     RandomVerticalFlip,
     Resize,
-    ResizeCrop,
+    ShrinkIntoSquare,
     SingleAutoLevel16to8,
     ToTensor,
 )
@@ -407,7 +407,7 @@ def test_16bit_autolevel():
     # import ipdb; ipdb.set_trace()
 
 
-def test_ResizeCrop():
+def test_shrink_into_square():
 
     # parameters
     im_size = (3, 128, 140)  # (planes, height, width)
@@ -424,7 +424,7 @@ def test_ResizeCrop():
     dr.ellipse((30, 30, 90, 90), "white")
 
     # Test
-    transform = ResizeCrop()
+    transform = ShrinkIntoSquare(reference=2, threshold=0)
     img_, gt_, mask_ = transform(img, gt, mask)
 
     assert img_.size == size_after_crop

@@ -41,19 +41,16 @@ setup(
             "analyze =  bob.ip.binseg.script.analyze:analyze",
             "experiment =  bob.ip.binseg.script.experiment:experiment",
             "mkmask = bob.ip.binseg.script.mkmask:mkmask",
-            "train_analysis = bob.ip.binseg.script.train_analysis:train_analysis",
+            "train-analysis = bob.ip.binseg.script.train_analysis:train_analysis",
         ],
         # bob train configurations
         "bob.ip.binseg.config": [
             # models
             "driu = bob.ip.binseg.configs.models.driu",
             "driu-bn = bob.ip.binseg.configs.models.driu_bn",
-            "driu-ssl = bob.ip.binseg.configs.models.driu_ssl",
-            "driu-bn-ssl = bob.ip.binseg.configs.models.driu_bn_ssl",
             "driu-od = bob.ip.binseg.configs.models.driu_od",
             "hed = bob.ip.binseg.configs.models.hed",
             "m2unet = bob.ip.binseg.configs.models.m2unet",
-            "m2unet-ssl = bob.ip.binseg.configs.models.m2unet_ssl",
             "unet = bob.ip.binseg.configs.models.unet",
             "resunet = bob.ip.binseg.configs.models.resunet",
             "lwnet = bob.ip.binseg.configs.models.lwnet",
@@ -67,7 +64,6 @@ setup(
             "drive-xtest = bob.ip.binseg.configs.datasets.drive.xtest",
             "drive-mtest = bob.ip.binseg.configs.datasets.drive.mtest",
             "drive-covd = bob.ip.binseg.configs.datasets.drive.covd",
-            "drive-ssl = bob.ip.binseg.configs.datasets.drive.ssl",
             # drhagis dataset - retinography
             "drhagis = bob.ip.binseg.configs.datasets.drhagis.default",
             # stare dataset - retinography
@@ -78,7 +74,6 @@ setup(
             "stare-xtest = bob.ip.binseg.configs.datasets.stare.xtest",
             "stare-mtest = bob.ip.binseg.configs.datasets.stare.mtest",
             "stare-covd = bob.ip.binseg.configs.datasets.stare.covd",
-            "stare-ssl = bob.ip.binseg.configs.datasets.stare.ssl",
             # iostar - retinography
             "iostar-vessel = bob.ip.binseg.configs.datasets.iostar.vessel",
             "iostar-vessel-768 = bob.ip.binseg.configs.datasets.iostar.vessel_768",
@@ -88,7 +83,6 @@ setup(
             "iostar-disc-512 = bob.ip.binseg.configs.datasets.iostar.optic_disc_512",
             "iostar-disc-768 = bob.ip.binseg.configs.datasets.iostar.optic_disc_768",
             "iostar-vessel-covd = bob.ip.binseg.configs.datasets.iostar.covd",
-            "iostar-vessel-ssl = bob.ip.binseg.configs.datasets.iostar.ssl",
             # hrf - retinography
             "hrf = bob.ip.binseg.configs.datasets.hrf.default",
             "hrf-768 = bob.ip.binseg.configs.datasets.hrf.default_768",
@@ -97,7 +91,6 @@ setup(
             "hrf-mtest = bob.ip.binseg.configs.datasets.hrf.mtest",
             "hrf-highres = bob.ip.binseg.configs.datasets.hrf.default_fullres",
             "hrf-covd = bob.ip.binseg.configs.datasets.hrf.covd",
-            "hrf-ssl = bob.ip.binseg.configs.datasets.hrf.ssl",
             # chase-db1 - retinography
             "chasedb1 = bob.ip.binseg.configs.datasets.chasedb1.first_annotator",
             "chasedb1-768 = bob.ip.binseg.configs.datasets.chasedb1.first_annotator_768",
@@ -106,7 +99,6 @@ setup(
             "chasedb1-xtest = bob.ip.binseg.configs.datasets.chasedb1.xtest",
             "chasedb1-mtest = bob.ip.binseg.configs.datasets.chasedb1.mtest",
             "chasedb1-covd = bob.ip.binseg.configs.datasets.chasedb1.covd",
-            "chasedb1-ssl = bob.ip.binseg.configs.datasets.chasedb1.ssl",
             # drionsdb - retinography
             "drionsdb = bob.ip.binseg.configs.datasets.drionsdb.expert1",
             "drionsdb-512 = bob.ip.binseg.configs.datasets.drionsdb.expert1_512",
@@ -154,6 +146,11 @@ setup(
             # jsrt - cxr
             "jsrt = bob.ip.binseg.configs.datasets.jsrt.default",
             "jsrt-xtest = bob.ip.binseg.configs.datasets.jsrt.xtest",
+            # cxr8 - cxr
+            "cxr8 = bob.ip.binseg.configs.datasets.cxr8.default",
+            "cxr8-idiap = bob.ip.binseg.configs.datasets.cxr8.idiap",
+            "cxr8-xtest = bob.ip.binseg.configs.datasets.cxr8.xtest",
+            "cxr8-idiap-xtest = bob.ip.binseg.configs.datasets.cxr8.xtest_idiap",
         ],
     },
     # check classifiers, add and remove as you see fit

@@ -78,11 +78,16 @@ def _check_experiment_stare(caplog, overlay, multiprocess=False):
             "--batch-size=1",
             "--steps=10",
             f"--output-folder={output_folder}",
+            "--monitoring-interval=2",
+            "--plot-limits=0.1",
+            "1.0",
+            "0.1",
+            "1.0",
         ]
         if overlay:
             options += ["--overlayed"]
         if multiprocess:
-            options += ["--multiproc-data-loading=1"]
+            options += ["--parallel=1"]
 
         result = runner.invoke(experiment, options)
         _assert_exit_0(result)

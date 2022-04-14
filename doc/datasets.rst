@@ -158,6 +158,7 @@ X-Ray
    * - Dataset
      - Reference
      - H x W
+     - Radiography Type
      - Samples
      - Mask
      - Split Reference
@@ -166,26 +167,62 @@ X-Ray
    * - `Montgomery County`_
      - [MC-2014]_
      - 4020 x 4892, or 4892 x 4020
+     - Digital Radiography (DR)
      - 138
-     - ``x``
+     - ``*``
      - [GAAL-2020]_
      - 96 (+14)
      - 28
    * - JSRT_
      - [JSRT-2000]_
      - 2048 x 2048
+     - Digitized Radiography (laser digitizer)
      - 247
-     - ``x``
+     - ``*``
      - [GAAL-2020]_
      - 172 (+25)
      - 50
    * - Shenzhen_
      - [SHENZHEN-2014]_
      - Varying
+     - Computed Radiography (CR)
      - 662
-     - ``x``
+     - ``*``
      - [GAAL-2020]_
      - 396 (+56)
      - 114
+   * - CXR8_
+     - [CXR8-2017]_
+     - 1024 x 1024
+     - Digital Radiography
+     - 112120
+     - ``x``
+     - [GAAL-2020]_
+     - 78484 (+11212)
+     - 22424
+
+.. warning:: **SHENZHEN/JSRT/CXR8 Dataset Support**
+
+  For some datasets (in which the annotations/masks are downloaded separately
+  from the dataset with the original images), both the original images and
+  annotations must be downloaded and placed inside the same directory, to match
+  the dataset reference dictionary's path.
+
+  * The Shenzhen_ root directory should then contain at least these two
+    subdirectories:
+
+    - ``CXR_png/`` (directory containing the CXR images)
+    - ``mask/`` (contains masks downloaded from `Shenzhen Annotations`_)
+
+  * The CXR8_ root directory:
+
+    - ``images/`` (directory containing the CXR images)
+    - ``segmentations/`` (contains masks downloaded from `CXR8 Annotations`_)
+
+  * The JSRT_ root directory:
+
+    - ``All247images/`` (directory containing the CXR images, in raw format)
+    - ``scratch/`` (contains masks downloaded from `JSRT Annotations`_)
+
 
 .. include:: links.rst

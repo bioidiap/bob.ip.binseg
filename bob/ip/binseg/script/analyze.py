@@ -126,6 +126,32 @@ logger = logging.getLogger(__name__)
     required=True,
     cls=ResourceOption,
 )
+@click.option(
+    "--parallel",
+    "-P",
+    help="""Use multiprocessing for data processing: if set to -1 (default),
+    disables multiprocessing.  Set to 0 to enable as many data loading
+    instances as processing cores as available in the system.  Set to >= 1 to
+    enable that many multiprocessing instances for data processing.""",
+    type=click.IntRange(min=-1),
+    show_default=True,
+    required=True,
+    default=-1,
+    cls=ResourceOption,
+)
+@click.option(
+    "--plot-limits",
+    "-L",
+    help="""If set, this option affects the performance comparison plots.  It
+    must be a 4-tuple containing the bounds of the plot for the x and y axis
+    respectively (format: x_low, x_high, y_low, y_high]).  If not set, use
+    normal bounds ([0, 1, 0, 1]) for the performance curve.""",
+    default=[0.0, 1.0, 0.0, 1.0],
+    show_default=True,
+    nargs=4,
+    type=float,
+    cls=ResourceOption,
+)
 @verbosity_option(cls=ResourceOption)
 @click.pass_context
 def analyze(
@@ -139,6 +165,8 @@ def analyze(
     overlayed,
     weight,
     steps,
+    parallel,
+    plot_limits,
     verbose,
     **kwargs,
 ):
@@ -205,6 +233,7 @@ def analyze(
         device=device,
         weight=weight,
         overlayed=overlayed_folder,
+        parallel=parallel,
         verbose=verbose,
     )
     logger.info("Ended prediction")
@@ -239,6 +268,7 @@ def analyze(
         overlayed=overlayed_folder,
         threshold=threshold,
         steps=steps,
+        parallel=parallel,
         verbose=verbose,
     )
 
@@ -302,6 +332,7 @@ def analyze(
         output_figure=output_figure,
         output_table=output_table,
         threshold=threshold,
+        plot_limits=plot_limits,
         verbose=verbose,
     )
 

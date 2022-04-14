@@ -18,7 +18,6 @@ strategy.
    baselines/index
    xtest/index
    cod/index
-   old/index
 
 
 .. include:: ../links.rst

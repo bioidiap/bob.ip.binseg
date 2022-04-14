@@ -27,7 +27,14 @@
 .. _drhagis: https://personalpages.manchester.ac.uk/staff/niall.p.mcloughlin/
 .. _montgomery county: https://openi.nlm.nih.gov/faq#faq-tb-coll
 .. _jsrt: http://db.jsrt.or.jp/eng.php
+.. _jsrt-kaggle: https://www.kaggle.com/datasets/raddar/nodules-in-chest-xrays-jsrt
 .. _shenzhen: https://openi.nlm.nih.gov/faq#faq-tb-coll
+.. _cxr8: https://nihcc.app.box.com/v/ChestXray-NIHCC
+
+.. Annotation data websites
+.. _shenzhen annotations: https://www.kaggle.com/yoctoman/shcxr-lung-mask
+.. _cxr8 annotations: https://github.com/lucasmansilla/NIH_chest_xray14_segmentations
+.. _jsrt annotations: https://www.isi.uu.nl/Research/Databases/SCR/download.php
 
 
 .. Software Tools
