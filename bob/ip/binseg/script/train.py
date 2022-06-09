@@ -259,6 +259,12 @@ def train(
             validation_dataset = dataset["__valid__"]
 
         if "__extra_valid__" in dataset:
+            if not isinstance(dataset["__extra_valid__"], list):
+                raise RuntimeError(
+                    f"If present, dataset['__extra_valid__'] must be a list, "
+                    f"but you passed a {type(dataset['__extra_valid__'])}, "
+                    f"which is invalid."
+                )
             logger.info(
                 f"Found {len(dataset['__extra_valid__'])} extra validation "
                 f"set(s) to be tracked during training"

@@ -612,7 +612,7 @@ def run(
                         model,
                         device,
                         criterion,
-                        f"xvalid[{pos}]",
+                        f"xval@{pos+1}",
                     )
                     extra_valid_losses.append(loss)
 

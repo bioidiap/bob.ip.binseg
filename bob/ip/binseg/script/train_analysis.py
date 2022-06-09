@@ -65,7 +65,7 @@ def _loss_evolution(df):
         )
         losses = numpy.vstack(df.extra_validation_losses.values).T
         for n, k in enumerate(losses):
-            axes.plot(df.epoch.values, k, label=f"Validation[{n+1}]")
+            axes.plot(df.epoch.values, k, label=f"Extra validation {n+1}")
 
     axes.set_title("Loss over time")
     axes.set_xlabel("Epoch")
