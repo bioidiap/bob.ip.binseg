@@ -10,11 +10,11 @@ import shutil
 import sys
 import time
 
+import numpy
 import torch
 
 from tqdm import tqdm
 
-from ..utils.measure import SmoothedValue
 from ..utils.resources import ResourceMonitor, cpu_constants, gpu_constants
 from ..utils.summary import summary
 
@@ -146,7 +146,7 @@ def check_exist_logfile(logfile_name, arguments):
         shutil.move(logfile_name, backup)
 
 
-def create_logfile_fields(valid_loader, device):
+def create_logfile_fields(valid_loader, extra_valid_loaders, device):
     """
     Creation of the logfile fields that will appear in the logfile.
 
@@ -156,6 +156,12 @@ def create_logfile_fields(valid_loader, device):
     valid_loader : :py:class:`torch.utils.data.DataLoader`
         To be used to validate the model and enable automatic checkpointing.
         If set to ``None``, then do not validate it.
+
+    extra_valid_loaders : :py:class:`list` of :py:class:`torch.utils.data.DataLoader`
+        To be used to validate the model, however **does not affect** automatic
+        checkpointing. If set to ``None``, or empty, then does not log anything
+        else.  Otherwise, an extra column with the loss of every dataset in
+        this list is kept on the final training log.
 
     device : :py:class:`torch.device`
         device to use
@@ -172,88 +178,95 @@ def create_logfile_fields(valid_loader, device):
         "epoch",
         "total_time",
         "eta",
-        "average_loss",
-        "median_loss",
+        "loss",
         "learning_rate",
     )
     if valid_loader is not None:
-        logfile_fields += ("validation_average_loss", "validation_median_loss")
+        logfile_fields += ("validation_loss",)
+    if extra_valid_loaders:
+        logfile_fields += ("extra_validation_losses",)
     logfile_fields += tuple(
         ResourceMonitor.monitored_keys(device.type == "cuda")
     )
     return logfile_fields
 
 
-def train_sample_process(samples, model, optimizer, losses, device, criterion):
-    """
-    Processing the training inputs (Images, ground truth, masks) and apply the backprogration to update the training losses.
+def train_epoch(loader, model, optimizer, device, criterion):
+    """Trains the model for a single epoch (through all batches)
 
     Parameters
     ----------
 
-    samples : list
+    loader : :py:class:`torch.utils.data.DataLoader`
+        To be used to train the model
 
     model : :py:class:`torch.nn.Module`
         Network (e.g. driu, hed, unet)
 
     optimizer : :py:mod:`torch.optim`
 
-    losses : :py:class:`bob.ip.binseg.utils.measure.SmoothedValue`
-
     device : :py:class:`torch.device`
         device to use
 
     criterion : :py:class:`torch.nn.modules.loss._Loss`
-        loss function
+
 
     Returns
     -------
 
-    losses : :py:class:`bob.ip.binseg.utils.measure.SmoothedValue`
-
-    optimizer : :py:mod:`torch.optim`
-
+    loss : float
+        A floating-point value corresponding the weighted average of this
+        epoch's loss
 
     """
-    images = samples[1].to(
-        device=device, non_blocking=torch.cuda.is_available()
-    )
-    ground_truths = samples[2].to(
-        device=device, non_blocking=torch.cuda.is_available()
-    )
-    masks = (
-        torch.ones_like(ground_truths)
-        if len(samples) < 4
-        else samples[3].to(
+
+    batch_losses = []
+    samples_in_batch = []
+
+    # progress bar only on interactive jobs
+    for samples in tqdm(loader, desc="train", leave=False, disable=None):
+        images = samples[1].to(
             device=device, non_blocking=torch.cuda.is_available()
         )
-    )
-    outputs = model(images)
-    loss = criterion(outputs, ground_truths, masks)
-    optimizer.zero_grad()
-    loss.backward()
-    optimizer.step()
-    losses.update(loss)
-    logger.debug(f"batch loss: {loss.item()}")
-    return losses, optimizer
+        ground_truths = samples[2].to(
+            device=device, non_blocking=torch.cuda.is_available()
+        )
+        masks = (
+            torch.ones_like(ground_truths)
+            if len(samples) < 4
+            else samples[3].to(
+                device=device, non_blocking=torch.cuda.is_available()
+            )
+        )
+        # data forwarding on the existing network
+        outputs = model(images)
+        loss = criterion(outputs, ground_truths, masks)
+        optimizer.zero_grad()
+        loss.backward()
+        optimizer.step()
+        logger.debug(f"batch loss: {loss.item()}")
+
+        batch_losses.append(loss.item())
+        samples_in_batch.append(len(samples))
+
+    return numpy.average(batch_losses, weights=samples_in_batch)
 
 
-def valid_sample_process(samples, model, valid_losses, device, criterion):
-
+def validate_epoch(loader, model, device, criterion, pbar_desc):
     """
-    Processing the validation inputs (Images, ground truth, masks) and update validation losses.
+    Processes input samples and returns loss (scalar)
+
 
     Parameters
     ----------
 
-    samples : list
+    loader : :py:class:`torch.utils.data.DataLoader`
+        To be used to validate the model
 
     model : :py:class:`torch.nn.Module`
         Network (e.g. driu, hed, unet)
 
     optimizer : :py:mod:`torch.optim`
-
-    valid_losses : :py:class:`bob.ip.binseg.utils.measure.SmoothedValue`
 
     device : :py:class:`torch.device`
         device to use
@@ -261,39 +274,56 @@ def valid_sample_process(samples, model, valid_losses, device, criterion):
     criterion : :py:class:`torch.nn.modules.loss._Loss`
         loss function
 
+    pbar_desc : str
+        A string for the progress bar descriptor
+
+
     Returns
     -------
 
-    valid_losses : :py:class:`bob.ip.binseg.utils.measure.SmoothedValue`
+    loss : float
+        A floating-point value corresponding the weighted average of this
+        epoch's loss
 
     """
-    images = samples[1].to(
-        device=device,
-        non_blocking=torch.cuda.is_available(),
-    )
-    ground_truths = samples[2].to(
-        device=device,
-        non_blocking=torch.cuda.is_available(),
-    )
-    masks = (
-        torch.ones_like(ground_truths)
-        if len(samples) < 4
-        else samples[3].to(
-            device=device,
-            non_blocking=torch.cuda.is_available(),
-        )
-    )
 
-    outputs = model(images)
-    loss = criterion(outputs, ground_truths, masks)
-    valid_losses.update(loss)
-    return valid_losses
+    batch_losses = []
+    samples_in_batch = []
+
+    with torch.no_grad(), torch_evaluation(model):
+
+        for samples in tqdm(loader, desc=pbar_desc, leave=False, disable=None):
+            images = samples[1].to(
+                device=device,
+                non_blocking=torch.cuda.is_available(),
+            )
+            ground_truths = samples[2].to(
+                device=device,
+                non_blocking=torch.cuda.is_available(),
+            )
+            masks = (
+                torch.ones_like(ground_truths)
+                if len(samples) < 4
+                else samples[3].to(
+                    device=device,
+                    non_blocking=torch.cuda.is_available(),
+                )
+            )
+
+            # data forwarding on the existing network
+            outputs = model(images)
+            loss = criterion(outputs, ground_truths, masks)
+
+            batch_losses.append(loss.item())
+            samples_in_batch.append(len(samples))
+
+    return numpy.average(batch_losses, weights=samples_in_batch)
 
 
 def checkpointer_process(
     checkpointer,
     checkpoint_period,
-    valid_losses,
+    valid_loss,
     lowest_validation_loss,
     arguments,
     epoch,
@@ -312,10 +342,11 @@ def checkpointer_process(
         save a checkpoint every ``n`` epochs.  If set to ``0`` (zero), then do
         not save intermediary checkpoints
 
-    valid_losses : :py:class:`bob.ip.binseg.utils.measure.SmoothedValue`
+    valid_loss : float
+        Current epoch validation loss
 
     lowest_validation_loss : float
-        Keep track of the best (lowest) validation loss
+        Keeps track of the best (lowest) validation loss
 
     arguments : dict
         start and end epochs
@@ -327,14 +358,15 @@ def checkpointer_process(
     -------
 
     lowest_validation_loss : float
+        The lowest validation loss currently observed
 
 
     """
     if checkpoint_period and (epoch % checkpoint_period == 0):
         checkpointer.save("model_periodic_save", **arguments)
 
-    if valid_losses is not None and valid_losses.avg < lowest_validation_loss:
-        lowest_validation_loss = valid_losses.avg
+    if valid_loss is not None and valid_loss < lowest_validation_loss:
+        lowest_validation_loss = valid_loss
         logger.info(
             f"Found new low on validation set:" f" {lowest_validation_loss:.6f}"
         )
@@ -350,8 +382,9 @@ def write_log_info(
     epoch,
     current_time,
     eta_seconds,
-    losses,
-    valid_losses,
+    loss,
+    valid_loss,
+    extra_valid_losses,
     optimizer,
     logwriter,
     logfile,
@@ -372,9 +405,15 @@ def write_log_info(
     eta_seconds : float
         estimated time-of-arrival taking into consideration previous epoch performance
 
-    losses : :py:class:`bob.ip.binseg.utils.measure.SmoothedValue`
+    loss : float
+        Current epoch's training loss
 
-    valid_losses : :py:class:`bob.ip.binseg.utils.measure.SmoothedValue`
+    valid_loss : :py:class:`float`, None
+        Current epoch's validation loss
+
+    extra_valid_losses : :py:class:`list` of :py:class:`float`
+        Validation losses from other validation datasets being currently
+        tracked
 
     optimizer : :py:mod:`torch.optim`
 
@@ -395,16 +434,20 @@ def write_log_info(
             f"{datetime.timedelta(seconds=int(current_time))}",
         ),
         ("eta", f"{datetime.timedelta(seconds=int(eta_seconds))}"),
-        ("average_loss", f"{losses.avg:.6f}"),
-        ("median_loss", f"{losses.median:.6f}"),
+        ("loss", f"{loss:.6f}"),
         ("learning_rate", f"{optimizer.param_groups[0]['lr']:.6f}"),
     )
 
-    if valid_losses is not None:
-        logdata += (
-            ("validation_average_loss", f"{valid_losses.avg:.6f}"),
-            ("validation_median_loss", f"{valid_losses.median:.6f}"),
+    if valid_loss is not None:
+        logdata += (("validation_loss", f"{valid_loss:.6f}"),)
+
+    if extra_valid_losses:
+        entry = numpy.array_str(
+            numpy.array(extra_valid_losses),
+            max_line_width=sys.maxsize,
+            precision=6,
         )
+        logdata += (("extra_validation_losses", entry),)
 
     logdata += resource_data
 
@@ -417,6 +460,7 @@ def run(
     model,
     data_loader,
     valid_loader,
+    extra_valid_loaders,
     optimizer,
     criterion,
     scheduler,
@@ -443,9 +487,15 @@ def run(
     data_loader : :py:class:`torch.utils.data.DataLoader`
         To be used to train the model
 
-    valid_loader : :py:class:`torch.utils.data.DataLoader`
+    valid_loaders : :py:class:`list` of :py:class:`torch.utils.data.DataLoader`
         To be used to validate the model and enable automatic checkpointing.
-        If set to ``None``, then do not validate it.
+        If ``None``, then do not validate it.
+
+    extra_valid_loaders : :py:class:`list` of :py:class:`torch.utils.data.DataLoader`
+        To be used to validate the model, however **does not affect** automatic
+        checkpointing. If empty, then does not log anything else.  Otherwise,
+        an extra column with the loss of every dataset in this list is kept on
+        the final training log.
 
     optimizer : :py:mod:`torch.optim`
 
@@ -497,7 +547,9 @@ def run(
 
     check_exist_logfile(logfile_name, arguments)
 
-    logfile_fields = create_logfile_fields(valid_loader, device)
+    logfile_fields = create_logfile_fields(
+        valid_loader, extra_valid_loaders, device
+    )
 
     # the lowest validation loss obtained so far - this value is updated only
     # if a validation set is available
@@ -533,46 +585,41 @@ def run(
                 main_pid=os.getpid(),
                 logging_level=logging.ERROR,
             ) as resource_monitor:
-                losses = SmoothedValue(len(data_loader))
                 epoch = epoch + 1
                 arguments["epoch"] = epoch
 
                 # Epoch time
                 start_epoch_time = time.time()
 
-                # progress bar only on interactive jobs
-                for samples in tqdm(
-                    data_loader, desc="batch", leave=False, disable=None
-                ):
-                    # data forwarding on the existing network
-                    losses, optimizer = train_sample_process(
-                        samples, model, optimizer, losses, device, criterion
-                    )
+                train_loss = train_epoch(
+                    data_loader, model, optimizer, device, criterion
+                )
 
                 scheduler.step()
 
-                # calculates the validation loss if necessary
-                valid_losses = None
-                if valid_loader is not None:
+                valid_loss = (
+                    validate_epoch(
+                        valid_loader, model, device, criterion, "valid"
+                    )
+                    if valid_loader is not None
+                    else None
+                )
 
-                    with torch.no_grad(), torch_evaluation(model):
-
-                        valid_losses = SmoothedValue(len(valid_loader))
-                        for samples in tqdm(
-                            valid_loader,
-                            desc="valid",
-                            leave=False,
-                            disable=None,
-                        ):
-                            # data forwarding on the existing network
-                            valid_losses = valid_sample_process(
-                                samples, model, valid_losses, device, criterion
-                            )
+                extra_valid_losses = []
+                for pos, extra_valid_loader in enumerate(extra_valid_loaders):
+                    loss = validate_epoch(
+                        extra_valid_loader,
+                        model,
+                        device,
+                        criterion,
+                        f"xvalid[{pos}]",
+                    )
+                    extra_valid_losses.append(loss)
 
             lowest_validation_loss = checkpointer_process(
                 checkpointer,
                 checkpoint_period,
-                valid_losses,
+                valid_loss,
                 lowest_validation_loss,
                 arguments,
                 epoch,
@@ -589,8 +636,9 @@ def run(
                 epoch,
                 current_time,
                 eta_seconds,
-                losses,
-                valid_losses,
+                train_loss,
+                valid_loss,
+                extra_valid_losses,
                 optimizer,
                 logwriter,
                 logfile,

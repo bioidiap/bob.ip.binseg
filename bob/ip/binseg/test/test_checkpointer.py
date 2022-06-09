@@ -86,22 +86,19 @@ class TestCheckpointer(unittest.TestCase):
     def test_checkpointer_process(self):
         from ..configs.models.lwnet import model
         from ..engine.trainer import checkpointer_process
-        from ..utils.measure import SmoothedValue
 
         with TemporaryDirectory() as f:
             checkpointer = Checkpointer(model, path=f)
             lowest_validation_loss = 0.001
             checkpoint_period = 0
-            valid_losses = SmoothedValue(2)
-            valid_losses.update(1.0)
-            valid_losses.update(2.0)
+            valid_loss = 1.5
             arguments = {"epoch": 0, "max_epoch": 10}
             epoch = 1
             max_epoch = 10
             lowest_validation_loss = checkpointer_process(
                 checkpointer,
                 checkpoint_period,
-                valid_losses,
+                valid_loss,
                 lowest_validation_loss,
                 arguments,
                 epoch,
@@ -114,7 +111,7 @@ class TestCheckpointer(unittest.TestCase):
             lowest_validation_loss = checkpointer_process(
                 checkpointer,
                 checkpoint_period,
-                valid_losses,
+                valid_loss,
                 lowest_validation_loss,
                 arguments,
                 epoch,
