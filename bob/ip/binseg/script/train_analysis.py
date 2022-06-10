@@ -41,25 +41,35 @@ def _loss_evolution(df):
     figure = plt.figure()
     axes = figure.gca()
 
-    axes.plot(df.epoch.values, df.average_loss.values, label="Avg. training")
-    axes.plot(
-        df.epoch.values,
-        df.validation_average_loss.values,
-        label="Avg. validation",
-    )
+    axes.plot(df.epoch.values, df.loss.values, label="Training")
+    if "validation_loss" in df.columns:
+        axes.plot(
+            df.epoch.values, df.validation_loss.values, label="Validation"
+        )
+        # shows a red dot on the location with the minima on the validation set
+        lowest_index = numpy.argmin(df["validation_loss"])
+
+        axes.plot(
+            df.epoch.values[lowest_index],
+            df.validation_loss[lowest_index],
+            "mo",
+            label=f"Lowest validation ({df.validation_loss[lowest_index]:.3f}@{df.epoch[lowest_index]})",
+        )
+
+    if "extra_validation_losses" in df.columns:
+        # These losses are in array format. So, we read all rows, then create a
+        # 2d array.  We transpose the array to iterate over each column and
+        # plot the losses individually.  They are numbered from 1.
+        df["extra_validation_losses"] = df["extra_validation_losses"].apply(
+            lambda x: numpy.fromstring(x.strip("[]"), sep=" ")
+        )
+        losses = numpy.vstack(df.extra_validation_losses.values).T
+        for n, k in enumerate(losses):
+            axes.plot(df.epoch.values, k, label=f"Extra validation {n+1}")
+
     axes.set_title("Loss over time")
     axes.set_xlabel("Epoch")
     axes.set_ylabel("Loss")
-
-    # shows a red dot on the location with the minima on the validation set
-    lowest_index = numpy.argmin(df["validation_average_loss"])
-
-    axes.plot(
-        df.epoch.values[lowest_index],
-        df.validation_average_loss[lowest_index],
-        "go",
-        label=f"Lowest validation ({df.validation_average_loss[lowest_index]:g})",
-    )
 
     axes.legend(loc="best")
     axes.grid(alpha=0.3)

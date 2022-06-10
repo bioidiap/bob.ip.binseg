@@ -62,17 +62,22 @@ logger = logging.getLogger(__name__)
 @click.option(
     "--dataset",
     "-d",
-    help="A torch.utils.data.dataset.Dataset instance implementing a dataset "
-    "to be used for training the model, possibly including all pre-processing "
-    "pipelines required or, optionally, a dictionary mapping string keys to "
-    "torch.utils.data.dataset.Dataset instances.  At least one key "
-    "named ``train`` must be available.  This dataset will be used for "
+    help="A dictionary mapping string keys to "
+    "torch.utils.data.dataset.Dataset instances implementing datasets "
+    "to be used for training and validating the model, possibly including all "
+    "pre-processing pipelines required or, optionally, a dictionary mapping "
+    "string keys to torch.utils.data.dataset.Dataset instances.  At least "
+    "one key named ``train`` must be available.  This dataset will be used for "
     "training the network model.  The dataset description must include all "
     "required pre-processing, including eventual data augmentation.  If a "
     "dataset named ``__train__`` is available, it is used prioritarily for "
     "training instead of ``train``.  If a dataset named ``__valid__`` is "
-    "available, it is used for model validation (and automatic check-pointing) "
-    "at each epoch.",
+    "available, it is used for model validation (and automatic "
+    "check-pointing) at each epoch.  If a dataset list named "
+    "``__extra_valid__`` is available, then it will be tracked during the "
+    "validation process and its loss output at the training log as well, "
+    "in the format of an array occupying a single column.  All other keys "
+    "are considered test datasets and are ignored during training",
     required=True,
     cls=ResourceOption,
 )
@@ -240,6 +245,7 @@ def train(
 
     use_dataset = dataset
     validation_dataset = None
+    extra_validation_datasets = []
     if isinstance(dataset, dict):
         if "__train__" in dataset:
             logger.info("Found (dedicated) '__train__' set for training")
@@ -251,6 +257,22 @@ def train(
             logger.info("Found (dedicated) '__valid__' set for validation")
             logger.info("Will checkpoint lowest loss model on validation set")
             validation_dataset = dataset["__valid__"]
+
+        if "__extra_valid__" in dataset:
+            if not isinstance(dataset["__extra_valid__"], list):
+                raise RuntimeError(
+                    f"If present, dataset['__extra_valid__'] must be a list, "
+                    f"but you passed a {type(dataset['__extra_valid__'])}, "
+                    f"which is invalid."
+                )
+            logger.info(
+                f"Found {len(dataset['__extra_valid__'])} extra validation "
+                f"set(s) to be tracked during training"
+            )
+            logger.info(
+                "Extra validation sets are NOT used for model checkpointing!"
+            )
+            extra_validation_datasets = dataset["__extra_valid__"]
 
     # PyTorch dataloader
     multiproc_kwargs = dict()
@@ -286,6 +308,18 @@ def train(
             **multiproc_kwargs,
         )
 
+    extra_valid_loaders = [
+        DataLoader(
+            dataset=k,
+            batch_size=batch_size,
+            shuffle=False,
+            drop_last=False,
+            pin_memory=torch.cuda.is_available(),
+            **multiproc_kwargs,
+        )
+        for k in extra_validation_datasets
+    ]
+
     checkpointer = Checkpointer(model, optimizer, scheduler, path=output_folder)
 
     arguments = {}
@@ -303,6 +337,7 @@ def train(
         model,
         data_loader,
         valid_loader,
+        extra_valid_loaders,
         optimizer,
         criterion,
         scheduler,

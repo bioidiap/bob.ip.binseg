@@ -1,33 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from collections import deque
-
 import numpy
 import scipy.special
-import torch
-
-
-class SmoothedValue:
-    """Track a series of values and provide access to smoothed values over a
-    window or the global series average.
-    """
-
-    def __init__(self, window_size=20):
-        self.deque = deque(maxlen=window_size)
-
-    def update(self, value):
-        self.deque.append(value)
-
-    @property
-    def median(self):
-        d = torch.tensor(list(self.deque))
-        return d.median().item()
-
-    @property
-    def avg(self):
-        d = torch.tensor(list(self.deque))
-        return d.mean().item()
 
 
 def tricky_division(n, d):

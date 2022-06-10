@@ -52,12 +52,22 @@ logger = logging.getLogger(__name__)
     "--dataset",
     "-d",
     help="A dictionary mapping string keys to "
-    "bob.ip.binseg.data.utils.SampleList2TorchDataset's.  At least one key "
-    "named 'train' must be available.  This dataset will be used for training "
-    "the network model.  All other datasets will be used for prediction and "
-    "evaluation. Dataset descriptions include all required pre-processing, "
-    "including eventual data augmentation, which may be eventually excluded "
-    "for prediction and evaluation purposes",
+    "torch.utils.data.dataset.Dataset instances implementing datasets "
+    "to be used for training and validating the model, possibly including all "
+    "pre-processing pipelines required or, optionally, a dictionary mapping "
+    "string keys to torch.utils.data.dataset.Dataset instances.  At least "
+    "one key named ``train`` must be available.  This dataset will be used for "
+    "training the network model.  The dataset description must include all "
+    "required pre-processing, including eventual data augmentation.  If a "
+    "dataset named ``__train__`` is available, it is used prioritarily for "
+    "training instead of ``train``.  If a dataset named ``__valid__`` is "
+    "available, it is used for model validation (and automatic "
+    "check-pointing) at each epoch.  If a dataset list named "
+    "``__valid_extra__`` is available, then it will be tracked during the "
+    "validation process and its loss output at the training log as well, "
+    "in the format of an array occupying a single column.  All other keys "
+    "are considered test datasets and only used during analysis, to report "
+    "the final system performance",
     required=True,
     cls=ResourceOption,
 )
@@ -285,9 +295,10 @@ def experiment(
         abruptly.
 
         N.B.: The tool is designed to prevent analysis bias and allows one to
-        provide separate subsets for training and evaluation.  Instead of using
-        simple datasets, datasets for full experiment running should be
-        dictionaries with specific subset names:
+        provide (potentially multiple) separate subsets for training,
+        validation, and evaluation.  Instead of using simple datasets, datasets
+        for full experiment running should be dictionaries with specific subset
+        names:
 
         * ``__train__``: dataset used for training, prioritarily.  It is typically
           the dataset containing data augmentation pipelines.
@@ -297,6 +308,10 @@ def experiment(
           training, besides the model at the end of training.
         * ``train`` (optional): a copy of the ``__train__`` dataset, without data
           augmentation, that will be evaluated alongside other sets available
+        * ``__valid_extra__``: a list of datasets that are tracked during
+          validation, but do not affect checkpoiting. If present, an extra
+          column with an array containing the loss of each set is kept on the
+          training log.
         * ``*``: any other name, not starting with an underscore character (``_``),
           will be considered a test set for evaluation.
 
