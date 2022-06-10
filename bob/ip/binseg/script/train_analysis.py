@@ -52,8 +52,8 @@ def _loss_evolution(df):
         axes.plot(
             df.epoch.values[lowest_index],
             df.validation_loss[lowest_index],
-            "go",
-            label=f"Lowest validation ({df.validation_loss[lowest_index]:g})",
+            "mo",
+            label=f"Lowest validation ({df.validation_loss[lowest_index]:.3f}@{df.epoch[lowest_index]})",
         )
 
     if "extra_validation_losses" in df.columns:
