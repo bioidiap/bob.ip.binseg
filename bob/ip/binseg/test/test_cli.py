@@ -47,7 +47,7 @@ def _str_counter(substr, s):
     return sum(1 for _ in re.finditer(substr, s, re.MULTILINE))
 
 
-def _check_experiment_stare(caplog, overlay, multiprocess=False):
+def _check_experiment_stare(caplog, overlay, multiprocess=False, extra_valid=0):
 
     from ..script.experiment import experiment
 
@@ -66,6 +66,13 @@ def _check_experiment_stare(caplog, overlay, multiprocess=False):
             "from bob.ip.binseg.configs.datasets.stare import _maker\n"
         )
         config.write("dataset = _maker('ah', _raw)\n")
+        if extra_valid > 0:
+            # simulates the existence of a single extra validation dataset
+            # which is simply a copy of the __valid__ dataset for this test...
+            config.write(
+                f"dataset['__extra_valid__'] = "
+                f"{extra_valid}*[dataset['__valid__']]\n"
+            )
         config.write("second_annotator = _maker('vk', _raw)\n")
         config.flush()
 
@@ -202,6 +209,10 @@ def _check_experiment_stare(caplog, overlay, multiprocess=False):
             r"^Found \(dedicated\) '__train__' set for training$": 1,
             r"^Found \(dedicated\) '__valid__' set for validation$": 1,
             r"^Will checkpoint lowest loss model on validation set$": 1,
+            f"^Found {extra_valid} extra validation": 1 if extra_valid else 0,
+            r"^Extra validation sets are NOT used for model checkpointing": 1
+            if extra_valid
+            else 0,
             r"^Continuing from epoch 0$": 1,
             r"^Saving model summary at.*$": 1,
             r"^Model has.*$": 1,
@@ -242,6 +253,14 @@ def test_experiment_stare_without_overlay(caplog):
 
 def test_experiment_stare_with_multiprocessing(caplog):
     _check_experiment_stare(caplog, overlay=False, multiprocess=True)
+
+
+def test_experiment_stare_with_extra_validation(caplog):
+    _check_experiment_stare(caplog, overlay=False, extra_valid=1)
+
+
+def test_experiment_stare_with_multiple_extra_validation(caplog):
+    _check_experiment_stare(caplog, overlay=False, extra_valid=3)
 
 
 def _check_train(caplog, runner):
