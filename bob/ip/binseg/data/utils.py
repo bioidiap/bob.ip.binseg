@@ -296,3 +296,109 @@ class SSLDataset(torch.utils.data.Dataset):
         unlab = self._unlabelled[torch.randint(len(self._unlabelled), ())]
         # only interested in key and data
         return retval + unlab[:2]
+
+
+class SampleListDetectionDataset(torch.utils.data.Dataset):
+    """PyTorch dataset wrapper around Sample lists for the task of detection.
+
+    A transform object can be passed that will be applied to the image, ground
+    truth and mask (if present).
+    It supports indexing such that dataset[i] can be used to get the i-th
+    sample.
+
+
+    Parameters
+    ----------
+
+    samples : list
+        A list of :py:class:`bob.ip.binseg.data.sample.Sample` objects
+
+    transforms : :py:class:`list`, Optional
+        a list of transformations to be applied to **both** image and
+        ground-truth data.  Notice a last transform
+        (:py:class:`bob.ip.binseg.data.transforms.ToTensor`) is always applied
+        - you do not need to add that.
+
+    """
+
+    def __init__(self, samples, transforms=[]):
+
+        self._samples = samples
+        self.transforms = transforms
+
+    @property
+    def transforms(self):
+        return self._transforms.transforms[:-1]
+
+    @transforms.setter
+    def transforms(self, value):
+        self._transforms = Compose(value)
+
+    def copy(self, transforms=None):
+        """Returns a deep copy of itself, optionally resetting transforms
+
+        Parameters
+        ----------
+
+        transforms : :py:class:`list`, Optional
+            An optional list of transforms to set in the copy.  If not
+            specified, use ``self.transforms``.
+        """
+
+        return SampleListDataset(self._samples, transforms or self.transforms)
+
+    def keys(self):
+        """Generator producing all keys for all samples"""
+        for k in self._samples:
+            yield k.key
+
+    def all_keys_match(self, other):
+        """Compares all keys to ``other``, return ``True`` if all match"""
+        return len(self) == len(other) and all(
+            [(ks == ko) for ks, ko in zip(self.keys(), other.keys())]
+        )
+
+    def __len__(self):
+        """
+
+        Returns
+        -------
+
+        size : int
+            size of the dataset
+
+        """
+        return len(self._samples)
+
+    def __getitem__(self, key):
+        """
+
+        Parameters
+        ----------
+
+        key : int, slice
+
+        Returns
+        -------
+
+        sample : list
+            The sample data: ``[key, image[, gt[, mask]]]``
+
+        """
+
+        if isinstance(key, slice):
+            return [self[k] for k in range(*key.indices(len(self)))]
+        else:  # we try it as an int
+            item = self._samples[key]
+            data = item.data  # triggers data loading
+
+            retval = [data["data"]]
+            if "label" in data:
+                retval.append(data["label"])
+            if "mask" in data:
+                retval.append(data["mask"])
+
+            if self._transforms:
+                retval = self._transforms(*retval)
+
+            return retval

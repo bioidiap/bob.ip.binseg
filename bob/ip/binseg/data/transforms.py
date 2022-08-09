@@ -18,6 +18,7 @@ import PIL.Image
 import PIL.ImageOps
 import torchvision.transforms
 import torchvision.transforms.functional
+import torch
 
 
 class TupleMixin:
@@ -389,3 +390,52 @@ class GaussianBlur(torchvision.transforms.GaussianBlur):
             return [super(GaussianBlur, self).__call__(args[0]), *args[1:]]
         else:
             return args
+
+
+class GetBoundingBox:
+    """Returns image tensor and its corresponding target dict given a mask.
+
+    Parameters
+    ----------
+    image : :py:class:`int`, Optional
+        Which reference part of the sample is the image.
+
+    reference : :py:class:`int`, Optional
+        Which reference part of the sample to use for getting bbox.
+        If not set, use the second object on the sample (typically, the mask).
+    """
+
+    def __init__(self, image=0, reference=1):
+        self.image = image
+        self.reference = reference
+
+    def __call__(self, *args):
+
+        ref = numpy.array(args[self.reference])
+
+        obj_ids = numpy.unique(ref)
+        obj_ids = obj_ids[1:]
+
+        masks = ref == obj_ids[:, None, None]
+
+        num_objs = len(obj_ids)
+        boxes = []
+        for i in range(num_objs):
+            pos = numpy.where(masks[i])
+            xmin = numpy.min(pos[1])
+            xmax = numpy.max(pos[1])
+            ymin = numpy.min(pos[0])
+            ymax = numpy.max(pos[0])
+            boxes.append([xmin, ymin, xmax, ymax])
+
+        boxes = torch.as_tensor(boxes, dtype=torch.float32)
+        labels = torch.ones((num_objs,), dtype=torch.int64)
+
+        target = {}
+        target["boxes"] = boxes
+        target["labels"] = labels
+#         target["masks"] = masks
+        transf = torchvision.transforms.ToTensor()
+        img = transf(args[self.image])
+
+        return [img, target]

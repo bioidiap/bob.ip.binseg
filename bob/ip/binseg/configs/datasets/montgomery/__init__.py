@@ -23,7 +23,7 @@ def _maker_augmented(protocol):
     from ....data.transforms import ShrinkIntoSquare as _shrinkintosq
     from .. import make_subset
 
-    def mk_aug_subset(subsets, train_transforms, all_transforms):
+    def _mk_aug_subset(subsets, train_transforms, all_transforms):
         retval = {}
 
         for key in subsets.keys():
@@ -42,7 +42,7 @@ def _maker_augmented(protocol):
 
         return retval
 
-    return mk_aug_subset(
+    return _mk_aug_subset(
         subsets=raw.subsets(protocol),
         all_transforms=[_shrinkintosq(), _resize((256, 256))],
         train_transforms=[
@@ -55,6 +55,50 @@ def _maker_augmented(protocol):
                     _jitter(p=0.5),
                     _blur(p=0.5),
                 ]
+            )
+        ],
+    )
+
+
+def _maker_detection(protocol):
+
+    from ....data.montgomery import dataset as raw
+    from ....data.transforms import (Compose,
+                                     Resize,
+                                     ShrinkIntoSquare,
+                                     GetBoundingBox)
+    from .. import make_detection_subset
+
+    def _mk_aug_subset(subsets, train_transforms, all_transforms):
+        retval = {}
+
+        for key in subsets.keys():
+            retval[key] = make_detection_subset(subsets[key],
+                                                transforms=all_transforms)
+            if key == "train":
+                retval["__train__"] = make_detection_subset(
+                    subsets[key],
+                    transforms=train_transforms,
+                )
+            else:
+                if key == "validation":
+                    retval["__valid__"] = retval[key]
+
+        if ("__train__" in retval) and ("__valid__" not in retval):
+            retval["__valid__"] = retval["__train__"]
+
+        return retval
+
+    return _mk_aug_subset(
+        subsets=raw.subsets(protocol),
+        all_transforms=[ShrinkIntoSquare(),
+                        Resize((256, 256)),
+                        GetBoundingBox()],
+        train_transforms=[
+            Compose(
+                [ShrinkIntoSquare(),
+                 Resize((256, 256)),
+                 GetBoundingBox()]
             )
         ],
     )

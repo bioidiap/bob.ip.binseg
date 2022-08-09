@@ -56,3 +56,44 @@ def _maker_augmented(protocol):
             )
         ],
     )
+
+
+def _maker_detection(protocol):
+
+    from ....data.jsrt import dataset as raw
+    from ....data.transforms import (Compose,
+                                     Resize,
+                                     GetBoundingBox)
+    from .. import make_detection_subset
+
+    def _mk_aug_subset(subsets, train_transforms, all_transforms):
+        retval = {}
+
+        for key in subsets.keys():
+            retval[key] = make_detection_subset(subsets[key],
+                                                transforms=all_transforms)
+            if key == "train":
+                retval["__train__"] = make_detection_subset(
+                    subsets[key],
+                    transforms=train_transforms,
+                )
+            else:
+                if key == "validation":
+                    retval["__valid__"] = retval[key]
+
+        if ("__train__" in retval) and ("__valid__" not in retval):
+            retval["__valid__"] = retval["__train__"]
+
+        return retval
+
+    return _mk_aug_subset(
+        subsets=raw.subsets(protocol),
+        all_transforms=[Resize((256, 256)),
+                        GetBoundingBox()],
+        train_transforms=[
+            Compose(
+                [Resize((256, 256)),
+                 GetBoundingBox()]
+            )
+        ],
+    )
