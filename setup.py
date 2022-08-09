@@ -34,7 +34,7 @@ setup(
             "config = bob.ip.binseg.script.config:config",
             "dataset =  bob.ip.binseg.script.dataset:dataset",
             "train = bob.ip.binseg.script.train:train",
-            "train_detection = bob.ip.binseg.script.train_detection:train_detection",
+            "train-detection = bob.ip.binseg.script.train_detection:train_detection",
             "predict = bob.ip.binseg.script.predict:predict",
             "evaluate = bob.ip.binseg.script.evaluate:evaluate",
             "compare =  bob.ip.binseg.script.compare:compare",
@@ -55,6 +55,7 @@ setup(
             "unet = bob.ip.binseg.configs.models.unet",
             "resunet = bob.ip.binseg.configs.models.resunet",
             "lwnet = bob.ip.binseg.configs.models.lwnet",
+            "faster-rcnn = bob.ip.binseg.configs.models.faster_rcnn"
             # example datasets
             "csv-dataset-example = bob.ip.binseg.configs.datasets.csv",
             # drive dataset - retinography
