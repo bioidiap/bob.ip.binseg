@@ -401,4 +401,4 @@ class SampleListDetectionDataset(torch.utils.data.Dataset):
             if self._transforms:
                 retval = self._transforms(*retval)
 
-            return retval
+            return [item.key] + retval
