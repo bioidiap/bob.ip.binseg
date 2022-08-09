@@ -199,7 +199,7 @@ logger = logging.getLogger(__name__)
     cls=ResourceOption,
 )
 @verbosity_option(cls=ResourceOption)
-def train(
+def train_detection(
     model,
     optimizer,
     scheduler,
