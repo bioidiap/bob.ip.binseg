@@ -34,6 +34,7 @@ setup(
             "config = bob.ip.binseg.script.config:config",
             "dataset =  bob.ip.binseg.script.dataset:dataset",
             "train = bob.ip.binseg.script.train:train",
+            "train_detection = bob.ip.binseg.script.detection_train:train",
             "predict = bob.ip.binseg.script.predict:predict",
             "evaluate = bob.ip.binseg.script.evaluate:evaluate",
             "compare =  bob.ip.binseg.script.compare:compare",
