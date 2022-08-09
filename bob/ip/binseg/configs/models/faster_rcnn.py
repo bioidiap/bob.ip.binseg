@@ -6,7 +6,7 @@
 Reference: [____]_
 """
 from torch.optim.lr_scheduler import MultiStepLR
-from bob.ip.binseg.models.fasterrcnn import fasterrcnn
+from bob.ip.binseg.models.faster_rcnn import faster_rcnn
 import torch
 
 # config
@@ -22,7 +22,7 @@ amsbound = False
 scheduler_milestones = [900]
 scheduler_gamma = 0.1
 
-model = fasterrcnn()
+model = faster_rcnn()
 
 # optimizer
 params = [p for p in model.parameters() if p.requires_grad]

@@ -198,12 +198,8 @@ logger = logging.getLogger(__name__)
     default=5.0,
     cls=ResourceOption,
 )
-
-def _collate_fn(batch):
-    return tuple(zip(*batch))
-
 @verbosity_option(cls=ResourceOption)
-def train(
+def train_detection(
     model,
     optimizer,
     scheduler,
@@ -234,6 +230,9 @@ def train(
     the original training session stopped (or the last checkpoint was saved).
 
     """
+    def _collate_fn(batch):
+        return tuple(zip(*batch))
+
     device = setup_pytorch_device(device)
 
     set_seeds(seed, all_gpus=False)
