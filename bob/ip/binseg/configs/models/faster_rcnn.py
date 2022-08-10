@@ -13,7 +13,7 @@ import torch
 lr = 0.005
 betas = (0.9, 0.999)
 eps = 1e-08
-weight_decay = 0
+weight_decay = 0.0005
 final_lr = 0.1
 gamma = 1e-3
 eps = 1e-8
@@ -24,10 +24,11 @@ scheduler_gamma = 0.1
 
 model = faster_rcnn()
 
-# optimizer
 params = [p for p in model.parameters() if p.requires_grad]
+
+# optimizer
 optimizer = torch.optim.SGD(params, lr=lr,
-                            momentum=0.9, weight_decay=0.0005)
+                            momentum=0.9, weight_decay=weight_decay)
 
 # scheduler
 scheduler = MultiStepLR(

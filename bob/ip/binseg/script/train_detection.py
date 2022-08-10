@@ -28,19 +28,10 @@ logger = logging.getLogger(__name__)
     epilog="""Examples:
 
 \b
-    1. Trains a U-Net model (VGG-16 backbone) with DRIVE (vessel segmentation),
+    1. Trains a Faster-RCNN with SHENZHEN (lung detection),
        on a GPU (``cuda:0``):
 
-       $ bob binseg train -vv unet drive --batch-size=4 --device="cuda:0"
-
-    2. Trains a HED model with HRF on a GPU (``cuda:0``):
-
-       $ bob binseg train -vv hed hrf --batch-size=8 --device="cuda:0"
-
-    3. Trains a M2U-Net model on the COVD-DRIVE dataset on the CPU:
-
-       $ bob binseg train -vv m2unet covd-drive --batch-size=8
-
+       $ bob binseg train -vv faster_rcnn shenzhen --batch-size=4 --device="cuda:0"
 """,
 )
 @click.option(
