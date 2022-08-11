@@ -63,10 +63,12 @@ def _maker_augmented(protocol, n):
 def _maker_detection(protocol):
 
     from ....data.shenzhen import dataset as raw
-    from ....data.transforms import (Compose,
-                                     Resize,
-                                     ShrinkIntoSquare,
-                                     GetBoundingBox)
+    from ....data.transforms import (
+        Compose,
+        GetBoundingBox,
+        Resize,
+        ShrinkIntoSquare,
+    )
     from .. import make_detection_subset
 
     def _mk_aug_subset(subsets, train_transforms, all_transforms):

@@ -221,6 +221,7 @@ def train_detection(
     the original training session stopped (or the last checkpoint was saved).
 
     """
+
     def _collate_fn(batch):
         return tuple(zip(*batch))
 

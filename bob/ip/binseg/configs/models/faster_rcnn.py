@@ -5,9 +5,11 @@
 
 Reference: [____]_
 """
-from torch.optim.lr_scheduler import MultiStepLR
-from bob.ip.binseg.models.faster_rcnn import faster_rcnn
 import torch
+
+from torch.optim.lr_scheduler import MultiStepLR
+
+from bob.ip.binseg.models.faster_rcnn import faster_rcnn
 
 # config
 lr = 0.005
@@ -27,8 +29,9 @@ model = faster_rcnn()
 params = [p for p in model.parameters() if p.requires_grad]
 
 # optimizer
-optimizer = torch.optim.SGD(params, lr=lr,
-                            momentum=0.9, weight_decay=weight_decay)
+optimizer = torch.optim.SGD(
+    params, lr=lr, momentum=0.9, weight_decay=weight_decay
+)
 
 # scheduler
 scheduler = MultiStepLR(

@@ -16,9 +16,9 @@ import random
 import numpy
 import PIL.Image
 import PIL.ImageOps
+import torch
 import torchvision.transforms
 import torchvision.transforms.functional
-import torch
 
 
 class TupleMixin:
@@ -434,7 +434,7 @@ class GetBoundingBox:
         target = {}
         target["boxes"] = boxes
         target["labels"] = labels
-#         target["masks"] = masks
+        #         target["masks"] = masks
         transf = torchvision.transforms.ToTensor()
         img = transf(args[self.image])
 

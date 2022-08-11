@@ -63,18 +63,21 @@ def _maker_augmented(protocol):
 def _maker_detection(protocol):
 
     from ....data.montgomery import dataset as raw
-    from ....data.transforms import (Compose,
-                                     Resize,
-                                     ShrinkIntoSquare,
-                                     GetBoundingBox)
+    from ....data.transforms import (
+        Compose,
+        GetBoundingBox,
+        Resize,
+        ShrinkIntoSquare,
+    )
     from .. import make_detection_subset
 
     def _mk_aug_subset(subsets, train_transforms, all_transforms):
         retval = {}
 
         for key in subsets.keys():
-            retval[key] = make_detection_subset(subsets[key],
-                                                transforms=all_transforms)
+            retval[key] = make_detection_subset(
+                subsets[key], transforms=all_transforms
+            )
             if key == "train":
                 retval["__train__"] = make_detection_subset(
                     subsets[key],
@@ -91,14 +94,12 @@ def _maker_detection(protocol):
 
     return _mk_aug_subset(
         subsets=raw.subsets(protocol),
-        all_transforms=[ShrinkIntoSquare(),
-                        Resize((256, 256)),
-                        GetBoundingBox()],
+        all_transforms=[
+            ShrinkIntoSquare(),
+            Resize((256, 256)),
+            GetBoundingBox(),
+        ],
         train_transforms=[
-            Compose(
-                [ShrinkIntoSquare(),
-                 Resize((256, 256)),
-                 GetBoundingBox()]
-            )
+            Compose([ShrinkIntoSquare(), Resize((256, 256)), GetBoundingBox()])
         ],
     )

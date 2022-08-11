@@ -221,10 +221,17 @@ def train_epoch(loader, model, optimizer, device):
 
     # progress bar only on interactive jobs
     for samples in tqdm(loader, desc="train", leave=False, disable=None):
-        images = list(image.to(device, non_blocking=torch.cuda.is_available())
-                      for image in samples[1])
-        targets = [{k: v.to(device, non_blocking=torch.cuda.is_available())
-                   for k, v in t.items()} for t in samples[2]]
+        images = list(
+            image.to(device, non_blocking=torch.cuda.is_available())
+            for image in samples[1]
+        )
+        targets = [
+            {
+                k: v.to(device, non_blocking=torch.cuda.is_available())
+                for k, v in t.items()
+            }
+            for t in samples[2]
+        ]
 
         # data forwarding on the existing network
         loss_dict = model(images, targets)
@@ -278,12 +285,17 @@ def validate_epoch(loader, model, device, pbar_desc):
     with torch.no_grad(), torch_evaluation(model):
 
         for samples in tqdm(loader, desc=pbar_desc, leave=False, disable=None):
-            images = list(image.to(device,
-                                   non_blocking=torch.cuda.is_available())
-                          for image in samples[1])
-            targets = [{k: v.to(device,
-                                non_blocking=torch.cuda.is_available())
-                       for k, v in t.items()} for t in samples[2]]
+            images = list(
+                image.to(device, non_blocking=torch.cuda.is_available())
+                for image in samples[1]
+            )
+            targets = [
+                {
+                    k: v.to(device, non_blocking=torch.cuda.is_available())
+                    for k, v in t.items()
+                }
+                for t in samples[2]
+            ]
 
             # data forwarding on the existing network
             loss_dict = model(images, targets)
@@ -562,14 +574,12 @@ def run(
                 # Epoch time
                 start_epoch_time = time.time()
 
-                train_loss = train_epoch(
-                    data_loader, model, optimizer, device)
+                train_loss = train_epoch(data_loader, model, optimizer, device)
 
                 scheduler.step()
 
                 valid_loss = (
-                    validate_epoch(
-                        valid_loader, model, device, "valid")
+                    validate_epoch(valid_loader, model, device, "valid")
                     if valid_loader is not None
                     else None
                 )

@@ -2,7 +2,9 @@
 # -*- coding: utf-8 -*-
 
 import torchvision
+
 from torchvision.models.detection.faster_rcnn import FastRCNNPredictor
+
 
 def faster_rcnn(pretrained_backbone=True, progress=True):
     """Build Faster RCNN implementation on PyTorch.
@@ -22,9 +24,9 @@ def faster_rcnn(pretrained_backbone=True, progress=True):
     module : :py:class:`torch.nn.Module`
         Network model for Faster R-CNN
     """
-    model = (
-        torchvision.models.detection.fasterrcnn_resnet50_fpn(pretrained=pretrained_backbone,
-                                                             progress=progress))
+    model = torchvision.models.detection.fasterrcnn_resnet50_fpn(
+        pretrained=pretrained_backbone, progress=progress
+    )
 
     num_classes = 2  # 1 class (person) + background
 
