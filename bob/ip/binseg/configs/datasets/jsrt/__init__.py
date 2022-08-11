@@ -61,11 +61,7 @@ def _maker_augmented(protocol):
 def _maker_detection(protocol):
 
     from ....data.jsrt import dataset as raw
-    from ....data.transforms import (
-        Compose,
-        Resize,
-        ShrinkIntoSquare,
-    )
+    from ....data.transforms import Compose, Resize, ShrinkIntoSquare
     from .. import make_subset
 
     def _mk_aug_subset(subsets, train_transforms, all_transforms):

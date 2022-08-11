@@ -10,7 +10,7 @@ import PIL.ImageOps
 import torch
 import torch.utils.data
 
-from .transforms import Compose, ToTensor, GetBoundingBox
+from .transforms import Compose, GetBoundingBox, ToTensor
 
 
 def invert_mode1_image(img):
