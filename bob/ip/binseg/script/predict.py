@@ -17,7 +17,6 @@ from bob.extension.scripts.click_helper import (
     verbosity_option,
 )
 
-from ..engine.predictor import run
 from ..utils.checkpointer import Checkpointer
 from .binseg import download_to_tempfile, setup_pytorch_device
 
@@ -124,6 +123,16 @@ logger = logging.getLogger(__name__)
     default=-1,
     cls=ResourceOption,
 )
+@click.option(
+    "--detection",
+    help="""If set, then the model will predict the bounding boxes instead of
+    the probability maps. Note that this is only available if the selected
+    model can perform the task of object detection.""",
+    required=False,
+    show_default=True,
+    default=False,
+    cls=ResourceOption,
+)
 @verbosity_option(cls=ResourceOption)
 def predict(
     output_folder,
@@ -134,6 +143,7 @@ def predict(
     weight,
     overlayed,
     parallel,
+    detection,
     **kwargs,
 ):
     """Predicts vessel map (probabilities) on input images"""
@@ -185,4 +195,9 @@ def predict(
             pin_memory=torch.cuda.is_available(),
             **multiproc_kwargs,
         )
+        if detection:
+            from ..engine.detection_predictor import run
+        else:
+            from ..engine.predictor import run
+
         run(model, data_loader, k, device, output_folder, overlayed)
