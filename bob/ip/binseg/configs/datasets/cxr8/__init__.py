@@ -62,20 +62,23 @@ def _maker_augmented(protocol, n):
 def _maker_detection(protocol):
 
     from ....data.cxr8 import dataset as raw
-    from ....data.transforms import Compose, GetBoundingBox, Resize
-    from .. import make_detection_subset
+    from ....data.transforms import (
+        Compose,
+        Resize,
+        ShrinkIntoSquare,
+    )
+    from .. import make_subset
 
     def _mk_aug_subset(subsets, train_transforms, all_transforms):
         retval = {}
 
         for key in subsets.keys():
-            retval[key] = make_detection_subset(
-                subsets[key], transforms=all_transforms
+            retval[key] = make_subset(
+                subsets[key], transforms=all_transforms, detection=True
             )
             if key == "train":
-                retval["__train__"] = make_detection_subset(
-                    subsets[key],
-                    transforms=train_transforms,
+                retval["__train__"] = make_subset(
+                    subsets[key], transforms=train_transforms, detection=True
                 )
             else:
                 if key == "validation":
@@ -88,6 +91,16 @@ def _maker_detection(protocol):
 
     return _mk_aug_subset(
         subsets=raw.subsets(protocol),
-        all_transforms=[Resize((256, 256)), GetBoundingBox()],
-        train_transforms=[Compose([Resize((256, 256)), GetBoundingBox()])],
+        all_transforms=[
+            ShrinkIntoSquare(),
+            Resize((256, 256)),
+        ],
+        train_transforms=[
+            Compose(
+                [
+                    ShrinkIntoSquare(),
+                    Resize((256, 256)),
+                ]
+            )
+        ],
     )

@@ -31,7 +31,8 @@ logger = logging.getLogger(__name__)
     1. Trains a Faster-RCNN with SHENZHEN (lung detection),
        on a GPU (``cuda:0``):
 
-       $ bob binseg train -vv faster_rcnn shenzhen --batch-size=4 --device="cuda:0"
+       $ bob binseg train-detection -vv faster-rcnn shenzhen --batch-size=4
+         --device="cuda:0"
 """,
 )
 @click.option(

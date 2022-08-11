@@ -55,7 +55,7 @@ setup(
             "unet = bob.ip.binseg.configs.models.unet",
             "resunet = bob.ip.binseg.configs.models.resunet",
             "lwnet = bob.ip.binseg.configs.models.lwnet",
-            "faster-rcnn = bob.ip.binseg.configs.models.faster_rcnn"
+            "faster-rcnn = bob.ip.binseg.configs.models.faster_rcnn",
             # example datasets
             "csv-dataset-example = bob.ip.binseg.configs.datasets.csv",
             # drive dataset - retinography

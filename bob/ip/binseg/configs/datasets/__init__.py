@@ -17,7 +17,7 @@ RANDOM_FLIP_JITTER = [_hflip(), _vflip(), _jitter()]
 """Shared data augmentation transforms without random rotation"""
 
 
-def make_subset(samples, transforms, prefixes=[], suffixes=[]):
+def make_subset(samples, transforms, prefixes=[], suffixes=[], detection=False):
     """Creates a new data set, applying transforms
 
     .. note::
@@ -56,7 +56,7 @@ def make_subset(samples, transforms, prefixes=[], suffixes=[]):
 
     from ...data.utils import SampleListDataset as wrapper
 
-    return wrapper(samples, prefixes + transforms + suffixes)
+    return wrapper(samples, prefixes + transforms + suffixes, detection)
 
 
 def augment_subset(s, rotation_before=False):
@@ -183,47 +183,3 @@ def make_dataset(subsets, transforms):
         retval["__valid__"] = retval["train"]
 
     return retval
-
-
-def make_detection_subset(samples, transforms, prefixes=[], suffixes=[]):
-    """Creates a new data set, applying transforms
-
-    .. note::
-
-       This is a convenience function for our own dataset definitions inside
-       this module, guaranteeting homogenity between dataset definitions
-       provided in this package.  It assumes certain strategies for data
-       augmentation that may not be translatable to other applications.
-       Differs from original make_subset for the final input is a tensor
-       (image) and a dictionary of tensors as a target.
-
-
-    Parameters
-    ----------
-
-    samples : list
-        List of delayed samples
-
-    transforms : list
-        A list of transforms that needs to be applied to all samples in the set
-
-    prefixes : list
-        A list of data augmentation operations that needs to be applied
-        **before** the transforms above
-
-    suffixes : list
-        A list of data augmentation operations that needs to be applied
-        **after** the transforms above
-
-
-    Returns
-    -------
-
-    subset : :py:class:`bob.ip.binseg.data.utils.SampleListDataset`
-        A pre-formatted dataset that can be fed to one of our engines
-
-    """
-
-    from ...data.utils import SampleListDetectionDataset as wrapper
-
-    return wrapper(samples, prefixes + transforms + suffixes)

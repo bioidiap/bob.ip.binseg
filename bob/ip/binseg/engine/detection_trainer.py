@@ -221,6 +221,7 @@ def train_epoch(loader, model, optimizer, device):
 
     # progress bar only on interactive jobs
     for samples in tqdm(loader, desc="train", leave=False, disable=None):
+        print(samples)
         images = list(
             image.to(device, non_blocking=torch.cuda.is_available())
             for image in samples[1]
