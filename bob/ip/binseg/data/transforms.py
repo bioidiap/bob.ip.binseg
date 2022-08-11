@@ -423,8 +423,8 @@ class GetBoundingBox:
         for i in range(num_objs):
             pos = torch.where(masks[i])
             xmin = pos[1].min().item()
-            xmax = pos[1].min().item()
-            ymin = pos[0].max().item()
+            xmax = pos[1].max().item()
+            ymin = pos[0].min().item()
             ymax = pos[0].max().item()
             boxes.append([xmin, ymin, xmax, ymax])
 

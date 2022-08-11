@@ -221,7 +221,6 @@ def train_epoch(loader, model, optimizer, device):
 
     # progress bar only on interactive jobs
     for samples in tqdm(loader, desc="train", leave=False, disable=None):
-        print(samples)
         images = list(
             image.to(device, non_blocking=torch.cuda.is_available())
             for image in samples[1]
@@ -283,7 +282,7 @@ def validate_epoch(loader, model, device, pbar_desc):
     batch_losses = []
     samples_in_batch = []
 
-    with torch.no_grad(), torch_evaluation(model):
+    with torch.no_grad():
 
         for samples in tqdm(loader, desc=pbar_desc, leave=False, disable=None):
             images = list(
@@ -300,6 +299,7 @@ def validate_epoch(loader, model, device, pbar_desc):
 
             # data forwarding on the existing network
             loss_dict = model(images, targets)
+            print(loss_dict)
             loss = sum(loss for loss in loss_dict.values())
 
             batch_losses.append(loss.item())
