@@ -10,6 +10,7 @@ import torch
 from torch.optim.lr_scheduler import MultiStepLR
 
 from bob.ip.binseg.models.faster_rcnn import faster_rcnn
+from bob.ip.binseg.models.losses import SoftJaccardBCELogitsLoss
 
 # config
 lr = 0.005
@@ -37,3 +38,6 @@ optimizer = torch.optim.SGD(
 scheduler = MultiStepLR(
     optimizer, milestones=scheduler_milestones, gamma=scheduler_gamma
 )
+
+# criterion
+criterion = SoftJaccardBCELogitsLoss(alpha=0.7)

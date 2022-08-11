@@ -450,6 +450,7 @@ def run(
     valid_loader,
     extra_valid_loaders,
     optimizer,
+    criterion,
     scheduler,
     checkpointer,
     checkpoint_period,
