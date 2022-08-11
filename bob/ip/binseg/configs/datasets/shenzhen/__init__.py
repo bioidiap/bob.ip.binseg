@@ -60,6 +60,7 @@ def _maker_augmented(protocol, n):
         ],
     )
 
+
 def _maker_detection(protocol):
 
     from ....data.shenzhen import dataset as raw
@@ -75,8 +76,9 @@ def _maker_detection(protocol):
         retval = {}
 
         for key in subsets.keys():
-            retval[key] = make_detection_subset(subsets[key],
-                                                transforms=all_transforms)
+            retval[key] = make_detection_subset(
+                subsets[key], transforms=all_transforms
+            )
             if key == "train":
                 retval["__train__"] = make_detection_subset(
                     subsets[key],
@@ -93,14 +95,12 @@ def _maker_detection(protocol):
 
     return _mk_aug_subset(
         subsets=raw.subsets(protocol),
-        all_transforms=[ShrinkIntoSquare(),
-                        Resize((256, 256)),
-                        GetBoundingBox()],
+        all_transforms=[
+            ShrinkIntoSquare(),
+            Resize((256, 256)),
+            GetBoundingBox(),
+        ],
         train_transforms=[
-            Compose(
-                [ShrinkIntoSquare(),
-                 Resize((256, 256)),
-                 GetBoundingBox()]
-            )
+            Compose([ShrinkIntoSquare(), Resize((256, 256)), GetBoundingBox()])
         ],
     )
