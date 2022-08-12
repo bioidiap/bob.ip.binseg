@@ -176,8 +176,8 @@ def analyze(
     weight,
     steps,
     parallel,
-    detection,
     plot_limits,
+    detection,
     verbose,
     **kwargs,
 ):

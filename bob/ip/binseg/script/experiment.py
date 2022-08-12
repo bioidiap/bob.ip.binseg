@@ -242,6 +242,19 @@ logger = logging.getLogger(__name__)
     type=float,
     cls=ResourceOption,
 )
+@click.option(
+    "--detection",
+    help="""If set, then the model will perform a complete experiment for the
+    task of object detection instead of binary segmentation.Note that this is
+    only available if the selected model can perform the given task, and
+    the provided configuration for the training and evaluation dataset contain
+    the appropriate input format for object detection (provide bounding boxes
+    ).""",
+    required=False,
+    show_default=True,
+    default=False,
+    cls=ResourceOption,
+)
 @verbosity_option(cls=ResourceOption)
 @click.pass_context
 def experiment(
@@ -264,6 +277,7 @@ def experiment(
     overlayed,
     steps,
     plot_limits,
+    detection,
     verbose,
     **kwargs,
 ):
@@ -350,6 +364,7 @@ def experiment(
         seed=seed,
         parallel=parallel,
         monitoring_interval=monitoring_interval,
+        detection=detection,
         verbose=verbose,
     )
     logger.info("Ended training")
@@ -387,5 +402,6 @@ def experiment(
         steps=steps,
         parallel=parallel,
         plot_limits=plot_limits,
+        detection=detection,
         verbose=verbose,
     )
