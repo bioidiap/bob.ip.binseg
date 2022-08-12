@@ -14,8 +14,8 @@ import pandas
 import PIL
 import torch
 import torch.nn.functional
-import torchvision.transforms.functional as VF
 import torchvision.ops.boxes as bops
+import torchvision.transforms.functional as VF
 
 from tqdm import tqdm
 
