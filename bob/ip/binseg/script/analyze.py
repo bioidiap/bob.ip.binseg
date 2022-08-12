@@ -281,6 +281,7 @@ def analyze(
         threshold=threshold,
         steps=steps,
         parallel=parallel,
+        detection=detection,
         verbose=verbose,
     )
 
@@ -345,6 +346,7 @@ def analyze(
         output_table=output_table,
         threshold=threshold,
         plot_limits=plot_limits,
+        detection=detection,
         verbose=verbose,
     )
 

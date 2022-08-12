@@ -13,7 +13,7 @@ from tqdm import tqdm
 from bob.extension.scripts.click_helper import verbosity_option
 
 from ..utils.plot import precision_recall_f1iso
-from ..utils.table import performance_table
+from ..utils.table import performance_table, performance_table_detection
 
 logger = logging.getLogger(__name__)
 
@@ -190,6 +190,16 @@ def _load(data, threshold=None):
     nargs=4,
     type=float,
 )
+@click.option(
+    "--detection",
+    help="""If set, then the model will compare the IoU instead of
+    binary segmentation measures. Note that this is only available if the
+    selected systems were from a model that performed the task of object
+    detection.""",
+    required=False,
+    show_default=True,
+    default=False,
+)
 @verbosity_option()
 def compare(
     label_path,
@@ -198,6 +208,7 @@ def compare(
     output_table,
     threshold,
     plot_limits,
+    detection,
     **kwargs,
 ):
     """Compares multiple systems together"""
@@ -215,7 +226,7 @@ def compare(
     # load all data measures
     data = _load(data, threshold=threshold)
 
-    if output_figure is not None:
+    if output_figure is not None and not detection:
         output_figure = os.path.realpath(output_figure)
         logger.info(f"Creating and saving plot at {output_figure}...")
         os.makedirs(os.path.dirname(output_figure), exist_ok=True)
@@ -224,7 +235,10 @@ def compare(
         fig.clear()
 
     logger.info("Tabulating performance summary...")
-    table = performance_table(data, table_format)
+    if detection:
+        table = performance_table_detection(data, table_format)
+    else:
+        table = performance_table(data, table_format)
     click.echo(table)
     if output_table is not None:
         output_table = os.path.realpath(output_table)
