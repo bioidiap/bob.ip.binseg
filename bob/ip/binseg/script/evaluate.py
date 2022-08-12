@@ -11,8 +11,6 @@ from bob.extension.scripts.click_helper import (
     verbosity_option,
 )
 
-from ..engine.evaluator import compare_annotators, run
-
 logger = logging.getLogger(__name__)
 
 
@@ -159,6 +157,16 @@ def _validate_threshold(t, dataset):
     default=-1,
     cls=ResourceOption,
 )
+@click.option(
+    "--detection",
+    help="""If set, then the model will evaluate the bounding boxes instead of
+    the probability maps. Note that this is only available if the selected
+    model can perform the task of object detection.""",
+    required=False,
+    show_default=True,
+    default=False,
+    cls=ResourceOption,
+)
 @verbosity_option(cls=ResourceOption)
 def evaluate(
     output_folder,
@@ -169,9 +177,15 @@ def evaluate(
     threshold,
     steps,
     parallel,
+    detection,
     **kwargs,
 ):
     """Evaluates an FCN on a binary segmentation task."""
+
+    if detection:
+        from ..engine.detection_evaluator import compare_annotators, run
+    else:
+        from ..engine.evaluator import compare_annotators, run
 
     threshold = _validate_threshold(threshold, dataset)
 

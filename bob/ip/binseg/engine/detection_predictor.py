@@ -35,18 +35,12 @@ def _save_hdf5(stem, pred, output_folder):
         path where to store predictions
 
     """
-
+    print(stem)
     fullpath = os.path.join(output_folder, f"{stem}.hdf5")
     tqdm.write(f"Saving {fullpath}...")
     os.makedirs(os.path.dirname(fullpath), exist_ok=True)
-
     with h5py.File(fullpath, "w") as f:
-        box = pred[0].cpu().squeeze(0).numpy()
-        label = pred[1].cpu().squeeze(0).numpy()
-        score = pred[2].cpu().squeeze(0).numpy()
-        f.create_dataset("box", data=box)
-        f.create_dataset("label", data=label)
-        f.create_dataset("score", data=score)
+        f.create_dataset("pred", data=pred.cpu().numpy(), compression="lzf")
 
 
 def _save_image(stem, extension, data, output_folder):
@@ -95,9 +89,8 @@ def _save_overlayed_png(stem, image, pred, output_folder):
         path where to store results
 
     """
-
     image = VF.to_pil_image(image)
-    pred = pred[0].cpu().squeeze(0).numpy()
+    pred = pred[:4].cpu().squeeze(0).numpy()
     _save_image(stem, ".png", overlayed_bbox_image(image, pred), output_folder)
 
 
@@ -177,8 +170,7 @@ def run(model, data_loader, name, device, output_folder, overlayed_folder):
             for stem, img, box, label, score in zip(
                 names, images, boxes, labels, scores
             ):
-
-                pred = [box, label, score]
+                pred = torch.cat((box, label.unsqueeze(0), score.unsqueeze(0)))
 
                 _save_hdf5(stem, pred, output_folder)
                 if overlayed_folder is not None:
