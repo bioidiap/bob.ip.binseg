@@ -11,6 +11,8 @@ from bob.extension.scripts.click_helper import (
     verbosity_option,
 )
 
+from ..engine.evaluator import run
+
 logger = logging.getLogger(__name__)
 
 
@@ -183,9 +185,11 @@ def evaluate(
     """Evaluates an FCN on a binary segmentation task."""
 
     if detection:
-        from ..engine.detection_evaluator import compare_annotators, run
+        from ..engine.detection_evaluator import compare_annotators
+        from ..engine.detection_evaluator import run as run_evaluate
     else:
-        from ..engine.evaluator import compare_annotators, run
+        from ..engine.evaluator import compare_annotators
+        from ..engine.evaluator import run as run_evaluate
 
     threshold = _validate_threshold(threshold, dataset)
 
@@ -216,7 +220,7 @@ def evaluate(
             logger.info(f"Skipping dataset '{k}' (not to be evaluated)")
             continue
         logger.info(f"Analyzing '{k}' set...")
-        run(
+        run_evaluate(
             v,
             k,
             predictions_folder,
