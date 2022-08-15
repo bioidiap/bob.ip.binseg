@@ -140,26 +140,18 @@ setup(
             # montgomery county - cxr
             "montgomery = bob.ip.binseg.configs.datasets.montgomery.default",
             "montgomery-xtest = bob.ip.binseg.configs.datasets.montgomery.xtest",
-            "montgomery-detection = bob.ip.binseg.configs.datasets.montgomery.default_detection",
-            "montgomery-xtest-detection = bob.ip.binseg.configs.datasets.montgomery.xtest_detection",
             # shenzhen - cxr
             "shenzhen = bob.ip.binseg.configs.datasets.shenzhen.default",
             "shenzhen-small = bob.ip.binseg.configs.datasets.shenzhen.default_256",
             "shenzhen-xtest = bob.ip.binseg.configs.datasets.shenzhen.xtest",
-            "shenzhen-detection = bob.ip.binseg.configs.datasets.shenzhen.default_detection",
-            "shenzhen-xtest-detection = bob.ip.binseg.configs.datasets.shenzhen.xtest_detection",
             # jsrt - cxr
             "jsrt = bob.ip.binseg.configs.datasets.jsrt.default",
             "jsrt-xtest = bob.ip.binseg.configs.datasets.jsrt.xtest",
-            "jsrt-detection = bob.ip.binseg.configs.datasets.jsrt.default_detection",
-            "jsrt-xtest-detection = bob.ip.binseg.configs.datasets.jsrt.xtest_detection",
             # cxr8 - cxr
             "cxr8 = bob.ip.binseg.configs.datasets.cxr8.default",
             "cxr8-idiap = bob.ip.binseg.configs.datasets.cxr8.idiap",
             "cxr8-xtest = bob.ip.binseg.configs.datasets.cxr8.xtest",
             "cxr8-idiap-xtest = bob.ip.binseg.configs.datasets.cxr8.xtest_idiap",
-            "cxr8-detection = bob.ip.binseg.configs.datasets.cxr8.default_detection",
-            "cxr8-xtest-detection = bob.ip.binseg.configs.datasets.cxr8.xtest_detection",
         ],
     },
     # check classifiers, add and remove as you see fit
