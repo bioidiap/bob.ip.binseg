@@ -188,16 +188,29 @@ def predict(
                 "multiprocessing_context"
             ] = multiprocessing.get_context("spawn")
 
-        data_loader = DataLoader(
-            dataset=v,
-            batch_size=batch_size,
-            shuffle=False,
-            pin_memory=torch.cuda.is_available(),
-            **multiproc_kwargs,
-        )
         if detection:
             from ..engine.detection_predictor import run
+
+            def _collate_fn(batch):
+                return tuple(zip(*batch))
+
+            data_loader = DataLoader(
+                dataset=v,
+                batch_size=batch_size,
+                shuffle=False,
+                pin_memory=torch.cuda.is_available(),
+                collate_fn=_collate_fn,
+                **multiproc_kwargs,
+            )
         else:
             from ..engine.predictor import run
+
+            data_loader = DataLoader(
+                dataset=v,
+                batch_size=batch_size,
+                shuffle=False,
+                pin_memory=torch.cuda.is_available(),
+                **multiproc_kwargs,
+            )
 
         run(model, data_loader, k, device, output_folder, overlayed)

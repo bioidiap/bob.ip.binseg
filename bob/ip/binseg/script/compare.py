@@ -121,6 +121,81 @@ def _load(data, threshold=None):
     return retval
 
 
+def _load_detection(data, threshold=None):
+    """Plots comparison chart of all evaluated models
+
+    Parameters
+    ----------
+
+    data : dict
+        A dict in which keys are the names of the systems and the values are
+        paths to ``measures.csv`` style files.
+
+    threshold : :py:class:`float`, :py:class:`str`, Optional
+        A value indicating which threshold to choose for selecting a "F1-score"
+        If set to ``None``, then use the maximum F1-score on that measures file.
+        If set to a floating-point value, then use the F1-score that is
+        obtained on that particular threshold.  If set to a string, it should
+        match one of the keys in ``data``.  It then first calculate the
+        threshold reaching the maximum F1-score on that particular dataset and
+        then applies that threshold to all other sets.
+
+
+    Returns
+    -------
+
+    data : dict
+        A dict in which keys are the names of the systems and the values are
+        dictionaries that contain two keys:
+
+        * ``df``: A :py:class:`pandas.DataFrame` with the measures data loaded
+          to
+        * ``threshold``: A threshold to be used for summarization, depending on
+          the ``threshold`` parameter set on the input
+
+    """
+
+    if isinstance(threshold, str):
+        logger.info(
+            f"Calculating threshold from maximum IoU score at "
+            f"'{threshold}' dataset..."
+        )
+        measures_path = data[threshold]
+        df = pandas.read_csv(measures_path)
+        use_threshold = df.threshold[df.mean_iou.idxmax()]
+        logger.info(f"Dataset '*': threshold = {use_threshold:.3f}'")
+
+    elif isinstance(threshold, float):
+        use_threshold = threshold
+        logger.info(f"Dataset '*': threshold = {use_threshold:.3f}'")
+
+    # loads all data
+    retval = {}
+    for name, measures_path in tqdm(data.items(), desc="sample"):
+
+        logger.info(f"Loading measures from {measures_path}...")
+        df = pandas.read_csv(measures_path)
+
+        if threshold is None:
+
+            if "threshold_a_priori" in df:
+                use_threshold = df.threshold[df.threshold_a_priori.idxmax()]
+                logger.info(
+                    f"Dataset '{name}': threshold (a priori) = "
+                    f"{use_threshold:.3f}'"
+                )
+            else:
+                use_threshold = df.threshold[df.mean_iou.idxmax()]
+                logger.info(
+                    f"Dataset '{name}': threshold (a posteriori) = "
+                    f"{use_threshold:.3f}'"
+                )
+
+        retval[name] = dict(df=df, threshold=use_threshold)
+
+    return retval
+
+
 @click.command(
     epilog="""Examples:
 
@@ -224,7 +299,10 @@ def compare(
     threshold = _validate_threshold(threshold, data)
 
     # load all data measures
-    data = _load(data, threshold=threshold)
+    if detection:
+        data = _load_detection(data, threshold=threshold)
+    else:
+        data = _load(data, threshold=threshold)
 
     if output_figure is not None and not detection:
         output_figure = os.path.realpath(output_figure)

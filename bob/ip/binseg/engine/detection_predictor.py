@@ -154,14 +154,20 @@ def run(model, data_loader, name, device, output_folder, overlayed_folder):
             start_time = time.perf_counter()
             outputs = model(images)
 
-            # necessary check for HED/Little W-Net architecture that use
-            # several outputs for loss calculation instead of just the last one
-            if isinstance(outputs, (list, tuple)):
-                outputs = outputs[-1]
+            # treat cases with more than 1 box pred
+            boxes = []
+            labels = []
+            scores = []
 
-            boxes = outputs["boxes"]
-            labels = outputs["labels"]
-            scores = outputs["scores"]
+            for out in outputs:
+                id_max = 0
+                score = out["scores"]
+                if len(score) > 1:
+                    id_max = score.argmax().item()
+
+                scores.append(score[id_max])
+                boxes.append(out["boxes"][id_max])
+                labels.append(out["labels"][id_max])
 
             batch_time = time.perf_counter() - start_time
             times.append(batch_time)
@@ -171,7 +177,6 @@ def run(model, data_loader, name, device, output_folder, overlayed_folder):
                 names, images, boxes, labels, scores
             ):
                 pred = torch.cat((box, label.unsqueeze(0), score.unsqueeze(0)))
-
                 _save_hdf5(stem, pred, output_folder)
                 if overlayed_folder is not None:
                     _save_overlayed_png(stem, img, pred, overlayed_folder)
