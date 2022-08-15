@@ -11,7 +11,7 @@ def _maker(protocol):
     return mk(raw.subsets(protocol), [Resize((512, 512))])
 
 
-def _maker_augmented(protocol):
+def _maker_augmented(protocol, detection=False):
 
     from ....data.jsrt import dataset as raw
     from ....data.transforms import ColorJitter as _jitter
@@ -22,15 +22,18 @@ def _maker_augmented(protocol):
     from ....data.transforms import Resize as _resize
     from .. import make_subset
 
-    def mk_aug_subset(subsets, train_transforms, all_transforms):
+    def mk_aug_subset(subsets, train_transforms, all_transforms, detection):
         retval = {}
 
         for key in subsets.keys():
-            retval[key] = make_subset(subsets[key], transforms=all_transforms)
+            retval[key] = make_subset(
+                subsets[key], transforms=all_transforms, detection=detection
+            )
             if key == "train":
                 retval["__train__"] = make_subset(
                     subsets[key],
                     transforms=train_transforms,
+                    detection=detection,
                 )
             else:
                 if key == "validation":
@@ -42,6 +45,7 @@ def _maker_augmented(protocol):
         return retval
 
     return mk_aug_subset(
+        detection=detection,
         subsets=raw.subsets(protocol),
         all_transforms=[_resize((256, 256))],
         train_transforms=[
@@ -52,49 +56,6 @@ def _maker_augmented(protocol):
                     _hflip(p=0.5),
                     _jitter(p=0.5),
                     _blur(p=0.5),
-                ]
-            )
-        ],
-    )
-
-
-def _maker_detection(protocol):
-
-    from ....data.jsrt import dataset as raw
-    from ....data.transforms import Compose, Resize, ShrinkIntoSquare
-    from .. import make_subset
-
-    def _mk_aug_subset(subsets, train_transforms, all_transforms):
-        retval = {}
-
-        for key in subsets.keys():
-            retval[key] = make_subset(
-                subsets[key], transforms=all_transforms, detection=True
-            )
-            if key == "train":
-                retval["__train__"] = make_subset(
-                    subsets[key], transforms=train_transforms, detection=True
-                )
-            else:
-                if key == "validation":
-                    retval["__valid__"] = retval[key]
-
-        if ("__train__" in retval) and ("__valid__" not in retval):
-            retval["__valid__"] = retval["__train__"]
-
-        return retval
-
-    return _mk_aug_subset(
-        subsets=raw.subsets(protocol),
-        all_transforms=[
-            ShrinkIntoSquare(),
-            Resize((256, 256)),
-        ],
-        train_transforms=[
-            Compose(
-                [
-                    ShrinkIntoSquare(),
-                    Resize((256, 256)),
                 ]
             )
         ],
