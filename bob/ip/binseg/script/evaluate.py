@@ -11,8 +11,6 @@ from bob.extension.scripts.click_helper import (
     verbosity_option,
 )
 
-from ..engine.evaluator import run
-
 logger = logging.getLogger(__name__)
 
 
