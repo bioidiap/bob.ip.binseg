@@ -205,7 +205,7 @@ def evaluate(
     if isinstance(threshold, str):
         # first run evaluation for reference dataset, do not save overlays
         logger.info(f"Evaluating threshold on '{threshold}' set")
-        threshold = run(
+        threshold = run_evaluate(
             dataset[threshold], threshold, predictions_folder, steps=steps
         )
         logger.info(f"Set --threshold={threshold:.5f}")
@@ -220,6 +220,7 @@ def evaluate(
             logger.info(f"Skipping dataset '{k}' (not to be evaluated)")
             continue
         logger.info(f"Analyzing '{k}' set...")
+
         run_evaluate(
             v,
             k,
