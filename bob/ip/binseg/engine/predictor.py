@@ -98,7 +98,9 @@ def _save_overlayed_png(stem, image, prob, output_folder):
     _save_image(stem, ".png", overlayed_image(image, prob), output_folder)
 
 
-def run(model, data_loader, name, device, output_folder, overlayed_folder):
+def run(
+    model, data_loader, name, device, output_folder, overlayed_folder, task=0
+):
     """
     Runs inference on input data, outputs HDF5 files with predictions
 
@@ -108,6 +110,9 @@ def run(model, data_loader, name, device, output_folder, overlayed_folder):
         neural network model (e.g. driu, hed, unet)
 
     data_loader : py:class:`torch.torch.utils.data.DataLoader`
+
+    task : int
+        integer representing the number assigned to the task we want to predict (0 by default )
 
     name : str
         the local name of this dataset (e.g. ``train``, or ``test``), to be
@@ -157,7 +162,9 @@ def run(model, data_loader, name, device, output_folder, overlayed_folder):
 
             start_time = time.perf_counter()
             outputs = model(images)
-
+            outputs = outputs[:, task, :, :].reshape(
+                (outputs.shape[0], 1, outputs.shape[2], outputs.shape[3])
+            )
             # necessary check for HED/Little W-Net architecture that use
             # several outputs for loss calculation instead of just the last one
             if isinstance(outputs, (list, tuple)):

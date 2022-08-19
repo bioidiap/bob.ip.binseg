@@ -19,7 +19,9 @@ class UNet(torch.nn.Module):
                         number of channels for each feature map that is returned from backbone
     """
 
-    def __init__(self, in_channels_list=None, pixel_shuffle=False):
+    def __init__(
+        self, in_channels_list=None, pixel_shuffle=False, out_channel=1
+    ):
         super(UNet, self).__init__()
         # number of channels
         c_decode1, c_decode2, c_decode3, c_decode4, c_decode5 = in_channels_list
@@ -31,7 +33,7 @@ class UNet(torch.nn.Module):
         self.decode3 = UnetBlock(c_decode4, c_decode3, pixel_shuffle)
         self.decode2 = UnetBlock(c_decode3, c_decode2, pixel_shuffle)
         self.decode1 = UnetBlock(c_decode2, c_decode1, pixel_shuffle)
-        self.final = conv_with_kaiming_uniform(c_decode1, 1, 1)
+        self.final = conv_with_kaiming_uniform(c_decode1, out_channel, 1)
 
     def forward(self, x):
         """
@@ -51,7 +53,7 @@ class UNet(torch.nn.Module):
         return out
 
 
-def unet(pretrained_backbone=True, progress=True):
+def unet(pretrained_backbone=True, progress=True, out_channel=1):
     """Builds U-Net segmentation network by adding backbone and head together
 
     Parameters
@@ -81,7 +83,9 @@ def unet(pretrained_backbone=True, progress=True):
         progress=progress,
         return_features=[3, 8, 14, 22, 29],
     )
-    head = UNet([64, 128, 256, 512, 512], pixel_shuffle=False)
+    head = UNet(
+        [64, 128, 256, 512, 512], pixel_shuffle=False, out_channel=out_channel
+    )
 
     order = [("backbone", backbone), ("head", head)]
     if pretrained_backbone:

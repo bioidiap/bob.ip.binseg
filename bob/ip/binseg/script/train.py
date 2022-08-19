@@ -242,7 +242,6 @@ def train(
     device = setup_pytorch_device(device)
 
     set_seeds(seed, all_gpus=False)
-
     use_dataset = dataset
     validation_dataset = None
     extra_validation_datasets = []
@@ -274,6 +273,23 @@ def train(
             )
             extra_validation_datasets = dataset["__extra_valid__"]
 
+    if isinstance(dataset, list):
+        use_dataset = []
+        validation_dataset = []
+        for nbr in range(len(dataset)):
+            if "__train__" in dataset[nbr]:
+                logger.info("Found (dedicated) '__train__' set for training ")
+                use_dataset.append(dataset[nbr]["__train__"])
+            else:
+                use_dataset.append(dataset[nbr]["train"])
+
+            if "__valid__" in dataset[nbr]:
+                logger.info("Found (dedicated) '__valid__' set for validation")
+                logger.info(
+                    "Will checkpoint lowest loss model on validation set"
+                )
+                validation_dataset.append(dataset[nbr]["__valid__"])
+
     # PyTorch dataloader
     multiproc_kwargs = dict()
     if parallel < 0:
@@ -288,25 +304,55 @@ def train(
             "multiprocessing_context"
         ] = multiprocessing.get_context("spawn")
 
-    data_loader = DataLoader(
-        dataset=use_dataset,
-        batch_size=batch_size,
-        shuffle=True,
-        drop_last=drop_incomplete_batch,
-        pin_memory=torch.cuda.is_available(),
-        **multiproc_kwargs,
-    )
+    data_loaders = []
+    valid_loaders = []
+    if isinstance(dataset, list):
+        for nbr in range(len(dataset)):
+            data_loader = DataLoader(
+                dataset=use_dataset[nbr],
+                batch_size=batch_size,
+                shuffle=True,
+                drop_last=drop_incomplete_batch,
+                pin_memory=torch.cuda.is_available(),
+                **multiproc_kwargs,
+            )
+            data_loaders.append(data_loader)
 
-    valid_loader = None
-    if validation_dataset is not None:
-        valid_loader = DataLoader(
-            dataset=validation_dataset,
+            valid_loader = None
+            if validation_dataset is not None:
+                valid_loader = DataLoader(
+                    dataset=validation_dataset[nbr],
+                    batch_size=batch_size,
+                    shuffle=False,
+                    drop_last=False,
+                    pin_memory=torch.cuda.is_available(),
+                    **multiproc_kwargs,
+                )
+                valid_loaders.append(valid_loader)
+    elif isinstance(dataset, dict):
+        data_loaders = []
+
+        data_loader = DataLoader(
+            dataset=use_dataset,
             batch_size=batch_size,
-            shuffle=False,
-            drop_last=False,
+            shuffle=True,
+            drop_last=drop_incomplete_batch,
             pin_memory=torch.cuda.is_available(),
             **multiproc_kwargs,
         )
+        data_loaders.append(data_loader)
+        valid_loader = None
+        if validation_dataset is not None:
+            valid_loaders = []
+            valid_loader = DataLoader(
+                dataset=validation_dataset,
+                batch_size=batch_size,
+                shuffle=False,
+                drop_last=False,
+                pin_memory=torch.cuda.is_available(),
+                **multiproc_kwargs,
+            )
+            valid_loaders.append(valid_loader)
 
     extra_valid_loaders = [
         DataLoader(
@@ -335,8 +381,8 @@ def train(
 
     run(
         model,
-        data_loader,
-        valid_loader,
+        data_loaders,
+        valid_loaders,
         extra_valid_loaders,
         optimizer,
         criterion,

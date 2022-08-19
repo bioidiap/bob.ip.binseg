@@ -28,10 +28,12 @@ gamma = 1e-3
 eps = 1e-8
 amsbound = False
 
+out_channel = 1
+
 scheduler_milestones = [900]
 scheduler_gamma = 0.1
 
-model = unet()
+model = unet(out_channel=out_channel)
 
 # optimizer
 optimizer = AdaBound(

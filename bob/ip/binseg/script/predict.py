@@ -56,6 +56,15 @@ logger = logging.getLogger(__name__)
     type=click.Path(),
 )
 @click.option(
+    "--task",
+    "-t",
+    help="Integer that represent the number of the task we want to predict the first task should be equal to 0 ",
+    required=True,
+    default=0,
+    type=click.IntRange(min=0),
+    cls=ResourceOption,
+)
+@click.option(
     "--model",
     "-m",
     help="A torch.nn.Module instance implementing the network to be evaluated",
@@ -129,6 +138,7 @@ def predict(
     output_folder,
     model,
     dataset,
+    task,
     batch_size,
     device,
     weight,
@@ -185,4 +195,4 @@ def predict(
             pin_memory=torch.cuda.is_available(),
             **multiproc_kwargs,
         )
-        run(model, data_loader, k, device, output_folder, overlayed)
+        run(model, data_loader, k, device, output_folder, overlayed, task)

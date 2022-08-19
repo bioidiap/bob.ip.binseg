@@ -42,7 +42,16 @@ def _loss_evolution(df):
     axes = figure.gca()
 
     axes.plot(df.epoch.values, df.loss.values, label="Training")
-    if "validation_loss" in df.columns:
+    if "validation_losses" in df.columns:
+
+        # Get the average validation loss of all the tasks
+        df["validation_losses"] = df["validation_losses"].apply(
+            lambda x: numpy.fromstring(x.strip("[]"), sep=" ")
+        )
+        df["validation_loss"] = df["validation_losses"].apply(
+            lambda x: numpy.mean(x)
+        )
+
         axes.plot(
             df.epoch.values, df.validation_loss.values, label="Validation"
         )

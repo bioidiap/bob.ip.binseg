@@ -151,6 +151,8 @@ setup(
             "cxr8-idiap = bob.ip.binseg.configs.datasets.cxr8.idiap",
             "cxr8-xtest = bob.ip.binseg.configs.datasets.cxr8.xtest",
             "cxr8-idiap-xtest = bob.ip.binseg.configs.datasets.cxr8.xtest_idiap",
+            # mtl
+            "mtl_drive_drionsdb = bob.ip.binseg.configs.datasets.mtl.drive_drionsdb",
         ],
     },
     # check classifiers, add and remove as you see fit

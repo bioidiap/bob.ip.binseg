@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import contextlib
+import copy
 import csv
 import datetime
 import logging
@@ -179,10 +180,12 @@ def create_logfile_fields(valid_loader, extra_valid_loaders, device):
         "total_time",
         "eta",
         "loss",
+        "training_losses",
         "learning_rate",
     )
+
     if valid_loader is not None:
-        logfile_fields += ("validation_loss",)
+        logfile_fields += ("validation_losses",)
     if extra_valid_loaders:
         logfile_fields += ("extra_validation_losses",)
     logfile_fields += tuple(
@@ -191,7 +194,18 @@ def create_logfile_fields(valid_loader, extra_valid_loaders, device):
     return logfile_fields
 
 
-def train_epoch(loader, model, optimizer, device, criterion):
+def train_epoch(
+    loader,
+    model,
+    model_backup,
+    optimizer,
+    device,
+    criterion,
+    nbr_tasks,
+    cur_task,
+    epoch,
+    last_epoch_model,
+):
     """Trains the model for a single epoch (through all batches)
 
     Parameters
@@ -203,6 +217,9 @@ def train_epoch(loader, model, optimizer, device, criterion):
     model : :py:class:`torch.nn.Module`
         Network (e.g. driu, hed, unet)
 
+    model_backup : :py:class:`torch.nn.Module`
+        copy of model
+
     optimizer : :py:mod:`torch.optim`
 
     device : :py:class:`torch.device`
@@ -210,6 +227,17 @@ def train_epoch(loader, model, optimizer, device, criterion):
 
     criterion : :py:class:`torch.nn.modules.loss._Loss`
 
+    nbr_tasks : int
+        number of tasks
+
+    cur_task : int
+        index of the current task
+
+    epoch : int
+        current epoch
+
+    last_epoch_model : dict
+        Weights of the previous epoch
 
     Returns
     -------
@@ -219,12 +247,12 @@ def train_epoch(loader, model, optimizer, device, criterion):
         epoch's loss
 
     """
-
     batch_losses = []
     samples_in_batch = []
-
+    loss_tasks = [[] for i in range(nbr_tasks)]
     # progress bar only on interactive jobs
     for samples in tqdm(loader, desc="train", leave=False, disable=None):
+
         images = samples[1].to(
             device=device, non_blocking=torch.cuda.is_available()
         )
@@ -238,9 +266,47 @@ def train_epoch(loader, model, optimizer, device, criterion):
                 device=device, non_blocking=torch.cuda.is_available()
             )
         )
-        # data forwarding on the existing network
         outputs = model(images)
-        loss = criterion(outputs, ground_truths, masks)
+        sigmoid = torch.nn.Sigmoid()
+        outputs_prob = sigmoid(outputs)
+        targets = torch.empty(outputs.shape, device=device)
+        new_masks = torch.empty(outputs.shape, device=device)
+
+        if epoch < nbr_tasks:
+            for t in range(nbr_tasks):
+                if t == cur_task:
+                    targets[:, t, :, :] = ground_truths[:, 0, :, :]
+                else:
+                    targets[:, t, :, :] = outputs_prob[:, t, :, :]
+                new_masks[:, t, :, :] = masks[:, 0, :, :]
+        else:
+            model_backup.load_state_dict(last_epoch_model)
+            with torch.no_grad(), torch_evaluation(model_backup):
+                outputs2 = model_backup(images)
+                outputs2_prob = sigmoid(outputs2)
+                for t in range(nbr_tasks):
+                    if t == cur_task:
+                        targets[:, t, :, :] = ground_truths[:, 0, :, :]
+                    else:
+                        targets[:, t, :, :] = outputs2_prob[:, t, :, :]
+                    new_masks[:, t, :, :] = masks[:, 0, :, :]
+
+        if nbr_tasks > 1:
+            for t in range(nbr_tasks):
+                loss_tasks[t].append(
+                    criterion(
+                        outputs[:, t, :, :],
+                        targets[:, t, :, :],
+                        new_masks[:, t, :, :],
+                    )
+                )
+
+        else:
+            loss_tasks[0].append(criterion(outputs, ground_truths, masks))
+        # data forwarding on the existing network
+
+        print(loss_tasks)
+        loss = criterion(outputs, targets, new_masks)
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
@@ -248,11 +314,14 @@ def train_epoch(loader, model, optimizer, device, criterion):
 
         batch_losses.append(loss.item())
         samples_in_batch.append(len(samples))
+    for nbr in range(nbr_tasks):
+        loss_tasks[nbr] = (sum(loss_tasks[nbr]) / len(loss_tasks[nbr])).item()
+    return numpy.average(batch_losses, weights=samples_in_batch), loss_tasks
 
-    return numpy.average(batch_losses, weights=samples_in_batch)
 
-
-def validate_epoch(loader, model, device, criterion, pbar_desc):
+def validate_epoch(
+    loader, model, device, criterion, pbar_desc, nbr_tasks, cur_task
+):
     """
     Processes input samples and returns loss (scalar)
 
@@ -277,6 +346,11 @@ def validate_epoch(loader, model, device, criterion, pbar_desc):
     pbar_desc : str
         A string for the progress bar descriptor
 
+    nbr_tasks : int
+        number of tasks
+
+    cur_task : int
+        index of the current task
 
     Returns
     -------
@@ -312,8 +386,14 @@ def validate_epoch(loader, model, device, criterion, pbar_desc):
 
             # data forwarding on the existing network
             outputs = model(images)
-            loss = criterion(outputs, ground_truths, masks)
-
+            if nbr_tasks == 1:
+                loss = criterion(outputs, ground_truths, masks)
+            else:
+                loss = criterion(
+                    outputs[:, cur_task, :, :],
+                    ground_truths[:, 0, :, :],
+                    masks[:, 0, :, :],
+                )
             batch_losses.append(loss.item())
             samples_in_batch.append(len(samples))
 
@@ -323,7 +403,7 @@ def validate_epoch(loader, model, device, criterion, pbar_desc):
 def checkpointer_process(
     checkpointer,
     checkpoint_period,
-    valid_loss,
+    valid_losses,
     lowest_validation_loss,
     arguments,
     epoch,
@@ -342,8 +422,8 @@ def checkpointer_process(
         save a checkpoint every ``n`` epochs.  If set to ``0`` (zero), then do
         not save intermediary checkpoints
 
-    valid_loss : float
-        Current epoch validation loss
+    valid_losses : list
+        Current epoch validation losses of all the tasks
 
     lowest_validation_loss : float
         Keeps track of the best (lowest) validation loss
@@ -362,6 +442,8 @@ def checkpointer_process(
 
 
     """
+    # Calculate the mean of the validation losses
+    valid_loss = sum(valid_losses) / len(valid_losses)
     if checkpoint_period and (epoch % checkpoint_period == 0):
         checkpointer.save("model_periodic_save", **arguments)
 
@@ -383,7 +465,8 @@ def write_log_info(
     current_time,
     eta_seconds,
     loss,
-    valid_loss,
+    loss_tasks,
+    valid_losses,
     extra_valid_losses,
     optimizer,
     logwriter,
@@ -408,6 +491,9 @@ def write_log_info(
     loss : float
         Current epoch's training loss
 
+    loss_tasks : list
+        List of losses by tasks
+
     valid_loss : :py:class:`float`, None
         Current epoch's validation loss
 
@@ -426,7 +512,6 @@ def write_log_info(
         Monitored resources at the machine (CPU and GPU)
 
     """
-
     logdata = (
         ("epoch", f"{epoch}"),
         (
@@ -438,9 +523,23 @@ def write_log_info(
         ("learning_rate", f"{optimizer.param_groups[0]['lr']:.6f}"),
     )
 
-    if valid_loss is not None:
-        logdata += (("validation_loss", f"{valid_loss:.6f}"),)
+    # if valid_loss is not None:
+    #    logdata += (("validation_loss", f"{valid_loss:.6f}"),)
 
+    if loss_tasks:
+        entry = numpy.array_str(
+            numpy.array(loss_tasks),
+            max_line_width=sys.maxsize,
+            precision=6,
+        )
+        logdata += (("training_losses", entry),)
+    if valid_losses:
+        entry = numpy.array_str(
+            numpy.array(valid_losses),
+            max_line_width=sys.maxsize,
+            precision=6,
+        )
+        logdata += (("validation_losses", entry),)
     if extra_valid_losses:
         entry = numpy.array_str(
             numpy.array(extra_valid_losses),
@@ -458,8 +557,8 @@ def write_log_info(
 
 def run(
     model,
-    data_loader,
-    valid_loader,
+    data_loaders,
+    valid_loaders,
     extra_valid_loaders,
     optimizer,
     criterion,
@@ -484,7 +583,7 @@ def run(
     model : :py:class:`torch.nn.Module`
         Network (e.g. driu, hed, unet)
 
-    data_loader : :py:class:`torch.utils.data.DataLoader`
+    data_loaders : :py:class:`list` of :py:class:`torch.utils.data.DataLoader`
         To be used to train the model
 
     valid_loaders : :py:class:`list` of :py:class:`torch.utils.data.DataLoader`
@@ -548,13 +647,16 @@ def run(
     check_exist_logfile(logfile_name, arguments)
 
     logfile_fields = create_logfile_fields(
-        valid_loader, extra_valid_loaders, device
+        valid_loaders, extra_valid_loaders, device
     )
 
     # the lowest validation loss obtained so far - this value is updated only
     # if a validation set is available
     lowest_validation_loss = sys.float_info.max
 
+    last_epoch_model = model.state_dict()
+
+    nbr_tasks = len(data_loaders)
     with open(logfile_name, "a+", newline="") as logfile:
         logwriter = csv.DictWriter(logfile, fieldnames=logfile_fields)
 
@@ -564,6 +666,11 @@ def run(
         model.train()  # set training mode
 
         model.to(device)  # set/cast parameters to device
+
+        model_backup = copy.deepcopy(model)
+
+        model_backup.to(device)
+
         for state in optimizer.state.values():
             for k, v in state.items():
                 if isinstance(v, torch.Tensor):
@@ -578,32 +685,49 @@ def run(
             leave=False,
             disable=None,
         ):
-
+            cur_task = epoch % nbr_tasks
+            data_loader = data_loaders[cur_task]
             with ResourceMonitor(
                 interval=monitoring_interval,
                 has_gpu=(device.type == "cuda"),
                 main_pid=os.getpid(),
                 logging_level=logging.ERROR,
             ) as resource_monitor:
-                epoch = epoch + 1
-                arguments["epoch"] = epoch
 
                 # Epoch time
                 start_epoch_time = time.time()
 
-                train_loss = train_epoch(
-                    data_loader, model, optimizer, device, criterion
+                train_loss, loss_tasks = train_epoch(
+                    data_loader,
+                    model,
+                    model_backup,
+                    optimizer,
+                    device,
+                    criterion,
+                    nbr_tasks,
+                    cur_task,
+                    epoch,
+                    last_epoch_model,
                 )
 
                 scheduler.step()
+                valid_losses = []
+                for tsk, valid_loader in enumerate(valid_loaders):
 
-                valid_loss = (
-                    validate_epoch(
-                        valid_loader, model, device, criterion, "valid"
+                    valid_loss = (
+                        validate_epoch(
+                            valid_loader,
+                            model,
+                            device,
+                            criterion,
+                            "valid",
+                            nbr_tasks,
+                            tsk,
+                        )
+                        if valid_loader is not None
+                        else None
                     )
-                    if valid_loader is not None
-                    else None
-                )
+                    valid_losses.append(valid_loss)
 
                 extra_valid_losses = []
                 for pos, extra_valid_loader in enumerate(extra_valid_loaders):
@@ -619,12 +743,14 @@ def run(
             lowest_validation_loss = checkpointer_process(
                 checkpointer,
                 checkpoint_period,
-                valid_loss,
+                valid_losses,
                 lowest_validation_loss,
                 arguments,
                 epoch,
                 max_epoch,
             )
+
+            last_epoch_model = model.state_dict()
 
             # computes ETA (estimated time-of-arrival; end of training) taking
             # into consideration previous epoch performance
@@ -637,7 +763,8 @@ def run(
                 current_time,
                 eta_seconds,
                 train_loss,
-                valid_loss,
+                loss_tasks,
+                valid_losses,
                 extra_valid_losses,
                 optimizer,
                 logwriter,
@@ -649,3 +776,5 @@ def run(
         logger.info(
             f"Total training time: {datetime.timedelta(seconds=total_training_time)} ({(total_training_time/max_epoch):.4f}s in average per epoch)"
         )
+        epoch = epoch + 1
+        arguments["epoch"] = epoch

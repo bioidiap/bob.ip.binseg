@@ -750,7 +750,7 @@ def test_combined_vessels():
             assert s[1].max() <= 1.0
             assert s[1].min() >= 0.0
 
-    from ..configs.datasets.combined.vessel_combined import dataset
+    from ..configs.datasets.combined.vessel import dataset
 
     assert len(dataset) == 4
     _check_subset(dataset["__train__"], 73, 768, 768)
