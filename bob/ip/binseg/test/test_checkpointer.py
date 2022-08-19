@@ -91,7 +91,7 @@ class TestCheckpointer(unittest.TestCase):
             checkpointer = Checkpointer(model, path=f)
             lowest_validation_loss = 0.001
             checkpoint_period = 0
-            valid_loss = 1.5
+            valid_loss = [1.5]
             arguments = {"epoch": 0, "max_epoch": 10}
             epoch = 1
             max_epoch = 10

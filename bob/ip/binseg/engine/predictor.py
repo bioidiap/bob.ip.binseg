@@ -162,14 +162,14 @@ def run(
 
             start_time = time.perf_counter()
             outputs = model(images)
-            outputs = outputs[:, task, :, :].reshape(
-                (outputs.shape[0], 1, outputs.shape[2], outputs.shape[3])
-            )
+
             # necessary check for HED/Little W-Net architecture that use
             # several outputs for loss calculation instead of just the last one
             if isinstance(outputs, (list, tuple)):
                 outputs = outputs[-1]
-
+            outputs = outputs[:, task, :, :].reshape(
+                (outputs.shape[0], 1, outputs.shape[2], outputs.shape[3])
+            )
             predictions = sigmoid(outputs)
 
             batch_time = time.perf_counter() - start_time

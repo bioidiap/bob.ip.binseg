@@ -267,10 +267,13 @@ def train_epoch(
             )
         )
         outputs = model(images)
-        sigmoid = torch.nn.Sigmoid()
-        outputs_prob = sigmoid(outputs)
-        targets = torch.empty(outputs.shape, device=device)
-        new_masks = torch.empty(outputs.shape, device=device)
+
+        if nbr_tasks > 1:
+            sigmoid = torch.nn.Sigmoid()
+            outputs_prob = sigmoid(outputs)
+
+        targets = torch.empty(ground_truths.shape, device=device)
+        new_masks = torch.empty(masks.shape, device=device)
 
         if epoch < nbr_tasks:
             for t in range(nbr_tasks):
@@ -283,14 +286,14 @@ def train_epoch(
             model_backup.load_state_dict(last_epoch_model)
             with torch.no_grad(), torch_evaluation(model_backup):
                 outputs2 = model_backup(images)
-                outputs2_prob = sigmoid(outputs2)
+                if nbr_tasks > 1:
+                    outputs2_prob = sigmoid(outputs2)
                 for t in range(nbr_tasks):
                     if t == cur_task:
                         targets[:, t, :, :] = ground_truths[:, 0, :, :]
                     else:
                         targets[:, t, :, :] = outputs2_prob[:, t, :, :]
                     new_masks[:, t, :, :] = masks[:, 0, :, :]
-
         if nbr_tasks > 1:
             for t in range(nbr_tasks):
                 loss_tasks[t].append(
@@ -454,7 +457,7 @@ def checkpointer_process(
         )
         checkpointer.save("model_lowest_valid_loss", **arguments)
 
-    if epoch >= max_epoch:
+    if epoch >= max_epoch - 1:
         checkpointer.save("model_final_epoch", **arguments)
 
     return lowest_validation_loss
@@ -737,6 +740,8 @@ def run(
                         device,
                         criterion,
                         f"xval@{pos+1}",
+                        nbr_tasks,
+                        tsk,
                     )
                     extra_valid_losses.append(loss)
 
@@ -776,5 +781,3 @@ def run(
         logger.info(
             f"Total training time: {datetime.timedelta(seconds=total_training_time)} ({(total_training_time/max_epoch):.4f}s in average per epoch)"
         )
-        epoch = epoch + 1
-        arguments["epoch"] = epoch
