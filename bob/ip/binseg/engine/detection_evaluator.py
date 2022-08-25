@@ -146,6 +146,7 @@ def _sample_analysis(
     """
     img = VF.to_pil_image(img)
     img1 = PIL.ImageDraw.Draw(img)
+    iou = bops.box_iou(pred[:4].unsqueeze(0), gt["boxes"]).item()
     x1t, y1t, x2t, y2t = gt["boxes"].squeeze().numpy()
     x1, y1, x2, y2 = pred[:4].squeeze().numpy()
 
@@ -153,6 +154,7 @@ def _sample_analysis(
     shape = [(x1, y1), (x2, y2)]
     img1.rectangle(shape_t, outline=true_bbox, width=1)
     img1.rectangle(shape, outline=pred_bbox, width=1)
+    img1.text((0, 0), "IoU = " + str(numpy.round(iou, 2)), (255, 255, 255))
 
     return img
 
