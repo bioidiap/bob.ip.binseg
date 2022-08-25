@@ -160,6 +160,9 @@ setup(
             "cxr8-idiap-xtest = bob.ip.binseg.configs.datasets.cxr8.xtest_idiap",
             "cxr8-detection = bob.ip.binseg.configs.datasets.cxr8.default_detection",
             "cxr8-xtest-detection = bob.ip.binseg.configs.datasets.cxr8.xtest_detection",
+            # chexphoto - cxr
+            "chexphoto-detection = bob.ip.binseg.configs.datasets.chexphoto.default_detection",
+            "chexphoto-xtest-detection = bob.ip.binseg.configs.datasets.chexphoto.xtest_detection",
         ],
     },
     # check classifiers, add and remove as you see fit
