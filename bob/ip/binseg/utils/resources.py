@@ -53,7 +53,7 @@ def run_nvidia_smi(query, rename=None):
 
     """
 
-   if _nvidia_smi is not None:
+    if _nvidia_smi is not None:
 
         if rename is None:
             rename = query
