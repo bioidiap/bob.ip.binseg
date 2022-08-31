@@ -53,26 +53,30 @@ def run_nvidia_smi(query, rename=None):
 
     """
 
-    if _nvidia_smi is not None:
+   if _nvidia_smi is not None:
 
         if rename is None:
             rename = query
         else:
             assert len(rename) == len(query)
 
-        values = subprocess.getoutput(
+        smi_results = subprocess.getoutput(
             "%s --query-gpu=%s --format=csv,noheader"
             % (_nvidia_smi, ",".join(query))
         )
-        values = [k.strip() for k in values.split(",")]
+        # Get GPU parameters per line.
+        lines = [line.strip() for line in smi_results.split("\n")]
         t_values = []
-        for k in values:
-            if k.endswith("%"):
-                t_values.append(float(k[:-1].strip()))
-            elif k.endswith("MiB"):
-                t_values.append(float(k[:-3].strip()) / 1024)
-            else:
-                t_values.append(k)  # unchanged
+        for line in lines:
+            # Get GPU parameter per column.
+            values = [value.strip() for value in line.split(",")]
+            for value in values:
+                if value.endswith("%"):
+                    t_values.append(float(value[:-1].strip()))
+                elif value.endswith("MiB"):
+                    t_values.append(float(value[:-3].strip()) / 1024)
+                else:
+                    t_values.append(value)  # unchanged
         return tuple(zip(rename, t_values))
 
 
