@@ -54,7 +54,7 @@ def list(verbose):
     keep_modules = []
     for k in sorted(modules):
         if k not in keep_modules and not any(
-            k.startswith(l) for l in keep_modules
+            k.startswith(i) for i in keep_modules
         ):
             keep_modules.append(k)
     modules = keep_modules
