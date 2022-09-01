@@ -1,0 +1,156 @@
+{
+ "train": [
+  [
+   "image/STAR 01_OSC.jpg",
+   "mask_OD/STAR 01_OSC_ODMask.tif",
+   "mask/STAR 01_OSC_Mask.tif"
+  ],
+  [
+   "image/STAR 02_ODC.jpg",
+   "mask_OD/STAR 02_ODC_ODMask.tif",
+   "mask/STAR 02_ODC_Mask.tif"
+  ],
+  [
+   "image/STAR 03_OSN.jpg",
+   "mask_OD/STAR 03_OSN_ODMask.tif",
+   "mask/STAR 03_OSN_Mask.tif"
+  ],
+  [
+   "image/STAR 05_ODC.jpg",
+   "mask_OD/STAR 05_ODC_ODMask.tif",
+   "mask/STAR 05_ODC_Mask.tif"
+  ],
+  [
+   "image/STAR 06_ODN.jpg",
+   "mask_OD/STAR 06_ODN_ODMask.tif",
+   "mask/STAR 06_ODN_Mask.tif"
+  ],
+  [
+   "image/STAR 08_OSN.jpg",
+   "mask_OD/STAR 08_OSN_ODMask.tif",
+   "mask/STAR 08_OSN_Mask.tif"
+  ],
+  [
+   "image/STAR 09_OSN.jpg",
+   "mask_OD/STAR 09_OSN_ODMask.tif",
+   "mask/STAR 09_OSN_Mask.tif"
+  ],
+  [
+   "image/STAR 10_OSN.jpg",
+   "mask_OD/STAR 10_OSN_ODMask.tif",
+   "mask/STAR 10_OSN_Mask.tif"
+  ],
+  [
+   "image/STAR 13_OSN.jpg",
+   "mask_OD/STAR 13_OSN_ODMask.tif",
+   "mask/STAR 13_OSN_Mask.tif"
+  ],
+  [
+   "image/STAR 15_OSN.jpg",
+   "mask_OD/STAR 15_OSN_ODMask.tif",
+   "mask/STAR 15_OSN_Mask.tif"
+  ],
+  [
+   "image/STAR 16_OSN.jpg",
+   "mask_OD/STAR 16_OSN_ODMask.tif",
+   "mask/STAR 16_OSN_Mask.tif"
+  ],
+  [
+   "image/STAR 17_ODN.jpg",
+   "mask_OD/STAR 17_ODN_ODMask.tif",
+   "mask/STAR 17_ODN_Mask.tif"
+  ],
+  [
+   "image/STAR 20_ODC.jpg",
+   "mask_OD/STAR 20_ODC_ODMask.tif",
+   "mask/STAR 20_ODC_Mask.tif"
+  ],
+  [
+   "image/STAR 21_OSC.jpg",
+   "mask_OD/STAR 21_OSC_ODMask.tif",
+   "mask/STAR 21_OSC_Mask.tif"
+  ],
+  [
+   "image/STAR 24_OSC.jpg",
+   "mask_OD/STAR 24_OSC_ODMask.tif",
+   "mask/STAR 24_OSC_Mask.tif"
+  ],
+  [
+   "image/STAR 26_ODC.jpg",
+   "mask_OD/STAR 26_ODC_ODMask.tif",
+   "mask/STAR 26_ODC_Mask.tif"
+  ],
+  [
+   "image/STAR 28_ODN.jpg",
+   "mask_OD/STAR 28_ODN_ODMask.tif",
+   "mask/STAR 28_ODN_Mask.tif"
+  ],
+  [
+   "image/STAR 30_ODC.jpg",
+   "mask_OD/STAR 30_ODC_ODMask.tif",
+   "mask/STAR 30_ODC_Mask.tif"
+  ],
+  [
+   "image/STAR 31_ODN.jpg",
+   "mask_OD/STAR 31_ODN_ODMask.tif",
+   "mask/STAR 31_ODN_Mask.tif"
+  ],
+  [
+   "image/STAR 32_ODC.jpg",
+   "mask_OD/STAR 32_ODC_ODMask.tif",
+   "mask/STAR 32_ODC_Mask.tif"
+  ]
+ ],
+ "test": [
+  [
+   "image/STAR 34_ODC.jpg",
+   "mask_OD/STAR 34_ODC_ODMask.tif",
+   "mask/STAR 34_ODC_Mask.tif"
+  ],
+  [
+   "image/STAR 36_OSC.jpg",
+   "mask_OD/STAR 36_OSC_ODMask.tif",
+   "mask/STAR 36_OSC_Mask.tif"
+  ],
+  [
+   "image/STAR 37_ODN.jpg",
+   "mask_OD/STAR 37_ODN_ODMask.tif",
+   "mask/STAR 37_ODN_Mask.tif"
+  ],
+  [
+   "image/STAR 38_ODC.jpg",
+   "mask_OD/STAR 38_ODC_ODMask.tif",
+   "mask/STAR 38_ODC_Mask.tif"
+  ],
+  [
+   "image/STAR 39_ODC.jpg",
+   "mask_OD/STAR 39_ODC_ODMask.tif",
+   "mask/STAR 39_ODC_Mask.tif"
+  ],
+  [
+   "image/STAR 40_OSC.jpg",
+   "mask_OD/STAR 40_OSC_ODMask.tif",
+   "mask/STAR 40_OSC_Mask.tif"
+  ],
+  [
+   "image/STAR 43_OSC.jpg",
+   "mask_OD/STAR 43_OSC_ODMask.tif",
+   "mask/STAR 43_OSC_Mask.tif"
+  ],
+  [
+   "image/STAR 44_OSN.jpg",
+   "mask_OD/STAR 44_OSN_ODMask.tif",
+   "mask/STAR 44_OSN_Mask.tif"
+  ],
+  [
+   "image/STAR 45_ODC.jpg",
+   "mask_OD/STAR 45_ODC_ODMask.tif",
+   "mask/STAR 45_ODC_Mask.tif"
+  ],
+  [
+   "image/STAR 48_OSN.jpg",
+   "mask_OD/STAR 48_OSN_ODMask.tif",
+   "mask/STAR 48_OSN_Mask.tif"
+  ]
+ ]
+}

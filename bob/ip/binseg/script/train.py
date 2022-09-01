@@ -205,16 +205,6 @@ logger = logging.getLogger(__name__)
     default=5.0,
     cls=ResourceOption,
 )
-@click.option(
-    "--detection",
-    help="""If set, then the model will train for the task of object detection
-    instead of segmentation. Note that this is only available if the selected
-    model can perform object detection.""",
-    required=False,
-    show_default=True,
-    default=False,
-    cls=ResourceOption,
-)
 @verbosity_option(cls=ResourceOption)
 def train(
     model,
@@ -231,7 +221,6 @@ def train(
     seed,
     parallel,
     monitoring_interval,
-    detection,
     verbose,
     **kwargs,
 ):
@@ -249,9 +238,6 @@ def train(
     the original training session stopped (or the last checkpoint was saved).
 
     """
-
-    def _collate_fn(batch):
-        return tuple(zip(*batch))
 
     device = setup_pytorch_device(device)
 
@@ -302,78 +288,37 @@ def train(
             "multiprocessing_context"
         ] = multiprocessing.get_context("spawn")
 
-    if detection:
-        from ..engine.detection_trainer import run
+    data_loader = DataLoader(
+        dataset=use_dataset,
+        batch_size=batch_size,
+        shuffle=True,
+        drop_last=drop_incomplete_batch,
+        pin_memory=torch.cuda.is_available(),
+        **multiproc_kwargs,
+    )
 
-        data_loader = DataLoader(
-            dataset=use_dataset,
+    valid_loader = None
+    if validation_dataset is not None:
+        valid_loader = DataLoader(
+            dataset=validation_dataset,
             batch_size=batch_size,
-            shuffle=True,
-            drop_last=drop_incomplete_batch,
-            pin_memory=torch.cuda.is_available(),
-            collate_fn=_collate_fn,
-            **multiproc_kwargs,
-        )
-
-        valid_loader = None
-        if validation_dataset is not None:
-            valid_loader = DataLoader(
-                dataset=validation_dataset,
-                batch_size=batch_size,
-                shuffle=False,
-                drop_last=False,
-                pin_memory=torch.cuda.is_available(),
-                collate_fn=_collate_fn,
-                **multiproc_kwargs,
-            )
-
-        extra_valid_loaders = [
-            DataLoader(
-                dataset=k,
-                batch_size=batch_size,
-                shuffle=False,
-                drop_last=False,
-                pin_memory=torch.cuda.is_available(),
-                collate_fn=_collate_fn,
-                **multiproc_kwargs,
-            )
-            for k in extra_validation_datasets
-        ]
-
-    else:
-        from ..engine.trainer import run
-
-        data_loader = DataLoader(
-            dataset=use_dataset,
-            batch_size=batch_size,
-            shuffle=True,
-            drop_last=drop_incomplete_batch,
+            shuffle=False,
+            drop_last=False,
             pin_memory=torch.cuda.is_available(),
             **multiproc_kwargs,
         )
 
-        valid_loader = None
-        if validation_dataset is not None:
-            valid_loader = DataLoader(
-                dataset=validation_dataset,
-                batch_size=batch_size,
-                shuffle=False,
-                drop_last=False,
-                pin_memory=torch.cuda.is_available(),
-                **multiproc_kwargs,
-            )
-
-        extra_valid_loaders = [
-            DataLoader(
-                dataset=k,
-                batch_size=batch_size,
-                shuffle=False,
-                drop_last=False,
-                pin_memory=torch.cuda.is_available(),
-                **multiproc_kwargs,
-            )
-            for k in extra_validation_datasets
-        ]
+    extra_valid_loaders = [
+        DataLoader(
+            dataset=k,
+            batch_size=batch_size,
+            shuffle=False,
+            drop_last=False,
+            pin_memory=torch.cuda.is_available(),
+            **multiproc_kwargs,
+        )
+        for k in extra_validation_datasets
+    ]
 
     checkpointer = Checkpointer(model, optimizer, scheduler, path=output_folder)
 
@@ -385,6 +330,8 @@ def train(
 
     logger.info("Training for {} epochs".format(arguments["max_epoch"]))
     logger.info("Continuing from epoch {}".format(arguments["epoch"]))
+
+    from ..engine.trainer import run
 
     run(
         model,

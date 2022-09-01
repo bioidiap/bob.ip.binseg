@@ -152,16 +152,6 @@ logger = logging.getLogger(__name__)
     type=float,
     cls=ResourceOption,
 )
-@click.option(
-    "--detection",
-    help="""If set, then the model will analyze the bounding boxes instead of
-    the probability maps. Note that this is only available if the selected
-    model can perform the task of object detection.""",
-    required=False,
-    show_default=True,
-    default=False,
-    cls=ResourceOption,
-)
 @verbosity_option(cls=ResourceOption)
 @click.pass_context
 def analyze(
@@ -177,7 +167,6 @@ def analyze(
     steps,
     parallel,
     plot_limits,
-    detection,
     verbose,
     **kwargs,
 ):
@@ -245,7 +234,6 @@ def analyze(
         weight=weight,
         overlayed=overlayed_folder,
         parallel=parallel,
-        detection=detection,
         verbose=verbose,
     )
     logger.info("Ended prediction")
@@ -281,7 +269,6 @@ def analyze(
         threshold=threshold,
         steps=steps,
         parallel=parallel,
-        detection=detection,
         verbose=verbose,
     )
 
@@ -346,7 +333,6 @@ def analyze(
         output_table=output_table,
         threshold=threshold,
         plot_limits=plot_limits,
-        detection=detection,
         verbose=verbose,
     )
 

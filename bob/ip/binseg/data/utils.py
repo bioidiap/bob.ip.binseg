@@ -6,12 +6,11 @@
 
 import PIL.Image
 import PIL.ImageChops
-import PIL.ImageDraw
 import PIL.ImageOps
 import torch
 import torch.utils.data
 
-from .transforms import Compose, GetBoundingBox, ToTensor
+from .transforms import Compose, ToTensor
 
 
 def invert_mode1_image(img):
@@ -114,54 +113,6 @@ def overlayed_image(
     return retval
 
 
-def overlayed_bbox_image(
-    img,
-    box,
-    box_color=(0, 255, 0),
-    width=1,
-):
-    """Creates an image showing existing bounding boxes
-
-    This function creates a new representation of the input image ``img``
-    overlaying a green bounding box for labelled objects.  By looking at this
-    representation, it shall be possible to verify if the dataset/loader is
-    yielding images correctly.
-
-
-    Parameters
-    ----------
-
-    img : PIL.Image.Image
-        An RGB PIL image that represents the original image for analysis
-
-    box : list
-        A list of bounding box coordinates.
-
-    box_color : py:class:`tuple`, Optional
-        A tuple with three integer entries indicating the RGB color to be used
-        for bounding box.
-
-    width : py:class:`int`, Optional
-        An integer indicating the size of the rectangle line, in pixels.
-
-    Returns
-    -------
-
-    image : PIL.Image.Image
-        A new image overlaying the original image, object labels (in green).
-
-    """
-
-    # creates a representation of labels, in RGB format, with the right color
-    # create rectangle image
-    img1 = PIL.ImageDraw.Draw(img)
-    x1, y1, x2, y2 = box
-    shape = [(x1, y1), (x2, y2)]
-    img1.rectangle(shape, outline=box_color, width=width)
-
-    return img
-
-
 class SampleListDataset(torch.utils.data.Dataset):
     """PyTorch dataset wrapper around Sample lists
 
@@ -186,11 +137,10 @@ class SampleListDataset(torch.utils.data.Dataset):
 
     """
 
-    def __init__(self, samples, transforms=[], detection=False):
+    def __init__(self, samples, transforms=[]):
 
         self._samples = samples
         self.transforms = transforms
-        self._detection = detection
 
     @property
     def transforms(self):
@@ -266,10 +216,6 @@ class SampleListDataset(torch.utils.data.Dataset):
 
             if self._transforms:
                 retval = self._transforms(*retval)
-
-            if self._detection:
-                bounding_box_transform = GetBoundingBox()
-                retval = bounding_box_transform(retval)
 
             return [item.key] + retval
 

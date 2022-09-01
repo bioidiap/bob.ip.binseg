@@ -11,7 +11,7 @@ def _maker(protocol, n):
     return mk(raw.subsets(protocol), [Resize((n, n))])
 
 
-def _maker_augmented(protocol, n, detection=False):
+def _maker_augmented(protocol, n):
 
     from ....data.cxr8 import dataset as raw
     from ....data.transforms import ColorJitter as _jitter
@@ -22,18 +22,15 @@ def _maker_augmented(protocol, n, detection=False):
     from ....data.transforms import Resize as _resize
     from .. import make_subset
 
-    def mk_aug_subset(subsets, train_transforms, all_transforms, detection):
+    def mk_aug_subset(subsets, train_transforms, all_transforms):
         retval = {}
 
         for key in subsets.keys():
-            retval[key] = make_subset(
-                subsets[key], transforms=all_transforms, detection=detection
-            )
+            retval[key] = make_subset(subsets[key], transforms=all_transforms)
             if key == "train":
                 retval["__train__"] = make_subset(
                     subsets[key],
                     transforms=train_transforms,
-                    detection=detection,
                 )
             else:
                 if key == "validation":
@@ -46,7 +43,6 @@ def _maker_augmented(protocol, n, detection=False):
         return retval
 
     return mk_aug_subset(
-        detection=detection,
         subsets=raw.subsets(protocol),
         all_transforms=[_resize((n, n))],
         train_transforms=[

@@ -11,7 +11,7 @@ from bob.extension.scripts.click_helper import (
     verbosity_option,
 )
 
-from ..engine.evaluator import run
+from ..engine.evaluator import compare_annotators, run
 
 logger = logging.getLogger(__name__)
 
@@ -159,16 +159,6 @@ def _validate_threshold(t, dataset):
     default=-1,
     cls=ResourceOption,
 )
-@click.option(
-    "--detection",
-    help="""If set, then the model will evaluate the bounding boxes instead of
-    the probability maps. Note that this is only available if the selected
-    model can perform the task of object detection.""",
-    required=False,
-    show_default=True,
-    default=False,
-    cls=ResourceOption,
-)
 @verbosity_option(cls=ResourceOption)
 def evaluate(
     output_folder,
@@ -179,18 +169,9 @@ def evaluate(
     threshold,
     steps,
     parallel,
-    detection,
     **kwargs,
 ):
     """Evaluates an FCN on a binary segmentation task."""
-    run.__code__.co_argcount
-
-    if detection:
-        from ..engine.detection_evaluator import compare_annotators
-        from ..engine.detection_evaluator import run as run_evaluate
-    else:
-        from ..engine.evaluator import compare_annotators
-        from ..engine.evaluator import run as run_evaluate
 
     threshold = _validate_threshold(threshold, dataset)
 
@@ -206,7 +187,7 @@ def evaluate(
     if isinstance(threshold, str):
         # first run evaluation for reference dataset, do not save overlays
         logger.info(f"Evaluating threshold on '{threshold}' set")
-        threshold = run_evaluate(
+        threshold = run(
             dataset[threshold], threshold, predictions_folder, steps=steps
         )
         logger.info(f"Set --threshold={threshold:.5f}")
@@ -221,8 +202,7 @@ def evaluate(
             logger.info(f"Skipping dataset '{k}' (not to be evaluated)")
             continue
         logger.info(f"Analyzing '{k}' set...")
-
-        run_evaluate(
+        run(
             v,
             k,
             predictions_folder,

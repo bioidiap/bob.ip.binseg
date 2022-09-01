@@ -17,7 +17,7 @@ RANDOM_FLIP_JITTER = [_hflip(), _vflip(), _jitter()]
 """Shared data augmentation transforms without random rotation"""
 
 
-def make_subset(samples, transforms, prefixes=[], suffixes=[], detection=False):
+def make_subset(samples, transforms, prefixes=[], suffixes=[]):
     """Creates a new data set, applying transforms
 
     .. note::
@@ -56,7 +56,7 @@ def make_subset(samples, transforms, prefixes=[], suffixes=[], detection=False):
 
     from ...data.utils import SampleListDataset as wrapper
 
-    return wrapper(samples, prefixes + transforms + suffixes, detection)
+    return wrapper(samples, prefixes + transforms + suffixes)
 
 
 def augment_subset(s, rotation_before=False):

@@ -17,6 +17,7 @@ from bob.extension.scripts.click_helper import (
     verbosity_option,
 )
 
+from ..engine.predictor import run
 from ..utils.checkpointer import Checkpointer
 from .binseg import download_to_tempfile, setup_pytorch_device
 
@@ -123,16 +124,6 @@ logger = logging.getLogger(__name__)
     default=-1,
     cls=ResourceOption,
 )
-@click.option(
-    "--detection",
-    help="""If set, then the model will predict the bounding boxes instead of
-    the probability maps. Note that this is only available if the selected
-    model can perform the task of object detection.""",
-    required=False,
-    show_default=True,
-    default=False,
-    cls=ResourceOption,
-)
 @verbosity_option(cls=ResourceOption)
 def predict(
     output_folder,
@@ -143,7 +134,6 @@ def predict(
     weight,
     overlayed,
     parallel,
-    detection,
     **kwargs,
 ):
     """Predicts vessel map (probabilities) on input images"""
@@ -188,29 +178,11 @@ def predict(
                 "multiprocessing_context"
             ] = multiprocessing.get_context("spawn")
 
-        if detection:
-            from ..engine.detection_predictor import run
-
-            def _collate_fn(batch):
-                return tuple(zip(*batch))
-
-            data_loader = DataLoader(
-                dataset=v,
-                batch_size=batch_size,
-                shuffle=False,
-                pin_memory=torch.cuda.is_available(),
-                collate_fn=_collate_fn,
-                **multiproc_kwargs,
-            )
-        else:
-            from ..engine.predictor import run
-
-            data_loader = DataLoader(
-                dataset=v,
-                batch_size=batch_size,
-                shuffle=False,
-                pin_memory=torch.cuda.is_available(),
-                **multiproc_kwargs,
-            )
-
+        data_loader = DataLoader(
+            dataset=v,
+            batch_size=batch_size,
+            shuffle=False,
+            pin_memory=torch.cuda.is_available(),
+            **multiproc_kwargs,
+        )
         run(model, data_loader, k, device, output_folder, overlayed)
