@@ -13,12 +13,12 @@ import torchvision.transforms.functional as VF
 
 from tqdm import tqdm
 
-from ..data.utils import overlayed_image
+from ..data.utils import overlayed_bbox_image
 
 logger = logging.getLogger(__name__)
 
 
-def _save_hdf5(stem, prob, output_folder):
+def _save_hdf5(stem, pred, output_folder):
     """
     Saves prediction maps as image in the same format as the test image
 
@@ -28,22 +28,19 @@ def _save_hdf5(stem, prob, output_folder):
     stem : str
         the name of the file without extension on the original dataset
 
-    prob : PIL.Image.Image
-        Monochrome Image with prediction maps
+    pred : list
+        list of bounding box, label, and logit score for that label
 
     output_folder : str
         path where to store predictions
 
     """
-
+    print(stem)
     fullpath = os.path.join(output_folder, f"{stem}.hdf5")
     tqdm.write(f"Saving {fullpath}...")
     os.makedirs(os.path.dirname(fullpath), exist_ok=True)
     with h5py.File(fullpath, "w") as f:
-        data = prob.cpu().squeeze(0).numpy()
-        f.create_dataset(
-            "array", data=data, compression="gzip", compression_opts=9
-        )
+        f.create_dataset("pred", data=pred.cpu().numpy(), compression="lzf")
 
 
 def _save_image(stem, extension, data, output_folder):
@@ -72,7 +69,7 @@ def _save_image(stem, extension, data, output_folder):
     data.save(fullpath)
 
 
-def _save_overlayed_png(stem, image, prob, output_folder):
+def _save_overlayed_png(stem, image, pred, output_folder):
     """Overlays prediction predictions vessel tree with original test image
 
 
@@ -92,10 +89,9 @@ def _save_overlayed_png(stem, image, prob, output_folder):
         path where to store results
 
     """
-
     image = VF.to_pil_image(image)
-    prob = VF.to_pil_image(prob.cpu())
-    _save_image(stem, ".png", overlayed_image(image, prob), output_folder)
+    pred = pred[:4].cpu().squeeze(0).numpy()
+    _save_image(stem, ".png", overlayed_bbox_image(image, pred), output_folder)
 
 
 def run(model, data_loader, name, device, output_folder, overlayed_folder):
@@ -132,7 +128,6 @@ def run(model, data_loader, name, device, output_folder, overlayed_folder):
 
     model.eval()  # set evaluation mode
     model.to(device)  # set/cast parameters to device
-    sigmoid = torch.nn.Sigmoid()  # use sigmoid for predictions
 
     # Setup timers
     start_total_time = time.time()
@@ -149,8 +144,9 @@ def run(model, data_loader, name, device, output_folder, overlayed_folder):
     for samples in tqdm(data_loader, desc="batches", leave=False, disable=None):
 
         names = samples[0]
-        images = samples[1].to(
-            device=device, non_blocking=torch.cuda.is_available()
+        images = list(
+            image.to(device, non_blocking=torch.cuda.is_available())
+            for image in samples[1]
         )
 
         with torch.no_grad():
@@ -158,21 +154,32 @@ def run(model, data_loader, name, device, output_folder, overlayed_folder):
             start_time = time.perf_counter()
             outputs = model(images)
 
-            # necessary check for HED/Little W-Net architecture that use
-            # several outputs for loss calculation instead of just the last one
-            if isinstance(outputs, (list, tuple)):
-                outputs = outputs[-1]
+            # treat cases with more than 1 box pred
+            boxes = []
+            labels = []
+            scores = []
 
-            predictions = sigmoid(outputs)
+            for out in outputs:
+                id_max = 0
+                score = out["scores"]
+                if len(score) > 1:
+                    id_max = score.argmax().item()
+
+                scores.append(score[id_max])
+                boxes.append(out["boxes"][id_max])
+                labels.append(out["labels"][id_max])
 
             batch_time = time.perf_counter() - start_time
             times.append(batch_time)
             len_samples.append(len(images))
 
-            for stem, img, prob in zip(names, images, predictions):
-                _save_hdf5(stem, prob, output_folder)
+            for stem, img, box, label, score in zip(
+                names, images, boxes, labels, scores
+            ):
+                pred = torch.cat((box, label.unsqueeze(0), score.unsqueeze(0)))
+                _save_hdf5(stem, pred, output_folder)
                 if overlayed_folder is not None:
-                    _save_overlayed_png(stem, img, prob, overlayed_folder)
+                    _save_overlayed_png(stem, img, pred, overlayed_folder)
 
     # report operational summary
     total_time = datetime.timedelta(seconds=int(time.time() - start_total_time))

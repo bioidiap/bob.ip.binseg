@@ -191,8 +191,8 @@ def create_logfile_fields(valid_loader, extra_valid_loaders, device):
     return logfile_fields
 
 
-def train_epoch(loader, model, optimizer, device, criterion):
-    """Trains the model for a single epoch (through all batches)
+def train_epoch(loader, model, optimizer, device):
+    """Trains the model for a single epoch (through all batches).
 
     Parameters
     ----------
@@ -208,9 +208,6 @@ def train_epoch(loader, model, optimizer, device, criterion):
     device : :py:class:`torch.device`
         device to use
 
-    criterion : :py:class:`torch.nn.modules.loss._Loss`
-
-
     Returns
     -------
 
@@ -219,28 +216,26 @@ def train_epoch(loader, model, optimizer, device, criterion):
         epoch's loss
 
     """
-
     batch_losses = []
     samples_in_batch = []
 
     # progress bar only on interactive jobs
     for samples in tqdm(loader, desc="train", leave=False, disable=None):
-        images = samples[1].to(
-            device=device, non_blocking=torch.cuda.is_available()
+        images = list(
+            image.to(device, non_blocking=torch.cuda.is_available())
+            for image in samples[1]
         )
-        ground_truths = samples[2].to(
-            device=device, non_blocking=torch.cuda.is_available()
-        )
-        masks = (
-            torch.ones_like(ground_truths)
-            if len(samples) < 4
-            else samples[3].to(
-                device=device, non_blocking=torch.cuda.is_available()
-            )
-        )
+        targets = [
+            {
+                k: v.to(device, non_blocking=torch.cuda.is_available())
+                for k, v in t.items()
+            }
+            for t in samples[2]
+        ]
+
         # data forwarding on the existing network
-        outputs = model(images)
-        loss = criterion(outputs, ground_truths, masks)
+        loss_dict = model(images, targets)
+        loss = sum(loss for loss in loss_dict.values())
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
@@ -252,7 +247,7 @@ def train_epoch(loader, model, optimizer, device, criterion):
     return numpy.average(batch_losses, weights=samples_in_batch)
 
 
-def validate_epoch(loader, model, device, criterion, pbar_desc):
+def validate_epoch(loader, model, device, pbar_desc):
     """
     Processes input samples and returns loss (scalar)
 
@@ -271,9 +266,6 @@ def validate_epoch(loader, model, device, criterion, pbar_desc):
     device : :py:class:`torch.device`
         device to use
 
-    criterion : :py:class:`torch.nn.modules.loss._Loss`
-        loss function
-
     pbar_desc : str
         A string for the progress bar descriptor
 
@@ -290,29 +282,25 @@ def validate_epoch(loader, model, device, criterion, pbar_desc):
     batch_losses = []
     samples_in_batch = []
 
-    with torch.no_grad(), torch_evaluation(model):
+    with torch.no_grad():
 
         for samples in tqdm(loader, desc=pbar_desc, leave=False, disable=None):
-            images = samples[1].to(
-                device=device,
-                non_blocking=torch.cuda.is_available(),
+            images = list(
+                image.to(device, non_blocking=torch.cuda.is_available())
+                for image in samples[1]
             )
-            ground_truths = samples[2].to(
-                device=device,
-                non_blocking=torch.cuda.is_available(),
-            )
-            masks = (
-                torch.ones_like(ground_truths)
-                if len(samples) < 4
-                else samples[3].to(
-                    device=device,
-                    non_blocking=torch.cuda.is_available(),
-                )
-            )
+            targets = [
+                {
+                    k: v.to(device, non_blocking=torch.cuda.is_available())
+                    for k, v in t.items()
+                }
+                for t in samples[2]
+            ]
 
             # data forwarding on the existing network
-            outputs = model(images)
-            loss = criterion(outputs, ground_truths, masks)
+            loss_dict = model(images, targets)
+            print(loss_dict)
+            loss = sum(loss for loss in loss_dict.values())
 
             batch_losses.append(loss.item())
             samples_in_batch.append(len(samples))
@@ -335,7 +323,7 @@ def checkpointer_process(
     Parameters
     ----------
 
-    checkpointer : :py:class:`bob.ip.binseg.utils.checkpointer.Checkpointer`
+    checkpointer : :py:class:`bob.ip.detect.utils.checkpointer.Checkpointer`
         checkpointer implementation
 
     checkpoint_period : int
@@ -499,13 +487,10 @@ def run(
 
     optimizer : :py:mod:`torch.optim`
 
-    criterion : :py:class:`torch.nn.modules.loss._Loss`
-        loss function
-
     scheduler : :py:mod:`torch.optim`
         learning rate scheduler
 
-    checkpointer : :py:class:`bob.ip.binseg.utils.checkpointer.Checkpointer`
+    checkpointer : :py:class:`bob.ip.detect.utils.checkpointer.Checkpointer`
         checkpointer implementation
 
     checkpoint_period : int
@@ -591,16 +576,12 @@ def run(
                 # Epoch time
                 start_epoch_time = time.time()
 
-                train_loss = train_epoch(
-                    data_loader, model, optimizer, device, criterion
-                )
+                train_loss = train_epoch(data_loader, model, optimizer, device)
 
                 scheduler.step()
 
                 valid_loss = (
-                    validate_epoch(
-                        valid_loader, model, device, criterion, "valid"
-                    )
+                    validate_epoch(valid_loader, model, device, "valid")
                     if valid_loader is not None
                     else None
                 )
@@ -611,7 +592,6 @@ def run(
                         extra_valid_loader,
                         model,
                         device,
-                        criterion,
                         f"xval@{pos+1}",
                     )
                     extra_valid_losses.append(loss)

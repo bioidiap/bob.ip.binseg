@@ -14,75 +14,15 @@ import pandas
 import PIL
 import torch
 import torch.nn.functional
+import torchvision.ops.boxes as bops
 import torchvision.transforms.functional as VF
 
 from tqdm import tqdm
 
-from ..utils.measure import base_measures, bayesian_measures
-
 logger = logging.getLogger(__name__)
 
 
-def _posneg(pred, gt, threshold):
-    """Calculates true and false positives and negatives
-
-
-    Parameters
-    ----------
-
-    pred : torch.Tensor
-        pixel-wise predictions
-
-    gt : torch.Tensor
-        ground-truth (annotations)
-
-    threshold : float
-        a particular threshold in which to calculate the performance
-        measures
-
-
-    Returns
-    -------
-
-    tp_tensor : torch.Tensor
-        boolean tensor with true positives, considering all observations
-
-    fp_tensor : torch.Tensor
-        boolean tensor with false positives, considering all observations
-
-    tn_tensor : torch.Tensor
-        boolean tensor with true negatives, considering all observations
-
-    fn_tensor : torch.Tensor
-        boolean tensor with false negatives, considering all observations
-
-    """
-
-    gt = gt.byte()  # byte tensor
-
-    # threshold
-    binary_pred = torch.gt(pred, threshold).byte()
-
-    # equals and not-equals
-    equals = torch.eq(binary_pred, gt).type(torch.uint8)  # tensor
-    notequals = torch.ne(binary_pred, gt).type(torch.uint8)  # tensor
-
-    # true positives
-    tp_tensor = gt * binary_pred
-
-    # false positives
-    fp_tensor = torch.eq((binary_pred + tp_tensor), 1).byte()
-
-    # true negatives
-    tn_tensor = equals - tp_tensor
-
-    # false negatives
-    fn_tensor = notequals - fp_tensor
-
-    return tp_tensor, fp_tensor, tn_tensor, fn_tensor
-
-
-def sample_measures_for_threshold(pred, gt, mask, threshold):
+def sample_measures_for_threshold(pred, gt, threshold):
     """
     Calculates counts on one single sample, for a specific threshold
 
@@ -96,9 +36,6 @@ def sample_measures_for_threshold(pred, gt, mask, threshold):
     gt : torch.Tensor
         ground-truth (annotations)
 
-    mask : torch.Tensor
-        region mask (used only if available).  May be set to ``None``.
-
     threshold : float
         a particular threshold in which to calculate the performance
         measures
@@ -107,37 +44,19 @@ def sample_measures_for_threshold(pred, gt, mask, threshold):
     Returns
     -------
 
-    tp : int
-
-    fp : int
-
-    tn : int
-
-    fn : int
+    iou: float
 
     """
+    if pred[-1].item() >= threshold:
+        iou = bops.box_iou(pred[:4].unsqueeze(0), gt["boxes"]).item()
 
-    tp_tensor, fp_tensor, tn_tensor, fn_tensor = _posneg(pred, gt, threshold)
+    else:
+        iou = 0
 
-    # if a mask is provided, consider only TP/FP/TN/FN **within** the region of
-    # interest defined by the mask
-    if mask is not None:
-        antimask = torch.le(mask, 0.5)
-        tp_tensor[antimask] = 0
-        fp_tensor[antimask] = 0
-        tn_tensor[antimask] = 0
-        fn_tensor[antimask] = 0
-
-    # calc measures from scalars
-    tp_count = torch.sum(tp_tensor).item()
-    fp_count = torch.sum(fp_tensor).item()
-    tn_count = torch.sum(tn_tensor).item()
-    fn_count = torch.sum(fn_tensor).item()
-
-    return tp_count, fp_count, tn_count, fn_count
+    return iou
 
 
-def _sample_measures(pred, gt, mask, steps):
+def _sample_measures(pred, gt, steps):
     """
     Calculates measures on one single sample
 
@@ -151,9 +70,6 @@ def _sample_measures(pred, gt, mask, steps):
     gt : torch.Tensor
         ground-truth (annotations)
 
-    mask : torch.Tensor
-        region mask (used only if available).  May be set to ``None``.
-
     steps : int
         number of steps to use for threshold analysis.  The step size is
         calculated from this by dividing ``1.0/steps``
@@ -166,31 +82,24 @@ def _sample_measures(pred, gt, mask, steps):
 
         A pandas dataframe with the following columns:
 
-        * tp: int
-        * fp: int
-        * tn: int
-        * fn: int
+        * iou: float
 
     """
 
     step_size = 1.0 / steps
-    data = [
-        (index, threshold)
-        + sample_measures_for_threshold(pred, gt, mask, threshold)
-        for index, threshold in enumerate(numpy.arange(0.0, 1.0, step_size))
-    ]
+    data = []
+    for index, threshold in enumerate(numpy.arange(0.0, 1.0, step_size)):
+        data.append(
+            pandas.DataFrame(
+                {
+                    "index": [index],
+                    "threshold": [threshold],
+                    "iou": [sample_measures_for_threshold(pred, gt, threshold)],
+                }
+            )
+        )
 
-    retval = pandas.DataFrame(
-        data,
-        columns=(
-            "index",
-            "threshold",
-            "tp",
-            "fp",
-            "tn",
-            "fn",
-        ),
-    )
+    retval = pandas.concat(data, ignore_index=True)
     retval.set_index("index", inplace=True)
     return retval
 
@@ -199,15 +108,12 @@ def _sample_analysis(
     img,
     pred,
     gt,
-    mask,
     threshold,
-    tp_color=(0, 255, 0),  # (128,128,128) Gray
-    fp_color=(0, 0, 255),  # (70, 240, 240) Cyan
-    fn_color=(255, 0, 0),  # (245, 130, 48) Orange
+    true_bbox=(0, 255, 0),  # (128,128,128) Gray
+    pred_bbox=(255, 0, 0),  # (245, 130, 48) Orange
     overlay=True,
 ):
-    """Visualizes true positives, false positives and false negatives
-
+    """Visualizes true vs predicted bounding box.
 
     Parameters
     ----------
@@ -216,25 +122,13 @@ def _sample_analysis(
         original image
 
     pred : torch.Tensor
-        pixel-wise predictions
+        bounding box, label, and score
 
-    gt : torch.Tensor
-        ground-truth (annotations)
-
-    mask : torch.Tensor
-        region mask (used only if available).  May be set to ``None``.
+    gt : dict
+        ground-truth (dict)
 
     threshold : float
         The threshold to be used while analyzing this image's probability map
-
-    tp_color : tuple
-        RGB value for true positives
-
-    fp_color : tuple
-        RGB value for false positives
-
-    fn_color : tuple
-        RGB value for false negatives
 
     overlay : :py:class:`bool`, Optional
         If set to ``True`` (which is the default), then overlay annotations on
@@ -250,110 +144,38 @@ def _sample_analysis(
         (TP), false-positives (FP) and false negatives (FN).
 
     """
+    img = VF.to_pil_image(img)
+    img1 = PIL.ImageDraw.Draw(img)
+    iou = bops.box_iou(pred[:4].unsqueeze(0), gt["boxes"]).item()
+    x1t, y1t, x2t, y2t = gt["boxes"].squeeze().numpy()
+    x1, y1, x2, y2 = pred[:4].squeeze().numpy()
 
-    tp_tensor, fp_tensor, tn_tensor, fn_tensor = _posneg(pred, gt, threshold)
+    shape_t = [(x1t, y1t), (x2t, y2t)]
+    shape = [(x1, y1), (x2, y2)]
+    img1.rectangle(shape_t, outline=true_bbox, width=1)
+    img1.rectangle(shape, outline=pred_bbox, width=1)
+    img1.text((0, 0), "IoU = " + str(numpy.round(iou, 2)), (255, 255, 255))
 
-    # if a mask is provided, consider only TP/FP/TN/FN **within** the region of
-    # interest defined by the mask
-    if mask is not None:
-        antimask = torch.le(mask, 0.5)
-        tp_tensor[antimask] = 0
-        fp_tensor[antimask] = 0
-        tn_tensor[antimask] = 0
-        fn_tensor[antimask] = 0
-
-    # change to PIL representation
-    tp_pil = VF.to_pil_image(tp_tensor.float())
-    tp_pil_colored = PIL.ImageOps.colorize(tp_pil, (0, 0, 0), tp_color)
-
-    fp_pil = VF.to_pil_image(fp_tensor.float())
-    fp_pil_colored = PIL.ImageOps.colorize(fp_pil, (0, 0, 0), fp_color)
-
-    fn_pil = VF.to_pil_image(fn_tensor.float())
-    fn_pil_colored = PIL.ImageOps.colorize(fn_pil, (0, 0, 0), fn_color)
-
-    tp_pil_colored.paste(fp_pil_colored, mask=fp_pil)
-    tp_pil_colored.paste(fn_pil_colored, mask=fn_pil)
-
-    if overlay:
-        img = VF.to_pil_image(img)  # PIL Image
-        # using blend here, to fade original image being overlayed, or
-        # its brightness may obfuscate colors from the vessel map
-        tp_pil_colored = PIL.Image.blend(img, tp_pil_colored, 0.5)
-
-    return tp_pil_colored
+    return img
 
 
 def _summarize(data):
-    """Summarizes collected dataframes and adds bayesian figures"""
 
-    _entries = (
-        "mean_precision",
-        "mode_precision",
-        "lower_precision",
-        "upper_precision",
-        "mean_recall",
-        "mode_recall",
-        "lower_recall",
-        "upper_recall",
-        "mean_specificity",
-        "mode_specificity",
-        "lower_specificity",
-        "upper_specificity",
-        "mean_accuracy",
-        "mode_accuracy",
-        "lower_accuracy",
-        "upper_accuracy",
-        "mean_jaccard",
-        "mode_jaccard",
-        "lower_jaccard",
-        "upper_jaccard",
-        "mean_f1_score",
-        "mode_f1_score",
-        "lower_f1_score",
-        "upper_f1_score",
-        "frequentist_precision",
-        "frequentist_recall",
-        "frequentist_specificity",
-        "frequentist_accuracy",
-        "frequentist_jaccard",
-        "frequentist_f1_score",
-    )
+    final = []
+    for key in data.keys():
+        temp = data[key]
+        final.append(temp)
 
-    def _row_summary(r):
+    final = pandas.concat(final, ignore_index=True)
+    final = final.groupby(["threshold"])[["iou"]].mean()
+    final.reset_index(inplace=True)
+    final.rename({"iou": "mean_iou"}, axis=1, inplace=True)
 
-        # run bayesian_measures(), flatten tuple of tuples, name entries
-        bayesian = [
-            item
-            for sublist in bayesian_measures(
-                r.tp,
-                r.fp,
-                r.tn,
-                r.fn,
-                lambda_=0.5,
-                coverage=0.95,
-            )
-            for item in sublist
-        ]
-
-        # evaluate frequentist measures
-        frequentist = base_measures(r.tp, r.fp, r.tn, r.fn)
-        return pandas.Series(bayesian + list(frequentist), index=_entries)
-
-    # Merges all dataframes together
-    sums = pandas.concat(data.values()).groupby("index").sum()
-    sums["threshold"] /= len(data)
-
-    # create a new dataframe with these
-    measures = sums.apply(lambda r: _row_summary(r), axis=1)
-
-    # merge sums and measures into a single dataframe
-    return pandas.concat([sums, measures.reindex(sums.index)], axis=1).copy()
+    return final
 
 
 def _evaluate_sample_worker(args):
     """Runs all of the evaluation steps on a single sample
-
 
     Parameters
     ----------
@@ -419,13 +241,13 @@ def _evaluate_sample_worker(args):
 
     stem = sample[0]
     image = sample[1]
-    gt = sample[2]
-    mask = None if len(sample) <= 3 else sample[3]
+    target = sample[2]
+
     pred_fullpath = os.path.join(use_predictions_folder, stem + ".hdf5")
     with h5py.File(pred_fullpath, "r") as f:
-        pred = f["array"][:]
+        pred = f["pred"][:]
     pred = torch.from_numpy(pred)
-    retval = _sample_measures(pred, gt, mask, steps)
+    retval = _sample_measures(pred, target, steps)
 
     if output_folder is not None:
         fullpath = os.path.join(output_folder, name, f"{stem}.csv")
@@ -435,7 +257,7 @@ def _evaluate_sample_worker(args):
 
     if overlayed_folder is not None:
         overlay_image = _sample_analysis(
-            image, pred, gt, mask, threshold=threshold, overlay=True
+            image, pred, target, threshold=threshold, overlay=True
         )
         fullpath = os.path.join(overlayed_folder, name, f"{stem}.png")
         tqdm.write(f"Saving {fullpath}...")
@@ -553,20 +375,20 @@ def run(
     # Merges all dataframes together
     measures = _summarize(data)
 
-    maxf1 = measures["mean_f1_score"].max()
-    maxf1_index = measures["mean_f1_score"].idxmax()
-    maxf1_threshold = measures["threshold"][maxf1_index]
+    max_iou = measures["mean_iou"].max()
+    max_iou_index = measures["mean_iou"].idxmax()
+    max_iou_threshold = measures["threshold"][max_iou_index]
 
     logger.info(
-        f"Maximum F1-score of {maxf1:.5f}, achieved at "
-        f"threshold {maxf1_threshold:.3f} (chosen *a posteriori*)"
+        f"Maximum IoU of {max_iou:.5f}, achieved at "
+        f"threshold {max_iou_threshold:.3f} (chosen *a posteriori*)"
     )
 
     if threshold is not None:
 
         # get the closest possible threshold we have
         index = int(round(steps * threshold))
-        f1_a_priori = measures["mean_f1_score"][index]
+        iou_a_priori = measures["mean_iou"][index]
         actual_threshold = measures["threshold"][index]
 
         # mark threshold a priori chosen on this dataset
@@ -574,7 +396,7 @@ def run(
         measures["threshold_a_priori", index] = True
 
         logger.info(
-            f"F1-score of {f1_a_priori:.5f}, at threshold "
+            f"IoU of {iou_a_priori:.5f}, at threshold "
             f"{actual_threshold:.3f} (chosen *a priori*)"
         )
 
@@ -587,7 +409,7 @@ def run(
         )
         measures.to_csv(measures_path)
 
-    return maxf1_threshold
+    return max_iou_threshold
 
 
 def _compare_annotators_worker(args):
@@ -655,8 +477,14 @@ def _compare_annotators_worker(args):
     image = baseline_sample[1]
     gt = baseline_sample[2]
     pred = other_sample[2]  # works as a prediction
-    mask = None if len(baseline_sample) < 4 else baseline_sample[3]
-    retval = _sample_measures(pred, gt, mask, 2)
+    pred = torch.cat(
+        (
+            pred["boxes"],
+            pred["label"].unsqueeze(0),
+            torch.tensor([[1]]).unsqueeze(0),
+        )
+    )
+    retval = _sample_measures(pred, gt, 2)
 
     if output_folder is not None:
         fullpath = os.path.join(
@@ -668,7 +496,7 @@ def _compare_annotators_worker(args):
 
     if overlayed_folder is not None:
         overlay_image = _sample_analysis(
-            image, pred, gt, mask, threshold=0.5, overlay=True
+            image, pred, gt, threshold=0.5, overlay=True
         )
         fullpath = os.path.join(
             overlayed_folder, "second-annotator", name, f"{stem}.png"
@@ -775,5 +603,5 @@ def compare_annotators(
     logger.info(f"Saving summaries over all input images at {measures_path}...")
     measures.to_csv(measures_path)
 
-    maxf1 = measures["mean_f1_score"].max()
-    logger.info(f"F1-score of {maxf1:.5f} (second annotator; threshold=0.5)")
+    max_iou = measures["mean_iou"].max()
+    logger.info(f"IoU of {max_iou:.5f} (second annotator; threshold=0.5)")
