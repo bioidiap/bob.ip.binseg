@@ -97,12 +97,14 @@ def gpu_constants():
         * ``driver_version``, as ``gpu_driver_version`` (:py:class:`str`)
         * ``memory.total``, as ``gpu_memory_total`` (transformed to gigabytes,
           :py:class:`float`)
+        * ``count``, as ``gpu_count`` (the number of GPUs available in the
+          current system)
 
     """
 
     return run_nvidia_smi(
-        ("gpu_name", "driver_version", "memory.total"),
-        ("gpu_name", "gpu_driver_version", "gpu_memory_total"),
+        ("gpu_name", "driver_version", "memory.total", "count"),
+        ("gpu_name", "gpu_driver_version", "gpu_memory_total", "gpu_count"),
     )
 
 
