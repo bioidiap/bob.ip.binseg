@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding=utf-8
 
-"""Shenzhen No.3 People’s Hospital dataset for Lung Segmentation
+"""Shenzhen No.3 People’s Hospital dataset for Lung Detection
 
 The database includes 336 cases with manifestation of tuberculosis, and 326
 normal cases.  It contains a total  of 662 images. Image size varies for each
@@ -34,7 +34,7 @@ _protocols = [
 ]
 
 _root_path = bob.extension.rc.get(
-    "bob.ip.binseg.shenzhen.datadir", os.path.realpath(os.curdir)
+    "bob.ip.detection.shenzhen.datadir", os.path.realpath(os.curdir)
 )
 
 

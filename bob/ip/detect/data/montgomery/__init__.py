@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding=utf-8
 
-"""Montgomery County dataset for Lung Segmentation
+"""Montgomery County dataset for Lung Detection
 
 The database includes 58 cases with	manifestation of tuberculosis, and 80
 normal cases.  It contains a total  of 138 resolution of 4020 x 4892, or
@@ -36,7 +36,7 @@ _protocols = [
 ]
 
 _root_path = bob.extension.rc.get(
-    "bob.ip.binseg.montgomery.datadir", os.path.realpath(os.curdir)
+    "bob.ip.detect.montgomery.datadir", os.path.realpath(os.curdir)
 )
 
 

@@ -176,12 +176,12 @@ class SampleListDataset(torch.utils.data.Dataset):
     ----------
 
     samples : list
-        A list of :py:class:`bob.ip.binseg.data.sample.Sample` objects
+        A list of :py:class:`bob.ip.detect.data.sample.Sample` objects
 
     transforms : :py:class:`list`, Optional
         a list of transformations to be applied to **both** image and
         ground-truth data.  Notice a last transform
-        (:py:class:`bob.ip.binseg.data.transforms.ToTensor`) is always applied
+        (:py:class:`bob.ip.detect.data.transforms.ToTensor`) is always applied
         - you do not need to add that.
 
     """

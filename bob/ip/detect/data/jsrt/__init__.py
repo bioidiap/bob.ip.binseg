@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding=utf-8
 
-"""Japanese Society of Radiological Technology dataset for Lung Segmentation
+"""Japanese Society of Radiological Technology dataset for Lung Detection
 
 The database includes 154 nodule and 93 non-nodule images.  It contains a total
 of 247 resolution of 2048 x 2048.  One set of ground-truth lung annotations is
@@ -36,7 +36,7 @@ _protocols = [
 ]
 
 _root_path = bob.extension.rc.get(
-    "bob.ip.binseg.jsrt.datadir", os.path.realpath(os.curdir)
+    "bob.ip.detect.jsrt.datadir", os.path.realpath(os.curdir)
 )
 
 

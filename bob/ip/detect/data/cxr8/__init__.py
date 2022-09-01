@@ -42,7 +42,7 @@ _protocols = [
 ]
 
 _root_path = bob.extension.rc.get(
-    "bob.ip.binseg.cxr8.datadir", os.path.realpath(os.curdir)
+    "bob.ip.detect.cxr8.datadir", os.path.realpath(os.curdir)
 )
 
 
