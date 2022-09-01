@@ -27,8 +27,9 @@ setup(
     zip_safe=False,
     install_requires=install_requires,
     entry_points={
-        # main entry for bob binseg cli
-        "bob.cli": ["binseg = bob.ip.binseg.script.binseg:binseg"],
+        # main entry bob cli
+        "bob.cli": ["binseg = bob.ip.binseg.script.binseg:binseg",
+                    "detect = bob.ip.detect.script.detect:detect"],
         # bob binseg sub-commands
         "bob.ip.binseg.cli": [
             "config = bob.ip.binseg.script.config:config",
@@ -43,7 +44,7 @@ setup(
             "mkmask = bob.ip.binseg.script.mkmask:mkmask",
             "train-analysis = bob.ip.binseg.script.train_analysis:train_analysis",
         ],
-        # bob train configurations
+        # bob binseg train configurations
         "bob.ip.binseg.config": [
             # models
             "driu = bob.ip.binseg.configs.models.driu",
@@ -54,7 +55,6 @@ setup(
             "unet = bob.ip.binseg.configs.models.unet",
             "resunet = bob.ip.binseg.configs.models.resunet",
             "lwnet = bob.ip.binseg.configs.models.lwnet",
-            "faster-rcnn = bob.ip.binseg.configs.models.faster_rcnn",
             # example datasets
             "csv-dataset-example = bob.ip.binseg.configs.datasets.csv",
             # drive dataset - retinography
@@ -140,29 +140,57 @@ setup(
             # montgomery county - cxr
             "montgomery = bob.ip.binseg.configs.datasets.montgomery.default",
             "montgomery-xtest = bob.ip.binseg.configs.datasets.montgomery.xtest",
-            "montgomery-detection = bob.ip.binseg.configs.datasets.montgomery.default_detection",
-            "montgomery-xtest-detection = bob.ip.binseg.configs.datasets.montgomery.xtest_detection",
             # shenzhen - cxr
             "shenzhen = bob.ip.binseg.configs.datasets.shenzhen.default",
             "shenzhen-small = bob.ip.binseg.configs.datasets.shenzhen.default_256",
             "shenzhen-xtest = bob.ip.binseg.configs.datasets.shenzhen.xtest",
-            "shenzhen-detection = bob.ip.binseg.configs.datasets.shenzhen.default_detection",
-            "shenzhen-xtest-detection = bob.ip.binseg.configs.datasets.shenzhen.xtest_detection",
             # jsrt - cxr
             "jsrt = bob.ip.binseg.configs.datasets.jsrt.default",
             "jsrt-xtest = bob.ip.binseg.configs.datasets.jsrt.xtest",
-            "jsrt-detection = bob.ip.binseg.configs.datasets.jsrt.default_detection",
-            "jsrt-xtest-detection = bob.ip.binseg.configs.datasets.jsrt.xtest_detection",
             # cxr8 - cxr
             "cxr8 = bob.ip.binseg.configs.datasets.cxr8.default",
             "cxr8-idiap = bob.ip.binseg.configs.datasets.cxr8.idiap",
             "cxr8-xtest = bob.ip.binseg.configs.datasets.cxr8.xtest",
             "cxr8-idiap-xtest = bob.ip.binseg.configs.datasets.cxr8.xtest_idiap",
-            "cxr8-detection = bob.ip.binseg.configs.datasets.cxr8.default_detection",
-            "cxr8-xtest-detection = bob.ip.binseg.configs.datasets.cxr8.xtest_detection",
+        ],
+        # bob detect sub-commands
+        "bob.ip.detect.cli": [
+            "config = bob.ip.detect.script.config:config",
+            "dataset =  bob.ip.detect.script.dataset:dataset",
+            "train = bob.ip.detect.script.train:train",
+            "predict = bob.ip.detect.script.predict:predict",
+            "evaluate = bob.ip.detect.script.evaluate:evaluate",
+            "compare =  bob.ip.detect.script.compare:compare",
+            "significance =  bob.ip.detect.script.significance:significance",
+            "analyze =  bob.ip.detect.script.analyze:analyze",
+            "experiment =  bob.ip.detect.script.experiment:experiment",
+            "mkmask = bob.ip.detect.script.mkmask:mkmask",
+            "train-analysis = bob.ip.detect.script.train_analysis:train_analysis",
+        ],
+        # bob detect train configurations
+        "bob.ip.detect.config": [
+            # models
+            "faster-rcnn = bob.ip.detect.configs.models.faster_rcnn",
+            # example datasets
+            "csv-dataset-example = bob.ip.detect.configs.datasets.csv",
+            # montgomery county - cxr
+            "montgomery = bob.ip.detect.configs.datasets.montgomery.default",
+            "montgomery-xtest = bob.ip.detect.configs.datasets.montgomery.xtest",
+            # shenzhen - cxr
+            "shenzhen = bob.ip.detect.configs.datasets.shenzhen.default",
+            "shenzhen-small = bob.ip.detect.configs.datasets.shenzhen.default_256",
+            "shenzhen-xtest = bob.ip.detect.configs.datasets.shenzhen.xtest",
+            # jsrt - cxr
+            "jsrt = bob.ip.detect.configs.datasets.jsrt.default",
+            "jsrt-xtest = bob.ip.detect.configs.datasets.jsrt.xtest",
+            # cxr8 - cxr
+            "cxr8 = bob.ip.detect.configs.datasets.cxr8.default",
+            "cxr8-idiap = bob.ip.detect.configs.datasets.cxr8.idiap",
+            "cxr8-xtest = bob.ip.detect.configs.datasets.cxr8.xtest",
+            "cxr8-idiap-xtest = bob.ip.detect.configs.datasets.cxr8.xtest_idiap",
             # chexphoto - cxr
-            "chexphoto-detection = bob.ip.binseg.configs.datasets.chexphoto.default_detection",
-            "chexphoto-xtest-detection = bob.ip.binseg.configs.datasets.chexphoto.xtest_detection",
+            "chexphoto = bob.ip.detect.configs.datasets.chexphoto.default",
+            "chexphoto-xtest = bob.ip.detect.configs.datasets.chexphoto.xtest",
         ],
     },
     # check classifiers, add and remove as you see fit
