@@ -28,8 +28,10 @@ setup(
     install_requires=install_requires,
     entry_points={
         # main entry bob cli
-        "bob.cli": ["binseg = bob.ip.binseg.script.binseg:binseg",
-                    "detect = bob.ip.detect.script.detect:detect"],
+        "bob.cli": [
+            "binseg = bob.ip.binseg.script.binseg:binseg",
+            "detect = bob.ip.detect.script.detect:detect",
+        ],
         # bob binseg sub-commands
         "bob.ip.binseg.cli": [
             "config = bob.ip.binseg.script.config:config",

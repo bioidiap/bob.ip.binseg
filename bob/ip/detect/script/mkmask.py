@@ -89,7 +89,7 @@ def process_glob(base_path, use_glob, output_path, threshold):
 
     base_path : str
         The base directory where to look for files matching a certain name
-        patternrc.get("bob.ip.binseg." + dataset + ".datadir"):
+        patternrc.get("bob.ip.detect." + dataset + ".datadir"):
 
     use_glob : list
         A list of globs to use for matching filenames inside ``base_path``
@@ -130,18 +130,18 @@ def process_glob(base_path, use_glob, output_path, threshold):
 \b
     1. Generate masks for supported dataset by bob. Ex: refuge.
 \b
-       $ bob binseg mkmask --dataset="refuge" --globs="Training400/*Glaucoma/*.jpg" --globs="Training400/*AMD/*.jpg" --threshold=5
+       $ bob detect mkmask --dataset="refuge" --globs="Training400/*Glaucoma/*.jpg" --globs="Training400/*AMD/*.jpg" --threshold=5
 \b
     Or you can generate the same results with this command
 
 \b
-       $ bob binseg mkmask -d "refuge" -g "Training400/*Glaucoma/*.jpg" -g "Training400/*AMD/*.jpg" -t 5
+       $ bob detect mkmask -d "refuge" -g "Training400/*Glaucoma/*.jpg" -g "Training400/*AMD/*.jpg" -t 5
 
 \b
     2. Generate masks for non supported dataset by bob
 
 \b
-        $ bob binseg mkmask -d "Path/to/dataset" -g "glob1" -g "glob2" -g glob3  -t 4
+        $ bob detect mkmask -d "Path/to/dataset" -g "glob1" -g "glob2" -g glob3  -t 4
 
 
 """,
@@ -189,8 +189,8 @@ def mkmask(dataset, globs, threshold, output_folder, **kwargs):
     Commands for generating masks for images in a dataset.
 
     """
-    if rc.get("bob.ip.binseg." + dataset + ".datadir"):
-        base_path = rc.get("bob.ip.binseg." + dataset + ".datadir")
+    if rc.get("bob.ip.detect." + dataset + ".datadir"):
+        base_path = rc.get("bob.ip.detect." + dataset + ".datadir")
     else:
         base_path = dataset
 

@@ -27,8 +27,7 @@ def _maker_augmented(protocol, n):
         retval = {}
 
         for key in subsets.keys():
-            retval[key] = make_subset(
-                subsets[key], transforms=all_transforms)
+            retval[key] = make_subset(subsets[key], transforms=all_transforms)
             if key == "train":
                 retval["__train__"] = make_subset(
                     subsets[key],

@@ -8,6 +8,6 @@
 * See :py:mod:`bob.ip.binseg.data.chexphoto` for dataset details
 """
 
-from bob.ip.binseg.configs.datasets.chexphoto import _maker_augmented
+from bob.ip.detect.configs.datasets.chexphoto import _maker_augmented
 
 dataset = _maker_augmented("default")

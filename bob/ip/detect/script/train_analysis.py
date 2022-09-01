@@ -140,14 +140,14 @@ def _hardware_utilisation(df, const):
 
 
 @click.command(
-    entry_point_group="bob.ip.binseg.config",
+    entry_point_group="bob.ip.detect.config",
     cls=ConfigCommand,
     epilog="""Examples:
 
 \b
     1. Analyzes a training log and produces various plots:
 
-       $ bob binseg train-analysis -vv log.csv constants.csv
+       $ bob detect train-analysis -vv log.csv constants.csv
 
 """,
 )

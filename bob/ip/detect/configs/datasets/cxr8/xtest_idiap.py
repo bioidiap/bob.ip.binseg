@@ -4,10 +4,10 @@
 """CXR8 cross-evaluation dataset with Idiap directory structure organisation
 """
 
-from bob.ip.binseg.configs.datasets.cxr8.idiap import dataset as _cxr8
-from bob.ip.binseg.configs.datasets.jsrt.default import dataset as _jsrt
-from bob.ip.binseg.configs.datasets.montgomery.default import dataset as _mc
-from bob.ip.binseg.configs.datasets.shenzhen.default import dataset as _shenzhen
+from bob.ip.detect.configs.datasets.cxr8.idiap import dataset as _cxr8
+from bob.ip.detect.configs.datasets.jsrt.default import dataset as _jsrt
+from bob.ip.detect.configs.datasets.montgomery.default import dataset as _mc
+from bob.ip.detect.configs.datasets.shenzhen.default import dataset as _shenzhen
 
 dataset = {
     "train": _cxr8["train"],

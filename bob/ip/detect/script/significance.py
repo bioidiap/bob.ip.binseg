@@ -327,7 +327,7 @@ def _eval_differences(
 
 
 @click.command(
-    entry_point_group="bob.ip.binseg.config",
+    entry_point_group="bob.ip.detect.config",
     cls=ConfigCommand,
     epilog="""Examples:
 
@@ -335,7 +335,7 @@ def _eval_differences(
     1. Runs a significance test using as base the calculated predictions of two
        different systems, on the **same** dataset:
 \b
-       $ bob binseg significance -vv drive --names system1 system2 --predictions=path/to/predictions/system-1 path/to/predictions/system-2
+       $ bob detect significance -vv drive --names system1 system2 --predictions=path/to/predictions/system-1 path/to/predictions/system-2
 \b
     2. By default, we use a "validation" dataset if it is available, to infer
        the a priori threshold for the comparison of two systems.  Otherwise,
@@ -344,7 +344,7 @@ def _eval_differences(
        testing the hypothesis - by default we use the "test" dataset if it is
        available, otherwise, specify.
 \b
-       $ bob binseg significance -vv drive --names system1 system2 --predictions=path/to/predictions/system-1 path/to/predictions/system-2 --threshold=train --evaluate=alternate-test
+       $ bob detect significance -vv drive --names system1 system2 --predictions=path/to/predictions/system-1 path/to/predictions/system-2 --threshold=train --evaluate=alternate-test
 """,
 )
 @click.option(

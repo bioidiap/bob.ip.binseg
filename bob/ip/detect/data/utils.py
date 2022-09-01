@@ -266,7 +266,6 @@ class SampleListDataset(torch.utils.data.Dataset):
             if self._transforms:
                 retval = self._transforms(*retval)
 
-
             bounding_box_transform = GetBoundingBox()
             retval = bounding_box_transform(retval)
 

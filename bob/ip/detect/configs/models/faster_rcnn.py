@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""Faster R-CNN for image detection
+"""Faster R-CNN for Object Detection
 
 Reference: [____]_
 """
@@ -9,8 +9,8 @@ import torch
 
 from torch.optim.lr_scheduler import MultiStepLR
 
-from bob.ip.binseg.models.faster_rcnn import faster_rcnn
-from bob.ip.binseg.models.losses import SoftJaccardBCELogitsLoss
+from bob.ip.detect.models.faster_rcnn import faster_rcnn
+from bob.ip.detect.models.losses import SoftJaccardBCELogitsLoss
 
 # config
 lr = 0.005
