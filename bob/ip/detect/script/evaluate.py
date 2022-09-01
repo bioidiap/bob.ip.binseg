@@ -45,14 +45,14 @@ def _validate_threshold(t, dataset):
 
 
 @click.command(
-    entry_point_group="bob.ip.binseg.config",
+    entry_point_group="bob.ip.detect.config",
     cls=ConfigCommand,
     epilog="""Examples:
 
 \b
     1. Runs evaluation on an existing dataset configuration:
 \b
-       $ bob binseg evaluate -vv drive --predictions-folder=path/to/predictions --output-folder=path/to/results
+       $ bob detect evaluate -vv drive --predictions-folder=path/to/predictions --output-folder=path/to/results
 \b
     2. To run evaluation on a folder with your own images and annotations, you
        must first specify resizing, cropping, etc, so that the image can be
@@ -61,9 +61,9 @@ def _validate_threshold(t, dataset):
        the dataset configuration used for **training** the provided model.
        Once you figured this out, do the following:
 \b
-       $ bob binseg config copy csv-dataset-example mydataset.py
+       $ bob detect config copy csv-dataset-example mydataset.py
        # modify "mydataset.py" to your liking
-       $ bob binseg evaluate -vv mydataset.py --predictions-folder=path/to/predictions --output-folder=path/to/results
+       $ bob detect evaluate -vv mydataset.py --predictions-folder=path/to/predictions --output-folder=path/to/results
 """,
 )
 @click.option(
@@ -109,9 +109,9 @@ def _validate_threshold(t, dataset):
 @click.option(
     "--overlayed",
     "-O",
-    help="Creates overlayed representations of the output probability maps, "
+    help="Creates overlayed representations of the output bounding boxes, "
     "similar to --overlayed in prediction-mode, except it includes "
-    "distinctive colours for true and false positives and false negatives.  "
+    "distinctive colours for ground truth and predicted bounding boxes.  "
     "If not set, or empty then do **NOT** output overlayed images.  "
     "Otherwise, the parameter represents the name of a folder where to "
     "store those",
@@ -124,13 +124,13 @@ def _validate_threshold(t, dataset):
     "--threshold",
     "-t",
     help="This number is used to define positives and negatives from "
-    "probability maps, and report F1-scores (a priori). It "
+    "probability maps, and report IoU-scores (a priori). It "
     "should either come from the training set or a separate validation set "
     "to avoid biasing the analysis.  Optionally, if you provide a multi-set "
     "dataset as input, this may also be the name of an existing set from "
-    "which the threshold will be estimated (highest F1-score) and then "
+    "which the threshold will be estimated (highest IoU-score) and then "
     "applied to the subsequent sets.  This number is also used to print "
-    "the test set F1-score a priori performance",
+    "the test set IoU-score a priori performance",
     default=None,
     show_default=False,
     required=False,
@@ -140,7 +140,7 @@ def _validate_threshold(t, dataset):
     "--steps",
     "-S",
     help="This number is used to define the number of threshold steps to "
-    "consider when evaluating the highest possible F1-score on test data.",
+    "consider when evaluating the highest possible IoU-score on test data.",
     default=1000,
     show_default=True,
     required=True,
@@ -159,16 +159,6 @@ def _validate_threshold(t, dataset):
     default=-1,
     cls=ResourceOption,
 )
-@click.option(
-    "--detection",
-    help="""If set, then the model will evaluate the bounding boxes instead of
-    the probability maps. Note that this is only available if the selected
-    model can perform the task of object detection.""",
-    required=False,
-    show_default=True,
-    default=False,
-    cls=ResourceOption,
-)
 @verbosity_option(cls=ResourceOption)
 def evaluate(
     output_folder,
@@ -179,18 +169,12 @@ def evaluate(
     threshold,
     steps,
     parallel,
-    detection,
     **kwargs,
 ):
-    """Evaluates an FCN on a binary segmentation task."""
+    """Evaluates an FCN on a detection task."""
     run.__code__.co_argcount
 
-    if detection:
-        from ..engine.detection_evaluator import compare_annotators
-        from ..engine.detection_evaluator import run as run_evaluate
-    else:
-        from ..engine.evaluator import compare_annotators
-        from ..engine.evaluator import run as run_evaluate
+    from ..engine.evaluator import compare_annotators
 
     threshold = _validate_threshold(threshold, dataset)
 
@@ -206,7 +190,7 @@ def evaluate(
     if isinstance(threshold, str):
         # first run evaluation for reference dataset, do not save overlays
         logger.info(f"Evaluating threshold on '{threshold}' set")
-        threshold = run_evaluate(
+        threshold = run(
             dataset[threshold], threshold, predictions_folder, steps=steps
         )
         logger.info(f"Set --threshold={threshold:.5f}")
@@ -222,7 +206,7 @@ def evaluate(
             continue
         logger.info(f"Analyzing '{k}' set...")
 
-        run_evaluate(
+        run(
             v,
             k,
             predictions_folder,

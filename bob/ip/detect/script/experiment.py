@@ -13,22 +13,22 @@ from bob.extension.scripts.click_helper import (
     verbosity_option,
 )
 
-from .binseg import save_sh_command
+from .detect import save_sh_command
 
 logger = logging.getLogger(__name__)
 
 
 @click.command(
-    entry_point_group="bob.ip.binseg.config",
+    entry_point_group="bob.ip.detect.config",
     cls=ConfigCommand,
     epilog="""Examples:
 
 \b
-    1. Trains an M2U-Net model (VGG-16 backbone) with DRIVE (vessel
-       segmentation), on the CPU, for only two epochs, then runs inference and
-       evaluation on stock datasets, report performance as a table and a figure:
+    1. Trains an Faster-R-CNN model with JSRT (lung detection), on the CPU,
+       for only two epochs, then runs inference and evaluation on stock datasets,
+       report performance as a table and a figure:
 
-       $ bob binseg experiment -vv m2unet drive --epochs=2
+       $ bob detect experiment -vv faster_rcnn jsrt --epochs=2
 
 """,
 )
@@ -210,9 +210,9 @@ logger = logging.getLogger(__name__)
 @click.option(
     "--overlayed/--no-overlayed",
     "-O",
-    help="Creates overlayed representations of the output probability maps, "
+    help="Creates overlayed representations of the output bounding boxes, "
     "similar to --overlayed in prediction-mode, except it includes "
-    "distinctive colours for true and false positives and false negatives.  "
+    "distinctive colours for ground truth and predicted bounding boxes.  "
     "If not set, or empty then do **NOT** output overlayed images.",
     show_default=True,
     default=False,
@@ -223,7 +223,7 @@ logger = logging.getLogger(__name__)
     "--steps",
     "-S",
     help="This number is used to define the number of threshold steps to "
-    "consider when evaluating the highest possible F1-score on test data.",
+    "consider when evaluating the highest possible IoU-score on test data.",
     default=1000,
     show_default=True,
     required=True,
@@ -240,19 +240,6 @@ logger = logging.getLogger(__name__)
     show_default=True,
     nargs=4,
     type=float,
-    cls=ResourceOption,
-)
-@click.option(
-    "--detection",
-    help="""If set, then the model will perform a complete experiment for the
-    task of object detection instead of binary segmentation.Note that this is
-    only available if the selected model can perform the given task, and
-    the provided configuration for the training and evaluation dataset contain
-    the appropriate input format for object detection (provide bounding boxes
-    ).""",
-    required=False,
-    show_default=True,
-    default=False,
     cls=ResourceOption,
 )
 @verbosity_option(cls=ResourceOption)
@@ -277,7 +264,6 @@ def experiment(
     overlayed,
     steps,
     plot_limits,
-    detection,
     verbose,
     **kwargs,
 ):
@@ -329,7 +315,7 @@ def experiment(
         * ``*``: any other name, not starting with an underscore character (``_``),
           will be considered a test set for evaluation.
 
-        N.B.2: The threshold used for calculating the F1-score on the test set, or
+        N.B.2: The threshold used for calculating the IoU-score on the test set, or
         overlay analysis (false positives, negatives and true positives overprinted
         on the original image) also follows the logic above.
     """
@@ -364,7 +350,6 @@ def experiment(
         seed=seed,
         parallel=parallel,
         monitoring_interval=monitoring_interval,
-        detection=detection,
         verbose=verbose,
     )
     logger.info("Ended training")
@@ -402,6 +387,5 @@ def experiment(
         steps=steps,
         parallel=parallel,
         plot_limits=plot_limits,
-        detection=detection,
         verbose=verbose,
     )

@@ -17,29 +17,29 @@ from bob.extension.scripts.click_helper import (
 )
 
 from ..utils.checkpointer import Checkpointer
-from .binseg import set_seeds, setup_pytorch_device
+from .detect import set_seeds, setup_pytorch_device
 
 logger = logging.getLogger(__name__)
 
 
 @click.command(
-    entry_point_group="bob.ip.binseg.config",
+    entry_point_group="bob.ip.detect.config",
     cls=ConfigCommand,
     epilog="""Examples:
 
 \b
-    1. Trains a U-Net model (VGG-16 backbone) with DRIVE (vessel segmentation),
+    1. Trains a Faster-R-CNN model with JSRT (lung detection),
        on a GPU (``cuda:0``):
 
-       $ bob binseg train -vv unet drive --batch-size=4 --device="cuda:0"
+       $ bob detect train -vv faster_rcnn faster_rcnn --batch-size=4 --device="cuda:0"
 
-    2. Trains a HED model with HRF on a GPU (``cuda:0``):
+    2. Trains a Faster-R-CNN model with CXR8 on a GPU (``cuda:0``):
 
-       $ bob binseg train -vv hed hrf --batch-size=8 --device="cuda:0"
+       $ bob detect train -vv faster_rcnn cxr8 --batch-size=8 --device="cuda:0"
 
-    3. Trains a M2U-Net model on the COVD-DRIVE dataset on the CPU:
+    3. Trains a Faster-R-CNN model on the CheXphoto dataset on the CPU:
 
-       $ bob binseg train -vv m2unet covd-drive --batch-size=8
+       $ bob detect train -vv faster_rcnn chexphoto --batch-size=8
 
 """,
 )
@@ -205,16 +205,6 @@ logger = logging.getLogger(__name__)
     default=5.0,
     cls=ResourceOption,
 )
-@click.option(
-    "--detection",
-    help="""If set, then the model will train for the task of object detection
-    instead of segmentation. Note that this is only available if the selected
-    model can perform object detection.""",
-    required=False,
-    show_default=True,
-    default=False,
-    cls=ResourceOption,
-)
 @verbosity_option(cls=ResourceOption)
 def train(
     model,
@@ -231,11 +221,10 @@ def train(
     seed,
     parallel,
     monitoring_interval,
-    detection,
     verbose,
     **kwargs,
 ):
-    """Trains an FCN to perform binary segmentation
+    """Trains an FCN to perform object detection
 
     Training is performed for a configurable number of epochs, and generates at
     least a final_model.pth.  It may also generate a number of intermediate
@@ -302,78 +291,42 @@ def train(
             "multiprocessing_context"
         ] = multiprocessing.get_context("spawn")
 
-    if detection:
-        from ..engine.detection_trainer import run
+    from ..engine.trainer import run
 
-        data_loader = DataLoader(
-            dataset=use_dataset,
+    data_loader = DataLoader(
+        dataset=use_dataset,
+        batch_size=batch_size,
+        shuffle=True,
+        drop_last=drop_incomplete_batch,
+        pin_memory=torch.cuda.is_available(),
+        collate_fn=_collate_fn,
+        **multiproc_kwargs,
+    )
+
+    valid_loader = None
+    if validation_dataset is not None:
+        valid_loader = DataLoader(
+            dataset=validation_dataset,
             batch_size=batch_size,
-            shuffle=True,
-            drop_last=drop_incomplete_batch,
+            shuffle=False,
+            drop_last=False,
             pin_memory=torch.cuda.is_available(),
             collate_fn=_collate_fn,
             **multiproc_kwargs,
         )
 
-        valid_loader = None
-        if validation_dataset is not None:
-            valid_loader = DataLoader(
-                dataset=validation_dataset,
-                batch_size=batch_size,
-                shuffle=False,
-                drop_last=False,
-                pin_memory=torch.cuda.is_available(),
-                collate_fn=_collate_fn,
-                **multiproc_kwargs,
-            )
-
-        extra_valid_loaders = [
-            DataLoader(
-                dataset=k,
-                batch_size=batch_size,
-                shuffle=False,
-                drop_last=False,
-                pin_memory=torch.cuda.is_available(),
-                collate_fn=_collate_fn,
-                **multiproc_kwargs,
-            )
-            for k in extra_validation_datasets
-        ]
-
-    else:
-        from ..engine.trainer import run
-
-        data_loader = DataLoader(
-            dataset=use_dataset,
+    extra_valid_loaders = [
+        DataLoader(
+            dataset=k,
             batch_size=batch_size,
-            shuffle=True,
-            drop_last=drop_incomplete_batch,
+            shuffle=False,
+            drop_last=False,
             pin_memory=torch.cuda.is_available(),
+            collate_fn=_collate_fn,
             **multiproc_kwargs,
         )
-
-        valid_loader = None
-        if validation_dataset is not None:
-            valid_loader = DataLoader(
-                dataset=validation_dataset,
-                batch_size=batch_size,
-                shuffle=False,
-                drop_last=False,
-                pin_memory=torch.cuda.is_available(),
-                **multiproc_kwargs,
-            )
-
-        extra_valid_loaders = [
-            DataLoader(
-                dataset=k,
-                batch_size=batch_size,
-                shuffle=False,
-                drop_last=False,
-                pin_memory=torch.cuda.is_available(),
-                **multiproc_kwargs,
-            )
-            for k in extra_validation_datasets
-        ]
+        for k in extra_validation_datasets
+    ]
 
     checkpointer = Checkpointer(model, optimizer, scheduler, path=output_folder)
 

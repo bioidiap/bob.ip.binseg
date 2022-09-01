@@ -38,7 +38,7 @@ def _get_installed_datasets():
 
     import re
 
-    dataset_re = re.compile(r"^bob\.ip\.binseg\.(?P<name>[^\.]+)\.datadir$")
+    dataset_re = re.compile(r"^bob\.ip\.detect\.(?P<name>[^\.]+)\.datadir$")
     return [dataset_re.match(k) for k in rc.keys() if dataset_re.match(k)]
 
 
@@ -53,16 +53,16 @@ def dataset():
 
 \b
     1. To install a dataset, set up its data directory ("datadir").  For
-       example, to setup access to DRIVE files you downloaded locally at
-       the directory "/path/to/drive/files", do the following:
+       example, to setup access to JSRT files you downloaded locally at
+       the directory "/path/to/jsrt/files", do the following:
 \b
-       $ bob config set "bob.ip.binseg.drive.datadir" "/path/to/drive/files"
+       $ bob config set "bob.ip.detect.jsrt.datadir" "/path/to/jsrt/files"
 
        Notice this setting **is** case-sensitive.
 
     2. List all raw datasets supported (and configured):
 
-       $ bob binseg dataset list
+       $ bob detect dataset list
 
 """,
 )
@@ -79,23 +79,23 @@ def list(**kwargs):
         if k in installed:
             click.echo(f'- {k}: {installed[k]} = "{rc.get(installed[k])}"')
         else:
-            click.echo(f"* {k}: bob.ip.binseg.{k}.datadir (not set)")
+            click.echo(f"* {k}: bob.ip.detect.{k}.datadir (not set)")
 
 
 @dataset.command(
     epilog="""Examples:
 
-    1. Check if all files of the DRIVE dataset can be loaded:
+    1. Check if all files of the JSRT dataset can be loaded:
 
-       $ bob binseg dataset check -vv drive
+       $ bob detect dataset check -vv jsrt
 
     2. Check if all files of multiple installed datasets can be loaded:
 
-       $ bob binseg dataset check -vv drive stare
+       $ bob detect dataset check -vv jsrt shenzhen
 
     3. Check if all files of all installed datasets can be loaded:
 
-       $ bob binseg dataset check
+       $ bob detect dataset check
 """,
 )
 @click.argument(
@@ -123,7 +123,7 @@ def check(dataset, limit, **kwargs):
     if not to_check:
         click.echo("No configured datasets matching specifications")
         click.echo(
-            "Try bob binseg dataset list --help to get help in "
+            "Try bob detect dataset list --help to get help in "
             "configuring a dataset"
         )
     else:

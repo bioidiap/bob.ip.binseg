@@ -18,20 +18,20 @@ from bob.extension.scripts.click_helper import (
 )
 
 from ..utils.checkpointer import Checkpointer
-from .binseg import download_to_tempfile, setup_pytorch_device
+from .detect import download_to_tempfile, setup_pytorch_device
 
 logger = logging.getLogger(__name__)
 
 
 @click.command(
-    entry_point_group="bob.ip.binseg.config",
+    entry_point_group="bob.ip.detect.config",
     cls=ConfigCommand,
     epilog="""Examples:
 
 \b
     1. Runs prediction on an existing dataset configuration:
 \b
-       $ bob binseg predict -vv m2unet drive --weight=path/to/model_final_epoch.pth --output-folder=path/to/predictions
+       $ bob detect predict -vv faster_rcnn jsrt --weight=path/to/model_final_epoch.pth --output-folder=path/to/predictions
 \b
     2. To run prediction on a folder with your own images, you must first
        specify resizing, cropping, etc, so that the image can be correctly
@@ -40,9 +40,9 @@ logger = logging.getLogger(__name__)
        dataset configuration used for **training** the provided model.  Once
        you figured this out, do the following:
 \b
-       $ bob binseg config copy csv-dataset-example mydataset.py
+       $ bob detect config copy csv-dataset-example mydataset.py
        # modify "mydataset.py" to include the base path and required transforms
-       $ bob binseg predict -vv m2unet mydataset.py --weight=path/to/model_final_epoch.pth --output-folder=path/to/predictions
+       $ bob detect predict -vv m2unet mydataset.py --weight=path/to/model_final_epoch.pth --output-folder=path/to/predictions
 """,
 )
 @click.option(
@@ -101,7 +101,7 @@ logger = logging.getLogger(__name__)
 @click.option(
     "--overlayed",
     "-O",
-    help="Creates overlayed representations of the output probability maps on "
+    help="Creates overlayed representations of the output bounding boxes on "
     "top of input images (store results as PNG files).   If not set, or empty "
     "then do **NOT** output overlayed images.  Otherwise, the parameter "
     "represents the name of a folder where to store those",
@@ -123,16 +123,6 @@ logger = logging.getLogger(__name__)
     default=-1,
     cls=ResourceOption,
 )
-@click.option(
-    "--detection",
-    help="""If set, then the model will predict the bounding boxes instead of
-    the probability maps. Note that this is only available if the selected
-    model can perform the task of object detection.""",
-    required=False,
-    show_default=True,
-    default=False,
-    cls=ResourceOption,
-)
 @verbosity_option(cls=ResourceOption)
 def predict(
     output_folder,
@@ -143,10 +133,9 @@ def predict(
     weight,
     overlayed,
     parallel,
-    detection,
     **kwargs,
 ):
-    """Predicts vessel map (probabilities) on input images"""
+    """Predicts bounding boxes for specified objects on input images"""
 
     device = setup_pytorch_device(device)
 
@@ -188,29 +177,18 @@ def predict(
                 "multiprocessing_context"
             ] = multiprocessing.get_context("spawn")
 
-        if detection:
-            from ..engine.detection_predictor import run
+        from ..engine.predictor import run
 
-            def _collate_fn(batch):
-                return tuple(zip(*batch))
+        def _collate_fn(batch):
+            return tuple(zip(*batch))
 
-            data_loader = DataLoader(
-                dataset=v,
-                batch_size=batch_size,
-                shuffle=False,
-                pin_memory=torch.cuda.is_available(),
-                collate_fn=_collate_fn,
-                **multiproc_kwargs,
-            )
-        else:
-            from ..engine.predictor import run
-
-            data_loader = DataLoader(
-                dataset=v,
-                batch_size=batch_size,
-                shuffle=False,
-                pin_memory=torch.cuda.is_available(),
-                **multiproc_kwargs,
-            )
+        data_loader = DataLoader(
+            dataset=v,
+            batch_size=batch_size,
+            shuffle=False,
+            pin_memory=torch.cuda.is_available(),
+            collate_fn=_collate_fn,
+            **multiproc_kwargs,
+        )
 
         run(model, data_loader, k, device, output_folder, overlayed)

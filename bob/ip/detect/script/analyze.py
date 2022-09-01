@@ -12,22 +12,22 @@ from bob.extension.scripts.click_helper import (
     verbosity_option,
 )
 
-from .binseg import save_sh_command
+from .detect import save_sh_command
 
 logger = logging.getLogger(__name__)
 
 
 @click.command(
-    entry_point_group="bob.ip.binseg.config",
+    entry_point_group="bob.ip.detect.config",
     cls=ConfigCommand,
     epilog="""Examples:
 
 \b
-    1. Re-evaluates a pre-trained M2U-Net model with DRIVE (vessel
-    segmentation), on the CPU, by running inference and evaluation on results
+    1. Re-evaluates a pre-trained Faster-R-CNN model with JSRT (lung
+    detection), on the CPU, by running inference and evaluation on results
     from its test set:
 
-       $ bob binseg analyze -vv m2unet drive --weight=model.path
+       $ bob detect analyze -vv faster_rcnn jsrt --weight=model.path
 
 """,
 )
@@ -51,7 +51,7 @@ logger = logging.getLogger(__name__)
     "--dataset",
     "-d",
     help="A dictionary mapping string keys to "
-    "bob.ip.binseg.data.utils.SampleList2TorchDataset's.  At least one key "
+    "bob.ip.detect.data.utils.SampleList2TorchDataset's.  At least one key "
     "named 'train' must be available.  This dataset will be used for training "
     "the network model.  All other datasets will be used for prediction and "
     "evaluation. Dataset descriptions include all required pre-processing, "
@@ -100,9 +100,9 @@ logger = logging.getLogger(__name__)
 @click.option(
     "--overlayed/--no-overlayed",
     "-O",
-    help="Creates overlayed representations of the output probability maps, "
+    help="Creates overlayed representations of the output bounding boxes, "
     "similar to --overlayed in prediction-mode, except it includes "
-    "distinctive colours for true and false positives and false negatives.  "
+    "distinctive colours ground truth and predicted boxes.  "
     "If not set, or empty then do **NOT** output overlayed images.",
     show_default=True,
     default=False,
@@ -120,7 +120,7 @@ logger = logging.getLogger(__name__)
     "--steps",
     "-S",
     help="This number is used to define the number of threshold steps to "
-    "consider when evaluating the highest possible F1-score on test data.",
+    "consider when evaluating the highest possible IoU-score on test data.",
     default=1000,
     show_default=True,
     required=True,
@@ -152,16 +152,6 @@ logger = logging.getLogger(__name__)
     type=float,
     cls=ResourceOption,
 )
-@click.option(
-    "--detection",
-    help="""If set, then the model will analyze the bounding boxes instead of
-    the probability maps. Note that this is only available if the selected
-    model can perform the task of object detection.""",
-    required=False,
-    show_default=True,
-    default=False,
-    cls=ResourceOption,
-)
 @verbosity_option(cls=ResourceOption)
 @click.pass_context
 def analyze(
@@ -177,7 +167,6 @@ def analyze(
     steps,
     parallel,
     plot_limits,
-    detection,
     verbose,
     **kwargs,
 ):
@@ -213,8 +202,8 @@ def analyze(
         * ``*``: any other name, not starting with an underscore character (``_``),
           will be considered a test set for evaluation.
 
-        N.B.2: The threshold used for calculating the F1-score on the test set, or
-        overlay analysis (false positives, negatives and true positives overprinted
+        N.B.2: The threshold used for calculating the IoU-score on the test set, or
+        overlay analysis (ground truth and predicted bounding boexes overprinted
         on the original image) also follows the logic above.
     """
 
@@ -245,7 +234,6 @@ def analyze(
         weight=weight,
         overlayed=overlayed_folder,
         parallel=parallel,
-        detection=detection,
         verbose=verbose,
     )
     logger.info("Ended prediction")
@@ -281,7 +269,6 @@ def analyze(
         threshold=threshold,
         steps=steps,
         parallel=parallel,
-        detection=detection,
         verbose=verbose,
     )
 
@@ -346,7 +333,6 @@ def analyze(
         output_table=output_table,
         threshold=threshold,
         plot_limits=plot_limits,
-        detection=detection,
         verbose=verbose,
     )
 

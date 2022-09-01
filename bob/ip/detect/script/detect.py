@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # vim: set fileencoding=utf-8 :
 
-"""The main entry for bob ip binseg (click-based) scripts."""
+"""The main entry for bob ip detect (click-based) scripts."""
 
 import logging
 import os
@@ -240,7 +240,7 @@ def download_to_tempfile(url, progress=False):
     return f
 
 
-@with_plugins(pkg_resources.iter_entry_points("bob.ip.binseg.cli"))
+@with_plugins(pkg_resources.iter_entry_points("bob.ip.detect.cli"))
 @click.group(cls=AliasedGroup)
-def binseg():
-    """Binary 2D Image Segmentation Benchmark commands."""
+def detect():
+    """Object Detection Benchmark commands."""

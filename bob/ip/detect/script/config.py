@@ -25,10 +25,10 @@ def config():
 Examples:
 
 \b
-  1. Lists all configuration resources (type: bob.ip.binseg.config) installed:
+  1. Lists all configuration resources (type: bob.ip.detect.config) installed:
 
 \b
-     $ bob binseg config list
+     $ bob detect config list
 
 
 \b
@@ -36,7 +36,7 @@ Examples:
      be slow as it needs to load all modules once):
 
 \b
-     $ bob binseg config list -v
+     $ bob detect config list -v
 
 """
 )
@@ -44,7 +44,7 @@ Examples:
 def list(verbose):
     """Lists configuration files installed"""
 
-    entry_points = pkg_resources.iter_entry_points("bob.ip.binseg.config")
+    entry_points = pkg_resources.iter_entry_points("bob.ip.detect.config")
     entry_points = dict([(k.name, k) for k in entry_points])
 
     # all modules with configuration resources
@@ -108,18 +108,18 @@ def list(verbose):
 Examples:
 
 \b
-  1. Describes the DRIVE (training) dataset configuration:
+  1. Describes the JSRT (training) dataset configuration:
 
 \b
-     $ bob binseg config describe drive
+     $ bob detect config describe jsrt
 
 
 \b
-  2. Describes the DRIVE (training) dataset configuration and lists its
+  2. Describes the JSRT (training) dataset configuration and lists its
      contents:
 
 \b
-     $ bob binseg config describe drive -v
+     $ bob detect config describe jsrt -v
 
 """
 )
@@ -132,7 +132,7 @@ Examples:
 def describe(name, verbose):
     """Describes a specific configuration file"""
 
-    entry_points = pkg_resources.iter_entry_points("bob.ip.binseg.config")
+    entry_points = pkg_resources.iter_entry_points("bob.ip.detect.config")
     entry_points = dict([(k.name, k) for k in entry_points])
 
     for k in name:
@@ -165,7 +165,7 @@ Examples:
      adapted:
 
 \b
-     $ bob binseg config copy drive -vvv newdataset.py
+     $ bob detect config copy drive -vvv newdataset.py
 
 
 """
@@ -184,7 +184,7 @@ Examples:
 def copy(source, destination, verbose):
     """Copies a specific configuration resource so it can be modified locally"""
 
-    entry_points = pkg_resources.iter_entry_points("bob.ip.binseg.config")
+    entry_points = pkg_resources.iter_entry_points("bob.ip.detect.config")
     entry_points = dict([(k.name, k) for k in entry_points])
 
     if source not in entry_points:
