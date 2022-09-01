@@ -17,7 +17,7 @@ RANDOM_FLIP_JITTER = [_hflip(), _vflip(), _jitter()]
 """Shared data augmentation transforms without random rotation"""
 
 
-def make_subset(samples, transforms, prefixes=[], suffixes=[], detection=False):
+def make_subset(samples, transforms, prefixes=[], suffixes=[]):
     """Creates a new data set, applying transforms
 
     .. note::
@@ -49,14 +49,14 @@ def make_subset(samples, transforms, prefixes=[], suffixes=[], detection=False):
     Returns
     -------
 
-    subset : :py:class:`bob.ip.binseg.data.utils.SampleListDataset`
+    subset : :py:class:`bob.ip.detect.data.utils.SampleListDataset`
         A pre-formatted dataset that can be fed to one of our engines
 
     """
 
     from ...data.utils import SampleListDataset as wrapper
 
-    return wrapper(samples, prefixes + transforms + suffixes, detection)
+    return wrapper(samples, prefixes + transforms + suffixes)
 
 
 def augment_subset(s, rotation_before=False):
@@ -78,7 +78,7 @@ def augment_subset(s, rotation_before=False):
     Parameters
     ----------
 
-    s : bob.ip.binseg.data.utils.SampleListDataset
+    s : bob.ip.detect.data.utils.SampleListDataset
         A dataset that will be augmented
 
     rotation_before : py:class:`bool`, Optional
@@ -90,7 +90,7 @@ def augment_subset(s, rotation_before=False):
     Returns
     -------
 
-    subset : :py:class:`bob.ip.binseg.data.utils.SampleListDataset`
+    subset : :py:class:`bob.ip.detect.data.utils.SampleListDataset`
         A pre-formatted dataset that can be fed to one of our engines
 
     """
@@ -105,12 +105,12 @@ def make_dataset(subsets, transforms):
     """Creates a new configuration dataset from dictionary and transforms
 
     This function takes as input a dictionary as those that can be returned by
-    :py:meth:`bob.ip.binseg.data.dataset.JSONDataset.subsets`,  or
-    :py:meth:`bob.ip.binseg.data.dataset.CSVDataset.subsets`, mapping protocol
+    :py:meth:`bob.ip.detect.data.dataset.JSONDataset.subsets`,  or
+    :py:meth:`bob.ip.detect.data.dataset.CSVDataset.subsets`, mapping protocol
     names (such as ``train``, ``dev`` and ``test``) to
-    :py:class:`bob.ip.binseg.data.sample.DelayedSample` lists, and a set of
+    :py:class:`bob.ip.detect.data.sample.DelayedSample` lists, and a set of
     transforms, and returns a dictionary applying
-    :py:class:`bob.ip.binseg.data.utils.SampleListDataset` to these
+    :py:class:`bob.ip.detect.data.utils.SampleListDataset` to these
     lists, and our standard data augmentation if a ``train`` set exists.
 
     For example, if ``subsets`` is composed of two sets named ``train`` and
@@ -155,7 +155,7 @@ def make_dataset(subsets, transforms):
     dataset : dict
         A pre-formatted dataset that can be fed to one of our engines. It maps
         string names to
-        :py:class:`bob.ip.binseg.data.utils.SampleListDataset`'s.
+        :py:class:`bob.ip.detect.data.utils.SampleListDataset`'s.
 
     """
 

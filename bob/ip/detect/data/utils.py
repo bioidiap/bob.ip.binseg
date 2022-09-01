@@ -186,11 +186,10 @@ class SampleListDataset(torch.utils.data.Dataset):
 
     """
 
-    def __init__(self, samples, transforms=[], detection=False):
+    def __init__(self, samples, transforms=[]):
 
         self._samples = samples
         self.transforms = transforms
-        self._detection = detection
 
     @property
     def transforms(self):
@@ -267,9 +266,9 @@ class SampleListDataset(torch.utils.data.Dataset):
             if self._transforms:
                 retval = self._transforms(*retval)
 
-            if self._detection:
-                bounding_box_transform = GetBoundingBox()
-                retval = bounding_box_transform(retval)
+
+            bounding_box_transform = GetBoundingBox()
+            retval = bounding_box_transform(retval)
 
             return [item.key] + retval
 
