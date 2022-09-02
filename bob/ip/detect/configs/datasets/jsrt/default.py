@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding=utf-8
 
-"""Japanese Society of Radiological Technology dataset for Lung Segmentation (default protocol)
+"""Japanese Society of Radiological Technology dataset for Lung Detection (default protocol)
 
 * Split reference: [GAAL-2020]_
 * Configuration resolution: 256 x 256

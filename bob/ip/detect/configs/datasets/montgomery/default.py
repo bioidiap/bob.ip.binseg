@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding=utf-8
 
-"""Montgomery County dataset for Lung Segmentation (default protocol)
+"""Montgomery County dataset for Lung Detection (default protocol)
 
 * Split reference: [GAAL-2020]_
 * Configuration resolution: 256 x 256
