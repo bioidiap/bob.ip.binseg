@@ -163,10 +163,8 @@ setup(
             "predict = bob.ip.detect.script.predict:predict",
             "evaluate = bob.ip.detect.script.evaluate:evaluate",
             "compare =  bob.ip.detect.script.compare:compare",
-            "significance =  bob.ip.detect.script.significance:significance",
             "analyze =  bob.ip.detect.script.analyze:analyze",
             "experiment =  bob.ip.detect.script.experiment:experiment",
-            "mkmask = bob.ip.detect.script.mkmask:mkmask",
             "train-analysis = bob.ip.detect.script.train_analysis:train_analysis",
         ],
         # bob detect train configurations
