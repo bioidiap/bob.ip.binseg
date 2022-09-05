@@ -5,7 +5,8 @@
 
 import logging
 import multiprocessing
-import os
+
+# import os
 import queue
 import shutil
 import subprocess
@@ -79,7 +80,6 @@ def run_nvidia_smi(query, rename=None):
                 else:
                     t_values.append(value)  # unchanged
         return tuple(zip(rename, t_values))
-
 
 
 def gpu_constants():

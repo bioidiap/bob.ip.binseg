@@ -212,7 +212,7 @@ def train_epoch(loader, model, optimizer, device, criterion, batch_chunk_size):
 
     batch_chunk_size: int
         Update the network weight every ``n`` batch_chunk_size to apply
-        Gradient Accumulation. 
+        Gradient Accumulation.
 
 
     Returns
@@ -228,7 +228,9 @@ def train_epoch(loader, model, optimizer, device, criterion, batch_chunk_size):
     samples_in_batch = []
 
     # progress bar only on interactive jobs
-    for idx, samples in enumerate(tqdm(loader, desc="train", leave=False, disable=None)):
+    for idx, samples in enumerate(
+        tqdm(loader, desc="train", leave=False, disable=None)
+    ):
         images = samples[1].to(
             device=device, non_blocking=torch.cuda.is_available()
         )
@@ -543,7 +545,7 @@ def run(
 
     batch_chunk_size: int
         Update the network weight every ``n`` batches, in order to apply
-        gradient accumulation for weight updates. 
+        gradient accumulation for weight updates.
 
     """
 
@@ -612,7 +614,12 @@ def run(
                 start_epoch_time = time.time()
 
                 train_loss = train_epoch(
-                    data_loader, model, optimizer, device, criterion, batch_chunk_size
+                    data_loader,
+                    model,
+                    optimizer,
+                    device,
+                    criterion,
+                    batch_chunk_size,
                 )
 
                 scheduler.step()
