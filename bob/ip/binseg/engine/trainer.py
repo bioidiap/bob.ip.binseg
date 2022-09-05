@@ -191,7 +191,7 @@ def create_logfile_fields(valid_loader, extra_valid_loaders, device):
     return logfile_fields
 
 
-def train_epoch(loader, model, optimizer, device, criterion):
+def train_epoch(loader, model, optimizer, device, criterion, batch_chunk_size):
     """Trains the model for a single epoch (through all batches)
 
     Parameters
@@ -210,6 +210,10 @@ def train_epoch(loader, model, optimizer, device, criterion):
 
     criterion : :py:class:`torch.nn.modules.loss._Loss`
 
+    batch_chunk_size: int
+        Update the network weight every ``n`` batch_chunk_size to apply
+        Gradient Accumulation. 
+
 
     Returns
     -------
@@ -224,7 +228,7 @@ def train_epoch(loader, model, optimizer, device, criterion):
     samples_in_batch = []
 
     # progress bar only on interactive jobs
-    for samples in tqdm(loader, desc="train", leave=False, disable=None):
+    for idx, samples in enumerate(tqdm(loader, desc="train", leave=False, disable=None)):
         images = samples[1].to(
             device=device, non_blocking=torch.cuda.is_available()
         )
@@ -238,12 +242,23 @@ def train_epoch(loader, model, optimizer, device, criterion):
                 device=device, non_blocking=torch.cuda.is_available()
             )
         )
-        # data forwarding on the existing network
+
+        # Forward pass on the network
         outputs = model(images)
         loss = criterion(outputs, ground_truths, masks)
-        optimizer.zero_grad()
+
+        # Normalize loss to account for batch_chunk_size
+        loss = loss / batch_chunk_size
+
+        # Backward pass on the network
         loss.backward()
-        optimizer.step()
+
+        # Weight update on the network
+        if ((idx + 1) % batch_chunk_size == 0) or (idx + 1 == len(loader)):
+            # Update Optimizer
+            optimizer.step()
+            optimizer.zero_grad()
+
         logger.debug(f"batch loss: {loss.item()}")
 
         batch_losses.append(loss.item())
@@ -470,6 +485,7 @@ def run(
     arguments,
     output_folder,
     monitoring_interval,
+    batch_chunk_size,
 ):
     """
     Fits an FCN model using supervised learning and save it to disk.
@@ -524,6 +540,10 @@ def run(
     monitoring_interval : int, float
         interval, in seconds (or fractions), through which we should monitor
         resources during training.
+
+    batch_chunk_size: int
+        Update the network weight every ``n`` batches, in order to apply
+        gradient accumulation for weight updates. 
 
     """
 
@@ -592,7 +612,7 @@ def run(
                 start_epoch_time = time.time()
 
                 train_loss = train_epoch(
-                    data_loader, model, optimizer, device, criterion
+                    data_loader, model, optimizer, device, criterion, batch_chunk_size
                 )
 
                 scheduler.step()
