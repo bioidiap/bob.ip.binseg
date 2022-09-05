@@ -5,7 +5,7 @@
 
 import logging
 import multiprocessing
-import os
+#import os
 import queue
 import shutil
 import subprocess
