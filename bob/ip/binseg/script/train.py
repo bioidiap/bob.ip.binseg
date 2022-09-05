@@ -112,10 +112,28 @@ logger = logging.getLogger(__name__)
     "until there are no more new samples to feed (epoch is finished).  "
     "If the total number of training samples is not a multiple of the "
     "batch-size, the last batch will be smaller than the first, unless "
-    "--drop-incomplete--batch is set, in which case this batch is not used.",
+    "--drop-incomplete--batch is set, in which case this batch is not used."
+    "The actual number of samples loaded in RAM for each iteration is "
+    "batch-size/batch-chunk-size.",
     required=True,
     show_default=True,
     default=2,
+    type=click.IntRange(min=1),
+    cls=ResourceOption,
+)
+@click.option(
+    "--batch-chunk-size",
+    "-c",
+    help="Number of chunks in every batch (this parameter affects "
+    "memory requirements for the network). The number of samples "
+    "loaded for every batch will be batch-size/batch-chunk-size. "
+    "batch-chunk-size needs to be divisible by batch-size, otherwise an "
+    "error will be raised. The config is used to reduce number of "
+    "samples loaded in each iteration, in order to reduce the memory usage, "
+    "especially for experiments running with GPUs with limited RAM.",
+    required=True,
+    show_default=True,
+    default=1,
     type=click.IntRange(min=1),
     cls=ResourceOption,
 )
@@ -213,6 +231,7 @@ def train(
     output_folder,
     epochs,
     batch_size,
+    batch_chunk_size,
     drop_incomplete_batch,
     criterion,
     dataset,
@@ -288,9 +307,20 @@ def train(
             "multiprocessing_context"
         ] = multiprocessing.get_context("spawn")
 
+
+    data_batch_size = batch_size   
+    if batch_size % batch_chunk_size != 0:
+        # batch_size must be divisible by batch_chunk_size.
+        raise RuntimeError(
+            f"batch_size {batch_size} must be divisiable by "
+            f"batch_chunk_size {batch_chunk_size}.")
+    else:
+        data_batch_size = int(batch_size / batch_chunk_size)
+
+
     data_loader = DataLoader(
         dataset=use_dataset,
-        batch_size=batch_size,
+        batch_size=data_batch_size,
         shuffle=True,
         drop_last=drop_incomplete_batch,
         pin_memory=torch.cuda.is_available(),
@@ -301,7 +331,7 @@ def train(
     if validation_dataset is not None:
         valid_loader = DataLoader(
             dataset=validation_dataset,
-            batch_size=batch_size,
+            batch_size=data_batch_size,
             shuffle=False,
             drop_last=False,
             pin_memory=torch.cuda.is_available(),
@@ -311,7 +341,7 @@ def train(
     extra_valid_loaders = [
         DataLoader(
             dataset=k,
-            batch_size=batch_size,
+            batch_size=data_batch_size,
             shuffle=False,
             drop_last=False,
             pin_memory=torch.cuda.is_available(),
@@ -347,4 +377,5 @@ def train(
         arguments,
         output_folder,
         monitoring_interval,
+        batch_chunk_size,
     )
