@@ -5,6 +5,7 @@
 
 import logging
 import multiprocessing
+import os
 import queue
 import shutil
 import subprocess
@@ -60,23 +61,19 @@ def run_nvidia_smi(query, rename=None):
         else:
             assert len(rename) == len(query)
 
-        smi_results = subprocess.getoutput(
-            "%s --query-gpu=%s --format=csv,noheader"
-            % (_nvidia_smi, ",".join(query))
+        values = subprocess.getoutput(
+            "%s --query-gpu=%s --format=csv,noheader --id=%s"
+            % (_nvidia_smi, ",".join(query), os.environ.get("CUDA_VISIBLE_DEVICES"))
         )
-        # Get GPU parameters per line.
-        lines = [line.strip() for line in smi_results.split("\n")]
+        values = [k.strip() for k in values.split(",")]
         t_values = []
-        for line in lines:
-            # Get GPU parameter per column.
-            values = [value.strip() for value in line.split(",")]
-            for value in values:
-                if value.endswith("%"):
-                    t_values.append(float(value[:-1].strip()))
-                elif value.endswith("MiB"):
-                    t_values.append(float(value[:-3].strip()) / 1024)
-                else:
-                    t_values.append(value)  # unchanged
+        for k in values:
+            if k.endswith("%"):
+                t_values.append(float(k[:-1].strip()))
+            elif k.endswith("MiB"):
+                t_values.append(float(k[:-3].strip()) / 1024)
+            else:
+                t_values.append(k)  # unchanged
         return tuple(zip(rename, t_values))
 
 
@@ -97,14 +94,12 @@ def gpu_constants():
         * ``driver_version``, as ``gpu_driver_version`` (:py:class:`str`)
         * ``memory.total``, as ``gpu_memory_total`` (transformed to gigabytes,
           :py:class:`float`)
-        * ``count``, as ``gpu_count`` (the number of GPUs available in the
-          current system)
 
     """
 
     return run_nvidia_smi(
-        ("gpu_name", "driver_version", "memory.total", "count"),
-        ("gpu_name", "gpu_driver_version", "gpu_memory_total", "gpu_count"),
+        ("gpu_name", "driver_version", "memory.total"),
+        ("gpu_name", "gpu_driver_version", "gpu_memory_total"),
     )
 
 
