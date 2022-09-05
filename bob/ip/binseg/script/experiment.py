@@ -399,6 +399,7 @@ def experiment(
         model=model,
         output_folder=output_folder,
         batch_size=batch_size,
+        batch_chunk_size=batch_chunk_size,
         dataset=dataset,
         second_annotator=second_annotator,
         device=device,
