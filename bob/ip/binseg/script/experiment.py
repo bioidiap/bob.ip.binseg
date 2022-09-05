@@ -113,10 +113,28 @@ logger = logging.getLogger(__name__)
     "until there are no more new samples to feed (epoch is finished).  "
     "If the total number of training samples is not a multiple of the "
     "batch-size, the last batch will be smaller than the first, unless "
-    "--drop-incomplete--batch is set, in which case this batch is not used.",
+    "--drop-incomplete--batch is set, in which case this batch is not used."
+    "The actual number of samples loaded in RAM for each iteration is "
+    "batch-size/batch-chunk-size.",
     required=True,
     show_default=True,
     default=2,
+    type=click.IntRange(min=1),
+    cls=ResourceOption,
+)
+@click.option(
+    "--batch-chunk-size",
+    "-c",
+    help="Number of chunks in every batch (this parameter affects "
+    "memory requirements for the network). The number of samples "
+    "loaded for every batch will be batch-size/batch-chunk-size. "
+    "batch-chunk-size needs to be divisible by batch-size, otherwise an "
+    "error will be raised. The config is used to reduce number of "
+    "samples loaded in each iteration, in order to reduce the memory usage, "
+    "especially for experiments running on GPUs with limited RAM.",
+    required=True,
+    show_default=True,
+    default=1,
     type=click.IntRange(min=1),
     cls=ResourceOption,
 )
@@ -252,6 +270,7 @@ def experiment(
     output_folder,
     epochs,
     batch_size,
+    batch_chunk_size,
     drop_incomplete_batch,
     criterion,
     dataset,
@@ -342,6 +361,7 @@ def experiment(
         output_folder=train_output_folder,
         epochs=epochs,
         batch_size=batch_size,
+        batch_chunk_size=batch_chunk_size,
         drop_incomplete_batch=drop_incomplete_batch,
         criterion=criterion,
         dataset=dataset,
