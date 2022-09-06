@@ -12,7 +12,9 @@ from tqdm import tqdm
 
 from bob.extension.scripts.click_helper import verbosity_option
 
-from ..utils.table import performance_table
+from ...common.utils.table import (
+    performance_table_detection as performance_table,
+)
 
 logger = logging.getLogger(__name__)
 

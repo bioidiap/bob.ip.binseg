@@ -17,8 +17,8 @@ from bob.extension.scripts.click_helper import (
     verbosity_option,
 )
 
+from ...common.utils.checkpointer import Checkpointer
 from ..engine.predictor import run
-from ..utils.checkpointer import Checkpointer
 from .binseg import download_to_tempfile, setup_pytorch_device
 
 logger = logging.getLogger(__name__)

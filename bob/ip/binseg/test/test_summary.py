@@ -3,12 +3,12 @@
 
 import unittest
 
+from ...common.utils.summary import summary
 from ..models.driu import driu
 from ..models.driu_od import driu_od
 from ..models.hed import hed
 from ..models.resunet import resunet50
 from ..models.unet import unet
-from ..utils.summary import summary
 
 
 class Tester(unittest.TestCase):
