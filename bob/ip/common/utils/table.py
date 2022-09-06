@@ -100,8 +100,8 @@ def performance_table(data, fmt):
     return tabulate.tabulate(
         table, headers, tablefmt=fmt, floatfmt=".3f", stralign="right"
     )
-    
-    
+
+
 def performance_table_detection(data, fmt):
     """Tables result comparison in a given format
 

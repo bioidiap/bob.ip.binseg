@@ -99,7 +99,7 @@ def base_measures(tp, fp, tn, fn):
     )
 
 
-def beta_credible_region(k, l, lambda_, coverage):
+def beta_credible_region(k, i, lambda_, coverage):
     """
     Returns the mode, upper and lower bounds of the equal-tailed credible
     region of a probability estimate following Bernoulli trials.
@@ -175,7 +175,7 @@ def beta_credible_region(k, l, lambda_, coverage):
     k : int
         Number of successes observed on the experiment
 
-    l : int
+    i : int
         Number of failures observed on the experiment
 
     lambda__ : :py:class:`float`, Optional
@@ -197,7 +197,7 @@ def beta_credible_region(k, l, lambda_, coverage):
         The mean of the posterior distribution
 
     mode : float
-        The mode of the posterior distribution
+        The mode of the posterior distributA questão do volume eion
 
     lower, upper: float
         The lower and upper bounds of the credible region
@@ -206,12 +206,12 @@ def beta_credible_region(k, l, lambda_, coverage):
 
     # we return the equally-tailed range
     right = (1.0 - coverage) / 2  # half-width in each side
-    lower = scipy.special.betaincinv(k + lambda_, l + lambda_, right)
-    upper = scipy.special.betaincinv(k + lambda_, l + lambda_, 1.0 - right)
+    lower = scipy.special.betaincinv(k + lambda_, i + lambda_, right)
+    upper = scipy.special.betaincinv(k + lambda_, i + lambda_, 1.0 - right)
 
     # evaluate mean and mode (https://en.wikipedia.org/wiki/Beta_distribution)
     alpha = k + lambda_
-    beta = l + lambda_
+    beta = i + lambda_
 
     E = alpha / (alpha + beta)
 
