@@ -61,6 +61,7 @@ def run_nvidia_smi(query, rename=None):
         else:
             assert len(rename) == len(query)
 
+        # Get GPU information based on GPU ID.
         values = subprocess.getoutput(
             "%s --query-gpu=%s --format=csv,noheader --id=%s"
             % (
