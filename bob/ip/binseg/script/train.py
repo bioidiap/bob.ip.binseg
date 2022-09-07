@@ -112,7 +112,7 @@ logger = logging.getLogger(__name__)
     "until there are no more new samples to feed (epoch is finished).  "
     "If the total number of training samples is not a multiple of the "
     "batch-size, the last batch will be smaller than the first, unless "
-    "--drop-incomplete--batch is set, in which case this batch is not used."
+    "--drop-incomplete-batch is set, in which case this batch is not used."
     "The actual number of samples loaded in RAM for each iteration is "
     "batch-size/batch-chunk-size.",
     required=True,
@@ -311,8 +311,8 @@ def train(
     if batch_size % batch_chunk_size != 0:
         # batch_size must be divisible by batch_chunk_size.
         raise RuntimeError(
-            f"batch_size {batch_size} must be divisiable by "
-            f"batch_chunk_size {batch_chunk_size}."
+            f"--batch-size={batch_size} must be divisiable by "
+            f"--batch-chunk-size {batch_chunk_size}."
         )
     else:
         data_batch_size = int(batch_size / batch_chunk_size)
