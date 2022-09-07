@@ -40,7 +40,6 @@ requirements:
     - tabulate {{ tabulate }}
     - scikit-image {{ scikit_image }}
     - tensorboard {{ tensorboard }}
-    - tensorboard
   run:
     - python
     - setuptools
@@ -56,7 +55,7 @@ requirements:
     - {{ pin_compatible('tqdm') }}
     - {{ pin_compatible('tabulate') }}
     - {{ pin_compatible('scikit-image') }}
-    - {{ pin_compatible('tensorboard') }}
+    - {{ pin_compatible('tensorboard', max_pin="x.x") }}
 
 test:
   imports:
