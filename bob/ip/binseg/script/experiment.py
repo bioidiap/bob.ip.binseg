@@ -113,7 +113,7 @@ logger = logging.getLogger(__name__)
     "until there are no more new samples to feed (epoch is finished).  "
     "If the total number of training samples is not a multiple of the "
     "batch-size, the last batch will be smaller than the first, unless "
-    "--drop-incomplete--batch is set, in which case this batch is not used."
+    "--drop-incomplete-batch is set, in which case this batch is not used."
     "The actual number of samples loaded in RAM for each iteration is "
     "batch-size/batch-chunk-count.",
     required=True,
