@@ -254,7 +254,6 @@ def train_epoch(loader, model, optimizer, device, criterion, batch_chunk_count):
 
         batch_losses.append(loss.item())
         samples_in_batch.append(len(samples))
-        print("samples_in_batch", samples_in_batch)
 
         # Weight update on the network
         if (idx + 1 == len(loader)) or ((idx + 1) % batch_chunk_count == 0):
