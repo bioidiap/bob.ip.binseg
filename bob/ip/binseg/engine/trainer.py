@@ -191,7 +191,7 @@ def create_logfile_fields(valid_loader, extra_valid_loaders, device):
     return logfile_fields
 
 
-def train_epoch(loader, model, optimizer, device, criterion, batch_chunk_size):
+def train_epoch(loader, model, optimizer, device, criterion, batch_chunk_count):
     """Trains the model for a single epoch (through all batches)
 
     Parameters
@@ -210,9 +210,9 @@ def train_epoch(loader, model, optimizer, device, criterion, batch_chunk_size):
 
     criterion : :py:class:`torch.nn.modules.loss._Loss`
 
-    batch_chunk_size: int
-        Update the network weight every ``n`` batch_chunk_size to apply
-        Gradient Accumulation.
+    batch_chunk_count: int
+        Update the network weight every batch, totally ``n`` batch_chunk in one batch, to apply
+        Gradient Accumulation. 
 
 
     Returns
@@ -228,9 +228,7 @@ def train_epoch(loader, model, optimizer, device, criterion, batch_chunk_size):
     samples_in_batch = []
 
     # progress bar only on interactive jobs
-    for idx, samples in enumerate(
-        tqdm(loader, desc="train", leave=False, disable=None)
-    ):
+    for idx, samples in enumerate(tqdm(loader, desc="train", leave=False, disable=None)):
         images = samples[1].to(
             device=device, non_blocking=torch.cuda.is_available()
         )
@@ -244,28 +242,26 @@ def train_epoch(loader, model, optimizer, device, criterion, batch_chunk_size):
                 device=device, non_blocking=torch.cuda.is_available()
             )
         )
+        
 
         # Forward pass on the network
         outputs = model(images)
         loss = criterion(outputs, ground_truths, masks)
-
-        # Normalize loss to account for batch_chunk_size
-        loss = loss / batch_chunk_size
-
+        
         # Backward pass on the network
         loss.backward()
 
-        # Weight update on the network
-        if ((idx + 1) % batch_chunk_size == 0) or (idx + 1 == len(loader)):
-            # Update Optimizer
-            optimizer.step()
-            optimizer.zero_grad()
-
-        logger.debug(f"batch loss: {loss.item()}")
-
         batch_losses.append(loss.item())
         samples_in_batch.append(len(samples))
-
+        print("samples_in_batch", samples_in_batch)
+    
+        # Weight update on the network
+        if (idx + 1 == len(loader)) or ((idx + 1) % batch_chunk_count == 0):
+            # Update Optimizer for the whole batch and log every bach loss
+            optimizer.step()
+            optimizer.zero_grad()
+            logger.debug(f"batch loss: {loss.item()}")
+        
     return numpy.average(batch_losses, weights=samples_in_batch)
 
 
@@ -487,7 +483,7 @@ def run(
     arguments,
     output_folder,
     monitoring_interval,
-    batch_chunk_size,
+    batch_chunk_count,
 ):
     """
     Fits an FCN model using supervised learning and save it to disk.
@@ -543,9 +539,9 @@ def run(
         interval, in seconds (or fractions), through which we should monitor
         resources during training.
 
-    batch_chunk_size: int
-        Update the network weight every ``n`` batches, in order to apply
-        gradient accumulation for weight updates.
+    batch_chunk_count: int
+        Divide the whole batch to ``n`` batch chunks, in order to apply
+        gradient accumulation for weight updates. 
 
     """
 
@@ -614,12 +610,7 @@ def run(
                 start_epoch_time = time.time()
 
                 train_loss = train_epoch(
-                    data_loader,
-                    model,
-                    optimizer,
-                    device,
-                    criterion,
-                    batch_chunk_size,
+                    data_loader, model, optimizer, device, criterion, batch_chunk_count
                 )
 
                 scheduler.step()

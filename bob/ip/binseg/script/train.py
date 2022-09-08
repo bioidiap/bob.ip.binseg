@@ -114,7 +114,7 @@ logger = logging.getLogger(__name__)
     "batch-size, the last batch will be smaller than the first, unless "
     "--drop-incomplete--batch is set, in which case this batch is not used."
     "The actual number of samples loaded in RAM for each iteration is "
-    "batch-size/batch-chunk-size.",
+    "batch-size/batch-chunk-count.",
     required=True,
     show_default=True,
     default=2,
@@ -122,12 +122,12 @@ logger = logging.getLogger(__name__)
     cls=ResourceOption,
 )
 @click.option(
-    "--batch-chunk-size",
+    "--batch-chunk-count",
     "-c",
     help="Number of chunks in every batch (this parameter affects "
     "memory requirements for the network). The number of samples "
-    "loaded for every batch will be batch-size/batch-chunk-size. "
-    "batch-chunk-size needs to be divisible by batch-size, otherwise an "
+    "loaded for every iteration will be batch-size/batch-chunk-size. "
+    "batch-chunk-count needs to be divisible by batch-size, otherwise an "
     "error will be raised. The config is used to reduce number of "
     "samples loaded in each iteration, in order to reduce the memory usage, "
     "especially for experiments running with GPUs with limited RAM.",
@@ -231,7 +231,7 @@ def train(
     output_folder,
     epochs,
     batch_size,
-    batch_chunk_size,
+    batch_chunk_count,
     drop_incomplete_batch,
     criterion,
     dataset,
@@ -307,15 +307,16 @@ def train(
             "multiprocessing_context"
         ] = multiprocessing.get_context("spawn")
 
-    data_batch_size = batch_size
-    if batch_size % batch_chunk_size != 0:
+
+    data_batch_size = batch_size   
+    if batch_size % batch_chunk_count != 0:
         # batch_size must be divisible by batch_chunk_size.
         raise RuntimeError(
             f"batch_size {batch_size} must be divisiable by "
-            f"batch_chunk_size {batch_chunk_size}."
-        )
+            f"batch_chunk_size {batch_chunk_count}.")
     else:
-        data_batch_size = int(batch_size / batch_chunk_size)
+        data_batch_size = int(batch_size / batch_chunk_count)
+
 
     data_loader = DataLoader(
         dataset=use_dataset,
@@ -376,5 +377,5 @@ def train(
         arguments,
         output_folder,
         monitoring_interval,
-        batch_chunk_size,
+        batch_chunk_count,
     )
