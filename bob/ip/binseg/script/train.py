@@ -307,22 +307,15 @@ def train(
             "multiprocessing_context"
         ] = multiprocessing.get_context("spawn")
 
-
-    data_batch_size = batch_size   
+    data_batch_size = batch_size
     if batch_size % batch_chunk_count != 0:
         # batch_size must be divisible by batch_chunk_size.
         raise RuntimeError(
-<<<<<<< HEAD
             f"batch_size {batch_size} must be divisiable by "
-            f"batch_chunk_size {batch_chunk_count}.")
-=======
-            f"--batch-size={batch_size} must be divisiable by "
-            f"--batch-chunk-size {batch_chunk_size}."
+            f"batch_chunk_size {batch_chunk_count}."
         )
->>>>>>> 86da2dd2ea98c84fe7a9942b5dbefef31223e804
     else:
         data_batch_size = int(batch_size / batch_chunk_count)
-
 
     data_loader = DataLoader(
         dataset=use_dataset,

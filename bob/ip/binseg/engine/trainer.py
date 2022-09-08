@@ -212,7 +212,7 @@ def train_epoch(loader, model, optimizer, device, criterion, batch_chunk_count):
 
     batch_chunk_count: int
         Update the network weight every batch, totally ``n`` batch_chunk in one batch, to apply
-        Gradient Accumulation. 
+        Gradient Accumulation.
 
 
     Returns
@@ -228,7 +228,9 @@ def train_epoch(loader, model, optimizer, device, criterion, batch_chunk_count):
     samples_in_batch = []
 
     # progress bar only on interactive jobs
-    for idx, samples in enumerate(tqdm(loader, desc="train", leave=False, disable=None)):
+    for idx, samples in enumerate(
+        tqdm(loader, desc="train", leave=False, disable=None)
+    ):
         images = samples[1].to(
             device=device, non_blocking=torch.cuda.is_available()
         )
@@ -242,26 +244,25 @@ def train_epoch(loader, model, optimizer, device, criterion, batch_chunk_count):
                 device=device, non_blocking=torch.cuda.is_available()
             )
         )
-        
 
         # Forward pass on the network
         outputs = model(images)
         loss = criterion(outputs, ground_truths, masks)
-        
+
         # Backward pass on the network
         loss.backward()
 
         batch_losses.append(loss.item())
         samples_in_batch.append(len(samples))
         print("samples_in_batch", samples_in_batch)
-    
+
         # Weight update on the network
         if (idx + 1 == len(loader)) or ((idx + 1) % batch_chunk_count == 0):
             # Update Optimizer for the whole batch and log every bach loss
             optimizer.step()
             optimizer.zero_grad()
             logger.debug(f"batch loss: {loss.item()}")
-        
+
     return numpy.average(batch_losses, weights=samples_in_batch)
 
 
@@ -541,7 +542,7 @@ def run(
 
     batch_chunk_count: int
         Divide the whole batch to ``n`` batch chunks, in order to apply
-        gradient accumulation for weight updates. 
+        gradient accumulation for weight updates.
 
     """
 
@@ -610,7 +611,12 @@ def run(
                 start_epoch_time = time.time()
 
                 train_loss = train_epoch(
-                    data_loader, model, optimizer, device, criterion, batch_chunk_count
+                    data_loader,
+                    model,
+                    optimizer,
+                    device,
+                    criterion,
+                    batch_chunk_count,
                 )
 
                 scheduler.step()
