@@ -113,9 +113,7 @@ logger = logging.getLogger(__name__)
     "until there are no more new samples to feed (epoch is finished).  "
     "If the total number of training samples is not a multiple of the "
     "batch-size, the last batch will be smaller than the first, unless "
-    "--drop-incomplete-batch is set, in which case this batch is not used."
-    "The actual number of samples loaded in RAM for each iteration is "
-    "batch-size/batch-chunk-count.",
+    "--drop-incomplete-batch is set, in which case this batch is not used.",
     required=True,
     show_default=True,
     default=2,
@@ -127,11 +125,15 @@ logger = logging.getLogger(__name__)
     "-c",
     help="Number of chunks in every batch (this parameter affects "
     "memory requirements for the network). The number of samples "
-    "loaded for every batch will be batch-size/batch-chunk-count. "
-    "batch-chunk-count needs to be divisible by batch-size, otherwise an "
-    "error will be raised. The config is used to reduce number of "
-    "samples loaded in each iteration, in order to reduce the memory usage, "
-    "especially for experiments running on GPUs with limited RAM.",
+    "loaded for every iteration will be batch-size/batch-chunk-count. "
+    "batch-size needs to be divisible by batch-chunk-count, otherwise an "
+    "error will be raised. This parameter is used to reduce number of "
+    "samples loaded in each iteration, in order to reduce the memory usage "
+    "in exchange for processing time (more iterations).  This is specially "
+    "interesting whe one is running with GPUs with limited RAM. The "
+    "default of 1 forces the whole batch to be processed at once.  Otherwise "
+    "the batch is broken into batch-chunk-count pieces, and gradients are "
+    "accumulated to complete each batch.",
     required=True,
     show_default=True,
     default=1,

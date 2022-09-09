@@ -211,8 +211,11 @@ def train_epoch(loader, model, optimizer, device, criterion, batch_chunk_count):
     criterion : :py:class:`torch.nn.modules.loss._Loss`
 
     batch_chunk_count: int
-        Update the network weight every batch, totally ``n`` batch_chunk in one batch, to apply
-        Gradient Accumulation.
+        If this number is different than 1, then each batch will be divided in
+        this number of chunks.  Gradients will be accumulated to perform each
+        mini-batch.   This is particularly interesting when one has limited RAM
+        on the GPU, but would like to keep training with larger batches.  One
+        exchanges for longer processing times in this case.
 
 
     Returns
@@ -540,8 +543,11 @@ def run(
         resources during training.
 
     batch_chunk_count: int
-        Divide the whole batch to ``n`` batch chunks, in order to apply
-        gradient accumulation for weight updates.
+        If this number is different than 1, then each batch will be divided in
+        this number of chunks.  Gradients will be accumulated to perform each
+        mini-batch.   This is particularly interesting when one has limited RAM
+        on the GPU, but would like to keep training with larger batches.  One
+        exchanges for longer processing times in this case.
 
     """
 
