@@ -212,7 +212,7 @@ def train_epoch(loader, model, optimizer, device, criterion, batch_chunk_count):
 
     batch_chunk_count: int
         Update the network weight every batch, totally ``n`` batch_chunk in one batch, to apply
-        Gradient Accumulation. 
+        Gradient Accumulation.
 
 
     Returns
@@ -230,8 +230,10 @@ def train_epoch(loader, model, optimizer, device, criterion, batch_chunk_count):
     samples_in_batch = []
 
     # progress bar only on interactive jobs
-    for idx, samples in enumerate(tqdm(loader, desc="train", leave=False, disable=None)):
-        
+    for idx, samples in enumerate(
+        tqdm(loader, desc="train", leave=False, disable=None)
+    ):
+
         images = samples[1].to(
             device=device, non_blocking=torch.cuda.is_available()
         )
@@ -250,7 +252,6 @@ def train_epoch(loader, model, optimizer, device, criterion, batch_chunk_count):
         outputs = model(images)
         loss = criterion(outputs, ground_truths, masks)
 
-
         losses_in_batch.append(loss.item())
         samples_in_batch.append(len(samples))
 
@@ -264,18 +265,17 @@ def train_epoch(loader, model, optimizer, device, criterion, batch_chunk_count):
             # Update Optimizer
             optimizer.step()
             optimizer.zero_grad()
-            
+
             # Normalize loss for current batch
-            batch_loss = numpy.average(losses_in_batch, weights=samples_in_batch)
+            batch_loss = numpy.average(
+                losses_in_batch, weights=samples_in_batch
+            )
             losses_in_epoch.append(batch_loss.item())
             samples_in_epoch.append(len(samples))
-            
 
             losses_in_batch.clear()
             samples_in_batch.clear()
             logger.debug(f"batch loss: {batch_loss.item()}")
-
-
 
     return numpy.average(losses_in_epoch, weights=samples_in_epoch)
 
@@ -556,7 +556,7 @@ def run(
 
     batch_chunk_count: int
         Divide the whole batch to ``n`` batch chunks, in order to apply
-        gradient accumulation for weight updates. 
+        gradient accumulation for weight updates.
 
     """
 
@@ -625,7 +625,12 @@ def run(
                 start_epoch_time = time.time()
 
                 train_loss = train_epoch(
-                    data_loader, model, optimizer, device, criterion, batch_chunk_count
+                    data_loader,
+                    model,
+                    optimizer,
+                    device,
+                    criterion,
+                    batch_chunk_count,
                 )
 
                 scheduler.step()
