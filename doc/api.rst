@@ -99,12 +99,12 @@ Toolbox
 .. autosummary::
    :toctree: api/utils
 
-   bob.ip.binseg.utils
-   bob.ip.binseg.utils.checkpointer
-   bob.ip.binseg.utils.measure
-   bob.ip.binseg.utils.plot
-   bob.ip.binseg.utils.table
-   bob.ip.binseg.utils.summary
+   bob.ip.common.utils
+   bob.ip.common.utils.checkpointer
+   bob.ip.common.utils.measure
+   bob.ip.common.utils.plot
+   bob.ip.common.utils.table
+   bob.ip.common.utils.summary
 
 
 .. _bob.ip.binseg.configs:
