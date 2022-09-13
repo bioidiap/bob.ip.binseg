@@ -13,7 +13,7 @@ import torchvision.transforms.functional as VF
 
 from tqdm import tqdm
 
-from ..data.utils import overlayed_bbox_image
+from ...common.data.utils import overlayed_bbox_image
 
 logger = logging.getLogger(__name__)
 

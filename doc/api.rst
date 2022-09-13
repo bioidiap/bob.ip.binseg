@@ -18,7 +18,7 @@ Data Manipulation
    bob.ip.binseg.data.dataset
    bob.ip.binseg.data.loader
    bob.ip.binseg.data.sample
-   bob.ip.binseg.data.utils
+   bob.ip.common.data.utils
    bob.ip.binseg.data.transforms
 
 
