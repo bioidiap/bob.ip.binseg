@@ -509,7 +509,7 @@ def run(
     scheduler : :py:mod:`torch.optim`
         learning rate scheduler
 
-    checkpointer : :py:class:`bob.ip.binseg.utils.checkpointer.Checkpointer`
+    checkpointer : :py:class:`bob.ip.common.utils.checkpointer.Checkpointer`
         checkpointer implementation
 
     checkpoint_period : int
