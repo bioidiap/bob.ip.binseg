@@ -39,7 +39,7 @@ requirements:
     - tqdm {{ tqdm }}
     - tabulate {{ tabulate }}
     - scikit-image {{ scikit_image }}
-    - tensorboard
+    - tensorboard {{ tensorboard }}
   run:
     - python
     - setuptools
