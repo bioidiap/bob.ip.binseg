@@ -60,9 +60,9 @@ More information:
 
 import os
 
-from bob.ip.binseg.data.dataset import CSVDataset
-from bob.ip.binseg.data.loader import load_pil_1, load_pil_rgb
-from bob.ip.binseg.data.sample import Sample
+from bob.ip.common.data.dataset import CSVDataset
+from bob.ip.common.data.loader import load_pil_1, load_pil_rgb
+from bob.ip.common.data.sample import Sample
 
 # How we use the loaders - "sample" is a dictionary where keys are defined
 # below and map to the columns of the CSV files you input.  This one is

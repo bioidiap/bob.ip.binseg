@@ -4,10 +4,10 @@
 """Standard configurations for dataset setup"""
 
 
-from ...data.transforms import ColorJitter as _jitter
-from ...data.transforms import RandomHorizontalFlip as _hflip
-from ...data.transforms import RandomRotation as _rotation
-from ...data.transforms import RandomVerticalFlip as _vflip
+from ....common.data.transforms import ColorJitter as _jitter
+from ....common.data.transforms import RandomHorizontalFlip as _hflip
+from ....common.data.transforms import RandomRotation as _rotation
+from ....common.data.transforms import RandomVerticalFlip as _vflip
 
 RANDOM_ROTATION = [_rotation()]
 """Shared data augmentation based on random rotation only"""
@@ -105,10 +105,10 @@ def make_dataset(subsets, transforms):
     """Creates a new configuration dataset from dictionary and transforms
 
     This function takes as input a dictionary as those that can be returned by
-    :py:meth:`bob.ip.detect.data.dataset.JSONDataset.subsets`,  or
-    :py:meth:`bob.ip.detect.data.dataset.CSVDataset.subsets`, mapping protocol
+    :py:meth:`bob.ip.common.data.dataset.JSONDataset.subsets`,  or
+    :py:meth:`bob.ip.common.data.dataset.CSVDataset.subsets`, mapping protocol
     names (such as ``train``, ``dev`` and ``test``) to
-    :py:class:`bob.ip.detect.data.sample.DelayedSample` lists, and a set of
+    :py:class:`bob.ip.common.data.sample.DelayedSample` lists, and a set of
     transforms, and returns a dictionary applying
     :py:class:`bob.ip.common.data.utils.SampleListDetectionDataset` to these
     lists, and our standard data augmentation if a ``train`` set exists.

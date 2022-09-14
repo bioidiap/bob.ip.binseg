@@ -30,8 +30,8 @@ import pkg_resources
 
 import bob.extension
 
-from ..dataset import JSONDataset
-from ..loader import load_pil_1, load_pil_rgb, make_delayed
+from ....common.data.dataset import JSONDataset
+from ....common.data.loader import load_pil_1, load_pil_rgb, make_delayed
 
 _protocols = [
     pkg_resources.resource_filename(__name__, "ah.json"),

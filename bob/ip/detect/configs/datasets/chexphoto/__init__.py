@@ -4,8 +4,8 @@
 
 def _maker(protocol):
 
+    from .....common.data.transforms import Resize
     from ....data.chexphoto import dataset as raw
-    from ....data.transforms import Resize
     from .. import make_dataset as mk
 
     return mk(raw.subsets(protocol), [Resize((256, 256))])
@@ -13,11 +13,11 @@ def _maker(protocol):
 
 def _maker_augmented(protocol):
 
+    from .....common.data.transforms import ColorJitter as _jitter
+    from .....common.data.transforms import Compose as _compose
+    from .....common.data.transforms import GaussianBlur as _blur
+    from .....common.data.transforms import Resize as _resize
     from ....data.chexphoto import dataset as raw
-    from ....data.transforms import ColorJitter as _jitter
-    from ....data.transforms import Compose as _compose
-    from ....data.transforms import GaussianBlur as _blur
-    from ....data.transforms import Resize as _resize
     from .. import make_subset
 
     def _mk_aug_subset(subsets, train_transforms, all_transforms):
