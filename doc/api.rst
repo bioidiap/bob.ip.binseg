@@ -15,11 +15,11 @@ Data Manipulation
 .. autosummary::
    :toctree: api/data
 
-   bob.ip.binseg.data.dataset
-   bob.ip.binseg.data.loader
-   bob.ip.binseg.data.sample
+   bob.ip.common.data.dataset
+   bob.ip.common.data.loader
+   bob.ip.common.data.sample
    bob.ip.common.data.utils
-   bob.ip.binseg.data.transforms
+   bob.ip.common.data.transforms
 
 
 Datasets
