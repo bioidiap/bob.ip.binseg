@@ -49,8 +49,8 @@ will see in this example, we provide boilerplate code to do so.
 
 More information:
 
-* :py:class:`bob.ip.binseg.data.dataset.CSVDataset` for operational details.
-* :py:class:`bob.ip.binseg.data.dataset.JSONDataset` for an alternative for
+* :py:class:`bob.ip.common.data.dataset.CSVDataset` for operational details.
+* :py:class:`bob.ip.common.data.dataset.JSONDataset` for an alternative for
   multi-protocol datasets (all of our supported raw datasets are implemented
   using this)
 * :py:func:`bob.ip.binseg.configs.datasets.make_dataset` for extra
@@ -122,6 +122,6 @@ _raw_dataset = CSVDataset(
 
 # Add/tune your (optional) transforms below - these are just examples
 # compatible with a model that requires image inputs of 544 x 544 pixels.
-# from bob.ip.binseg.data.transforms import CenterCrop
+# from bob.ip.config.data.transforms import CenterCrop
 
 # dataset = _maker(_raw_dataset.subsets(), [CenterCrop((544, 544))])
