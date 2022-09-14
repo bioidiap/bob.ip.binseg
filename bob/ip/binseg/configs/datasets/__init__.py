@@ -78,7 +78,7 @@ def augment_subset(s, rotation_before=False):
     Parameters
     ----------
 
-    s : bob.ip.binseg.common.data.utils.SampleListDataset
+    s : bob.ip.common.data.utils.SampleListDataset
         A dataset that will be augmented
 
     rotation_before : py:class:`bool`, Optional
