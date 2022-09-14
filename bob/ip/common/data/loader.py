@@ -121,7 +121,7 @@ def make_delayed(sample, loader, key=None):
     Returns
     -------
 
-    sample : bob.ip.detect.data.sample.DelayedSample
+    sample : bob.ip.common.data.sample.DelayedSample
         In which ``key`` is as provided and ``data`` can be accessed to trigger
         sample loading.
 
