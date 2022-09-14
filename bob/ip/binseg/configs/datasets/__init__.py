@@ -108,9 +108,9 @@ def make_dataset(subsets, transforms):
     :py:meth:`bob.ip.common.data.dataset.JSONDataset.subsets`,  or
     :py:meth:`bob.ip.common.data.dataset.CSVDataset.subsets`, mapping protocol
     names (such as ``train``, ``dev`` and ``test``) to
-    :py:class:`bob.ip.binseg.data.sample.DelayedSample` lists, and a set of
+    :py:class:`bob.ip.common.data.sample.DelayedSample` lists, and a set of
     transforms, and returns a dictionary applying
-    :py:class:`bob.ip.binseg.common.data.utils.SampleListDataset` to these
+    :py:class:`bob.ip.common.data.utils.SampleListDataset` to these
     lists, and our standard data augmentation if a ``train`` set exists.
 
     For example, if ``subsets`` is composed of two sets named ``train`` and
