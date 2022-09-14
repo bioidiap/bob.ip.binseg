@@ -78,7 +78,7 @@ def augment_subset(s, rotation_before=False):
     Parameters
     ----------
 
-    s : bob.ip.binseg.common.utils.SampleListDataset
+    s : bob.ip.binseg.common.data.utils.SampleListDataset
         A dataset that will be augmented
 
     rotation_before : py:class:`bool`, Optional
@@ -110,7 +110,7 @@ def make_dataset(subsets, transforms):
     names (such as ``train``, ``dev`` and ``test``) to
     :py:class:`bob.ip.binseg.data.sample.DelayedSample` lists, and a set of
     transforms, and returns a dictionary applying
-    :py:class:`bob.ip.binseg.common.utils.SampleListDataset` to these
+    :py:class:`bob.ip.binseg.common.data.utils.SampleListDataset` to these
     lists, and our standard data augmentation if a ``train`` set exists.
 
     For example, if ``subsets`` is composed of two sets named ``train`` and
