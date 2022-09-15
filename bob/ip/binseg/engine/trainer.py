@@ -215,7 +215,9 @@ def train_epoch(loader, model, optimizer, device, criterion, batch_chunk_count):
         this number of chunks.  Gradients will be accumulated to perform each
         mini-batch.   This is particularly interesting when one has limited RAM
         on the GPU, but would like to keep training with larger batches.  One
-        exchanges for longer processing times in this case.
+        exchanges for longer processing times in this case.  To better understand
+        gradient accumulation, read
+        https://stackoverflow.com/questions/62067400/understanding-accumulated-gradients-in-pytorch.
 
 
     Returns
@@ -258,15 +260,19 @@ def train_epoch(loader, model, optimizer, device, criterion, batch_chunk_count):
         losses_in_batch.append(loss.item())
         samples_in_batch.append(len(samples))
 
-        # Normalize loss to account for batch_chunk_size
+        # Normalize loss to account for batch_chunk_size?
         loss = loss / batch_chunk_count
-        # Backward pass on the network
+
+        # Accumulate gradients - does not update weights just yet...
         loss.backward()
 
         # Weight update on the network
         if ((idx + 1) % batch_chunk_count == 0) or (idx + 1 == len(loader)):
-            # Update Optimizer
+            # Advances optimiser to the "next" state and applies weight update
+            # over the whole model
             optimizer.step()
+
+            # Zeroes gradients for the next batch
             optimizer.zero_grad()
 
             # Normalize loss for current batch
