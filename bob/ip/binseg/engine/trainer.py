@@ -260,7 +260,7 @@ def train_epoch(loader, model, optimizer, device, criterion, batch_chunk_count):
         losses_in_batch.append(loss.item())
         samples_in_batch.append(len(samples))
 
-        # Normalize loss to account for batch_chunk_size?
+        # Normalize loss to account for batch accumulation
         loss = loss / batch_chunk_count
 
         # Accumulate gradients - does not update weights just yet...
@@ -268,7 +268,7 @@ def train_epoch(loader, model, optimizer, device, criterion, batch_chunk_count):
 
         # Weight update on the network
         if ((idx + 1) % batch_chunk_count == 0) or (idx + 1 == len(loader)):
-            # Advances optimiser to the "next" state and applies weight update
+            # Advances optimizer to the "next" state and applies weight update
             # over the whole model
             optimizer.step()
 
