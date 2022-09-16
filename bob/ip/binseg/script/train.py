@@ -313,7 +313,7 @@ def train(
     if batch_size % batch_chunk_count != 0:
         # batch_size must be divisible by batch_chunk_count.
         raise RuntimeError(
-            f"--batch-size ({batch_size}) must be divisiable by "
+            f"--batch-size ({batch_size}) must be divisible by "
             f"--batch-chunk-size ({batch_chunk_count})."
         )
     else:
