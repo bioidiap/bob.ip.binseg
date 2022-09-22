@@ -1,7 +1,11 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+import torchvision.models
 
-import torchvision.models.vgg
+try:
+    # pytorch >= 1.12
+    from torch.hub import load_state_dict_from_url
+except ImportError:
+    # pytorch < 1.12
+    from torchvision.models.utils import load_state_dict_from_url
 
 
 class VGG4Segmentation(torchvision.models.vgg.VGG):
@@ -38,8 +42,8 @@ class VGG4Segmentation(torchvision.models.vgg.VGG):
         return outputs
 
 
-def _vgg_for_segmentation(
-    arch, cfg, batch_norm, pretrained, progress, **kwargs
+def _make_vgg16_typeD_for_segmentation(
+    pretrained, batch_norm, progress, **kwargs
 ):
 
     if pretrained:
@@ -47,15 +51,21 @@ def _vgg_for_segmentation(
 
     model = VGG4Segmentation(
         torchvision.models.vgg.make_layers(
-            torchvision.models.vgg.cfgs[cfg], batch_norm=batch_norm
+            torchvision.models.vgg.cfgs["D"],
+            batch_norm=batch_norm,
         ),
         **kwargs
     )
 
     if pretrained:
-        state_dict = torchvision.models.vgg.load_state_dict_from_url(
-            torchvision.models.vgg.model_urls[arch], progress=progress
+
+        weights = (
+            torchvision.models.vgg.VGG16_Weights.DEFAULT.url
+            if not batch_norm
+            else torchvision.models.vgg.VGG16_BN_Weights.DEFAULT.url
         )
+
+        state_dict = load_state_dict_from_url(weights, progress=progress)
         model.load_state_dict(state_dict)
 
     # erase VGG head (for classification), not used for segmentation
@@ -66,8 +76,9 @@ def _vgg_for_segmentation(
 
 
 def vgg16_for_segmentation(pretrained=False, progress=True, **kwargs):
-    return _vgg_for_segmentation(
-        "vgg16", "D", False, pretrained, progress, **kwargs
+
+    return _make_vgg16_typeD_for_segmentation(
+        pretrained=pretrained, batch_norm=False, progress=progress, **kwargs
     )
 
 
@@ -75,8 +86,9 @@ vgg16_for_segmentation.__doc__ = torchvision.models.vgg16.__doc__
 
 
 def vgg16_bn_for_segmentation(pretrained=False, progress=True, **kwargs):
-    return _vgg_for_segmentation(
-        "vgg16_bn", "D", True, pretrained, progress, **kwargs
+
+    return _make_vgg16_typeD_for_segmentation(
+        pretrained=pretrained, batch_norm=True, progress=progress, **kwargs
     )
 
 

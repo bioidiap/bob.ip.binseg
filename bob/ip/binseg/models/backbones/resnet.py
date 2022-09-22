@@ -1,7 +1,11 @@
-#!/usr/bin/env python
-# coding=utf-8
+import torchvision.models
 
-import torchvision.models.resnet
+try:
+    # pytorch >= 1.12
+    from torch.hub import load_state_dict_from_url
+except ImportError:
+    # pytorch < 1.12
+    from torchvision.models.utils import load_state_dict_from_url
 
 
 class ResNet4Segmentation(torchvision.models.resnet.ResNet):
@@ -38,13 +42,16 @@ class ResNet4Segmentation(torchvision.models.resnet.ResNet):
         return outputs
 
 
-def _resnet_for_segmentation(
-    arch, block, layers, pretrained, progress, **kwargs
-):
-    model = ResNet4Segmentation(block, layers, **kwargs)
+def resnet50_for_segmentation(pretrained=False, progress=True, **kwargs):
+
+    model = ResNet4Segmentation(
+        torchvision.models.resnet.Bottleneck, [3, 4, 6, 3], **kwargs
+    )
+
     if pretrained:
-        state_dict = torchvision.models.resnet.load_state_dict_from_url(
-            torchvision.models.resnet.model_urls[arch], progress=progress
+        state_dict = load_state_dict_from_url(
+            torchvision.models.resnet.ResNet50_Weights.DEFAULT.url,
+            progress=progress,
         )
         model.load_state_dict(state_dict)
 
@@ -55,15 +62,4 @@ def _resnet_for_segmentation(
     return model
 
 
-def resnet50_for_segmentation(pretrained=False, progress=True, **kwargs):
-    return _resnet_for_segmentation(
-        "resnet50",
-        torchvision.models.resnet.Bottleneck,
-        [3, 4, 6, 3],
-        pretrained,
-        progress,
-        **kwargs
-    )
-
-
-resnet50_for_segmentation.__doc__ = torchvision.models.resnet.resnet50.__doc__
+resnet50_for_segmentation.__doc__ = torchvision.models.resnet50.__doc__

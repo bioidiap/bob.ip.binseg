@@ -1,7 +1,12 @@
-#!/usr/bin/env python
-# vim: set fileencoding=utf-8 :
-
+import torchvision.models
 import torchvision.models.mobilenetv2
+
+try:
+    # pytorch >= 1.12
+    from torch.hub import load_state_dict_from_url
+except ImportError:
+    # pytorch < 1.12
+    from torchvision.models.utils import load_state_dict_from_url
 
 
 class MobileNetV24Segmentation(torchvision.models.mobilenetv2.MobileNetV2):
@@ -40,11 +45,13 @@ class MobileNetV24Segmentation(torchvision.models.mobilenetv2.MobileNetV2):
 
 
 def mobilenet_v2_for_segmentation(pretrained=False, progress=True, **kwargs):
+
     model = MobileNetV24Segmentation(**kwargs)
 
     if pretrained:
-        state_dict = torchvision.models.mobilenetv2.load_state_dict_from_url(
-            torchvision.models.mobilenetv2.model_urls["mobilenet_v2"],
+
+        state_dict = load_state_dict_from_url(
+            torchvision.models.mobilenetv2.MobileNet_V2_Weights.DEFAULT.url,
             progress=progress,
         )
         model.load_state_dict(state_dict)
@@ -59,6 +66,4 @@ def mobilenet_v2_for_segmentation(pretrained=False, progress=True, **kwargs):
     return model
 
 
-mobilenet_v2_for_segmentation.__doc__ = (
-    torchvision.models.mobilenetv2.mobilenet_v2.__doc__
-)
+mobilenet_v2_for_segmentation.__doc__ = torchvision.models.mobilenetv2.__doc__
