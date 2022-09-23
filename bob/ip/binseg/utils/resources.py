@@ -5,6 +5,7 @@
 
 import logging
 import multiprocessing
+import os
 import queue
 import shutil
 import subprocess
@@ -60,9 +61,14 @@ def run_nvidia_smi(query, rename=None):
         else:
             assert len(rename) == len(query)
 
+        # Get GPU information based on GPU ID.
         values = subprocess.getoutput(
-            "%s --query-gpu=%s --format=csv,noheader"
-            % (_nvidia_smi, ",".join(query))
+            "%s --query-gpu=%s --format=csv,noheader --id=%s"
+            % (
+                _nvidia_smi,
+                ",".join(query),
+                os.environ.get("CUDA_VISIBLE_DEVICES"),
+            )
         )
         values = [k.strip() for k in values.split(",")]
         t_values = []
