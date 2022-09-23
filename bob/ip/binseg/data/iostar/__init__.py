@@ -28,9 +28,9 @@ import pkg_resources
 
 import bob.extension
 
-from ..dataset import JSONDataset
-from ..loader import load_pil_1, load_pil_rgb, make_delayed
-from ..utils import invert_mode1_image, subtract_mode1_images
+from ....common.data.dataset import JSONDataset
+from ....common.data.loader import load_pil_1, load_pil_rgb, make_delayed
+from ....common.data.utils import invert_mode1_image, subtract_mode1_images
 
 _protocols = [
     pkg_resources.resource_filename(__name__, "vessel.json"),

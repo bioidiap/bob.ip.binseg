@@ -12,8 +12,8 @@ from tqdm import tqdm
 
 from bob.extension.scripts.click_helper import verbosity_option
 
-from ..utils.plot import precision_recall_f1iso
-from ..utils.table import performance_table
+from ...common.utils.plot import precision_recall_f1iso
+from ...common.utils.table import performance_table
 
 logger = logging.getLogger(__name__)
 

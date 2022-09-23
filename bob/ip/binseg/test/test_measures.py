@@ -9,13 +9,13 @@ import numpy
 import pytest
 import torch
 
-from ..engine.evaluator import sample_measures_for_threshold
-from ..utils.measure import (
+from ...common.utils.measure import (
     auc,
     base_measures,
     bayesian_measures,
     beta_credible_region,
 )
+from ..engine.evaluator import sample_measures_for_threshold
 
 
 class TestFrequentist(unittest.TestCase):
