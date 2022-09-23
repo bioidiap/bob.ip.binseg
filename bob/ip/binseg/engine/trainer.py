@@ -191,7 +191,7 @@ def create_logfile_fields(valid_loader, extra_valid_loaders, device):
     return logfile_fields
 
 
-def train_epoch(loader, model, optimizer, device, criterion):
+def train_epoch(loader, model, optimizer, device, criterion, batch_chunk_count):
     """Trains the model for a single epoch (through all batches)
 
     Parameters
@@ -210,6 +210,15 @@ def train_epoch(loader, model, optimizer, device, criterion):
 
     criterion : :py:class:`torch.nn.modules.loss._Loss`
 
+    batch_chunk_count: int
+        If this number is different than 1, then each batch will be divided in
+        this number of chunks.  Gradients will be accumulated to perform each
+        mini-batch.   This is particularly interesting when one has limited RAM
+        on the GPU, but would like to keep training with larger batches.  One
+        exchanges for longer processing times in this case.  To better understand
+        gradient accumulation, read
+        https://stackoverflow.com/questions/62067400/understanding-accumulated-gradients-in-pytorch.
+
 
     Returns
     -------
@@ -220,11 +229,16 @@ def train_epoch(loader, model, optimizer, device, criterion):
 
     """
 
-    batch_losses = []
+    losses_in_epoch = []
+    samples_in_epoch = []
+    losses_in_batch = []
     samples_in_batch = []
 
     # progress bar only on interactive jobs
-    for samples in tqdm(loader, desc="train", leave=False, disable=None):
+    for idx, samples in enumerate(
+        tqdm(loader, desc="train", leave=False, disable=None)
+    ):
+
         images = samples[1].to(
             device=device, non_blocking=torch.cuda.is_available()
         )
@@ -238,18 +252,41 @@ def train_epoch(loader, model, optimizer, device, criterion):
                 device=device, non_blocking=torch.cuda.is_available()
             )
         )
-        # data forwarding on the existing network
+
+        # Forward pass on the network
         outputs = model(images)
         loss = criterion(outputs, ground_truths, masks)
-        optimizer.zero_grad()
-        loss.backward()
-        optimizer.step()
-        logger.debug(f"batch loss: {loss.item()}")
 
-        batch_losses.append(loss.item())
+        losses_in_batch.append(loss.item())
         samples_in_batch.append(len(samples))
 
-    return numpy.average(batch_losses, weights=samples_in_batch)
+        # Normalize loss to account for batch accumulation
+        loss = loss / batch_chunk_count
+
+        # Accumulate gradients - does not update weights just yet...
+        loss.backward()
+
+        # Weight update on the network
+        if ((idx + 1) % batch_chunk_count == 0) or (idx + 1 == len(loader)):
+            # Advances optimizer to the "next" state and applies weight update
+            # over the whole model
+            optimizer.step()
+
+            # Zeroes gradients for the next batch
+            optimizer.zero_grad()
+
+            # Normalize loss for current batch
+            batch_loss = numpy.average(
+                losses_in_batch, weights=samples_in_batch
+            )
+            losses_in_epoch.append(batch_loss.item())
+            samples_in_epoch.append(len(samples))
+
+            losses_in_batch.clear()
+            samples_in_batch.clear()
+            logger.debug(f"batch loss: {batch_loss.item()}")
+
+    return numpy.average(losses_in_epoch, weights=samples_in_epoch)
 
 
 def validate_epoch(loader, model, device, criterion, pbar_desc):
@@ -470,6 +507,7 @@ def run(
     arguments,
     output_folder,
     monitoring_interval,
+    batch_chunk_count,
 ):
     """
     Fits an FCN model using supervised learning and save it to disk.
@@ -524,6 +562,13 @@ def run(
     monitoring_interval : int, float
         interval, in seconds (or fractions), through which we should monitor
         resources during training.
+
+    batch_chunk_count: int
+        If this number is different than 1, then each batch will be divided in
+        this number of chunks.  Gradients will be accumulated to perform each
+        mini-batch.   This is particularly interesting when one has limited RAM
+        on the GPU, but would like to keep training with larger batches.  One
+        exchanges for longer processing times in this case.
 
     """
 
@@ -592,7 +637,12 @@ def run(
                 start_epoch_time = time.time()
 
                 train_loss = train_epoch(
-                    data_loader, model, optimizer, device, criterion
+                    data_loader,
+                    model,
+                    optimizer,
+                    device,
+                    criterion,
+                    batch_chunk_count,
                 )
 
                 scheduler.step()

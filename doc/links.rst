@@ -14,7 +14,7 @@
 .. _tto: mailto:tto@idiap.ch
 
 .. Raw data websites
-.. _drive: https://www.isi.uu.nl/Research/Databases/DRIVE/
+.. _drive: https://github.com/wfdubowen/Retina-Unet/tree/master/DRIVE/
 .. _stare: http://cecas.clemson.edu/~ahoover/stare/
 .. _hrf: https://www5.cs.fau.de/research/data/fundus-images/
 .. _iostar: http://www.retinacheck.org/datasets

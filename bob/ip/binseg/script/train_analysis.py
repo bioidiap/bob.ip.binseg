@@ -73,7 +73,7 @@ def _loss_evolution(df):
 
     axes.legend(loc="best")
     axes.grid(alpha=0.3)
-    figure.set_tight_layout(None)
+    figure.set_layout_engine("tight")
 
     return figure
 
@@ -134,7 +134,7 @@ def _hardware_utilisation(df, const):
 
     axes.legend(loc="best")
     axes.grid(alpha=0.3)
-    figure.set_tight_layout(None)
+    figure.set_layout_engine("tight")
 
     return figure
 

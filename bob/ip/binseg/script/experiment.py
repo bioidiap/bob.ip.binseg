@@ -113,10 +113,30 @@ logger = logging.getLogger(__name__)
     "until there are no more new samples to feed (epoch is finished).  "
     "If the total number of training samples is not a multiple of the "
     "batch-size, the last batch will be smaller than the first, unless "
-    "--drop-incomplete--batch is set, in which case this batch is not used.",
+    "--drop-incomplete-batch is set, in which case this batch is not used.",
     required=True,
     show_default=True,
     default=2,
+    type=click.IntRange(min=1),
+    cls=ResourceOption,
+)
+@click.option(
+    "--batch-chunk-count",
+    "-c",
+    help="Number of chunks in every batch (this parameter affects "
+    "memory requirements for the network). The number of samples "
+    "loaded for every iteration will be batch-size/batch-chunk-count. "
+    "batch-size needs to be divisible by batch-chunk-count, otherwise an "
+    "error will be raised. This parameter is used to reduce number of "
+    "samples loaded in each iteration, in order to reduce the memory usage "
+    "in exchange for processing time (more iterations).  This is specially "
+    "interesting whe one is running with GPUs with limited RAM. The "
+    "default of 1 forces the whole batch to be processed at once.  Otherwise "
+    "the batch is broken into batch-chunk-count pieces, and gradients are "
+    "accumulated to complete each batch.",
+    required=True,
+    show_default=True,
+    default=1,
     type=click.IntRange(min=1),
     cls=ResourceOption,
 )
@@ -252,6 +272,7 @@ def experiment(
     output_folder,
     epochs,
     batch_size,
+    batch_chunk_count,
     drop_incomplete_batch,
     criterion,
     dataset,
@@ -342,6 +363,7 @@ def experiment(
         output_folder=train_output_folder,
         epochs=epochs,
         batch_size=batch_size,
+        batch_chunk_count=batch_chunk_count,
         drop_incomplete_batch=drop_incomplete_batch,
         criterion=criterion,
         dataset=dataset,
