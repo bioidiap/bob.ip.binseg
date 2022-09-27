@@ -22,7 +22,6 @@ from ...common.utils.resources import (
 )
 from ...common.utils.summary import summary
 
-
 logger = logging.getLogger(__name__)
 
 
