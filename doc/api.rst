@@ -1,4 +1,4 @@
-.. -*- coding: utf-8 -*-
+. -*- coding: utf-8 -*-
 
 =====================================
  Application Program Interface (API)
@@ -15,11 +15,11 @@ Data Manipulation
 .. autosummary::
    :toctree: api/data
 
-   bob.ip.binseg.data.dataset
-   bob.ip.binseg.data.loader
-   bob.ip.binseg.data.sample
-   bob.ip.binseg.data.utils
-   bob.ip.binseg.data.transforms
+   bob.ip.common.data.dataset
+   bob.ip.common.data.loader
+   bob.ip.common.data.sample
+   bob.ip.common.data.utils
+   bob.ip.common.data.transforms
 
 
 Datasets
@@ -91,6 +91,7 @@ Neural Network Models
    bob.ip.binseg.models.lwnet
    bob.ip.binseg.models.losses
    bob.ip.binseg.models.make_layers
+   bob.ip.detect.models.faster_rcnn
 
 
 Toolbox
@@ -99,12 +100,12 @@ Toolbox
 .. autosummary::
    :toctree: api/utils
 
-   bob.ip.binseg.utils
-   bob.ip.binseg.utils.checkpointer
-   bob.ip.binseg.utils.measure
-   bob.ip.binseg.utils.plot
-   bob.ip.binseg.utils.table
-   bob.ip.binseg.utils.summary
+   bob.ip.common.utils
+   bob.ip.common.utils.checkpointer
+   bob.ip.common.utils.measure
+   bob.ip.common.utils.plot
+   bob.ip.common.utils.table
+   bob.ip.common.utils.summary
 
 
 .. _bob.ip.binseg.configs:
@@ -133,6 +134,7 @@ Models
    bob.ip.binseg.configs.models.resunet
    bob.ip.binseg.configs.models.unet
    bob.ip.binseg.configs.models.lwnet
+   bob.ip.detect.configs.models.faster_rcnn
 
 
 .. _bob.ip.binseg.configs.datasets:

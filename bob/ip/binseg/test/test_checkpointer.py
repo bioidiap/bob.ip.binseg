@@ -9,7 +9,7 @@ from tempfile import TemporaryDirectory
 
 import torch
 
-from ..utils.checkpointer import Checkpointer
+from ...common.utils.checkpointer import Checkpointer
 
 
 class TestCheckpointer(unittest.TestCase):

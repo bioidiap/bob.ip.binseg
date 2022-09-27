@@ -15,8 +15,13 @@ import torch
 
 from tqdm import tqdm
 
-from ..utils.resources import ResourceMonitor, cpu_constants, gpu_constants
-from ..utils.summary import summary
+from ...common.utils.resources import (
+    ResourceMonitor,
+    cpu_constants,
+    gpu_constants,
+)
+from ...common.utils.summary import summary
+
 
 logger = logging.getLogger(__name__)
 
@@ -372,7 +377,7 @@ def checkpointer_process(
     Parameters
     ----------
 
-    checkpointer : :py:class:`bob.ip.binseg.utils.checkpointer.Checkpointer`
+    checkpointer : :py:class:`bob.ip.common.utils.checkpointer.Checkpointer`
         checkpointer implementation
 
     checkpoint_period : int
@@ -543,7 +548,7 @@ def run(
     scheduler : :py:mod:`torch.optim`
         learning rate scheduler
 
-    checkpointer : :py:class:`bob.ip.binseg.utils.checkpointer.Checkpointer`
+    checkpointer : :py:class:`bob.ip.common.utils.checkpointer.Checkpointer`
         checkpointer implementation
 
     checkpoint_period : int

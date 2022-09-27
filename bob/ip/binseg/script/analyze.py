@@ -51,7 +51,7 @@ logger = logging.getLogger(__name__)
     "--dataset",
     "-d",
     help="A dictionary mapping string keys to "
-    "bob.ip.binseg.data.utils.SampleList2TorchDataset's.  At least one key "
+    "bob.ip.common.data.utils.SampleList2TorchDataset's.  At least one key "
     "named 'train' must be available.  This dataset will be used for training "
     "the network model.  All other datasets will be used for prediction and "
     "evaluation. Dataset descriptions include all required pre-processing, "
