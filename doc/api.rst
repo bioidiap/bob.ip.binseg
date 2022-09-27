@@ -91,7 +91,6 @@ Neural Network Models
    bob.ip.binseg.models.lwnet
    bob.ip.binseg.models.losses
    bob.ip.binseg.models.make_layers
-   bob.ip.detect.models.faster_rcnn
 
 
 Toolbox
@@ -134,7 +133,6 @@ Models
    bob.ip.binseg.configs.models.resunet
    bob.ip.binseg.configs.models.unet
    bob.ip.binseg.configs.models.lwnet
-   bob.ip.detect.configs.models.faster_rcnn
 
 
 .. _bob.ip.binseg.configs.datasets:
