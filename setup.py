@@ -29,22 +29,22 @@ setup(
     entry_points={
         # main entry bob cli
         "bob.cli": [
-            "binseg = bob.ip.binseg.script.binseg:binseg",
-            "detect = bob.ip.detect.script.detect:detect",
+            "binseg = bob.ip.common.script.common:binseg",
+            "detect = bob.ip.common.script.common:detect",
         ],
         # bob binseg sub-commands
         "bob.ip.binseg.cli": [
-            "config = bob.ip.binseg.script.config:config",
-            "dataset =  bob.ip.binseg.script.dataset:dataset",
-            "train = bob.ip.binseg.script.train:train",
-            "predict = bob.ip.binseg.script.predict:predict",
-            "evaluate = bob.ip.binseg.script.evaluate:evaluate",
-            "compare =  bob.ip.binseg.script.compare:compare",
-            "significance =  bob.ip.binseg.script.significance:significance",
-            "analyze =  bob.ip.binseg.script.analyze:analyze",
-            "experiment =  bob.ip.binseg.script.experiment:experiment",
-            "mkmask = bob.ip.binseg.script.mkmask:mkmask",
-            "train-analysis = bob.ip.binseg.script.train_analysis:train_analysis",
+            "config = bob.ip.common.script.binseg.config:config",
+            "dataset =  bob.ip.common.script.binseg.dataset:dataset",
+            "train = bob.ip.common.script.binseg.train:train",
+            "predict = bob.ip.common.script.binseg.predict:predict",
+            "evaluate = bob.ip.common.script.binseg.evaluate:evaluate",
+            "compare =  bob.ip.common.script.binseg.compare:compare",
+            "significance =  bob.ip.common.script.significance:significance",
+            "analyze =  bob.ip.common.script.binseg.analyze:analyze",
+            "experiment =  bob.ip.common.script.binseg.experiment:experiment",
+            "mkmask = bob.ip.common.script.mkmask:mkmask",
+            "train-analysis = bob.ip.common.script.binseg.train_analysis:train_analysis",
         ],
         # bob binseg train configurations
         "bob.ip.binseg.config": [
@@ -157,15 +157,15 @@ setup(
         ],
         # bob detect sub-commands
         "bob.ip.detect.cli": [
-            "config = bob.ip.detect.script.config:config",
-            "dataset =  bob.ip.detect.script.dataset:dataset",
-            "train = bob.ip.detect.script.train:train",
-            "predict = bob.ip.detect.script.predict:predict",
-            "evaluate = bob.ip.detect.script.evaluate:evaluate",
-            "compare =  bob.ip.detect.script.compare:compare",
-            "analyze =  bob.ip.detect.script.analyze:analyze",
-            "experiment =  bob.ip.detect.script.experiment:experiment",
-            "train-analysis = bob.ip.detect.script.train_analysis:train_analysis",
+            "config = bob.ip.common.script.detect.config:config",
+            "dataset =  bob.ip.common.script.detect.dataset:dataset",
+            "train = bob.ip.common.script.detect.train:train",
+            "predict = bob.ip.common.script.detect.predict:predict",
+            "evaluate = bob.ip.common.script.detect.evaluate:evaluate",
+            "compare =  bob.ip.common.script.detect.compare:compare",
+            "analyze =  bob.ip.common.script.detect.analyze:analyze",
+            "experiment =  bob.ip.common.script.detect.experiment:experiment",
+            "train-analysis = bob.ip.common.script.detect.train_analysis:train_analysis",
         ],
         # bob detect train configurations
         "bob.ip.detect.config": [
