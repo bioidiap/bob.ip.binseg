@@ -1,10 +1,11 @@
 #!/usr/bin/env python
 # coding=utf-8
 
-import click
 import logging
 import os
 import shutil
+
+import click
 
 from .common import save_sh_command
 
