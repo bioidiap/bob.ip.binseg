@@ -15,12 +15,12 @@ logger = logging.getLogger(__name__)
 def base_compare(
     label_path,
     output_figure,
-    table_format,
     output_table,
     threshold,
     plot_limits,
     detection,
     verbose,
+    table_format="rst",
     **kwargs,
 ):
     """Compare multiple systems together."""

@@ -4,11 +4,14 @@
 import logging
 import os
 
+import click
+
 from .common import save_sh_command
 
 logger = logging.getLogger(__name__)
 
 
+@click.pass_context
 def base_analyze(
     ctx,
     model,
@@ -100,7 +103,7 @@ def base_analyze(
     logger.info("Started comparison")
 
     # compare performances on the various sets
-    from .compare_common import base_compare
+    from .compare import base_compare
 
     systems = []
     for k, v in dataset.items():
