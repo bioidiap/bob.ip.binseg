@@ -65,22 +65,22 @@ class TestBayesian:
     Unit test for bayesian base measures
     """
 
-    def mean(self, k, l, lambda_):
-        return (k + lambda_) / (k + l + 2 * lambda_)
+    def mean(self, k, i, lambda_):
+        return (k + lambda_) / (k + i + 2 * lambda_)
 
-    def mode1(self, k, l, lambda_):  # (k+lambda_), (l+lambda_) > 1
-        return (k + lambda_ - 1) / (k + l + 2 * lambda_ - 2)
+    def mode1(self, k, i, lambda_):  # (k+lambda_), (i+lambda_) > 1
+        return (k + lambda_ - 1) / (k + i + 2 * lambda_ - 2)
 
     def test_beta_credible_region_base(self):
         k = 40
-        l = 10
+        i = 10
         lambda_ = 0.5
         cover = 0.95
-        got = beta_credible_region(k, l, lambda_, cover)
+        got = beta_credible_region(k, i, lambda_, cover)
         # mean, mode, lower, upper
         exp = (
-            self.mean(k, l, lambda_),
-            self.mode1(k, l, lambda_),
+            self.mean(k, i, lambda_),
+            self.mode1(k, i, lambda_),
             0.6741731038857685,
             0.8922659692341358,
         )
@@ -89,14 +89,14 @@ class TestBayesian:
     def test_beta_credible_region_small_k(self):
 
         k = 4
-        l = 1
+        i = 1
         lambda_ = 0.5
         cover = 0.95
-        got = beta_credible_region(k, l, lambda_, cover)
+        got = beta_credible_region(k, i, lambda_, cover)
         # mean, mode, lower, upper
         exp = (
-            self.mean(k, l, lambda_),
-            self.mode1(k, l, lambda_),
+            self.mean(k, i, lambda_),
+            self.mode1(k, i, lambda_),
             0.37137359936800574,
             0.9774872340008449,
         )
@@ -106,13 +106,13 @@ class TestBayesian:
 
         # simulation of situation for precision TP == FP == 0, Jeffrey's prior
         k = 0
-        l = 0
+        i = 0
         lambda_ = 0.5
         cover = 0.95
-        got = beta_credible_region(k, l, lambda_, cover)
+        got = beta_credible_region(k, i, lambda_, cover)
         # mean, mode, lower, upper
         exp = (
-            self.mean(k, l, lambda_),
+            self.mean(k, i, lambda_),
             0.0,
             0.0015413331334360135,
             0.998458666866564,
@@ -123,12 +123,12 @@ class TestBayesian:
 
         # simulation of situation for precision TP == FP == 0, flat prior
         k = 0
-        l = 0
+        i = 0
         lambda_ = 1.0
         cover = 0.95
-        got = beta_credible_region(k, l, lambda_, cover)
+        got = beta_credible_region(k, i, lambda_, cover)
         # mean, mode, lower, upper
-        exp = (self.mean(k, l, lambda_), 0.0, 0.025000000000000022, 0.975)
+        exp = (self.mean(k, i, lambda_), 0.0, 0.025000000000000022, 0.975)
         assert numpy.isclose(got, exp).all(), f"{got} <> {exp}"
 
     def test_bayesian_measures(self):
