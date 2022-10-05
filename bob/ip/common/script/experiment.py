@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # coding=utf-8
 
+import click
 import logging
 import os
 import shutil
@@ -9,8 +10,9 @@ from .common import save_sh_command
 
 logger = logging.getLogger(__name__)
 
-
+@click.pass_context
 def base_experiment(
+    ctx,
     model,
     optimizer,
     scheduler,
