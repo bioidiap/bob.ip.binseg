@@ -289,9 +289,7 @@ def test_chasedb1_mtest():
 
     assert len(dataset) == 10
 
-    from ..configs.datasets.chasedb1.first_annotator import (
-        dataset as baseline,
-    )
+    from ..configs.datasets.chasedb1.first_annotator import dataset as baseline
 
     assert dataset["train"] == baseline["train"]
     assert dataset["test"] == baseline["test"]
@@ -320,9 +318,7 @@ def test_chasedb1_covd():
 
     assert len(dataset) == 4
 
-    from ..configs.datasets.chasedb1.first_annotator import (
-        dataset as baseline,
-    )
+    from ..configs.datasets.chasedb1.first_annotator import dataset as baseline
 
     assert dataset["train"] == dataset["__valid__"]
     assert dataset["test"] == baseline["test"]

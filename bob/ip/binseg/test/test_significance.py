@@ -8,12 +8,12 @@ import numpy
 import pytest
 import torch
 
+from ...common.utils.measure import base_measures
 from ..engine.significance import (
     PERFORMANCE_FIGURES,
     _performance_summary,
     _winperf_measures,
 )
-from ...common.utils.measure import base_measures
 
 
 def _check_window_measures(pred, gt, mask, threshold, size, stride, expected):
