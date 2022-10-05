@@ -11,7 +11,6 @@ logger = logging.getLogger(__name__)
 
 
 def base_experiment(
-    ctx,
     model,
     optimizer,
     scheduler,
