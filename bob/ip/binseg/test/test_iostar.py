@@ -2,37 +2,50 @@
 # coding=utf-8
 
 
-"""Tests for HRF"""
+"""Tests for IOSTAR"""
 
 import os
 
 import numpy
 import pytest
 
-from ...binseg.data.hrf import dataset
+from ..data.iostar import dataset
 from .utils import count_bw
 
 
 def test_protocol_consistency():
 
-    subset = dataset.subsets("default")
+    subset = dataset.subsets("vessel")
     assert len(subset) == 2
 
     assert "train" in subset
-    assert len(subset["train"]) == 15
+    assert len(subset["train"]) == 20
     for s in subset["train"]:
-        assert s.key.startswith(os.path.join("images", "0"))
+        assert s.key.startswith(os.path.join("image", "STAR "))
 
     assert "test" in subset
-    assert len(subset["test"]) == 30
+    assert len(subset["test"]) == 10
     for s in subset["test"]:
-        assert s.key.startswith("images")
+        assert s.key.startswith(os.path.join("image", "STAR "))
+
+    subset = dataset.subsets("optic-disc")
+    assert len(subset) == 2
+
+    assert "train" in subset
+    assert len(subset["train"]) == 20
+    for s in subset["train"]:
+        assert s.key.startswith(os.path.join("image", "STAR "))
+
+    assert "test" in subset
+    assert len(subset["test"]) == 10
+    for s in subset["test"]:
+        assert s.key.startswith(os.path.join("image", "STAR "))
 
 
-@pytest.mark.skip_if_rc_var_not_set("bob.ip.binseg.hrf.datadir")
+@pytest.mark.skip_if_rc_var_not_set("bob.ip.binseg.iostar.datadir")
 def test_loading():
 
-    image_size = (3504, 2336)
+    image_size = (1024, 1024)
 
     def _check_sample(s, bw_threshold_label, bw_threshold_mask):
 
@@ -78,7 +91,7 @@ def test_loading():
         # it should display an image with a faded background representing the
         # original data, blended with green labels and blue area indicating the
         # parts to be masked out.
-        # from ..data.utils import overlayed_image
+        # from ...common.data.utils import overlayed_image
         # display = overlayed_image(data["data"], data["label"], data["mask"])
         # display.show()
         # import ipdb; ipdb.set_trace()
@@ -86,18 +99,30 @@ def test_loading():
         return w / b, wm / bm
 
     limit = None  # use this to limit testing to first images only
-    subset = dataset.subsets("default")
+    subset = dataset.subsets("vessel")
     proportions = [
-        _check_sample(s, 0.12, 5.42) for s in subset["train"][:limit]
+        _check_sample(s, 0.11, 3.19) for s in subset["train"][:limit]
     ]
     # print(f"max label proportions = {max(k[0] for k in proportions)}")
     # print(f"min mask proportions = {min(k[1] for k in proportions)}")
-    proportions = [_check_sample(s, 0.12, 5.41) for s in subset["test"][:limit]]
+    proportions = [_check_sample(s, 0.10, 3.27) for s in subset["test"][:limit]]
+    # print(f"max label proportions = {max(k[0] for k in proportions)}")
+    # print(f"min mask proportions = {min(k[1] for k in proportions)}")
+
+    subset = dataset.subsets("optic-disc")
+    proportions = [
+        _check_sample(s, 0.023, 3.19) for s in subset["train"][:limit]
+    ]
+    # print(f"max label proportions = {max(k[0] for k in proportions)}")
+    # print(f"min mask proportions = {min(k[1] for k in proportions)}")
+    proportions = [
+        _check_sample(s, 0.033, 3.27) for s in subset["test"][:limit]
+    ]
     # print(f"max label proportions = {max(k[0] for k in proportions)}")
     # print(f"min mask proportions = {min(k[1] for k in proportions)}")
     del proportions  # only to satisfy flake8
 
 
-@pytest.mark.skip_if_rc_var_not_set("bob.ip.binseg.hrf.datadir")
+@pytest.mark.skip_if_rc_var_not_set("bob.ip.binseg.iostar.datadir")
 def test_check():
     assert dataset.check() == 0

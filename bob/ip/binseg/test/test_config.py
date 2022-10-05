@@ -32,7 +32,7 @@ def test_drive():
             assert s[1].max() <= 1.0
             assert s[1].min() >= 0.0
 
-    from ...binseg.configs.datasets.drive.default import dataset
+    from ..configs.datasets.drive.default import dataset
 
     assert len(dataset) == 4
     _check_subset(dataset["__train__"], 20, 544, 544)
@@ -40,19 +40,19 @@ def test_drive():
     _check_subset(dataset["train"], 20, 544, 544)
     _check_subset(dataset["test"], 20, 544, 544)
 
-    from ...binseg.configs.datasets.drive.second_annotator import dataset
+    from ..configs.datasets.drive.second_annotator import dataset
 
     assert len(dataset) == 1
     _check_subset(dataset["test"], 20, 544, 544)
 
-    from ...binseg.configs.datasets.drive.default_768 import dataset
+    from ..configs.datasets.drive.default_768 import dataset
 
     _check_subset(dataset["__train__"], 20, 768, 768)
     _check_subset(dataset["__valid__"], 20, 768, 768)
     _check_subset(dataset["train"], 20, 768, 768)
     _check_subset(dataset["test"], 20, 768, 768)
 
-    from ...binseg.configs.datasets.drive.default_1024 import dataset
+    from ..configs.datasets.drive.default_1024 import dataset
 
     _check_subset(dataset["__train__"], 20, 1024, 1024)
     _check_subset(dataset["__valid__"], 20, 1024, 1024)
@@ -66,11 +66,11 @@ def test_drive():
 @pytest.mark.skip_if_rc_var_not_set("bob.ip.binseg.iostar.datadir")
 def test_drive_mtest():
 
-    from ...binseg.configs.datasets.drive.mtest import dataset
+    from ..configs.datasets.drive.mtest import dataset
 
     assert len(dataset) == 10
 
-    from ...binseg.configs.datasets.drive.default import dataset as baseline
+    from ..configs.datasets.drive.default import dataset as baseline
 
     assert dataset["train"] == baseline["train"]
     assert dataset["test"] == baseline["test"]
@@ -95,11 +95,11 @@ def test_drive_mtest():
 @pytest.mark.skip_if_rc_var_not_set("bob.ip.binseg.iostar.datadir")
 def test_drive_covd():
 
-    from ...binseg.configs.datasets.drive.covd import dataset
+    from ..configs.datasets.drive.covd import dataset
 
     assert len(dataset) == 4
 
-    from ...binseg.configs.datasets.drive.default import dataset as baseline
+    from ..configs.datasets.drive.default import dataset as baseline
 
     assert dataset["train"] == dataset["__valid__"]
     assert dataset["test"] == baseline["test"]
@@ -125,7 +125,7 @@ def test_stare_augmentation_manipulation():
     # adequately, with one example dataset
 
     # hack to allow testing on the CI
-    from ...binseg.configs.datasets.stare import _maker
+    from ..configs.datasets.stare import _maker
 
     dataset = _maker("ah", stare_dataset)
 
@@ -154,7 +154,7 @@ def test_stare():
             assert s[1].min() >= 0.0
 
     # hack to allow testing on the CI
-    from ...binseg.configs.datasets.stare import _maker, _maker_square
+    from ..configs.datasets.stare import _maker, _maker_square
 
     for protocol in "ah", "vk":
         dataset = _maker(protocol, stare_dataset)
@@ -182,11 +182,11 @@ def test_stare():
 @pytest.mark.skip_if_rc_var_not_set("bob.ip.binseg.iostar.datadir")
 def test_stare_mtest():
 
-    from ...binseg.configs.datasets.stare.mtest import dataset
+    from ..configs.datasets.stare.mtest import dataset
 
     assert len(dataset) == 10
 
-    from ...binseg.configs.datasets.stare.ah import dataset as baseline
+    from ..configs.datasets.stare.ah import dataset as baseline
 
     assert dataset["train"] == baseline["train"]
     assert dataset["test"] == baseline["test"]
@@ -211,11 +211,11 @@ def test_stare_mtest():
 @pytest.mark.skip_if_rc_var_not_set("bob.ip.binseg.iostar.datadir")
 def test_stare_covd():
 
-    from ...binseg.configs.datasets.stare.covd import dataset
+    from ..configs.datasets.stare.covd import dataset
 
     assert len(dataset) == 4
 
-    from ...binseg.configs.datasets.stare.ah import dataset as baseline
+    from ..configs.datasets.stare.ah import dataset as baseline
 
     assert dataset["train"] == dataset["__valid__"]
     assert dataset["test"] == baseline["test"]
@@ -262,7 +262,7 @@ def test_chasedb1():
         _check_subset(d["train"], 8, 960, 960)
         _check_subset(d["test"], 20, 960, 960)
 
-    from ...binseg.configs.datasets.chasedb1.first_annotator_768 import dataset
+    from ..configs.datasets.chasedb1.first_annotator_768 import dataset
 
     assert len(dataset) == 4
     _check_subset(dataset["__train__"], 8, 768, 768)
@@ -270,7 +270,7 @@ def test_chasedb1():
     _check_subset(dataset["train"], 8, 768, 768)
     _check_subset(dataset["test"], 20, 768, 768)
 
-    from ...binseg.configs.datasets.chasedb1.first_annotator_1024 import dataset
+    from ..configs.datasets.chasedb1.first_annotator_1024 import dataset
 
     assert len(dataset) == 4
     _check_subset(dataset["__train__"], 8, 1024, 1024)
@@ -285,11 +285,11 @@ def test_chasedb1():
 @pytest.mark.skip_if_rc_var_not_set("bob.ip.binseg.iostar.datadir")
 def test_chasedb1_mtest():
 
-    from ...binseg.configs.datasets.chasedb1.mtest import dataset
+    from ..configs.datasets.chasedb1.mtest import dataset
 
     assert len(dataset) == 10
 
-    from ...binseg.configs.datasets.chasedb1.first_annotator import (
+    from ..configs.datasets.chasedb1.first_annotator import (
         dataset as baseline,
     )
 
@@ -316,11 +316,11 @@ def test_chasedb1_mtest():
 @pytest.mark.skip_if_rc_var_not_set("bob.ip.binseg.iostar.datadir")
 def test_chasedb1_covd():
 
-    from ...binseg.configs.datasets.chasedb1.covd import dataset
+    from ..configs.datasets.chasedb1.covd import dataset
 
     assert len(dataset) == 4
 
-    from ...binseg.configs.datasets.chasedb1.first_annotator import (
+    from ..configs.datasets.chasedb1.first_annotator import (
         dataset as baseline,
     )
 
@@ -373,7 +373,7 @@ def test_hrf():
             assert s[1].max() <= 1.0
             assert s[1].min() >= 0.0
 
-    from ...binseg.configs.datasets.hrf.default import dataset
+    from ..configs.datasets.hrf.default import dataset
 
     assert len(dataset) == 6
     _check_subset(dataset["__train__"], 15, 1168, 1648)
@@ -382,14 +382,14 @@ def test_hrf():
     _check_subset_fullres(dataset["train (full resolution)"], 15)
     _check_subset_fullres(dataset["test (full resolution)"], 30)
 
-    from ...binseg.configs.datasets.hrf.default_768 import dataset
+    from ..configs.datasets.hrf.default_768 import dataset
 
     assert len(dataset) == 4
     _check_subset(dataset["__train__"], 15, 768, 768)
     _check_subset(dataset["train"], 15, 768, 768)
     _check_subset(dataset["test"], 30, 768, 768)
 
-    from ...binseg.configs.datasets.hrf.default_1024 import dataset
+    from ..configs.datasets.hrf.default_1024 import dataset
 
     assert len(dataset) == 4
     _check_subset(dataset["__train__"], 15, 1024, 1024)
@@ -403,11 +403,11 @@ def test_hrf():
 @pytest.mark.skip_if_rc_var_not_set("bob.ip.binseg.iostar.datadir")
 def test_hrf_mtest():
 
-    from ...binseg.configs.datasets.hrf.mtest import dataset
+    from ..configs.datasets.hrf.mtest import dataset
 
     assert len(dataset) == 12
 
-    from ...binseg.configs.datasets.hrf.default import dataset as baseline
+    from ..configs.datasets.hrf.default import dataset as baseline
 
     assert dataset["train"] == baseline["train"]
     assert dataset["test"] == baseline["test"]
@@ -440,11 +440,11 @@ def test_hrf_mtest():
 @pytest.mark.skip_if_rc_var_not_set("bob.ip.binseg.iostar.datadir")
 def test_hrf_covd():
 
-    from ...binseg.configs.datasets.hrf.covd import dataset
+    from ..configs.datasets.hrf.covd import dataset
 
     assert len(dataset) == 6
 
-    from ...binseg.configs.datasets.hrf.default import dataset as baseline
+    from ..configs.datasets.hrf.default import dataset as baseline
 
     assert dataset["train"] == dataset["__valid__"]
     assert dataset["test"] == baseline["test"]
@@ -499,7 +499,7 @@ def test_iostar():
         _check_subset(d["train"], 20, 768, 768)
         _check_subset(d["test"], 10, 768, 768)
 
-    from ...binseg.configs.datasets.iostar.optic_disc_512 import dataset
+    from ..configs.datasets.iostar.optic_disc_512 import dataset
 
     assert len(dataset) == 4
     _check_subset(dataset["__train__"], 20, 512, 512)
@@ -513,11 +513,11 @@ def test_iostar():
 @pytest.mark.skip_if_rc_var_not_set("bob.ip.binseg.iostar.datadir")
 def test_iostar_mtest():
 
-    from ...binseg.configs.datasets.iostar.vessel_mtest import dataset
+    from ..configs.datasets.iostar.vessel_mtest import dataset
 
     assert len(dataset) == 10
 
-    from ...binseg.configs.datasets.iostar.vessel import dataset as baseline
+    from ..configs.datasets.iostar.vessel import dataset as baseline
 
     assert dataset["train"] == baseline["train"]
     assert dataset["test"] == baseline["test"]
@@ -542,11 +542,11 @@ def test_iostar_mtest():
 @pytest.mark.skip_if_rc_var_not_set("bob.ip.binseg.iostar.datadir")
 def test_iostar_covd():
 
-    from ...binseg.configs.datasets.iostar.covd import dataset
+    from ..configs.datasets.iostar.covd import dataset
 
     assert len(dataset) == 4
 
-    from ...binseg.configs.datasets.iostar.vessel import dataset as baseline
+    from ..configs.datasets.iostar.vessel import dataset as baseline
 
     assert dataset["train"] == dataset["__valid__"]
     assert dataset["test"] == baseline["test"]
@@ -754,7 +754,7 @@ def test_combined_vessels():
             assert s[1].max() <= 1.0
             assert s[1].min() >= 0.0
 
-    from ...binseg.configs.datasets.combined.vessel_combined import dataset
+    from ..configs.datasets.combined.vessel_combined import dataset
 
     assert len(dataset) == 4
     _check_subset(dataset["__train__"], 73, 768, 768)

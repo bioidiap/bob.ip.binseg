@@ -9,7 +9,7 @@ import os
 import numpy
 import pytest
 
-from ...binseg.data.drive import dataset
+from ..data.drive import dataset
 from .utils import count_bw
 
 
@@ -86,7 +86,7 @@ def test_loading():
         # it should display an image with a faded background representing the
         # original data, blended with green labels and blue area indicating the
         # parts to be masked out.
-        # from ..data.utils import overlayed_image
+        # from ...common.data.utils import overlayed_image
         # display = overlayed_image(data["data"], data["label"], data["mask"])
         # display.show()
         # import ipdb; ipdb.set_trace()

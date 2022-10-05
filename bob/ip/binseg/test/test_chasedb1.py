@@ -2,51 +2,48 @@
 # coding=utf-8
 
 
-"""Tests for STARE"""
-
-import os
+"""Tests for CHASE-DB1"""
 
 import numpy
+import pytest
 
-# special trick for CI builds
-from . import mock_dataset
+from ..data.chasedb1 import dataset
 from .utils import count_bw
-
-datadir, dataset = mock_dataset()
 
 
 def test_protocol_consistency():
 
-    subset = dataset.subsets("ah")
+    subset = dataset.subsets("first-annotator")
     assert len(subset) == 2
 
     assert "train" in subset
-    assert len(subset["train"]) == 10
+    assert len(subset["train"]) == 8
     for s in subset["train"]:
-        assert s.key.startswith(os.path.join("stare-images", "im0"))
+        assert s.key.startswith("Image_")
 
     assert "test" in subset
-    assert len(subset["test"]) == 10
+    assert len(subset["test"]) == 20
     for s in subset["test"]:
-        assert s.key.startswith(os.path.join("stare-images", "im0"))
+        assert s.key.startswith("Image_")
 
-    subset = dataset.subsets("vk")
+    subset = dataset.subsets("second-annotator")
     assert len(subset) == 2
 
     assert "train" in subset
-    assert len(subset["train"]) == 10
+    assert len(subset["train"]) == 8
     for s in subset["train"]:
-        assert s.key.startswith(os.path.join("stare-images", "im0"))
+        assert s.key.startswith("Image_")
 
     assert "test" in subset
-    assert len(subset["test"]) == 10
+    assert len(subset["test"]) == 20
     for s in subset["test"]:
-        assert s.key.startswith(os.path.join("stare-images", "im0"))
+        assert s.key.startswith("Image_")
 
 
+@pytest.mark.skip_if_rc_var_not_set("bob.ip.binseg.chasedb1.datadir")
 def test_loading():
 
-    image_size = (700, 605)
+    image_size = (999, 960)
 
     def _check_sample(s, bw_threshold_label, bw_threshold_mask):
 
@@ -74,6 +71,7 @@ def test_loading():
         )
 
         assert "mask" in data
+
         assert data["mask"].size == image_size
         assert data["mask"].mode == "1"
         bm, wm = count_bw(data["mask"])
@@ -97,24 +95,27 @@ def test_loading():
         # display.show()
         # import ipdb; ipdb.set_trace()
 
-        return w / b
+        return w / b, wm / bm
 
     limit = None  # use this to limit testing to first images only
-    subset = dataset.subsets("ah")
+    subset = dataset.subsets("first-annotator")
     proportions = [
-        _check_sample(s, 0.10, 2.67) for s in subset["train"][:limit]
+        _check_sample(s, 0.08, 1.87) for s in subset["train"][:limit]
     ]
     # print(f"max label proportions = {max(proportions)}")
-    proportions = [_check_sample(s, 0.12, 2.70) for s in subset["test"][:limit]]
+    proportions = [_check_sample(s, 0.10, 1.87) for s in subset["test"][:limit]]
     # print(f"max label proportions = {max(proportions)}")
 
-    subset = dataset.subsets("vk")
-    # proportions = [_check_sample(s, 0.19, 2.67) for s in subset["train"][:limit]]
+    subset = dataset.subsets("second-annotator")
+    proportions = [
+        _check_sample(s, 0.09, 1.87) for s in subset["train"][:limit]
+    ]
     # print(f"max label proportions = {max(proportions)}")
-    # proportions = [_check_sample(s, 0.18, 2.70) for s in subset["test"][:limit]]
+    proportions = [_check_sample(s, 0.09, 1.87) for s in subset["test"][:limit]]
     # print(f"max label proportions = {max(proportions)}")
     del proportions  # only to satisfy flake8
 
 
+@pytest.mark.skip_if_rc_var_not_set("bob.ip.binseg.chasedb1.datadir")
 def test_check():
     assert dataset.check() == 0
