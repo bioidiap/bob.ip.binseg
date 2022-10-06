@@ -317,7 +317,9 @@ class SampleListDetectionDataset(torch.utils.data.Dataset):
             specified, use ``self.transforms``.
         """
 
-        return SampleListDataset(self._samples, transforms or self.transforms)
+        return SampleListDetectionDataset(
+            self._samples, transforms or self.transforms
+        )
 
     def keys(self):
         """Generator producing all keys for all samples"""

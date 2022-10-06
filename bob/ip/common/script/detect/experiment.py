@@ -359,6 +359,6 @@ def experiment(
         overlayed=overlayed,
         steps=steps,
         plot_limits=plot_limits,
-        detection=False,
+        detection=True,
         verbose=verbose,
     )

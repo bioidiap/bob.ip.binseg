@@ -323,7 +323,7 @@ def validate_epoch(loader, model, device, pbar_desc):
     batch_losses = []
     samples_in_batch = []
 
-    with torch.no_grad(), torch_evaluation(model):
+    with torch.no_grad():
 
         for samples in tqdm(loader, desc=pbar_desc, leave=False, disable=None):
             images = list(
