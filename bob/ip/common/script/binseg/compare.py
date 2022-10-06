@@ -6,7 +6,7 @@ import logging
 import click
 import tabulate
 
-from bob.extension.scripts.click_helper import ResourceOption, verbosity_option
+from bob.extension.scripts.click_helper import verbosity_option
 
 logger = logging.getLogger(__name__)
 
@@ -80,7 +80,7 @@ logger = logging.getLogger(__name__)
     nargs=4,
     type=float,
 )
-@verbosity_option(cls=ResourceOption)
+@verbosity_option()
 @click.pass_context
 def compare(
     ctx,
