@@ -21,7 +21,7 @@ def _get_supported_datasets():
 
     basedir = pkg_resources.resource_filename(__name__, "")
     basedir = Path(basedir).resolve().parents[2]
-    basedir = os.path.join(basedir, "binseg", "data")
+    basedir = os.path.join(basedir, "detect", "data")
 
     retval = []
     for k in os.listdir(basedir):
