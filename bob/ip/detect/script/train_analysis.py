@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 
 @click.command(
-    entry_point_group="bob.ip.binseg.config",
+    entry_point_group="bob.ip.detect.config",
     cls=ConfigCommand,
     epilog="""Examples:
 
@@ -46,7 +46,7 @@ logger = logging.getLogger(__name__)
 @click.pass_context
 def train_analysis(ctx, log, constants, output_pdf, verbose, **kwargs):
     """Analyze the training logs for loss evolution and resource utilisation."""
-    from ..train_analysis import base_train_analysis
+    from ...common.script.train_analysis import base_train_analysis
 
     ctx.invoke(
         base_train_analysis,

@@ -5,8 +5,6 @@ import importlib
 import logging
 import os
 
-from pathlib import Path
-
 import click
 import pkg_resources
 
@@ -20,8 +18,7 @@ def _get_supported_datasets():
     """Returns a list of supported dataset names"""
 
     basedir = pkg_resources.resource_filename(__name__, "")
-    basedir = Path(basedir).resolve().parents[2]
-    basedir = os.path.join(basedir, "binseg", "data")
+    basedir = os.path.join(os.path.dirname(basedir), "data")
 
     retval = []
     for k in os.listdir(basedir):
@@ -134,7 +131,7 @@ def check(dataset, limit, **kwargs):
         for k in to_check:
             click.echo(f"Checking \"{k.group('name')}\" dataset...")
             module = importlib.import_module(
-                f".....binseg.data.{k.group('name')}", __name__
+                f"...data.{k.group('name')}", __name__
             )
             errors += module.dataset.check(limit)
         if not errors:

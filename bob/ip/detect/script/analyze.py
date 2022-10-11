@@ -15,16 +15,16 @@ logger = logging.getLogger(__name__)
 
 
 @click.command(
-    entry_point_group="bob.ip.binseg.config",
+    entry_point_group="bob.ip.detect.config",
     cls=ConfigCommand,
     epilog="""Examples:
 
 \b
-    1. Re-evaluates a pre-trained M2U-Net model with DRIVE (vessel
-    segmentation), on the CPU, by running inference and evaluation on results
+    1. Re-evaluates a pre-trained Faster-R-CNN model with JSRT (lung
+    detection), on the CPU, by running inference and evaluation on results
     from its test set:
 
-       $ bob binseg analyze -vv m2unet drive --weight=model.path
+       $ bob detect analyze -vv faster_rcnn jsrt --weight=model.path
 
 """,
 )
@@ -97,9 +97,9 @@ logger = logging.getLogger(__name__)
 @click.option(
     "--overlayed/--no-overlayed",
     "-O",
-    help="Creates overlayed representations of the output probability maps, "
+    help="Creates overlayed representations of the output bounding boxes, "
     "similar to --overlayed in prediction-mode, except it includes "
-    "distinctive colours for true and false positives and false negatives.  "
+    "distinctive colours ground truth and predicted boxes.  "
     "If not set, or empty then do **NOT** output overlayed images.",
     show_default=True,
     default=False,
@@ -117,7 +117,7 @@ logger = logging.getLogger(__name__)
     "--steps",
     "-S",
     help="This number is used to define the number of threshold steps to "
-    "consider when evaluating the highest possible F1-score on test data.",
+    "consider when evaluating the highest possible IoU-score on test data.",
     default=1000,
     show_default=True,
     required=True,
@@ -199,12 +199,12 @@ def analyze(
         * ``*``: any other name, not starting with an underscore character (``_``),
           will be considered a test set for evaluation.
 
-        N.B.2: The threshold used for calculating the F1-score on the test set, or
-        overlay analysis (false positives, negatives and true positives overprinted
+        N.B.2: The threshold used for calculating the IoU-score on the test set, or
+        overlay analysis (ground truth and predicted bounding boexes overprinted
         on the original image) also follows the logic above.
     """
 
-    from ..analyze import base_analyze
+    from ...common.script.analyze import base_analyze
 
     ctx.invoke(
         base_analyze,
@@ -219,6 +219,6 @@ def analyze(
         steps=steps,
         parallel=parallel,
         plot_limits=plot_limits,
-        detection=False,
+        detection=True,
         verbose=verbose,
     )

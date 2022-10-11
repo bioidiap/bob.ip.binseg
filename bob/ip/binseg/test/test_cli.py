@@ -38,7 +38,7 @@ def test_main_help():
 
 
 def test_experiment_help():
-    from ...common.script.binseg.experiment import experiment
+    from ..script.experiment import experiment
 
     _check_help(experiment)
 
@@ -49,7 +49,7 @@ def _str_counter(substr, s):
 
 def _check_experiment_stare(caplog, overlay, multiprocess=False, extra_valid=0):
 
-    from ...common.script.binseg.experiment import experiment
+    from ..script.binseg.experiment import experiment
 
     # ensures we capture only ERROR messages and above by default
     caplog.set_level(logging.ERROR)
@@ -265,7 +265,7 @@ def test_experiment_stare_with_multiple_extra_validation(caplog):
 
 def _check_train(caplog, runner):
 
-    from ...common.script.binseg.train import train
+    from ..script.train import train
 
     with tempfile.NamedTemporaryFile(mode="wt") as config, caplog.at_level(
         logging.INFO, logger="bob.ip.binseg"
@@ -327,7 +327,7 @@ def _check_train(caplog, runner):
 
 def _check_predict(caplog, runner):
 
-    from ...common.script.binseg.predict import predict
+    from ..script.predict import predict
 
     with tempfile.NamedTemporaryFile(mode="wt") as config, caplog.at_level(
         logging.INFO, logger="bob.ip.binseg"
@@ -384,7 +384,7 @@ def _check_predict(caplog, runner):
 
 def _check_evaluate(caplog, runner):
 
-    from ...common.script.binseg.evaluate import evaluate
+    from ..script.evaluate import evaluate
 
     with tempfile.NamedTemporaryFile(mode="wt") as config, caplog.at_level(
         logging.INFO, logger="bob.ip.binseg"
@@ -453,7 +453,7 @@ def _check_evaluate(caplog, runner):
 
 def _check_compare(caplog, runner):
 
-    from ...common.script.binseg.compare import compare
+    from ..script.compare import compare
 
     with caplog.at_level(logging.INFO, logger="bob.ip.binseg"):
 
@@ -493,7 +493,7 @@ def _check_compare(caplog, runner):
 
 def _check_significance(caplog, runner):
 
-    from ...common.script.significance import significance
+    from ..script.significance import significance
 
     with tempfile.NamedTemporaryFile(mode="wt") as config, caplog.at_level(
         logging.INFO, logger="bob.ip.binseg"
@@ -568,55 +568,55 @@ def test_discrete_experiment_stare(caplog):
 
 
 def test_train_help():
-    from ...common.script.binseg.train import train
+    from ..script.train import train
 
     _check_help(train)
 
 
 def test_predict_help():
-    from ...common.script.binseg.predict import predict
+    from ..script.predict import predict
 
     _check_help(predict)
 
 
 def test_evaluate_help():
-    from ...common.script.binseg.evaluate import evaluate
+    from ..script.evaluate import evaluate
 
     _check_help(evaluate)
 
 
 def test_compare_help():
-    from ...common.script.binseg.compare import compare
+    from ..script.compare import compare
 
     _check_help(compare)
 
 
 def test_mkmask_help():
-    from ...common.script.mkmask import mkmask
+    from ..script.mkmask import mkmask
 
     _check_help(mkmask)
 
 
 def test_significance_help():
-    from ...common.script.significance import significance
+    from ..script.significance import significance
 
     _check_help(significance)
 
 
 def test_config_help():
-    from ...common.script.binseg.config import config
+    from ..script.config import config
 
     _check_help(config)
 
 
 def test_config_list_help():
-    from ...common.script.binseg.config import list
+    from ..script.config import list
 
     _check_help(list)
 
 
 def test_config_list():
-    from ...common.script.binseg.config import list
+    from ..script.config import list
 
     runner = CliRunner()
     result = runner.invoke(list)
@@ -626,7 +626,7 @@ def test_config_list():
 
 
 def test_config_list_v():
-    from ...common.script.binseg.config import list
+    from ..script.config import list
 
     runner = CliRunner()
     result = runner.invoke(list, ["--verbose"])
@@ -636,13 +636,13 @@ def test_config_list_v():
 
 
 def test_config_describe_help():
-    from ...common.script.binseg.config import describe
+    from ..script.config import describe
 
     _check_help(describe)
 
 
 def test_config_describe_drive():
-    from ...common.script.binseg.config import describe
+    from ..script.config import describe
 
     runner = CliRunner()
     result = runner.invoke(describe, ["drive"])
@@ -651,13 +651,13 @@ def test_config_describe_drive():
 
 
 def test_config_copy_help():
-    from ...common.script.binseg.config import copy
+    from ..script.config import copy
 
     _check_help(copy)
 
 
 def test_config_copy():
-    from ...common.script.binseg.config import copy
+    from ..script.config import copy
 
     runner = CliRunner()
     with runner.isolated_filesystem():
@@ -669,19 +669,19 @@ def test_config_copy():
 
 
 def test_dataset_help():
-    from ...common.script.binseg.dataset import dataset
+    from ..script.dataset import dataset
 
     _check_help(dataset)
 
 
 def test_dataset_list_help():
-    from ...common.script.binseg.dataset import list
+    from ..script.dataset import list
 
     _check_help(list)
 
 
 def test_dataset_list():
-    from ...common.script.binseg.dataset import list
+    from ..script.dataset import list
 
     runner = CliRunner()
     result = runner.invoke(list)
@@ -690,13 +690,13 @@ def test_dataset_list():
 
 
 def test_dataset_check_help():
-    from ...common.script.binseg.dataset import check
+    from ..script.dataset import check
 
     _check_help(check)
 
 
 def test_dataset_check():
-    from ...common.script.binseg.dataset import check
+    from ..script.dataset import check
 
     runner = CliRunner()
     result = runner.invoke(check, ["--verbose", "--verbose", "--limit=2"])

@@ -15,23 +15,23 @@ logger = logging.getLogger(__name__)
 
 
 @click.command(
-    entry_point_group="bob.ip.detect.config",
+    entry_point_group="bob.ip.binseg.config",
     cls=ConfigCommand,
     epilog="""Examples:
 
 \b
-    1. Trains a Faster-R-CNN model with JSRT (lung detection),
+    1. Trains a U-Net model (VGG-16 backbone) with DRIVE (vessel segmentation),
        on a GPU (``cuda:0``):
 
-       $ bob detect train -vv faster_rcnn faster_rcnn --batch-size=4 --device="cuda:0"
+       $ bob binseg train -vv unet drive --batch-size=4 --device="cuda:0"
 
-    2. Trains a Faster-R-CNN model with CXR8 on a GPU (``cuda:0``):
+    2. Trains a HED model with HRF on a GPU (``cuda:0``):
 
-       $ bob detect train -vv faster_rcnn cxr8 --batch-size=8 --device="cuda:0"
+       $ bob binseg train -vv hed hrf --batch-size=8 --device="cuda:0"
 
-    3. Trains a Faster-R-CNN model on the CheXphoto dataset on the CPU:
+    3. Trains a M2U-Net model on the COVD-DRIVE dataset on the CPU:
 
-       $ bob detect train -vv faster_rcnn chexphoto --batch-size=8
+       $ bob binseg train -vv m2unet covd-drive --batch-size=8
 
 """,
 )
@@ -239,7 +239,7 @@ def train(
     verbose,
     **kwargs,
 ):
-    """Trains an FCN to perform object detection.
+    """Trains an FCN to perform binary segmentation.
 
     Training is performed for a configurable number of epochs, and generates at
     least a final_model.pth.  It may also generate a number of intermediate
@@ -253,7 +253,7 @@ def train(
     the original training session stopped (or the last checkpoint was saved).
 
     """
-    from ..train import base_train
+    from ...common.script.train import base_train
 
     ctx.invoke(
         base_train,
@@ -272,6 +272,6 @@ def train(
         seed=seed,
         parallel=parallel,
         monitoring_interval=monitoring_interval,
-        detection=True,
+        detection=False,
         verbose=verbose,
     )

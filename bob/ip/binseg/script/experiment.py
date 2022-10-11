@@ -20,25 +20,18 @@ logger = logging.getLogger(__name__)
     epilog="""Examples:
 
 \b
-    1. Trains a U-Net model (VGG-16 backbone) with DRIVE (vessel segmentation),
-       on a GPU (``cuda:0``):
+    1. Trains an M2U-Net model (VGG-16 backbone) with DRIVE (vessel
+       segmentation), on the CPU, for only two epochs, then runs inference and
+       evaluation on stock datasets, report performance as a table and a figure:
 
-       $ bob binseg train -vv unet drive --batch-size=4 --device="cuda:0"
-
-    2. Trains a HED model with HRF on a GPU (``cuda:0``):
-
-       $ bob binseg train -vv hed hrf --batch-size=8 --device="cuda:0"
-
-    3. Trains a M2U-Net model on the COVD-DRIVE dataset on the CPU:
-
-       $ bob binseg train -vv m2unet covd-drive --batch-size=8
+       $ bob binseg experiment -vv m2unet drive --epochs=2
 
 """,
 )
 @click.option(
     "--output-folder",
     "-o",
-    help="Path where to store the generated model (created if does not exist)",
+    help="Path where to store experiment outputs (created if does not exist)",
     required=True,
     type=click.Path(),
     default="results",
@@ -47,7 +40,7 @@ logger = logging.getLogger(__name__)
 @click.option(
     "--model",
     "-m",
-    help="A torch.nn.Module instance implementing the network to be trained",
+    help="A torch.nn.Module instance implementing the network to be trained, and then evaluated",
     required=True,
     cls=ResourceOption,
 )
@@ -66,12 +59,24 @@ logger = logging.getLogger(__name__)
     "training instead of ``train``.  If a dataset named ``__valid__`` is "
     "available, it is used for model validation (and automatic "
     "check-pointing) at each epoch.  If a dataset list named "
-    "``__extra_valid__`` is available, then it will be tracked during the "
+    "``__valid_extra__`` is available, then it will be tracked during the "
     "validation process and its loss output at the training log as well, "
     "in the format of an array occupying a single column.  All other keys "
-    "are considered test datasets and are ignored during training",
+    "are considered test datasets and only used during analysis, to report "
+    "the final system performance",
     required=True,
     cls=ResourceOption,
+)
+@click.option(
+    "--second-annotator",
+    "-S",
+    help="A dataset or dictionary, like in --dataset, with the same "
+    "sample keys, but with annotations from a different annotator that is "
+    "going to be compared to the one in --dataset",
+    required=False,
+    default=None,
+    cls=ResourceOption,
+    show_default=True,
 )
 @click.option(
     "--optimizer",
@@ -191,10 +196,11 @@ logger = logging.getLogger(__name__)
 @click.option(
     "--parallel",
     "-P",
-    help="""Use multiprocessing for data loading: if set to -1 (default),
-    disables multiprocessing data loading.  Set to 0 to enable as many data
-    loading instances as processing cores as available in the system.  Set to
-    >= 1 to enable that many multiprocessing instances for data loading.""",
+    help="""Use multiprocessing for data loading and processing: if set to -1
+    (default), disables multiprocessing altogether.  Set to 0 to enable as many
+    data loading instances as processing cores as available in the system.  Set
+    to >= 1 to enable that many multiprocessing instances for data
+    processing.""",
     type=click.IntRange(min=-1),
     show_default=True,
     required=True,
@@ -217,9 +223,44 @@ logger = logging.getLogger(__name__)
     default=5.0,
     cls=ResourceOption,
 )
+@click.option(
+    "--overlayed/--no-overlayed",
+    "-O",
+    help="Creates overlayed representations of the output probability maps, "
+    "similar to --overlayed in prediction-mode, except it includes "
+    "distinctive colours for true and false positives and false negatives.  "
+    "If not set, or empty then do **NOT** output overlayed images.",
+    show_default=True,
+    default=False,
+    required=False,
+    cls=ResourceOption,
+)
+@click.option(
+    "--steps",
+    "-S",
+    help="This number is used to define the number of threshold steps to "
+    "consider when evaluating the highest possible F1-score on test data.",
+    default=1000,
+    show_default=True,
+    required=True,
+    cls=ResourceOption,
+)
+@click.option(
+    "--plot-limits",
+    "-L",
+    help="""If set, this option affects the performance comparison plots.  It
+    must be a 4-tuple containing the bounds of the plot for the x and y axis
+    respectively (format: x_low, x_high, y_low, y_high]).  If not set, use
+    normal bounds ([0, 1, 0, 1]) for the performance curve.""",
+    default=[0.0, 1.0, 0.0, 1.0],
+    show_default=True,
+    nargs=4,
+    type=float,
+    cls=ResourceOption,
+)
 @verbosity_option(cls=ResourceOption)
 @click.pass_context
-def train(
+def experiment(
     ctx,
     model,
     optimizer,
@@ -231,32 +272,74 @@ def train(
     drop_incomplete_batch,
     criterion,
     dataset,
+    second_annotator,
     checkpoint_period,
     device,
     seed,
     parallel,
     monitoring_interval,
+    overlayed,
+    steps,
+    plot_limits,
     verbose,
     **kwargs,
 ):
-    """Trains an FCN to perform binary segmentation.
+    """Runs a complete experiment, from training, to prediction and evaluation
 
-    Training is performed for a configurable number of epochs, and generates at
-    least a final_model.pth.  It may also generate a number of intermediate
-    checkpoints.  Checkpoints are model files (.pth files) that are stored
-    during the training and useful to resume the procedure in case it stops
-    abruptly.
+        This script is just a wrapper around the individual scripts for training,
+        running prediction, evaluating and comparing FCN model performance.  It
+        organises the output in a preset way::
 
-    Tip: In case the model has been trained over a number of epochs, it is
-    possible to continue training, by simply relaunching the same command, and
-    changing the number of epochs to a number greater than the number where
-    the original training session stopped (or the last checkpoint was saved).
+    \b
+           └─ <output-folder>/
+              ├── model/  #the generated model will be here
+              ├── predictions/  #the prediction outputs for the train/test set
+              ├── overlayed/  #the overlayed outputs for the train/test set
+                 ├── predictions/  #predictions overlayed on the input images
+                 ├── analysis/  #predictions overlayed on the input images
+                 ├              #including analysis of false positives, negatives
+                 ├              #and true positives
+                 └── second-annotator/  #if set, store overlayed images for the
+                                        #second annotator here
+              └── analysis /  #the outputs of the analysis of both train/test sets
+                              #includes second-annotator "mesures" as well, if
+                              # configured
 
+        Training is performed for a configurable number of epochs, and generates at
+        least a final_model.pth.  It may also generate a number of intermediate
+        checkpoints.  Checkpoints are model files (.pth files) that are stored
+        during the training and useful to resume the procedure in case it stops
+        abruptly.
+
+        N.B.: The tool is designed to prevent analysis bias and allows one to
+        provide (potentially multiple) separate subsets for training,
+        validation, and evaluation.  Instead of using simple datasets, datasets
+        for full experiment running should be dictionaries with specific subset
+        names:
+
+        * ``__train__``: dataset used for training, prioritarily.  It is typically
+          the dataset containing data augmentation pipelines.
+        * ``__valid__``: dataset used for validation.  It is typically disjoint
+          from the training and test sets.  In such a case, we checkpoint the model
+          with the lowest loss on the validation set as well, throughout all the
+          training, besides the model at the end of training.
+        * ``train`` (optional): a copy of the ``__train__`` dataset, without data
+          augmentation, that will be evaluated alongside other sets available
+        * ``__valid_extra__``: a list of datasets that are tracked during
+          validation, but do not affect checkpoiting. If present, an extra
+          column with an array containing the loss of each set is kept on the
+          training log.
+        * ``*``: any other name, not starting with an underscore character (``_``),
+          will be considered a test set for evaluation.
+
+        N.B.2: The threshold used for calculating the F1-score on the test set, or
+        overlay analysis (false positives, negatives and true positives overprinted
+        on the original image) also follows the logic above.
     """
-    from ..train import base_train
+    from ...common.script.experiment import base_experiment
 
     ctx.invoke(
-        base_train,
+        base_experiment,
         model=model,
         optimizer=optimizer,
         scheduler=scheduler,
@@ -267,11 +350,15 @@ def train(
         drop_incomplete_batch=drop_incomplete_batch,
         criterion=criterion,
         dataset=dataset,
+        second_annotator=second_annotator,
         checkpoint_period=checkpoint_period,
         device=device,
         seed=seed,
         parallel=parallel,
         monitoring_interval=monitoring_interval,
+        overlayed=overlayed,
+        steps=steps,
+        plot_limits=plot_limits,
         detection=False,
         verbose=verbose,
     )

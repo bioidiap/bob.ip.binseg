@@ -73,7 +73,7 @@ def compare(
     **kwargs,
 ):
     """Compare multiple systems together."""
-    from ..compare import base_compare
+    from ...common.script.compare import base_compare
 
     ctx.invoke(
         base_compare,

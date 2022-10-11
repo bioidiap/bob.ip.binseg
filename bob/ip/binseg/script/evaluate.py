@@ -15,14 +15,14 @@ logger = logging.getLogger(__name__)
 
 
 @click.command(
-    entry_point_group="bob.ip.detect.config",
+    entry_point_group="bob.ip.binseg.config",
     cls=ConfigCommand,
     epilog="""Examples:
 
 \b
     1. Runs evaluation on an existing dataset configuration:
 \b
-       $ bob detect evaluate -vv drive --predictions-folder=path/to/predictions --output-folder=path/to/results
+       $ bob binseg evaluate -vv drive --predictions-folder=path/to/predictions --output-folder=path/to/results
 \b
     2. To run evaluation on a folder with your own images and annotations, you
        must first specify resizing, cropping, etc, so that the image can be
@@ -31,9 +31,9 @@ logger = logging.getLogger(__name__)
        the dataset configuration used for **training** the provided model.
        Once you figured this out, do the following:
 \b
-       $ bob detect config copy csv-dataset-example mydataset.py
+       $ bob binseg config copy csv-dataset-example mydataset.py
        # modify "mydataset.py" to your liking
-       $ bob detect evaluate -vv mydataset.py --predictions-folder=path/to/predictions --output-folder=path/to/results
+       $ bob binseg evaluate -vv mydataset.py --predictions-folder=path/to/predictions --output-folder=path/to/results
 """,
 )
 @click.option(
@@ -79,9 +79,9 @@ logger = logging.getLogger(__name__)
 @click.option(
     "--overlayed",
     "-O",
-    help="Creates overlayed representations of the output bounding boxes, "
+    help="Creates overlayed representations of the output probability maps, "
     "similar to --overlayed in prediction-mode, except it includes "
-    "distinctive colours for ground truth and predicted bounding boxes.  "
+    "distinctive colours for true and false positives and false negatives.  "
     "If not set, or empty then do **NOT** output overlayed images.  "
     "Otherwise, the parameter represents the name of a folder where to "
     "store those",
@@ -94,13 +94,13 @@ logger = logging.getLogger(__name__)
     "--threshold",
     "-t",
     help="This number is used to define positives and negatives from "
-    "probability maps, and report IoU-scores (a priori). It "
+    "probability maps, and report F1-scores (a priori). It "
     "should either come from the training set or a separate validation set "
     "to avoid biasing the analysis.  Optionally, if you provide a multi-set "
     "dataset as input, this may also be the name of an existing set from "
-    "which the threshold will be estimated (highest IoU-score) and then "
+    "which the threshold will be estimated (highest F1-score) and then "
     "applied to the subsequent sets.  This number is also used to print "
-    "the test set IoU-score a priori performance",
+    "the test set F1-score a priori performance",
     default=None,
     show_default=False,
     required=False,
@@ -110,7 +110,7 @@ logger = logging.getLogger(__name__)
     "--steps",
     "-S",
     help="This number is used to define the number of threshold steps to "
-    "consider when evaluating the highest possible IoU-score on test data.",
+    "consider when evaluating the highest possible F1-score on test data.",
     default=1000,
     show_default=True,
     required=True,
@@ -144,8 +144,8 @@ def evaluate(
     verbose,
     **kwargs,
 ):
-    """Evaluate an FCN on a detection task."""
-    from ..evaluate import base_evaluate
+    """Evaluate an FCN on a binary segmentation task."""
+    from ...common.script.evaluate import base_evaluate
 
     ctx.invoke(
         base_evaluate,
@@ -157,6 +157,6 @@ def evaluate(
         threshold=threshold,
         steps=steps,
         parallel=parallel,
-        detection=True,
+        detection=False,
         verbose=verbose,
     )
