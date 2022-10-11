@@ -49,7 +49,7 @@ def _str_counter(substr, s):
 
 def _check_experiment_stare(caplog, overlay, multiprocess=False, extra_valid=0):
 
-    from ..script.binseg.experiment import experiment
+    from ..script.experiment import experiment
 
     # ensures we capture only ERROR messages and above by default
     caplog.set_level(logging.ERROR)
