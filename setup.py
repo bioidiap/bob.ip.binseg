@@ -34,7 +34,7 @@ setup(
         ],
         # bob binseg sub-commands
         "bob.ip.binseg.cli": [
-            "config = bob.ip.binseg.config:config",
+            "config = bob.ip.binseg.script.config:config",
             "dataset =  bob.ip.binseg.script.dataset:dataset",
             "train = bob.ip.binseg.script.train:train",
             "predict = bob.ip.binseg.script.predict:predict",
