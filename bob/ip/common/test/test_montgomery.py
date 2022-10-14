@@ -7,7 +7,7 @@
 import numpy
 import pytest
 
-from ..data.montgomery import dataset
+from ...binseg.data.montgomery import dataset
 from .utils import count_bw
 
 
@@ -73,7 +73,7 @@ def test_loading():
         # to visualize images, uncomment the folowing code it should display an
         # image with a faded background representing the original data, blended
         # with green labels.
-        # from ...common.data.utils import overlayed_image
+        # from ..data.utils import overlayed_image
         # display = overlayed_image(data["data"], data["label"])
         # display.show()
         # import ipdb; ipdb.set_trace()

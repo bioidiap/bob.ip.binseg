@@ -9,7 +9,7 @@ from tempfile import TemporaryDirectory
 
 import torch
 
-from ...common.utils.checkpointer import Checkpointer
+from ..utils.checkpointer import Checkpointer
 
 
 class TestCheckpointer(unittest.TestCase):
@@ -84,8 +84,8 @@ class TestCheckpointer(unittest.TestCase):
             assert trained_p.equal(loaded_p)
 
     def test_checkpointer_process(self):
-        from ..configs.models.lwnet import model
-        from ..engine.trainer import checkpointer_process
+        from ...binseg.configs.models.lwnet import model
+        from ...binseg.engine.trainer import checkpointer_process
 
         with TemporaryDirectory() as f:
             checkpointer = Checkpointer(model, path=f)

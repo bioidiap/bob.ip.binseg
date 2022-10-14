@@ -7,8 +7,8 @@ import os
 
 import pkg_resources
 
-from ...common.data.dataset import CSVDataset, JSONDataset
-from ...common.data.sample import Sample
+from ..data.dataset import CSVDataset, JSONDataset
+from ..data.sample import Sample
 
 
 def _data_file(f):

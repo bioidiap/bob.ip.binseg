@@ -44,7 +44,7 @@ def mock_dataset():
             with zipfile.ZipFile(f) as zf:
                 zf.extractall(TESTDB_TMPDIR.name)
 
-    from ..data import stare
+    from ...binseg.data import stare
 
     if TESTDB_TMPDIR is None:
         # if the user has the STARE directory ready, then we do a normal return

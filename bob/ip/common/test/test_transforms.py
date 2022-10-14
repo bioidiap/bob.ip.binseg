@@ -12,7 +12,7 @@ import pkg_resources
 import torch
 import torchvision.transforms.functional
 
-from ...common.data.transforms import (
+from ..data.transforms import (
     CenterCrop,
     ColorJitter,
     Compose,
