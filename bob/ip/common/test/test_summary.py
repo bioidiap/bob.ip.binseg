@@ -8,6 +8,7 @@ from ...binseg.models.driu_od import driu_od
 from ...binseg.models.hed import hed
 from ...binseg.models.resunet import resunet50
 from ...binseg.models.unet import unet
+from ...detect.models.faster_rcnn import faster_rcnn
 from ..utils.summary import summary
 
 
@@ -42,6 +43,12 @@ class Tester(unittest.TestCase):
 
     def test_summary_resunet(self):
         model = resunet50()
+        s, param = summary(model)
+        self.assertIsInstance(s, str)
+        self.assertIsInstance(param, int)
+
+    def test_summary_fasterrcnn(self):
+        model = faster_rcnn()
         s, param = summary(model)
         self.assertIsInstance(s, str)
         self.assertIsInstance(param, int)

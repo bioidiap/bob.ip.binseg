@@ -31,14 +31,26 @@ def _check_help(entry_point):
     assert result.output.startswith("Usage:")
 
 
-def test_main_help():
+def test_main_help_binseg():
     from ..script.common import binseg
 
     _check_help(binseg)
 
 
-def test_experiment_help():
+def test_main_help_detect():
+    from ..script.common import detect
+
+    _check_help(detect)
+
+
+def test_binseg_experiment_help():
     from ...binseg.script.experiment import experiment
+
+    _check_help(experiment)
+
+
+def test_detect_experiment_help():
+    from ...detect.script.experiment import experiment
 
     _check_help(experiment)
 
@@ -573,8 +585,20 @@ def test_train_help():
     _check_help(train)
 
 
+def test_detect_train_help():
+    from ...detect.script.train import train
+
+    _check_help(train)
+
+
 def test_predict_help():
     from ...binseg.script.predict import predict
+
+    _check_help(predict)
+
+
+def test_detect_predict_help():
+    from ...detect.script.predict import predict
 
     _check_help(predict)
 
@@ -585,8 +609,20 @@ def test_evaluate_help():
     _check_help(evaluate)
 
 
+def test_detect_evaluate_help():
+    from ...detect.script.evaluate import evaluate
+
+    _check_help(evaluate)
+
+
 def test_compare_help():
     from ...binseg.script.compare import compare
+
+    _check_help(compare)
+
+
+def test_detect_compare_help():
+    from ...detect.script.compare import compare
 
     _check_help(compare)
 
@@ -609,8 +645,20 @@ def test_config_help():
     _check_help(config)
 
 
+def test_detect_config_help():
+    from ...detect.script.config import config
+
+    _check_help(config)
+
+
 def test_config_list_help():
     from ...binseg.script.config import list
+
+    _check_help(list)
+
+
+def test_detect_config_list_help():
+    from ...detect.script.config import list
 
     _check_help(list)
 
@@ -625,6 +673,16 @@ def test_config_list():
     assert "module: bob.ip.binseg.configs.models" in result.output
 
 
+def test_detect_config_list():
+    from ...detect.script.config import list
+
+    runner = CliRunner()
+    result = runner.invoke(list)
+    _assert_exit_0(result)
+    assert "module: bob.ip.detect.configs.datasets" in result.output
+    assert "module: bob.ip.detect.configs.models" in result.output
+
+
 def test_config_list_v():
     from ...binseg.script.config import list
 
@@ -635,8 +693,24 @@ def test_config_list_v():
     assert "module: bob.ip.binseg.configs.models" in result.output
 
 
+def test_detect_config_list_v():
+    from ...detect.script.config import list
+
+    runner = CliRunner()
+    result = runner.invoke(list, ["--verbose"])
+    _assert_exit_0(result)
+    assert "module: bob.ip.detect.configs.datasets" in result.output
+    assert "module: bob.ip.detect.configs.models" in result.output
+
+
 def test_config_describe_help():
     from ...binseg.script.config import describe
+
+    _check_help(describe)
+
+
+def test_detect_config_describe_help():
+    from ...detect.script.config import describe
 
     _check_help(describe)
 
@@ -668,6 +742,12 @@ def test_config_copy():
         assert "[DRIVE-2004]" in data
 
 
+def test_detect_config_copy_help():
+    from ...detect.script.config import copy
+
+    _check_help(copy)
+
+
 def test_dataset_help():
     from ...binseg.script.dataset import dataset
 
@@ -697,6 +777,41 @@ def test_dataset_check_help():
 
 def test_dataset_check():
     from ...binseg.script.dataset import check
+
+    runner = CliRunner()
+    result = runner.invoke(check, ["--verbose", "--verbose", "--limit=2"])
+    _assert_exit_0(result)
+
+
+def test_detect_dataset_help():
+    from ...detect.script.dataset import dataset
+
+    _check_help(dataset)
+
+
+def test_detect_dataset_list_help():
+    from ...detect.script.dataset import list
+
+    _check_help(list)
+
+
+def test_detect_dataset_list():
+    from ...detect.script.dataset import list
+
+    runner = CliRunner()
+    result = runner.invoke(list)
+    _assert_exit_0(result)
+    assert result.output.startswith("Supported datasets:")
+
+
+def test_detect_dataset_check_help():
+    from ...detect.script.dataset import check
+
+    _check_help(check)
+
+
+def test_detect_dataset_check():
+    from ...detect.script.dataset import check
 
     runner = CliRunner()
     result = runner.invoke(check, ["--verbose", "--verbose", "--limit=2"])
