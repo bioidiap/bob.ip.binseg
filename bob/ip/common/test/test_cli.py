@@ -693,16 +693,6 @@ def test_config_list_v():
     assert "module: bob.ip.binseg.configs.models" in result.output
 
 
-def test_detect_config_list_v():
-    from ...detect.script.config import list
-
-    runner = CliRunner()
-    result = runner.invoke(list, ["--verbose"])
-    _assert_exit_0(result)
-    assert "module: bob.ip.detect.configs.datasets" in result.output
-    assert "module: bob.ip.detect.configs.models" in result.output
-
-
 def test_config_describe_help():
     from ...binseg.script.config import describe
 
