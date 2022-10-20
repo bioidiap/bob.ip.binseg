@@ -4,8 +4,8 @@
 
 def _maker(protocol):
 
+    from .....common.data.transforms import Resize, ShrinkIntoSquare
     from ....data.drhagis import dataset as raw
-    from ....data.transforms import Resize, ShrinkIntoSquare
     from .. import make_dataset as mk
 
     return mk(

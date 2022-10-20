@@ -28,8 +28,8 @@ import pkg_resources
 
 import bob.extension
 
-from ..dataset import JSONDataset
-from ..loader import load_pil_1, load_pil_rgb, make_delayed
+from ....common.data.dataset import JSONDataset
+from ....common.data.loader import load_pil_1, load_pil_rgb, make_delayed
 
 _protocols = {
     "optic-disc-all": pkg_resources.resource_filename(
