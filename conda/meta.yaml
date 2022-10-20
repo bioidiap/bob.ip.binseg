@@ -1,5 +1,6 @@
 {% set name = 'bob.ip.binseg' %}
 {% set project_dir = environ.get('RECIPE_DIR') + '/..' %}
+{% set test_dir_name = 'bob.ip.common' %}
 
 package:
   name: {{ name }}
@@ -64,7 +65,7 @@ test:
     - pip check
     # runs tests for package only, report only what is in the package
     # creates html and xml reports and place them in specific directories
-    - pytest --capture=no --verbose --cov {{ name }} --cov-config {{ project_dir }}/pyproject.toml --cov-report term-missing --cov-report html:{{ project_dir }}/sphinx/coverage --cov-report xml:{{ project_dir }}/coverage.xml -k 'not test_experiment_stare_with_multiprocessing' --pyargs {{ name }}
+    - pytest --capture=no --verbose --cov {{ test_dir_name }} --cov-config {{ project_dir }}/pyproject.toml --cov-report term-missing --cov-report html:{{ project_dir }}/sphinx/coverage --cov-report xml:{{ project_dir }}/coverage.xml -k 'not test_experiment_stare_with_multiprocessing' --pyargs {{ test_dir_name }}
     - sphinx-build -aEW {{ project_dir }}/doc {{ project_dir }}/sphinx
     - sphinx-build -aEb doctest {{ project_dir }}/doc sphinx
     - conda inspect linkages -p $PREFIX {{ name }}  # [not win]
