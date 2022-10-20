@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 @click.group(cls=AliasedGroup)
 def config():
-    """Commands for listing, describing and copying configuration resources"""
+    """Command for listing, describing and copying configuration resources."""
     pass
 
 
@@ -42,8 +42,7 @@ Examples:
 )
 @verbosity_option()
 def list(verbose):
-    """Lists configuration files installed"""
-
+    """List configuration files installed."""
     entry_points = pkg_resources.iter_entry_points("bob.ip.binseg.config")
     entry_points = dict([(k.name, k) for k in entry_points])
 
@@ -54,7 +53,7 @@ def list(verbose):
     keep_modules = []
     for k in sorted(modules):
         if k not in keep_modules and not any(
-            k.startswith(l) for l in keep_modules
+            k.startswith(i) for i in keep_modules
         ):
             keep_modules.append(k)
     modules = keep_modules
@@ -130,8 +129,7 @@ Examples:
 )
 @verbosity_option()
 def describe(name, verbose):
-    """Describes a specific configuration file"""
-
+    """Describe a specific configuration file."""
     entry_points = pkg_resources.iter_entry_points("bob.ip.binseg.config")
     entry_points = dict([(k.name, k) for k in entry_points])
 
@@ -182,8 +180,7 @@ Examples:
 )
 @verbosity_option()
 def copy(source, destination, verbose):
-    """Copies a specific configuration resource so it can be modified locally"""
-
+    """Copy a specific configuration resource so it can be modified locally."""
     entry_points = pkg_resources.iter_entry_points("bob.ip.binseg.config")
     entry_points = dict([(k.name, k) for k in entry_points])
 

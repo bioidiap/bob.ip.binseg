@@ -7,7 +7,7 @@
 """
 
 from bob.ip.binseg.configs.datasets.iostar.vessel_xtest import dataset as _xt
-from bob.ip.binseg.data.transforms import CenterCrop, Crop, Pad, Resize
+from bob.ip.common.data.transforms import CenterCrop, Crop, Pad, Resize
 
 dataset = {
     "train": _xt["train"],

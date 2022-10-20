@@ -4,8 +4,8 @@
 
 def _maker(protocol, raw=None):
 
+    from .....common.data.transforms import Pad
     from ....data.stare import dataset as _raw
-    from ....data.transforms import Pad
 
     raw = raw or _raw  # allows user to recreate dataset for testing purposes
     from .. import make_dataset as mk
@@ -15,8 +15,8 @@ def _maker(protocol, raw=None):
 
 def _maker_square(protocol, size, raw=None):
 
+    from .....common.data.transforms import Pad, Resize
     from ....data.stare import dataset as _raw
-    from ....data.transforms import Pad, Resize
 
     raw = raw or _raw  # allows user to recreate dataset for testing purposes
     from .. import make_dataset as mk
