@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# coding=utf-8
-
 import importlib
 import logging
 import os
@@ -31,15 +28,18 @@ def _get_supported_datasets():
 def _get_installed_datasets():
     """Returns a list of installed datasets as regular expressions
 
-    * group(0): the name of the key for the dataset directory
-    * group("name"): the short name for the dataset
+    Returns:
+
+        dict: A dictionary mapping dataset slugs (python-encoded names) to the
+            full path of the variables containing their base directory.
 
     """
-
-    import re
-
-    dataset_re = re.compile(r"^bob\.ip\.binseg\.(?P<name>[^\.]+)\.datadir$")
-    return [dataset_re.match(k) for k in rc.keys() if dataset_re.match(k)]
+    base_config = rc.get("bob.ip.binseg", {})
+    return {
+        k: f"bob.ip.binseg.{k}.datadir"
+        for k in base_config.keys()
+        if "datadir" in base_config[k]
+    }
 
 
 @click.group(cls=AliasedGroup)
@@ -72,7 +72,6 @@ def list(**kwargs):
 
     supported = _get_supported_datasets()
     installed = _get_installed_datasets()
-    installed = dict((k.group("name"), k.group(0)) for k in installed)
 
     click.echo("Supported datasets:")
     for k in supported:
@@ -118,7 +117,7 @@ def check(dataset, limit, **kwargs):
     to_check = _get_installed_datasets()
 
     if dataset:  # check only some
-        to_check = [k for k in to_check if k.group("name") in dataset]
+        to_check = {k: v for k, v in to_check.items() if k in dataset}
 
     if not to_check:
         click.echo("No configured datasets matching specifications")
@@ -129,10 +128,8 @@ def check(dataset, limit, **kwargs):
     else:
         errors = 0
         for k in to_check:
-            click.echo(f"Checking \"{k.group('name')}\" dataset...")
-            module = importlib.import_module(
-                f"...data.{k.group('name')}", __name__
-            )
+            click.echo(f'Checking "{k}" dataset...')
+            module = importlib.import_module(f"...data.{k}", __name__)
             errors += module.dataset.check(limit)
         if not errors:
             click.echo("No errors reported")
