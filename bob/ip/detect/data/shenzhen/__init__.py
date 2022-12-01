@@ -34,7 +34,7 @@ _protocols = [
 ]
 
 _root_path = bob.extension.rc.get(
-    "bob.ip.detection.shenzhen.datadir", os.path.realpath(os.curdir)
+    "bob.ip.detect.shenzhen.datadir", os.path.realpath(os.curdir)
 )
 
 
