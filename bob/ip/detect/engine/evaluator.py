@@ -19,6 +19,8 @@ import torchvision.transforms.functional as VF
 
 from tqdm import tqdm
 
+from ...common.utils.measure import get_intersection
+
 logger = logging.getLogger(__name__)
 
 
@@ -49,11 +51,22 @@ def sample_measures_for_threshold(pred, gt, threshold):
     """
     if pred[-1].item() >= threshold:
         iou = bops.box_iou(pred[:4].unsqueeze(0), gt["boxes"]).item()
-
+        inter = get_intersection(
+            pred[:4], gt["boxes"].squeeze(), multiplier=1.0
+        ).item()
+        inter_5 = get_intersection(
+            pred[:4], gt["boxes"].squeeze(), multiplier=1.05
+        ).item()
+        inter_10 = get_intersection(
+            pred[:4], gt["boxes"].squeeze(), multiplier=1.1
+        ).item()
     else:
         iou = 0
+        inter = 0
+        inter_5 = 0
+        inter_10 = 0
 
-    return iou
+    return iou, inter, inter_5, inter_10
 
 
 def _sample_measures(pred, gt, steps):
@@ -89,12 +102,19 @@ def _sample_measures(pred, gt, steps):
     step_size = 1.0 / steps
     data = []
     for index, threshold in enumerate(numpy.arange(0.0, 1.0, step_size)):
+
+        iou, inter, inter_5, inter_10 = sample_measures_for_threshold(
+            pred, gt, threshold
+        )
         data.append(
             pandas.DataFrame(
                 {
                     "index": [index],
                     "threshold": [threshold],
-                    "iou": [sample_measures_for_threshold(pred, gt, threshold)],
+                    "iou": [iou],
+                    "intersection": [inter],
+                    "intersection_extension_5%": [inter_5],
+                    "intersection_extension_10%": [inter_10],
                 }
             )
         )
@@ -167,9 +187,25 @@ def _summarize(data):
         final.append(temp)
 
     final = pandas.concat(final, ignore_index=True)
-    final = final.groupby(["threshold"])[["iou"]].mean()
+    final = final.groupby(["threshold"])[
+        [
+            "iou",
+            "intersection",
+            "intersection_extension_5%",
+            "intersection_extension_10%",
+        ]
+    ].mean()
     final.reset_index(inplace=True)
-    final.rename({"iou": "mean_iou"}, axis=1, inplace=True)
+    final.rename(
+        {
+            "iou": "mean_iou",
+            "intersection": "mean_intersection",
+            "intersection_extension_5%": "mean_intersection_extension_5%",
+            "intersection_extension_10%": "mean_intersection_extension_10%",
+        },
+        axis=1,
+        inplace=True,
+    )
 
     return final
 
