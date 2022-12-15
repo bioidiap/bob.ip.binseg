@@ -168,8 +168,8 @@ def run(model, data_loader, name, device, output_folder, overlayed_folder):
 
                 if len(score) == 0:
                     score = torch.tensor([0])
-                    out['labels'] = torch.tensor([1])
-                    out['boxes'] = torch.tensor([[0, 0, 0, 0]])
+                    out["labels"] = torch.tensor([1])
+                    out["boxes"] = torch.tensor([[0, 0, 0, 0]])
 
                 scores.append(score[id_max])
                 boxes.append(out["boxes"][id_max])
