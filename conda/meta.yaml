@@ -30,8 +30,8 @@ requirements:
     - numpy {{ numpy }}
     - scipy {{ scipy }}
     - h5py {{ h5py }}
-    - pytorch {{ pytorch }}
-    - torchvision  {{ torchvision }}
+    - pytorch {{ pytorch >= 1.13.0 }}
+    - torchvision  {{ torchvision >= 0.14.0 }}
     - matplotlib {{ matplotlib }}
     - pandas {{ pandas }}
     - pillow {{ pillow }}
