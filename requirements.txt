@@ -9,7 +9,7 @@ psutil
 setuptools
 tabulate
 torch>=1.13
-torchvision>=0.14
+torchvision>0.13
 tqdm
 scikit-image
 tensorboard
