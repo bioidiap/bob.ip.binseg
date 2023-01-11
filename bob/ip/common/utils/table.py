@@ -141,6 +141,9 @@ def performance_table_detection(data, fmt):
         "Dataset",
         "T",
         "E(IoU)",
+        "E(Intersection)",
+        "E(Intersection_Extension_5%)",
+        "E(Intersection_Extension_10%)",
     ]
 
     table = []
@@ -154,6 +157,9 @@ def performance_table_detection(data, fmt):
         index = int(round(bins * v["threshold"]))
         index = min(index, len(v["df"]) - 1)  # avoids out of range indexing
         entry.append(v["df"].mean_iou[index])
+        entry.append(v["df"]["mean_intersection"][index])
+        entry.append(v["df"]["mean_intersection_extension_5%"][index])
+        entry.append(v["df"]["mean_intersection_extension_10%"][index])
 
         table.append(entry)
 

@@ -3,6 +3,7 @@
 
 import numpy
 import scipy.special
+import torch
 
 
 def tricky_division(n, d):
@@ -388,3 +389,46 @@ def auc(x, y):
         right=0.0,
     )
     return y_interp.sum() * 0.001
+
+
+def get_intersection(pred_box, gt_box, multiplier):
+    """Calculate intersection of boxes.
+
+    Parameters
+    ----------
+    pred_box : torch.Tensor
+        A 1D numpy array containing predicted box coords.
+
+    gt_box : torch.Tensor
+        A 1D numpy array containing groud truth box coords.
+
+    multiplier: float
+        A number to increase the predicted bounding box by.
+    """
+    x1t, y1t, x2t, y2t = gt_box.numpy()
+    x1, y1, x2, y2 = pred_box.numpy()
+
+    m = numpy.sqrt(multiplier)
+    d_x = ((m * (x2 - x1)) - (x2 - x1)) / 2.0
+    d_y = ((m * (y2 - y1)) - (y2 - y1)) / 2.0
+    x1 = max(x1 - d_x, 0)
+    x2 = x2 + d_x
+    y1 = max(y1 - d_y, 0)
+    y2 = y2 + d_y
+
+    gt_tensor = gt_box.detach().clone().unsqueeze(0)
+    pred_tensor = torch.tensor([x1, y1, x2, y2]).unsqueeze(0)
+
+    lt = torch.max(pred_tensor[:, None, :2], gt_tensor[:, :2])  # [N,M,2]
+    rb = torch.min(pred_tensor[:, None, 2:], gt_tensor[:, 2:])  # [N,M,2]
+
+    wh = (rb - lt).clamp(min=0)  # [N,M,2]
+    inter = wh[:, :, 0] * wh[:, :, 1]  # [N,M]
+
+    gt_area = (x2t - x1t) * (y2t - y1t)
+
+    if gt_area > 0:
+        return inter.item() / gt_area
+
+    else:
+        return 0
