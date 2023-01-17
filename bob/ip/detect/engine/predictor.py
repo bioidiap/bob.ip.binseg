@@ -162,8 +162,14 @@ def run(model, data_loader, name, device, output_folder, overlayed_folder):
             for out in outputs:
                 id_max = 0
                 score = out["scores"]
+
                 if len(score) > 1:
                     id_max = score.argmax().item()
+
+                if len(score) == 0:
+                    score = torch.tensor([0])
+                    out["labels"] = torch.tensor([1])
+                    out["boxes"] = torch.tensor([[0, 0, 0, 0]])
 
                 scores.append(score[id_max])
                 boxes.append(out["boxes"][id_max])
