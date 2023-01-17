@@ -31,7 +31,7 @@ requirements:
     - scipy {{ scipy }}
     - h5py {{ h5py }}
     - pytorch {{ pytorch }}
-    - torchvision  {{ torchvision }}
+    - torchvision {{ torchvision }}
     - matplotlib {{ matplotlib }}
     - pandas {{ pandas }}
     - pillow {{ pillow }}
