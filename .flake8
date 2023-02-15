@@ -11,3 +11,8 @@
 [flake8]
 max-line-length = 80
 ignore = E501,W503,E302,E402,E203
+per-file-ignores =
+    tests/test_measures.py:E741
+    src/deepdraw/binseg/engine/ssltrainer.py:E741
+    src/deepdraw/binseg/utils/measure.py:E741
+    src/deepdraw/binseg/script/config.py:E741

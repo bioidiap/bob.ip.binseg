@@ -1,0 +1,32 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: deepdraw
+Upstream-Contact: Andre Anjos andre.anjos@idiap.ch
+Source: https://gitlab.idiap.ch/biosignal/software/deepdraw
+
+Files: src/deepdraw/binseg/data/*/masks*/*.png
+Copyright: Copyright © 2023 Idiap Research Institute <contact@idiap.ch>
+License: GPL-3.0-or-later
+
+Files: src/deepdraw/binseg/data/*/masks/**/*.png
+Copyright: Copyright © 2023 Idiap Research Institute <contact@idiap.ch>
+License: GPL-3.0-or-later
+
+Files: src/deepdraw/binseg/data/*/masks/**/*.jpg
+Copyright: Copyright © 2023 Idiap Research Institute <contact@idiap.ch>
+License: GPL-3.0-or-later
+
+Files: src/deepdraw/binseg/data/*/masks/**/*.jpg
+Copyright: Copyright © 2023 Idiap Research Institute <contact@idiap.ch>
+License: GPL-3.0-or-later
+
+Files: src/deepdraw/binseg/data/*/*.json
+Copyright: Copyright © 2023 Idiap Research Institute <contact@idiap.ch>
+License: GPL-3.0-or-later
+
+Files: src/deepdraw/detect/data/*/*.json
+Copyright: Copyright © 2023 Idiap Research Institute <contact@idiap.ch>
+License: GPL-3.0-or-later
+
+Files: tests/data/*
+Copyright: Copyright © 2023 Idiap Research Institute <contact@idiap.ch>
+License: GPL-3.0-or-later
