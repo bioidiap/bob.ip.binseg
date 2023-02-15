@@ -1,5 +1,10 @@
 # SPDX-FileCopyrightText: Copyright © 2023 Idiap Research Institute <contact@idiap.ch>
-# SPDX-FileContributor: Tim Laibacher <tim.laibacher@idiap.ch>
+#
+# SPDX-FileContributor: Tim Laibacher, tim.laibacher@idiap.ch
+# SPDX-FileContributor: Oscar Jiménez del Toro, oscar.jimenez@idiap.ch
+# SPDX-FileContributor: Maxime Délitroz, maxime.delitroz@idiap.ch
+# SPDX-FileContributor: Andre Anjos andre.anjos@idiap.ch
+# SPDX-FileContributor: Daniel Carron, daniel.carron@idiap.ch
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -15,7 +20,9 @@ description = "Binary Segmentation Benchmark Package"
 dynamic = ["readme"]
 license = {text = "GNU General Public License v3 (GPLv3)"}
 authors = [
-    {name = "Tim Laibacher", email = "tim.laibacher@idiap.ch"}
+    {name = "Tim Laibacher", email = "tim.laibacher@idiap.ch"},
+    {name = "Oscar Jimenez", email = "oscar.jimenez@idiap.ch"},
+    {name = "Maxime Délitroz", email = "maxime.delitroz@idiap.ch"},
 ]
 classifiers = [
     "Development Status :: 4 - Beta",
