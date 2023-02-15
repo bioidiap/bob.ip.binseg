@@ -3,5 +3,6 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-recursive-include doc *.rst
-recursive-include tests *.py
+
+def test_fix_me():
+    assert True

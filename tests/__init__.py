@@ -3,5 +3,4 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-recursive-include doc *.rst
-recursive-include tests *.py
+"""Unit test package for deepdraw."""

@@ -1,15 +1,74 @@
+# SPDX-FileCopyrightText: Copyright © 2023 Idiap Research Institute <contact@idiap.ch>
+# SPDX-FileContributor: Tim Laibacher <tim.laibacher@idiap.ch>
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 [build-system]
-    requires = ["setuptools", "wheel", "bob.extension"]
+    requires = ["setuptools>=61.0.0", "wheel"]
     build-backend = "setuptools.build_meta"
 
+[project]
+name = "deepdraw"
+version = "1.4.1b0"
+requires-python = ">=3.9"
+description = "Binary Segmentation Benchmark Package"
+dynamic = ["readme"]
+license = {text = "GNU General Public License v3 (GPLv3)"}
+authors = [
+    {name = "Tim Laibacher", email = "tim.laibacher@idiap.ch"}
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Natural Language :: English",
+    "Programming Language :: Python :: 3",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+dependencies = []
+
+[project.urls]
+documentation = "https://www.idiap.ch/software/biosignal/docs/biosignal/software/deepdraw/main/sphinx/"
+homepage = "https://pypi.org/project/deepdraw"
+repository = "https://gitlab.idiap.ch/biosignal/software/deepdraw"
+changelog = "https://gitlab.idiap.ch/biosignal/software/deepdraw/-/releases"
+
+[project.optional-dependencies]
+qa = ["pre-commit"]
+doc = [
+    "sphinx",
+    "furo",
+    ]
+test = [
+    "pytest",
+    "pytest-cov",
+    "coverage",
+    ]
+
+[tool.setuptools]
+zip-safe = true
+package-dir = {"" = "src"}
+
+[tool.setuptools.dynamic]
+readme = {file = "README.md"}
+
+[tool.distutils.bdist_wheel]
+universal = true
+
 [tool.isort]
-    profile = "black"
-    line_length = 80
-    order_by_type = true
-    lines_between_types = 1
+profile = "black"
+line_length = 80
+order_by_type = true
+lines_between_types = 1
 
 [tool.black]
-    line-length = 80
+line-length = 80
 
-[tool.coverage.run]
-    relative_files = true
+[tool.pytest.ini_options]
+addopts = [
+    "--cov=deepdraw",
+    "--cov-report=term-missing",
+    "--import-mode=append",
+]
+junit_logging = "all"
+junit_log_passing_tests = false
