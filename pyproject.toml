@@ -32,7 +32,22 @@ classifiers = [
     "Programming Language :: Python :: 3",
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
-dependencies = []
+dependencies = [
+    "matplotlib",
+    "numpy",
+    "scipy",
+    "pandas",
+    "h5py",
+    "pillow",
+    "psutil",
+    "setuptools",
+    "tabulate",
+    "torch>=1.13",
+    "torchvision>0.13",
+    "tqdm",
+    "scikit-image",
+    "tensorboard",
+]
 
 [project.urls]
 documentation = "https://www.idiap.ch/software/biosignal/docs/biosignal/software/deepdraw/main/sphinx/"
