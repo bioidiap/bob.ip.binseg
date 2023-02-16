@@ -18,10 +18,10 @@ import os
 import re
 import tempfile
 
-from bob.extension.scripts.click_helper import assert_click_runner_result
 from click.testing import CliRunner
 
 from . import mock_dataset
+from .utils import assert_click_runner_result
 
 stare_datadir, stare_dataset = mock_dataset()
 
@@ -38,25 +38,25 @@ def _check_help(entry_point):
 
 
 def test_main_help_binseg():
-    from ..script.common import binseg
+    from deepdraw.common.script.common import binseg
 
     _check_help(binseg)
 
 
 def test_main_help_detect():
-    from ..script.common import detect
+    from deepdraw.common.script.common import detect
 
     _check_help(detect)
 
 
 def test_binseg_experiment_help():
-    from ...binseg.script.experiment import experiment
+    from deepdraw.binseg.script.experiment import experiment
 
     _check_help(experiment)
 
 
 def test_detect_experiment_help():
-    from ...detect.script.experiment import experiment
+    from deepdraw.detect.script.experiment import experiment
 
     _check_help(experiment)
 
@@ -66,21 +66,21 @@ def _str_counter(substr, s):
 
 
 def _check_experiment_stare(caplog, overlay, multiprocess=False, extra_valid=0):
-    from ...binseg.script.experiment import experiment
+    from deepdraw.binseg.script.experiment import experiment
 
     # ensures we capture only ERROR messages and above by default
     caplog.set_level(logging.ERROR)
 
     runner = CliRunner()
     with runner.isolated_filesystem(), caplog.at_level(
-        logging.INFO, logger="bob.ip.binseg"
+        logging.INFO, logger="deepdraw.binseg"
     ), tempfile.NamedTemporaryFile(mode="wt") as config:
 
         # re-write STARE dataset configuration for test
-        config.write("from bob.ip.binseg.data.stare import _make_dataset\n")
+        config.write("from deepdraw.binseg.data.stare import _make_dataset\n")
         config.write(f"_raw = _make_dataset('{stare_datadir}')\n")
         config.write(
-            "from bob.ip.binseg.configs.datasets.stare import _maker\n"
+            "from deepdraw.binseg.configs.datasets.stare import _maker\n"
         )
         config.write("dataset = _maker('ah', _raw)\n")
         if extra_valid > 0:
@@ -114,6 +114,7 @@ def _check_experiment_stare(caplog, overlay, multiprocess=False, extra_valid=0):
             options += ["--parallel=1"]
 
         result = runner.invoke(experiment, options)
+
         _assert_exit_0(result)
 
         # check command-line
@@ -284,21 +285,21 @@ def _check_experiment_stare_detection(
     caplog, overlay, multiprocess=False, extra_valid=0
 ):
 
-    from ...detect.script.experiment import experiment
+    from deepdraw.detect.script.experiment import experiment
 
     # ensures we capture only ERROR messages and above by default
     caplog.set_level(logging.ERROR)
 
     runner = CliRunner()
     with runner.isolated_filesystem(), caplog.at_level(
-        logging.INFO, logger="bob.ip.detect"
+        logging.INFO, logger="deepdraw.detect"
     ), tempfile.NamedTemporaryFile(mode="wt") as config:
 
         # re-write STARE dataset configuration for test
-        config.write("from bob.ip.binseg.data.stare import _make_dataset\n")
+        config.write("from deepdraw.binseg.data.stare import _make_dataset\n")
         config.write(f"_raw = _make_dataset('{stare_datadir}')\n")
         config.write(
-            "from bob.ip.detect.configs.datasets.stare import _maker\n"
+            "from deepdraw.detect.configs.datasets.stare import _maker\n"
         )
         config.write("dataset = _maker('ah', _raw)\n")
         if extra_valid > 0:
@@ -462,17 +463,17 @@ def test_experiment_stare_with_extra_validation_detection(caplog):
 
 
 def _check_train(caplog, runner):
-    from ...binseg.script.train import train
+    from deepdraw.binseg.script.train import train
 
     with tempfile.NamedTemporaryFile(mode="wt") as config, caplog.at_level(
-        logging.INFO, logger="bob.ip.binseg"
+        logging.INFO, logger="deepdraw.binseg"
     ):
 
         # single training set configuration
-        config.write("from bob.ip.binseg.data.stare import _make_dataset\n")
+        config.write("from deepdraw.binseg.data.stare import _make_dataset\n")
         config.write(f"_raw = _make_dataset('{stare_datadir}')\n")
         config.write(
-            "from bob.ip.binseg.configs.datasets.stare import _maker\n"
+            "from deepdraw.binseg.configs.datasets.stare import _maker\n"
         )
         config.write("dataset = _maker('ah', _raw)\n")
         config.flush()
@@ -523,17 +524,17 @@ def _check_train(caplog, runner):
 
 
 def _check_predict(caplog, runner):
-    from ...binseg.script.predict import predict
+    from deepdraw.binseg.script.predict import predict
 
     with tempfile.NamedTemporaryFile(mode="wt") as config, caplog.at_level(
-        logging.INFO, logger="bob.ip.binseg"
+        logging.INFO, logger="deepdraw.binseg"
     ):
 
         # single training set configuration
-        config.write("from bob.ip.binseg.data.stare import _make_dataset\n")
+        config.write("from deepdraw.binseg.data.stare import _make_dataset\n")
         config.write(f"_raw = _make_dataset('{stare_datadir}')\n")
         config.write(
-            "from bob.ip.binseg.configs.datasets.stare import _maker\n"
+            "from deepdraw.binseg.configs.datasets.stare import _maker\n"
         )
         config.write("dataset = _maker('ah', _raw)['test']\n")
         config.flush()
@@ -579,17 +580,17 @@ def _check_predict(caplog, runner):
 
 
 def _check_evaluate(caplog, runner):
-    from ...binseg.script.evaluate import evaluate
+    from deepdraw.binseg.script.evaluate import evaluate
 
     with tempfile.NamedTemporaryFile(mode="wt") as config, caplog.at_level(
-        logging.INFO, logger="bob.ip.binseg"
+        logging.INFO, logger="deepdraw.binseg"
     ):
 
         # single training set configuration
-        config.write("from bob.ip.binseg.data.stare import _make_dataset\n")
+        config.write("from deepdraw.binseg.data.stare import _make_dataset\n")
         config.write(f"_raw = _make_dataset('{stare_datadir}')\n")
         config.write(
-            "from bob.ip.binseg.configs.datasets.stare import _maker\n"
+            "from deepdraw.binseg.configs.datasets.stare import _maker\n"
         )
         config.write("dataset = _maker('ah', _raw)['test']\n")
         config.write("second_annotator = _maker('vk', _raw)['test']\n")
@@ -647,9 +648,9 @@ def _check_evaluate(caplog, runner):
 
 
 def _check_compare(caplog, runner):
-    from ...binseg.script.compare import compare
+    from deepdraw.binseg.script.compare import compare
 
-    with caplog.at_level(logging.INFO, logger="bob.ip.binseg"):
+    with caplog.at_level(logging.INFO, logger="deepdraw.binseg"):
 
         output_folder = "evaluations"
         result = runner.invoke(
@@ -686,16 +687,16 @@ def _check_compare(caplog, runner):
 
 
 def _check_significance(caplog, runner):
-    from ...binseg.script.significance import significance
+    from deepdraw.binseg.script.significance import significance
 
     with tempfile.NamedTemporaryFile(mode="wt") as config, caplog.at_level(
-        logging.INFO, logger="bob.ip.binseg"
+        logging.INFO, logger="deepdraw.binseg"
     ):
 
-        config.write("from bob.ip.binseg.data.stare import _make_dataset\n")
+        config.write("from deepdraw.binseg.data.stare import _make_dataset\n")
         config.write(f"_raw = _make_dataset('{stare_datadir}')\n")
         config.write(
-            "from bob.ip.binseg.configs.datasets.stare import _maker\n"
+            "from deepdraw.binseg.configs.datasets.stare import _maker\n"
         )
         config.write("dataset = _maker('ah', _raw)\n")
         config.flush()
@@ -760,17 +761,17 @@ def test_discrete_experiment_stare(caplog):
 
 
 def _check_train_detection(caplog, runner):
-    from ...detect.script.train import train
+    from deepdraw.detect.script.train import train
 
     with tempfile.NamedTemporaryFile(mode="wt") as config, caplog.at_level(
-        logging.INFO, logger="bob.ip.detect"
+        logging.INFO, logger="deepdraw.detect"
     ):
 
         # single training set configuration
-        config.write("from bob.ip.binseg.data.stare import _make_dataset\n")
+        config.write("from deepdraw.binseg.data.stare import _make_dataset\n")
         config.write(f"_raw = _make_dataset('{stare_datadir}')\n")
         config.write(
-            "from bob.ip.detect.configs.datasets.stare import _maker\n"
+            "from deepdraw.detect.configs.datasets.stare import _maker\n"
         )
         config.write("dataset = _maker('ah', _raw)\n")
         config.flush()
@@ -821,17 +822,17 @@ def _check_train_detection(caplog, runner):
 
 
 def _check_predict_detection(caplog, runner):
-    from ...detect.script.predict import predict
+    from deepdraw.detect.script.predict import predict
 
     with tempfile.NamedTemporaryFile(mode="wt") as config, caplog.at_level(
-        logging.INFO, logger="bob.ip.detect"
+        logging.INFO, logger="deepdraw.detect"
     ):
 
         # single training set configuration
-        config.write("from bob.ip.binseg.data.stare import _make_dataset\n")
+        config.write("from deepdraw.binseg.data.stare import _make_dataset\n")
         config.write(f"_raw = _make_dataset('{stare_datadir}')\n")
         config.write(
-            "from bob.ip.detect.configs.datasets.stare import _maker\n"
+            "from deepdraw.detect.configs.datasets.stare import _maker\n"
         )
         config.write("dataset = _maker('ah', _raw)['test']\n")
         config.flush()
@@ -877,17 +878,17 @@ def _check_predict_detection(caplog, runner):
 
 
 def _check_evaluate_detection(caplog, runner):
-    from ...detect.script.evaluate import evaluate
+    from deepdraw.detect.script.evaluate import evaluate
 
     with tempfile.NamedTemporaryFile(mode="wt") as config, caplog.at_level(
-        logging.INFO, logger="bob.ip.detect"
+        logging.INFO, logger="deepdraw.detect"
     ):
 
         # single training set configuration
-        config.write("from bob.ip.binseg.data.stare import _make_dataset\n")
+        config.write("from deepdraw.binseg.data.stare import _make_dataset\n")
         config.write(f"_raw = _make_dataset('{stare_datadir}')\n")
         config.write(
-            "from bob.ip.detect.configs.datasets.stare import _maker\n"
+            "from deepdraw.detect.configs.datasets.stare import _maker\n"
         )
         config.write("dataset = _maker('ah', _raw)['test']\n")
         config.flush()
@@ -944,133 +945,133 @@ def test_discrete_experiment_stare_detection(caplog):
 
 
 def test_train_help():
-    from ...binseg.script.train import train
+    from deepdraw.binseg.script.train import train
 
     _check_help(train)
 
 
 def test_detect_train_help():
-    from ...detect.script.train import train
+    from deepdraw.detect.script.train import train
 
     _check_help(train)
 
 
 def test_predict_help():
-    from ...binseg.script.predict import predict
+    from deepdraw.binseg.script.predict import predict
 
     _check_help(predict)
 
 
 def test_detect_predict_help():
-    from ...detect.script.predict import predict
+    from deepdraw.detect.script.predict import predict
 
     _check_help(predict)
 
 
 def test_evaluate_help():
-    from ...binseg.script.evaluate import evaluate
+    from deepdraw.binseg.script.evaluate import evaluate
 
     _check_help(evaluate)
 
 
 def test_detect_evaluate_help():
-    from ...detect.script.evaluate import evaluate
+    from deepdraw.detect.script.evaluate import evaluate
 
     _check_help(evaluate)
 
 
 def test_compare_help():
-    from ...binseg.script.compare import compare
+    from deepdraw.binseg.script.compare import compare
 
     _check_help(compare)
 
 
 def test_detect_compare_help():
-    from ...detect.script.compare import compare
+    from deepdraw.detect.script.compare import compare
 
     _check_help(compare)
 
 
 def test_mkmask_help():
-    from ...binseg.script.mkmask import mkmask
+    from deepdraw.binseg.script.mkmask import mkmask
 
     _check_help(mkmask)
 
 
 def test_significance_help():
-    from ...binseg.script.significance import significance
+    from deepdraw.binseg.script.significance import significance
 
     _check_help(significance)
 
 
 def test_config_help():
-    from ...binseg.script.config import config
+    from deepdraw.binseg.script.config import config
 
     _check_help(config)
 
 
 def test_detect_config_help():
-    from ...detect.script.config import config
+    from deepdraw.detect.script.config import config
 
     _check_help(config)
 
 
 def test_config_list_help():
-    from ...binseg.script.config import list
+    from deepdraw.binseg.script.config import list
 
     _check_help(list)
 
 
 def test_detect_config_list_help():
-    from ...detect.script.config import list
+    from deepdraw.detect.script.config import list
 
     _check_help(list)
 
 
 def test_config_list():
-    from ...binseg.script.config import list
+    from deepdraw.binseg.script.config import list
 
     runner = CliRunner()
     result = runner.invoke(list)
     _assert_exit_0(result)
-    assert "module: bob.ip.binseg.configs.datasets" in result.output
-    assert "module: bob.ip.binseg.configs.models" in result.output
+    assert "module: deepdraw.binseg.configs.datasets" in result.output
+    assert "module: deepdraw.binseg.configs.models" in result.output
 
 
 def test_detect_config_list():
-    from ...detect.script.config import list
+    from deepdraw.detect.script.config import list
 
     runner = CliRunner()
     result = runner.invoke(list)
     _assert_exit_0(result)
-    assert "module: bob.ip.detect.configs.datasets" in result.output
-    assert "module: bob.ip.detect.configs.models" in result.output
+    assert "module: deepdraw.detect.configs.datasets" in result.output
+    assert "module: deepdraw.detect.configs.models" in result.output
 
 
 def test_config_list_v():
-    from ...binseg.script.config import list
+    from deepdraw.binseg.script.config import list
 
     runner = CliRunner()
     result = runner.invoke(list, ["--verbose"])
     _assert_exit_0(result)
-    assert "module: bob.ip.binseg.configs.datasets" in result.output
-    assert "module: bob.ip.binseg.configs.models" in result.output
+    assert "module: deepdraw.binseg.configs.datasets" in result.output
+    assert "module: deepdraw.binseg.configs.models" in result.output
 
 
 def test_config_describe_help():
-    from ...binseg.script.config import describe
+    from deepdraw.binseg.script.config import describe
 
     _check_help(describe)
 
 
 def test_detect_config_describe_help():
-    from ...detect.script.config import describe
+    from deepdraw.detect.script.config import describe
 
     _check_help(describe)
 
 
 def test_config_describe_drive():
-    from ...binseg.script.config import describe
+    from deepdraw.binseg.script.config import describe
 
     runner = CliRunner()
     result = runner.invoke(describe, ["drive"])
@@ -1079,13 +1080,13 @@ def test_config_describe_drive():
 
 
 def test_config_copy_help():
-    from ...binseg.script.config import copy
+    from deepdraw.binseg.script.config import copy
 
     _check_help(copy)
 
 
 def test_config_copy():
-    from ...binseg.script.config import copy
+    from deepdraw.binseg.script.config import copy
 
     runner = CliRunner()
     with runner.isolated_filesystem():
@@ -1097,25 +1098,25 @@ def test_config_copy():
 
 
 def test_detect_config_copy_help():
-    from ...detect.script.config import copy
+    from deepdraw.detect.script.config import copy
 
     _check_help(copy)
 
 
 def test_dataset_help():
-    from ...binseg.script.dataset import dataset
+    from deepdraw.binseg.script.dataset import dataset
 
     _check_help(dataset)
 
 
 def test_dataset_list_help():
-    from ...binseg.script.dataset import list
+    from deepdraw.binseg.script.dataset import list
 
     _check_help(list)
 
 
 def test_dataset_list():
-    from ...binseg.script.dataset import list
+    from deepdraw.binseg.script.dataset import list
 
     runner = CliRunner()
     result = runner.invoke(list)
@@ -1124,13 +1125,13 @@ def test_dataset_list():
 
 
 def test_dataset_check_help():
-    from ...binseg.script.dataset import check
+    from deepdraw.binseg.script.dataset import check
 
     _check_help(check)
 
 
 def test_dataset_check():
-    from ...binseg.script.dataset import check
+    from deepdraw.binseg.script.dataset import check
 
     runner = CliRunner()
     result = runner.invoke(check, ["--verbose", "--verbose", "--limit=2"])
@@ -1138,19 +1139,19 @@ def test_dataset_check():
 
 
 def test_detect_dataset_help():
-    from ...detect.script.dataset import dataset
+    from deepdraw.detect.script.dataset import dataset
 
     _check_help(dataset)
 
 
 def test_detect_dataset_list_help():
-    from ...detect.script.dataset import list
+    from deepdraw.detect.script.dataset import list
 
     _check_help(list)
 
 
 def test_detect_dataset_list():
-    from ...detect.script.dataset import list
+    from deepdraw.detect.script.dataset import list
 
     runner = CliRunner()
     result = runner.invoke(list)
@@ -1159,13 +1160,13 @@ def test_detect_dataset_list():
 
 
 def test_detect_dataset_check_help():
-    from ...detect.script.dataset import check
+    from deepdraw.detect.script.dataset import check
 
     _check_help(check)
 
 
 def test_detect_dataset_check():
-    from ...detect.script.dataset import check
+    from deepdraw.detect.script.dataset import check
 
     runner = CliRunner()
     result = runner.invoke(check, ["--verbose", "--verbose", "--limit=2"])

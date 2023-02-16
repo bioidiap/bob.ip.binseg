@@ -43,19 +43,19 @@ dataset of retinal fundus images.
 
 import os
 
-import bob.extension
 import pkg_resources
 
 from ....common.data.dataset import JSONDataset
 from ....common.data.loader import load_pil_1, load_pil_rgb, make_delayed
+from ....common.utils.rc import load_rc
 
 _protocols = {
     "optic-disc": pkg_resources.resource_filename(__name__, "default.json"),
     "optic-cup": pkg_resources.resource_filename(__name__, "default.json"),
 }
 
-_root_path = bob.extension.rc.get(
-    "bob.ip.binseg.refuge.datadir", os.path.realpath(os.curdir)
+_root_path = load_rc().get(
+    "deepdraw.binseg.refuge.datadir", os.path.realpath(os.curdir)
 )
 _pkg_path = pkg_resources.resource_filename(__name__, "masks")
 

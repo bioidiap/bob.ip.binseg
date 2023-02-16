@@ -15,8 +15,8 @@
 * Configuration resolution: 1168 x 1648
 """
 
-from bob.ip.binseg.configs.datasets.hrf.xtest import dataset as _xt
-from bob.ip.common.data.transforms import Crop, Pad, Resize
+from deepdraw.binseg.configs.datasets.hrf.xtest import dataset as _xt
+from deepdraw.common.data.transforms import Crop, Pad, Resize
 
 dataset = {
     "train": _xt["train"],

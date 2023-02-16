@@ -19,16 +19,19 @@ HRF (with annotated samples).
 
 For details on those datasets, consult:
 
-* See :py:mod:`bob.ip.binseg.data.drive`
-* See :py:mod:`bob.ip.binseg.data.stare`
-* See :py:mod:`bob.ip.binseg.data.chasedb1`
-* See :py:mod:`bob.ip.binseg.data.hrf`
+* See :py:mod:`deepdraw.binseg.data.drive`
+* See :py:mod:`deepdraw.binseg.data.stare`
+* See :py:mod:`deepdraw.binseg.data.chasedb1`
+* See :py:mod:`deepdraw.binseg.data.hrf`
 """
 
-from bob.ip.binseg.configs.datasets import augment_subset as _augment
-from bob.ip.binseg.configs.datasets.iostar.vessel import dataset as _baseline
-from bob.ip.binseg.configs.datasets.iostar.vessel_mtest import dataset as _mtest
 from torch.utils.data import ConcatDataset
+
+from deepdraw.binseg.configs.datasets import augment_subset as _augment
+from deepdraw.binseg.configs.datasets.iostar.vessel import dataset as _baseline
+from deepdraw.binseg.configs.datasets.iostar.vessel_mtest import (
+    dataset as _mtest,
+)
 
 dataset = dict(**_baseline)
 dataset["__train__"] = ConcatDataset(

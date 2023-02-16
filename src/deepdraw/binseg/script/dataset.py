@@ -10,48 +10,46 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-import importlib
-import logging
+from __future__ import annotations
+
+import importlib.resources
 import os
 
 import click
-import pkg_resources
 
-from bob.extension import rc
-from bob.extension.scripts.click_helper import AliasedGroup, verbosity_option
+from clapp.click import AliasedGroup, verbosity_option
+from clapp.logging import setup
 
-logger = logging.getLogger(__name__)
+logger = setup(__name__.split(".")[0], format="%(levelname)s: %(message)s")
 
 
 def _get_supported_datasets():
     """Returns a list of supported dataset names."""
-
-    basedir = pkg_resources.resource_filename(__name__, "")
-    basedir = os.path.join(os.path.dirname(basedir), "data")
+    basedir = importlib.resources.files(__name__.split(".", 1)[0]).joinpath(
+        "binseg/data/"
+    )
 
     retval = []
-    for k in os.listdir(basedir):
-        candidate = os.path.join(basedir, k)
-        if os.path.isdir(candidate) and "__init__.py" in os.listdir(candidate):
-            retval.append(k)
+    for candidate in basedir.iterdir():
+        if candidate.is_dir() and "__init__.py" in os.listdir(str(candidate)):
+            retval.append(candidate.name)
+
     return retval
 
 
-def _get_installed_datasets():
+def _get_installed_datasets() -> dict[str, str]:
     """Returns a list of installed datasets as regular expressions.
 
     * group(0): the name of the key for the dataset directory
     * group("name"): the short name for the dataset
     """
+    from deepdraw.common.utils.rc import load_rc
 
-    import re
-
-    dataset_re = re.compile(r"^bob\.ip\.binseg\.(?P<name>[^\.]+)\.datadir$")
-    return [dataset_re.match(k) for k in rc.keys() if dataset_re.match(k)]
+    return dict(load_rc().get("datadir", {}))
 
 
 @click.group(cls=AliasedGroup)
-def dataset():
+def dataset() -> None:
     """Commands for listing and verifying datasets."""
     pass
 
@@ -61,49 +59,63 @@ def dataset():
 
 \b
     1. To install a dataset, set up its data directory ("datadir").  For
-       example, to setup access to DRIVE files you downloaded locally at
-       the directory "/path/to/drive/files", do the following:
+       example, to setup access to Montgomery files you downloaded locally at
+       the directory "/path/to/montgomery/files", edit the RC file (typically
+       ``$HOME/.config/ptbench.toml``), and add a line like the following:
+
+       .. code:: toml
+
+          [datadir]
+          montgomery = "/path/to/montgomery/files"
+
+       .. note::
+
+          This setting **is** case-sensitive.
+
 \b
-       $ bob config set "bob.ip.binseg.drive.datadir" "/path/to/drive/files"
-
-       Notice this setting **is** case-sensitive.
-
     2. List all raw datasets supported (and configured):
 
-       $ bob binseg dataset list
+       .. code:: sh
+
+          $ ptbench dataset list
 
 """,
 )
-@verbosity_option()
-def list(**kwargs):
+@verbosity_option(logger=logger, expose_value=False)
+def list():
     """Lists all supported and configured datasets."""
-
     supported = _get_supported_datasets()
     installed = _get_installed_datasets()
-    installed = {k.group("name"): k.group(0) for k in installed}
 
     click.echo("Supported datasets:")
     for k in supported:
         if k in installed:
-            click.echo(f'- {k}: {installed[k]} = "{rc.get(installed[k])}"')
+            click.echo(f'- {k}: "{installed[k]}"')
         else:
-            click.echo(f"* {k}: bob.ip.binseg.{k}.datadir (not set)")
+            click.echo(f"* {k}: datadir.{k} (not set)")
 
 
 @dataset.command(
     epilog="""Examples:
 
-    1. Check if all files of the DRIVE dataset can be loaded:
+    1. Check if all files of the Montgomery dataset can be loaded:
 
-       $ bob binseg dataset check -vv drive
+       .. code:: sh
+
+          ptbench dataset check -vv montgomery
 
     2. Check if all files of multiple installed datasets can be loaded:
 
-       $ bob binseg dataset check -vv drive stare
+       .. code:: sh
+
+          ptbench dataset check -vv montgomery shenzhen
 
     3. Check if all files of all installed datasets can be loaded:
 
-       $ bob binseg dataset check
+       .. code:: sh
+
+          ptbench dataset check
+
 """,
 )
 @click.argument(
@@ -119,28 +131,33 @@ def list(**kwargs):
     type=click.IntRange(0),
     default=0,
 )
-@verbosity_option()
-def check(dataset, limit, **kwargs):
+@verbosity_option(logger=logger, expose_value=False)
+def check(dataset, limit):
     """Checks file access on one or more datasets."""
+    import importlib
 
     to_check = _get_installed_datasets()
 
     if dataset:  # check only some
-        to_check = [k for k in to_check if k.group("name") in dataset]
+        delete = [k for k in to_check.keys() if k not in dataset]
+        for k in delete:
+            del to_check[k]
 
     if not to_check:
-        click.echo("No configured datasets matching specifications")
+        click.secho(
+            "WARNING: No configured datasets matching specifications",
+            fg="yellow",
+            bold=True,
+        )
         click.echo(
-            "Try bob binseg dataset list --help to get help in "
+            "Try ptbench dataset list --help to get help in "
             "configuring a dataset"
         )
     else:
         errors = 0
-        for k in to_check:
-            click.echo(f"Checking \"{k.group('name')}\" dataset...")
-            module = importlib.import_module(
-                f"...data.{k.group('name')}", __name__
-            )
+        for k in to_check.keys():
+            click.echo(f'Checking "{k}" dataset...')
+            module = importlib.import_module(f"...data.{k}", __name__)
             errors += module.dataset.check(limit)
         if not errors:
             click.echo("No errors reported")

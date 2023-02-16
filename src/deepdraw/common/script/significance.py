@@ -16,8 +16,8 @@ import sys
 
 import numpy
 
-from ...binseg.engine.evaluator import run as run_evaluation
-from ...binseg.engine.significance import (
+from deepdraw.binseg.engine.evaluator import run as run_evaluation
+from deepdraw.binseg.engine.significance import (
     PERFORMANCE_FIGURES,
     index_of_outliers,
     sliding_window_performances,

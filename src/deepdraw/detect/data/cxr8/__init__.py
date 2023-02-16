@@ -35,7 +35,6 @@ The database contains a total  of 112120 images. Image size for each X-ray is
 
 import os
 
-import bob.extension
 import numpy as np
 import pkg_resources
 
@@ -43,14 +42,15 @@ from PIL import Image
 
 from ....common.data.dataset import JSONDataset
 from ....common.data.loader import load_pil_rgb, make_delayed
+from ....common.utils.rc import load_rc
 
 _protocols = [
     pkg_resources.resource_filename(__name__, "default.json"),
     pkg_resources.resource_filename(__name__, "idiap.json"),
 ]
 
-_root_path = bob.extension.rc.get(
-    "bob.ip.detect.cxr8.datadir", os.path.realpath(os.curdir)
+_root_path = load_rc().get(
+    "deepdraw.detect.cxr8.datadir", os.path.realpath(os.curdir)
 )
 
 

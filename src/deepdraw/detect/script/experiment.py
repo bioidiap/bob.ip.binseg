@@ -14,17 +14,14 @@ import logging
 
 import click
 
-from bob.extension.scripts.click_helper import (
-    ConfigCommand,
-    ResourceOption,
-    verbosity_option,
-)
+from clapp.click import ConfigCommand, ResourceOption, verbosity_option
+from clapp.logging import setup
 
-logger = logging.getLogger(__name__)
+logger = setup(__name__.split(".")[0], format="%(levelname)s: %(message)s")
 
 
 @click.command(
-    entry_point_group="bob.ip.detect.config",
+    entry_point_group="detect.config",
     cls=ConfigCommand,
     epilog="""Examples:
 
@@ -33,7 +30,7 @@ logger = logging.getLogger(__name__)
        for only two epochs, then runs inference and evaluation on stock datasets,
        report performance as a table and a figure:
 
-       $ bob detect experiment -vv faster_rcnn jsrt --epochs=2
+       $ detect experiment -vv faster_rcnn jsrt --epochs=2
 
 """,
 )
@@ -267,7 +264,7 @@ logger = logging.getLogger(__name__)
     type=float,
     cls=ResourceOption,
 )
-@verbosity_option(cls=ResourceOption)
+@verbosity_option(logger=logger, cls=ResourceOption)
 @click.pass_context
 def experiment(
     ctx,

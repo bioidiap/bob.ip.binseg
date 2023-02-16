@@ -20,7 +20,7 @@ import skimage.io
 import skimage.measure
 import skimage.morphology
 
-from bob.extension import rc
+from ..utils.rc import load_rc
 
 logger = logging.getLogger(__name__)
 
@@ -93,7 +93,7 @@ def base_mkmask(dataset, globs, threshold, output_folder, **kwargs):
 
         base_path : str
             The base directory where to look for files matching a certain name
-            patternrc.get("bob.ip.binseg." + dataset + ".datadir"):
+            patternrc.get("deepdraw.binseg." + dataset + ".datadir"):
 
         use_glob : list
             A list of globs to use for matching filenames inside ``base_path``
@@ -127,8 +127,10 @@ def base_mkmask(dataset, globs, threshold, output_folder, **kwargs):
                 )
             skimage.io.imsave(dest, immask)
 
-    if rc.get("bob.ip.binseg." + dataset + ".datadir"):
-        base_path = rc.get("bob.ip.binseg." + dataset + ".datadir")
+    rc = load_rc()
+
+    if rc.get("deepdraw.binseg." + dataset + ".datadir"):
+        base_path = rc.get("deepdraw.binseg." + dataset + ".datadir")
     else:
         base_path = dataset
 

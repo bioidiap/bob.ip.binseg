@@ -14,17 +14,13 @@ import logging
 
 import click
 
-from bob.extension.scripts.click_helper import (
-    ConfigCommand,
-    ResourceOption,
-    verbosity_option,
-)
+from clapp.click import ConfigCommand, ResourceOption, verbosity_option
 
 logger = logging.getLogger(__name__)
 
 
 @click.command(
-    entry_point_group="bob.ip.detect.config",
+    entry_point_group="detect.config",
     cls=ConfigCommand,
     epilog="""Examples:
 
@@ -32,15 +28,15 @@ logger = logging.getLogger(__name__)
     1. Trains a Faster-R-CNN model with JSRT (lung detection),
        on a GPU (``cuda:0``):
 
-       $ bob detect train -vv faster_rcnn faster_rcnn --batch-size=4 --device="cuda:0"
+       $ detect train -vv faster_rcnn faster_rcnn --batch-size=4 --device="cuda:0"
 
     2. Trains a Faster-R-CNN model with CXR8 on a GPU (``cuda:0``):
 
-       $ bob detect train -vv faster_rcnn cxr8 --batch-size=8 --device="cuda:0"
+       $ detect train -vv faster_rcnn cxr8 --batch-size=8 --device="cuda:0"
 
     3. Trains a Faster-R-CNN model on the CheXphoto dataset on the CPU:
 
-       $ bob detect train -vv faster_rcnn chexphoto --batch-size=8
+       $ detect train -vv faster_rcnn chexphoto --batch-size=8
 
 """,
 )
@@ -226,7 +222,7 @@ logger = logging.getLogger(__name__)
     default=5.0,
     cls=ResourceOption,
 )
-@verbosity_option(cls=ResourceOption)
+@verbosity_option(logger=logger, cls=ResourceOption)
 @click.pass_context
 def train(
     ctx,

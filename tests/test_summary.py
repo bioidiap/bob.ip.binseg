@@ -12,13 +12,13 @@
 
 import unittest
 
-from ...binseg.models.driu import driu
-from ...binseg.models.driu_od import driu_od
-from ...binseg.models.hed import hed
-from ...binseg.models.resunet import resunet50
-from ...binseg.models.unet import unet
-from ...detect.models.faster_rcnn import faster_rcnn
-from ..utils.summary import summary
+from deepdraw.binseg.models.driu import driu
+from deepdraw.binseg.models.driu_od import driu_od
+from deepdraw.binseg.models.hed import hed
+from deepdraw.binseg.models.resunet import resunet50
+from deepdraw.binseg.models.unet import unet
+from deepdraw.common.utils.summary import summary
+from deepdraw.detect.models.faster_rcnn import faster_rcnn
 
 
 class Tester(unittest.TestCase):

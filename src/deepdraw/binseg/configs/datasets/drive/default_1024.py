@@ -15,6 +15,6 @@
 This configuration resolution: 1024 x 1024 (Pad + resize)
 """
 
-from bob.ip.binseg.configs.datasets.drive import _maker_square
+from deepdraw.binseg.configs.datasets.drive import _maker_square
 
 dataset = _maker_square("default", 1024)

@@ -33,22 +33,23 @@ baseline.
 import csv
 import os
 
-import bob.extension
 import PIL.Image
 import PIL.ImageDraw
 import pkg_resources
 
 from ....common.data.dataset import JSONDataset
 from ....common.data.loader import load_pil_1, load_pil_rgb, make_delayed
+from ....common.utils.rc import load_rc
 
 _protocols = [
     pkg_resources.resource_filename(__name__, "expert1.json"),
     pkg_resources.resource_filename(__name__, "expert2.json"),
 ]
 
-_root_path = bob.extension.rc.get(
-    "bob.ip.binseg.drionsdb.datadir", os.path.realpath(os.curdir)
+_root_path = load_rc().get(
+    "deepdraw.binseg.drionsdb.datadir", os.path.realpath(os.curdir)
 )
+
 _pkg_path = pkg_resources.resource_filename(__name__, "masks")
 
 

@@ -14,13 +14,10 @@ import logging
 
 import click
 
-from bob.extension.scripts.click_helper import (
-    ConfigCommand,
-    ResourceOption,
-    verbosity_option,
-)
+from clapp.click import ConfigCommand, ResourceOption, verbosity_option
+from clapp.logging import setup
 
-logger = logging.getLogger(__name__)
+logger = setup(__name__.split(".")[0], format="%(levelname)s: %(message)s")
 
 
 @click.command(
@@ -28,20 +25,20 @@ logger = logging.getLogger(__name__)
     epilog="""Examples:
 
 \b
-    1. Generate masks for supported dataset by bob. Ex: refuge.
+    1. Generate masks for supported dataset by binseg. Ex: refuge.
 \b
-       $ bob binseg mkmask --dataset="refuge" --globs="Training400/*Glaucoma/*.jpg" --globs="Training400/*AMD/*.jpg" --threshold=5
+       $ binseg mkmask --dataset="refuge" --globs="Training400/*Glaucoma/*.jpg" --globs="Training400/*AMD/*.jpg" --threshold=5
 \b
     Or you can generate the same results with this command
 
 \b
-       $ bob binseg mkmask -d "refuge" -g "Training400/*Glaucoma/*.jpg" -g "Training400/*AMD/*.jpg" -t 5
+       $ binseg mkmask -d "refuge" -g "Training400/*Glaucoma/*.jpg" -g "Training400/*AMD/*.jpg" -t 5
 
 \b
-    2. Generate masks for non supported dataset by bob
+    2. Generate masks for non supported dataset by binseg
 
 \b
-        $ bob binseg mkmask -d "Path/to/dataset" -g "glob1" -g "glob2" -g glob3  -t 4
+        $ binseg mkmask -d "Path/to/dataset" -g "glob1" -g "glob2" -g glob3  -t 4
 
 
 """,
@@ -59,7 +56,7 @@ logger = logging.getLogger(__name__)
     "--dataset",
     "-d",
     help="""The base path to the dataset to which we want to generate the masks. \\
-    In case you have already configured the path for the datasets supported by bob, \\
+    In case you have already configured the path for the datasets supported by binseg, \\
     you can just use the name of the dataset as written in the config. """,
     required=True,
     cls=ResourceOption,
@@ -83,7 +80,7 @@ logger = logging.getLogger(__name__)
     required=True,
     cls=ResourceOption,
 )
-@verbosity_option(cls=ResourceOption)
+@verbosity_option(logger=logger, cls=ResourceOption)
 @click.pass_context
 def mkmask(ctx, dataset, globs, threshold, output_folder, verbose, **kwargs):
     """Commands for generating masks for images in a dataset."""

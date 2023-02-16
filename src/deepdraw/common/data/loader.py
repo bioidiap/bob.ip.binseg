@@ -126,7 +126,7 @@ def make_delayed(sample, loader, key=None):
     Returns
     -------
 
-    sample : bob.ip.common.data.sample.DelayedSample
+    sample : deepdraw.common.data.sample.DelayedSample
         In which ``key`` is as provided and ``data`` can be accessed to trigger
         sample loading.
     """

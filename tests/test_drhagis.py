@@ -15,8 +15,8 @@
 import numpy
 import pytest
 
-from ...binseg.data.drhagis import dataset
-from .utils import count_bw
+from deepdraw.binseg.data.drhagis import dataset
+from tests.utils import count_bw
 
 
 def test_protocol_consistency():
@@ -34,7 +34,7 @@ def test_protocol_consistency():
         assert s.key.startswith("Fundus_Images")
 
 
-@pytest.mark.skip_if_rc_var_not_set("bob.ip.binseg.drhagis.datadir")
+@pytest.mark.skip_if_rc_var_not_set("datadir.drhagis")
 def test_loading():
     def _check_sample(s, bw_threshold_label, bw_threshold_mask):
 
@@ -101,6 +101,6 @@ def test_loading():
     del proportions  # only to satisfy flake8
 
 
-@pytest.mark.skip_if_rc_var_not_set("bob.ip.binseg.drhagis.datadir")
+@pytest.mark.skip_if_rc_var_not_set("datadir.drhagis")
 def test_check():
     assert dataset.check() == 0

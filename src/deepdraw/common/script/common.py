@@ -10,7 +10,7 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-"""The main entry for bob ip binseg (click-based) scripts."""
+"""The main entry for deepdraw (click-based) scripts."""
 
 import logging
 import os
@@ -26,7 +26,7 @@ import numpy
 import pkg_resources
 import torch
 
-from bob.extension.scripts.click_helper import AliasedGroup
+from clapp.click import AliasedGroup
 from click_plugins import with_plugins
 from tqdm import tqdm
 
@@ -175,8 +175,8 @@ def save_sh_command(destfile):
     with open(destfile, "w") as f:
         f.write("#!/usr/bin/env sh\n")
         f.write(f"# date: {time.asctime()}\n")
-        version = pkg_resources.require("bob.ip.binseg")[0].version
-        f.write(f"# version: {version} (bob.ip.binseg)\n")
+        version = pkg_resources.require("deepdraw")[0].version
+        f.write(f"# version: {version} (deepdraw)\n")
         f.write(f"# platform: {sys.platform}\n")
         f.write("\n")
         args = []
@@ -240,13 +240,13 @@ def download_to_tempfile(url, progress=False):
     return f
 
 
-@with_plugins(pkg_resources.iter_entry_points("bob.ip.binseg.cli"))
+@with_plugins(pkg_resources.iter_entry_points("deepdraw.binseg.cli"))
 @click.group(cls=AliasedGroup)
 def binseg():
     """Binary 2D Image Segmentation Benchmark commands."""
 
 
-@with_plugins(pkg_resources.iter_entry_points("bob.ip.detect.cli"))
+@with_plugins(pkg_resources.iter_entry_points("deepdraw.detect.cli"))
 @click.group(cls=AliasedGroup)
 def detect():
     """Object Detection Benchmark commands."""

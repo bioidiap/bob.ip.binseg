@@ -15,8 +15,8 @@
 import numpy
 import pytest
 
-from ...binseg.data.montgomery import dataset
-from .utils import count_bw
+from deepdraw.binseg.data.montgomery import dataset
+from tests.utils import count_bw
 
 
 def test_protocol_consistency():
@@ -39,7 +39,7 @@ def test_protocol_consistency():
         assert s.key.startswith("CXR_png")
 
 
-@pytest.mark.skip_if_rc_var_not_set("bob.ip.binseg.montgomery.datadir")
+@pytest.mark.skip_if_rc_var_not_set("datadir.montgomery")
 def test_loading():
     image_size_1 = (4892, 4020)
     image_size_2 = (4020, 4892)
@@ -94,6 +94,6 @@ def test_loading():
     del proportions  # only to satisfy flake8
 
 
-@pytest.mark.skip_if_rc_var_not_set("bob.ip.binseg.montgomery.datadir")
+@pytest.mark.skip_if_rc_var_not_set("datadir.montgomery")
 def test_check():
     assert dataset.check() == 0

@@ -19,10 +19,11 @@ deep Convolutional Neural Networks (CNNs).
 Reference: [MANINIS-2016]_
 """
 
-from bob.ip.binseg.engine.adabound import AdaBound
-from bob.ip.binseg.models.driu_od import driu_od
-from bob.ip.binseg.models.losses import SoftJaccardBCELogitsLoss
 from torch.optim.lr_scheduler import MultiStepLR
+
+from deepdraw.binseg.engine.adabound import AdaBound
+from deepdraw.binseg.models.driu_od import driu_od
+from deepdraw.binseg.models.losses import SoftJaccardBCELogitsLoss
 
 # config
 lr = 0.001

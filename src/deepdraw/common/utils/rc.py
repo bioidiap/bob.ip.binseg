@@ -10,11 +10,9 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-"""RIM-ONE r3 for Optic Disc Segmentation (expert #1 annotations)
+from clapp.rc import UserDefaults
 
-Configuration resolution: 512 x 512 (after padding and resizing)
-"""
 
-from deepdraw.binseg.configs.datasets.rimoner3 import _maker_square
-
-dataset = _maker_square("optic-disc-exp1", 512)
+def load_rc() -> UserDefaults:
+    """Returns global configuration variables."""
+    return UserDefaults("ptbench.toml")

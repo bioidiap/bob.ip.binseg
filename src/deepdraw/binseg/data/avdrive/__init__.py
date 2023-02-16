@@ -26,20 +26,19 @@ segmentation of blood vessels in retinal images.
 
 import os
 
-import bob.extension
 import pkg_resources
 
 from ....common.data.dataset import JSONDataset
 from ....common.data.loader import load_pil_1, load_pil_rgb, make_delayed
+from ....common.utils.rc import load_rc
 
 _protocols = [pkg_resources.resource_filename(__name__, "default.json")]
 
-_root_path_drive = bob.extension.rc.get(
-    "bob.ip.binseg.drive.datadir", os.path.realpath(os.curdir)
+_root_path_drive = load_rc().get(
+    "deepdraw.binseg.drive.datadir", os.path.realpath(os.curdir)
 )
-
-_root_path_av_drive = bob.extension.rc.get(
-    "bob.ip.binseg.avdrive.datadir", os.path.realpath(os.curdir)
+_root_path_av_drive = load_rc().get(
+    "deepdraw.binseg.avdrive.datadir", os.path.realpath(os.curdir)
 )
 
 

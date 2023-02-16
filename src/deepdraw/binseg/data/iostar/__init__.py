@@ -33,20 +33,20 @@ dataset includes annotations for the optic disc and the artery/vein ratio.
 
 import os
 
-import bob.extension
 import pkg_resources
 
 from ....common.data.dataset import JSONDataset
 from ....common.data.loader import load_pil_1, load_pil_rgb, make_delayed
 from ....common.data.utils import invert_mode1_image, subtract_mode1_images
+from ....common.utils.rc import load_rc
 
 _protocols = [
     pkg_resources.resource_filename(__name__, "vessel.json"),
     pkg_resources.resource_filename(__name__, "optic-disc.json"),
 ]
 
-_root_path = bob.extension.rc.get(
-    "bob.ip.binseg.iostar.datadir", os.path.realpath(os.curdir)
+_root_path = load_rc().get(
+    "deepdraw.binseg.iostar.datadir", os.path.realpath(os.curdir)
 )
 
 

@@ -14,17 +14,14 @@ import logging
 
 import click
 
-from bob.extension.scripts.click_helper import (
-    ConfigCommand,
-    ResourceOption,
-    verbosity_option,
-)
+from clapp.click import ConfigCommand, ResourceOption, verbosity_option
+from clapp.logging import setup
 
-logger = logging.getLogger(__name__)
+logger = setup(__name__.split(".")[0], format="%(levelname)s: %(message)s")
 
 
 @click.command(
-    entry_point_group="bob.ip.binseg.config",
+    entry_point_group="binseg.config",
     cls=ConfigCommand,
     epilog="""Examples:
 
@@ -32,15 +29,15 @@ logger = logging.getLogger(__name__)
     1. Trains a U-Net model (VGG-16 backbone) with DRIVE (vessel segmentation),
        on a GPU (``cuda:0``):
 
-       $ bob binseg train -vv unet drive --batch-size=4 --device="cuda:0"
+       $ binseg train -vv unet drive --batch-size=4 --device="cuda:0"
 
     2. Trains a HED model with HRF on a GPU (``cuda:0``):
 
-       $ bob binseg train -vv hed hrf --batch-size=8 --device="cuda:0"
+       $ binseg train -vv hed hrf --batch-size=8 --device="cuda:0"
 
     3. Trains a M2U-Net model on the COVD-DRIVE dataset on the CPU:
 
-       $ bob binseg train -vv m2unet covd-drive --batch-size=8
+       $ binseg train -vv m2unet covd-drive --batch-size=8
 
 """,
 )
@@ -226,7 +223,7 @@ logger = logging.getLogger(__name__)
     default=5.0,
     cls=ResourceOption,
 )
-@verbosity_option(cls=ResourceOption)
+@verbosity_option(logger=logger, cls=ResourceOption)
 @click.pass_context
 def train(
     ctx,

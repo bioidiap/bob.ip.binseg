@@ -14,24 +14,21 @@ import logging
 
 import click
 
-from bob.extension.scripts.click_helper import (
-    ConfigCommand,
-    ResourceOption,
-    verbosity_option,
-)
+from clapp.click import ConfigCommand, ResourceOption, verbosity_option
+from clapp.logging import setup
 
-logger = logging.getLogger(__name__)
+logger = setup(__name__.split(".")[0], format="%(levelname)s: %(message)s")
 
 
 @click.command(
-    entry_point_group="bob.ip.binseg.config",
+    entry_point_group="binseg.config",
     cls=ConfigCommand,
     epilog="""Examples:
 
 \b
     1. Runs prediction on an existing dataset configuration:
 \b
-       $ bob binseg predict -vv m2unet drive --weight=path/to/model_final_epoch.pth --output-folder=path/to/predictions
+       $ binseg predict -vv m2unet drive --weight=path/to/model_final_epoch.pth --output-folder=path/to/predictions
 \b
     2. To run prediction on a folder with your own images, you must first
        specify resizing, cropping, etc, so that the image can be correctly
@@ -40,9 +37,9 @@ logger = logging.getLogger(__name__)
        dataset configuration used for **training** the provided model.  Once
        you figured this out, do the following:
 \b
-       $ bob binseg config copy csv-dataset-example mydataset.py
+       $ binseg config copy csv-dataset-example mydataset.py
        # modify "mydataset.py" to include the base path and required transforms
-       $ bob binseg predict -vv m2unet mydataset.py --weight=path/to/model_final_epoch.pth --output-folder=path/to/predictions
+       $ binseg predict -vv m2unet mydataset.py --weight=path/to/model_final_epoch.pth --output-folder=path/to/predictions
 """,
 )
 @click.option(
@@ -123,7 +120,7 @@ logger = logging.getLogger(__name__)
     default=-1,
     cls=ResourceOption,
 )
-@verbosity_option(cls=ResourceOption)
+@verbosity_option(logger=logger, cls=ResourceOption)
 @click.pass_context
 def predict(
     ctx,

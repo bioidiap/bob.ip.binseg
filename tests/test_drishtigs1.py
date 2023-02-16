@@ -17,8 +17,8 @@ import os
 import numpy
 import pytest
 
-from ...binseg.data.drishtigs1 import dataset
-from .utils import count_bw
+from deepdraw.binseg.data.drishtigs1 import dataset
+from tests.utils import count_bw
 
 
 def test_protocol_consistency():
@@ -51,7 +51,7 @@ def test_protocol_consistency():
             )
 
 
-@pytest.mark.skip_if_rc_var_not_set("bob.ip.binseg.drishtigs1.datadir")
+@pytest.mark.skip_if_rc_var_not_set("datadir.drishtigs1")
 @pytest.mark.slow
 def test_loading():
     def _check_sample(s, bw_threshold_label):
@@ -128,7 +128,7 @@ def test_loading():
     del proportions  # only to satisfy flake8
 
 
-@pytest.mark.skip_if_rc_var_not_set("bob.ip.binseg.drishtigs1.datadir")
+@pytest.mark.skip_if_rc_var_not_set("datadir.drishtigs1")
 @pytest.mark.slow
 def test_check():
     assert dataset.check() == 0

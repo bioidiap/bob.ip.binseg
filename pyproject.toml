@@ -33,6 +33,9 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 dependencies = [
+    "clapp",
+    "click",
+    "click_plugins",
     "matplotlib",
     "numpy",
     "scipy",
@@ -68,116 +71,140 @@ test = [
     ]
 
 [project.scripts]
-binseg = "src.deepdraw.common.script.common:binseg"
-detect = "src.deepdraw.common.script.common:detect"
+binseg = "deepdraw.binseg.script.cli:cli"
+detect = "deepdraw.detect.script.cli:cli"
 
-[project.entry-points."deepdraw.config"]
+[project.entry-points."binseg.config"]
 # models
-driu = "src.deepdraw.binseg.configs.models.driu"
-driu-bn = "src.deepdraw.binseg.configs.models.driu_bn"
-driu-od = "src.deepdraw.binseg.configs.models.driu_od"
-hed = "src.deepdraw.binseg.configs.models.hed"
-m2unet = "src.deepdraw.binseg.configs.models.m2unet"
-unet = "src.deepdraw.binseg.configs.models.unet"
-resunet = "src.deepdraw.binseg.configs.models.resunet"
-lwnet = "src.deepdraw.binseg.configs.models.lwnet"
+driu = "deepdraw.binseg.configs.models.driu"
+driu-bn = "deepdraw.binseg.configs.models.driu_bn"
+driu-od = "deepdraw.binseg.configs.models.driu_od"
+hed = "deepdraw.binseg.configs.models.hed"
+m2unet = "deepdraw.binseg.configs.models.m2unet"
+unet = "deepdraw.binseg.configs.models.unet"
+resunet = "deepdraw.binseg.configs.models.resunet"
+lwnet = "deepdraw.binseg.configs.models.lwnet"
 # example datasets
-csv-dataset-example = "src.deepdraw.binseg.configs.datasets.csv"
+csv-dataset-example = "deepdraw.binseg.configs.datasets.csv"
 # drive dataset - retinography
-drive = "src.deepdraw.binseg.configs.datasets.drive.default"
-drive-768 = "src.deepdraw.binseg.configs.datasets.drive.default_768"
-drive-1024 = "src.deepdraw.binseg.configs.datasets.drive.default_1024"
-drive-2nd = "src.deepdraw.binseg.configs.datasets.drive.second_annotator"
-drive-xtest = "src.deepdraw.binseg.configs.datasets.drive.xtest"
-drive-mtest = "src.deepdraw.binseg.configs.datasets.drive.mtest"
-drive-covd = "src.deepdraw.binseg.configs.datasets.drive.covd"
+drive = "deepdraw.binseg.configs.datasets.drive.default"
+drive-768 = "deepdraw.binseg.configs.datasets.drive.default_768"
+drive-1024 = "deepdraw.binseg.configs.datasets.drive.default_1024"
+drive-2nd = "deepdraw.binseg.configs.datasets.drive.second_annotator"
+drive-xtest = "deepdraw.binseg.configs.datasets.drive.xtest"
+drive-mtest = "deepdraw.binseg.configs.datasets.drive.mtest"
+drive-covd = "deepdraw.binseg.configs.datasets.drive.covd"
 # drhagis dataset - retinography
-drhagis = "src.deepdraw.binseg.configs.datasets.drhagis.default"
+drhagis = "deepdraw.binseg.configs.datasets.drhagis.default"
 # stare dataset - retinography
-stare = "src.deepdraw.binseg.configs.datasets.stare.ah"
-stare-768 = "src.deepdraw.binseg.configs.datasets.stare.ah_768"
-stare-1024 = "src.deepdraw.binseg.configs.datasets.stare.ah_1024"
-stare-2nd = "src.deepdraw.binseg.configs.datasets.stare.vk"
-stare-xtest = "src.deepdraw.binseg.configs.datasets.stare.xtest"
-stare-mtest = "src.deepdraw.binseg.configs.datasets.stare.mtest"
-stare-covd = "src.deepdraw.binseg.configs.datasets.stare.covd"
+stare = "deepdraw.binseg.configs.datasets.stare.ah"
+stare-768 = "deepdraw.binseg.configs.datasets.stare.ah_768"
+stare-1024 = "deepdraw.binseg.configs.datasets.stare.ah_1024"
+stare-2nd = "deepdraw.binseg.configs.datasets.stare.vk"
+stare-xtest = "deepdraw.binseg.configs.datasets.stare.xtest"
+stare-mtest = "deepdraw.binseg.configs.datasets.stare.mtest"
+stare-covd = "deepdraw.binseg.configs.datasets.stare.covd"
 # iostar - retinography
-iostar-vessel = "src.deepdraw.binseg.configs.datasets.iostar.vessel"
-iostar-vessel-768 = "src.deepdraw.binseg.configs.datasets.iostar.vessel_768"
-iostar-vessel-xtest = "src.deepdraw.binseg.configs.datasets.iostar.vessel_xtest"
-iostar-vessel-mtest = "src.deepdraw.binseg.configs.datasets.iostar.vessel_mtest"
-iostar-disc = "src.deepdraw.binseg.configs.datasets.iostar.optic_disc"
-iostar-disc-512 = "src.deepdraw.binseg.configs.datasets.iostar.optic_disc_512"
-iostar-disc-768 = "src.deepdraw.binseg.configs.datasets.iostar.optic_disc_768"
-iostar-vessel-covd = "src.deepdraw.binseg.configs.datasets.iostar.covd"
+iostar-vessel = "deepdraw.binseg.configs.datasets.iostar.vessel"
+iostar-vessel-768 = "deepdraw.binseg.configs.datasets.iostar.vessel_768"
+iostar-vessel-xtest = "deepdraw.binseg.configs.datasets.iostar.vessel_xtest"
+iostar-vessel-mtest = "deepdraw.binseg.configs.datasets.iostar.vessel_mtest"
+iostar-disc = "deepdraw.binseg.configs.datasets.iostar.optic_disc"
+iostar-disc-512 = "deepdraw.binseg.configs.datasets.iostar.optic_disc_512"
+iostar-disc-768 = "deepdraw.binseg.configs.datasets.iostar.optic_disc_768"
+iostar-vessel-covd = "deepdraw.binseg.configs.datasets.iostar.covd"
 # hrf - retinography
-hrf = "src.deepdraw.binseg.configs.datasets.hrf.default"
-hrf-768 = "src.deepdraw.binseg.configs.datasets.hrf.default_768"
-hrf-1024 = "src.deepdraw.binseg.configs.datasets.hrf.default_1024"
-hrf-xtest = "src.deepdraw.binseg.configs.datasets.hrf.xtest"
-hrf-mtest = "src.deepdraw.binseg.configs.datasets.hrf.mtest"
-hrf-highres = "src.deepdraw.binseg.configs.datasets.hrf.default_fullres"
-hrf-covd = "src.deepdraw.binseg.configs.datasets.hrf.covd"
+hrf = "deepdraw.binseg.configs.datasets.hrf.default"
+hrf-768 = "deepdraw.binseg.configs.datasets.hrf.default_768"
+hrf-1024 = "deepdraw.binseg.configs.datasets.hrf.default_1024"
+hrf-xtest = "deepdraw.binseg.configs.datasets.hrf.xtest"
+hrf-mtest = "deepdraw.binseg.configs.datasets.hrf.mtest"
+hrf-highres = "deepdraw.binseg.configs.datasets.hrf.default_fullres"
+hrf-covd = "deepdraw.binseg.configs.datasets.hrf.covd"
 # chase-db1 - retinography
-chasedb1 = "src.deepdraw.binseg.configs.datasets.chasedb1.first_annotator"
-chasedb1-768 = "src.deepdraw.binseg.configs.datasets.chasedb1.first_annotator_768"
-chasedb1-1024 = "src.deepdraw.binseg.configs.datasets.chasedb1.first_annotator_1024"
-chasedb1-2nd = "src.deepdraw.binseg.configs.datasets.chasedb1.second_annotator"
-chasedb1-xtest = "src.deepdraw.binseg.configs.datasets.chasedb1.xtest"
-chasedb1-mtest = "src.deepdraw.binseg.configs.datasets.chasedb1.mtest"
-chasedb1-covd = "src.deepdraw.binseg.configs.datasets.chasedb1.covd"
+chasedb1 = "deepdraw.binseg.configs.datasets.chasedb1.first_annotator"
+chasedb1-768 = "deepdraw.binseg.configs.datasets.chasedb1.first_annotator_768"
+chasedb1-1024 = "deepdraw.binseg.configs.datasets.chasedb1.first_annotator_1024"
+chasedb1-2nd = "deepdraw.binseg.configs.datasets.chasedb1.second_annotator"
+chasedb1-xtest = "deepdraw.binseg.configs.datasets.chasedb1.xtest"
+chasedb1-mtest = "deepdraw.binseg.configs.datasets.chasedb1.mtest"
+chasedb1-covd = "deepdraw.binseg.configs.datasets.chasedb1.covd"
 # drionsdb - retinography
-drionsdb = "src.deepdraw.binseg.configs.datasets.drionsdb.expert1"
-drionsdb-512 = "src.deepdraw.binseg.configs.datasets.drionsdb.expert1_512"
-drionsdb-768 = "src.deepdraw.binseg.configs.datasets.drionsdb.expert1_768"
-drionsdb-2nd = "src.deepdraw.binseg.configs.datasets.drionsdb.expert2"
-drionsdb-2nd-512 = "src.deepdraw.binseg.configs.datasets.drionsdb.expert2_512"
+drionsdb = "deepdraw.binseg.configs.datasets.drionsdb.expert1"
+drionsdb-512 = "deepdraw.binseg.configs.datasets.drionsdb.expert1_512"
+drionsdb-768 = "deepdraw.binseg.configs.datasets.drionsdb.expert1_768"
+drionsdb-2nd = "deepdraw.binseg.configs.datasets.drionsdb.expert2"
+drionsdb-2nd-512 = "deepdraw.binseg.configs.datasets.drionsdb.expert2_512"
 # drishti-gs1 - retinography
-drishtigs1-disc = "src.deepdraw.binseg.configs.datasets.drishtigs1.disc_all"
-drishtigs1-disc-512 = "src.deepdraw.binseg.configs.datasets.drishtigs1.disc_all_512"
-drishtigs1-disc-768 = "src.deepdraw.binseg.configs.datasets.drishtigs1.disc_all_768"
-drishtigs1-cup = "src.deepdraw.binseg.configs.datasets.drishtigs1.cup_all"
-drishtigs1-cup-512 = "src.deepdraw.binseg.configs.datasets.drishtigs1.cup_all_512"
-drishtigs1-cup-768 = "src.deepdraw.binseg.configs.datasets.drishtigs1.cup_all_768"
-drishtigs1-disc-any = "src.deepdraw.binseg.configs.datasets.drishtigs1.disc_any"
-drishtigs1-cup-any = "src.deepdraw.binseg.configs.datasets.drishtigs1.cup_any"
+drishtigs1-disc = "deepdraw.binseg.configs.datasets.drishtigs1.disc_all"
+drishtigs1-disc-512 = "deepdraw.binseg.configs.datasets.drishtigs1.disc_all_512"
+drishtigs1-disc-768 = "deepdraw.binseg.configs.datasets.drishtigs1.disc_all_768"
+drishtigs1-cup = "deepdraw.binseg.configs.datasets.drishtigs1.cup_all"
+drishtigs1-cup-512 = "deepdraw.binseg.configs.datasets.drishtigs1.cup_all_512"
+drishtigs1-cup-768 = "deepdraw.binseg.configs.datasets.drishtigs1.cup_all_768"
+drishtigs1-disc-any = "deepdraw.binseg.configs.datasets.drishtigs1.disc_any"
+drishtigs1-cup-any = "deepdraw.binseg.configs.datasets.drishtigs1.cup_any"
 # refuge - retinography
-refuge-cup = "src.deepdraw.binseg.configs.datasets.refuge.cup"
-refuge-cup-512 = "src.deepdraw.binseg.configs.datasets.refuge.cup_512"
-refuge-cup-768 = "src.deepdraw.binseg.configs.datasets.refuge.cup_768"
-refuge-disc = "src.deepdraw.binseg.configs.datasets.refuge.disc"
-refuge-disc-512 = "src.deepdraw.binseg.configs.datasets.refuge.disc_512"
-refuge-disc-768 = "src.deepdraw.binseg.configs.datasets.refuge.disc_768"
+refuge-cup = "deepdraw.binseg.configs.datasets.refuge.cup"
+refuge-cup-512 = "deepdraw.binseg.configs.datasets.refuge.cup_512"
+refuge-cup-768 = "deepdraw.binseg.configs.datasets.refuge.cup_768"
+refuge-disc = "deepdraw.binseg.configs.datasets.refuge.disc"
+refuge-disc-512 = "deepdraw.binseg.configs.datasets.refuge.disc_512"
+refuge-disc-768 = "deepdraw.binseg.configs.datasets.refuge.disc_768"
 # rim one r3 - retinography
-rimoner3-cup = "src.deepdraw.binseg.configs.datasets.rimoner3.cup_exp1"
-rimoner3-disc = "src.deepdraw.binseg.configs.datasets.rimoner3.disc_exp1"
-rimoner3-cup-512 = "src.deepdraw.binseg.configs.datasets.rimoner3.cup_exp1_512"
-rimoner3-cup-768 = "src.deepdraw.binseg.configs.datasets.rimoner3.cup_exp1_768"
-rimoner3-disc-512 = "src.deepdraw.binseg.configs.datasets.rimoner3.disc_exp1_512"
-rimoner3-disc-768 = "src.deepdraw.binseg.configs.datasets.rimoner3.disc_exp1_768"
-rimoner3-cup-2nd = "src.deepdraw.binseg.configs.datasets.rimoner3.cup_exp2"
-rimoner3-disc-2nd = "src.deepdraw.binseg.configs.datasets.rimoner3.disc_exp2"
+rimoner3-cup = "deepdraw.binseg.configs.datasets.rimoner3.cup_exp1"
+rimoner3-disc = "deepdraw.binseg.configs.datasets.rimoner3.disc_exp1"
+rimoner3-cup-512 = "deepdraw.binseg.configs.datasets.rimoner3.cup_exp1_512"
+rimoner3-cup-768 = "deepdraw.binseg.configs.datasets.rimoner3.cup_exp1_768"
+rimoner3-disc-512 = "deepdraw.binseg.configs.datasets.rimoner3.disc_exp1_512"
+rimoner3-disc-768 = "deepdraw.binseg.configs.datasets.rimoner3.disc_exp1_768"
+rimoner3-cup-2nd = "deepdraw.binseg.configs.datasets.rimoner3.cup_exp2"
+rimoner3-disc-2nd = "deepdraw.binseg.configs.datasets.rimoner3.disc_exp2"
 # combined vessels - retinography
-combined-vessels = "src.deepdraw.binseg.configs.datasets.combined.vessel"
+combined-vessels = "deepdraw.binseg.configs.datasets.combined.vessel"
 # combined discs - retinography
-combined-disc = "src.deepdraw.binseg.configs.datasets.combined.od"
+combined-disc = "deepdraw.binseg.configs.datasets.combined.od"
 # combined cups - retinography
-combined-cup = "src.deepdraw.binseg.configs.datasets.combined.oc"
+combined-cup = "deepdraw.binseg.configs.datasets.combined.oc"
 # montgomery county - cxr
-montgomery = "src.deepdraw.binseg.configs.datasets.montgomery.default"
-montgomery-xtest = "src.deepdraw.binseg.configs.datasets.montgomery.xtest"
+montgomery = "deepdraw.binseg.configs.datasets.montgomery.default"
+montgomery-xtest = "deepdraw.binseg.configs.datasets.montgomery.xtest"
 # shenzhen - cxr
-shenzhen = "src.deepdraw.binseg.configs.datasets.shenzhen.default"
-shenzhen-small = "src.deepdraw.binseg.configs.datasets.shenzhen.default_256"
-shenzhen-xtest = "src.deepdraw.binseg.configs.datasets.shenzhen.xtest"
+shenzhen = "deepdraw.binseg.configs.datasets.shenzhen.default"
+shenzhen-small = "deepdraw.binseg.configs.datasets.shenzhen.default_256"
+shenzhen-xtest = "deepdraw.binseg.configs.datasets.shenzhen.xtest"
 # jsrt - cxr
-jsrt = "src.deepdraw.binseg.configs.datasets.jsrt.default"
-jsrt-xtest = "src.deepdraw.binseg.configs.datasets.jsrt.xtest"
+jsrt = "deepdraw.binseg.configs.datasets.jsrt.default"
+jsrt-xtest = "deepdraw.binseg.configs.datasets.jsrt.xtest"
 # cxr8 - cxr
-cxr8 = "src.deepdraw.binseg.configs.datasets.cxr8.default"
-cxr8-idiap = "src.deepdraw.binseg.configs.datasets.cxr8.idiap"
-cxr8-xtest = "src.deepdraw.binseg.configs.datasets.cxr8.xtest"
-cxr8-idiap-xtest = "src.deepdraw.binseg.configs.datasets.cxr8.xtest_idiap"
+cxr8 = "deepdraw.binseg.configs.datasets.cxr8.default"
+cxr8-idiap = "deepdraw.binseg.configs.datasets.cxr8.idiap"
+cxr8-xtest = "deepdraw.binseg.configs.datasets.cxr8.xtest"
+cxr8-idiap-xtest = "deepdraw.binseg.configs.datasets.cxr8.xtest_idiap"
+
+[project.entry-points."detect.config"]
+# models
+faster-rcnn = "deepdraw.detect.configs.models.faster_rcnn"
+# example datasets
+csv-dataset-example = "deepdraw.detect.configs.datasets.csv"
+# montgomery county - cxr
+montgomery = "deepdraw.detect.configs.datasets.montgomery.default"
+montgomery-xtest = "deepdraw.detect.configs.datasets.montgomery.xtest"
+# shenzhen - cxr
+shenzhen = "deepdraw.detect.configs.datasets.shenzhen.default"
+shenzhen-small = "deepdraw.detect.configs.datasets.shenzhen.default_256"
+shenzhen-xtest = "deepdraw.detect.configs.datasets.shenzhen.xtest"
+# jsrt - cxr
+jsrt = "deepdraw.detect.configs.datasets.jsrt.default"
+jsrt-xtest = "deepdraw.detect.configs.datasets.jsrt.xtest"
+# cxr8 - cxr
+cxr8 = "deepdraw.detect.configs.datasets.cxr8.default"
+cxr8-idiap = "deepdraw.detect.configs.datasets.cxr8.idiap"
+cxr8-xtest = "deepdraw.detect.configs.datasets.cxr8.xtest"
+cxr8-idiap-xtest = "deepdraw.detect.configs.datasets.cxr8.xtest_idiap"
+# chexphoto - cxr
+chexphoto = "deepdraw.detect.configs.datasets.chexphoto.default"
+chexphoto-xtest = "deepdraw.detect.configs.datasets.chexphoto.xtest"
 
 [tool.setuptools]
 zip-safe = true

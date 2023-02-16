@@ -15,6 +15,6 @@
 Configuration resolution: 768x768 (after padding and resizing)
 """
 
-from bob.ip.binseg.configs.datasets.drionsdb import _maker_square
+from deepdraw.binseg.configs.datasets.drionsdb import _maker_square
 
 dataset = _maker_square("expert2", 768)

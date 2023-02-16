@@ -12,9 +12,11 @@
 
 """JSRT CXR cross-evaluation dataset."""
 
-from bob.ip.detect.configs.datasets.jsrt.default import dataset as _jsrt
-from bob.ip.detect.configs.datasets.montgomery.default import dataset as _mc
-from bob.ip.detect.configs.datasets.shenzhen.default import dataset as _shenzhen
+from deepdraw.detect.configs.datasets.jsrt.default import dataset as _jsrt
+from deepdraw.detect.configs.datasets.montgomery.default import dataset as _mc
+from deepdraw.detect.configs.datasets.shenzhen.default import (
+    dataset as _shenzhen,
+)
 
 dataset = {
     "train": _jsrt["train"],

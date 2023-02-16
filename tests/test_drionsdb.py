@@ -17,8 +17,8 @@ import os
 import numpy
 import pytest
 
-from ...binseg.data.drionsdb import dataset
-from .utils import count_bw
+from deepdraw.binseg.data.drionsdb import dataset
+from tests.utils import count_bw
 
 
 def test_protocol_consistency():
@@ -38,7 +38,7 @@ def test_protocol_consistency():
             assert s.key.startswith(os.path.join("images", "image_"))
 
 
-@pytest.mark.skip_if_rc_var_not_set("bob.ip.binseg.drionsdb.datadir")
+@pytest.mark.skip_if_rc_var_not_set("datadir.drionsdb")
 @pytest.mark.slow
 def test_loading():
     image_size = (600, 400)
@@ -98,7 +98,7 @@ def test_loading():
     del proportions  # only to satisfy flake8
 
 
-@pytest.mark.skip_if_rc_var_not_set("bob.ip.binseg.drionsdb.datadir")
+@pytest.mark.skip_if_rc_var_not_set("datadir.drionsdb")
 @pytest.mark.slow
 def test_check():
     assert dataset.check() == 0

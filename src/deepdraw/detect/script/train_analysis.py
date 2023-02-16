@@ -14,24 +14,21 @@ import logging
 
 import click
 
-from bob.extension.scripts.click_helper import (
-    ConfigCommand,
-    ResourceOption,
-    verbosity_option,
-)
+from clapp.click import ConfigCommand, ResourceOption, verbosity_option
+from clapp.logging import setup
 
-logger = logging.getLogger(__name__)
+logger = setup(__name__.split(".")[0], format="%(levelname)s: %(message)s")
 
 
 @click.command(
-    entry_point_group="bob.ip.detect.config",
+    entry_point_group="detect.config",
     cls=ConfigCommand,
     epilog="""Examples:
 
 \b
     1. Analyzes a training log and produces various plots:
 
-       $ bob binseg train-analysis -vv log.csv constants.csv
+       $ binseg train-analysis -vv log.csv constants.csv
 
 """,
 )
@@ -51,7 +48,7 @@ logger = logging.getLogger(__name__)
     show_default=True,
     default="trainlog.pdf",
 )
-@verbosity_option(cls=ResourceOption)
+@verbosity_option(logger=logger, cls=ResourceOption)
 @click.pass_context
 def train_analysis(ctx, log, constants, output_pdf, verbose, **kwargs):
     """Analyze the training logs for loss evolution and resource

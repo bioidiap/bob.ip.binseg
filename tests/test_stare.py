@@ -17,8 +17,8 @@ import os
 import numpy
 
 # special trick for CI builds
-from . import mock_dataset
-from .utils import count_bw
+from tests import mock_dataset
+from tests.utils import count_bw
 
 datadir, dataset = mock_dataset()
 

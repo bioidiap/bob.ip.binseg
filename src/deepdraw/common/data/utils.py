@@ -182,12 +182,12 @@ class SampleListDataset(torch.utils.data.Dataset):
     ----------
 
     samples : list
-        A list of :py:class:`bob.ip.common.data.sample.Sample` objects
+        A list of :py:class:`deepdraw.common.data.sample.Sample` objects
 
     transforms : :py:class:`list`, Optional
         a list of transformations to be applied to **both** image and
         ground-truth data.  Notice a last transform
-        (:py:class:`bob.ip.common.data.transforms.ToTensor`) is always applied
+        (:py:class:`deepdraw.common.data.transforms.ToTensor`) is always applied
         - you do not need to add that.
     """
 
@@ -288,12 +288,12 @@ class SampleListDetectionDataset(torch.utils.data.Dataset):
     ----------
 
     samples : list
-        A list of :py:class:`bob.ip.common.data.sample.Sample` objects
+        A list of :py:class:`deepdraw.common.data.sample.Sample` objects
 
     transforms : :py:class:`list`, Optional
         a list of transformations to be applied to **both** image and
         ground-truth data.  Notice a last transform
-        (:py:class:`bob.ip.common.data.transforms.ToTensor`) is always applied
+        (:py:class:`deepdraw.common.data.transforms.ToTensor`) is always applied
         - you do not need to add that.
     """
 

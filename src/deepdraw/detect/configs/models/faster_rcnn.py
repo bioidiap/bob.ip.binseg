@@ -16,9 +16,10 @@ Reference: [____]_
 """
 import torch
 
-from bob.ip.detect.models.faster_rcnn import faster_rcnn
-from bob.ip.detect.models.losses import SoftJaccardBCELogitsLoss
 from torch.optim.lr_scheduler import MultiStepLR
+
+from deepdraw.detect.models.faster_rcnn import faster_rcnn
+from deepdraw.detect.models.losses import SoftJaccardBCELogitsLoss
 
 # config
 lr = 0.005

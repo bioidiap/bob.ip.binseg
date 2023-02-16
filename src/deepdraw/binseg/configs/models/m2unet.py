@@ -23,10 +23,11 @@ segmentation applications and the speed of MobileNetV2 networks.
 References: [SANDLER-2018]_, [RONNEBERGER-2015]_
 """
 
-from bob.ip.binseg.engine.adabound import AdaBound
-from bob.ip.binseg.models.losses import SoftJaccardBCELogitsLoss
-from bob.ip.binseg.models.m2unet import m2unet
 from torch.optim.lr_scheduler import MultiStepLR
+
+from deepdraw.binseg.engine.adabound import AdaBound
+from deepdraw.binseg.models.losses import SoftJaccardBCELogitsLoss
+from deepdraw.binseg.models.m2unet import m2unet
 
 # config
 lr = 0.001

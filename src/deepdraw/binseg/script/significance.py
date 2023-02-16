@@ -14,17 +14,14 @@ import logging
 
 import click
 
-from bob.extension.scripts.click_helper import (
-    ConfigCommand,
-    ResourceOption,
-    verbosity_option,
-)
+from clapp.click import ConfigCommand, ResourceOption, verbosity_option
+from clapp.logging import setup
 
-logger = logging.getLogger(__name__)
+logger = setup(__name__.split(".")[0], format="%(levelname)s: %(message)s")
 
 
 @click.command(
-    entry_point_group="bob.ip.binseg.config",
+    entry_point_group="binseg.config",
     cls=ConfigCommand,
     epilog="""Examples:
 
@@ -32,7 +29,7 @@ logger = logging.getLogger(__name__)
     1. Runs a significance test using as base the calculated predictions of two
        different systems, on the **same** dataset:
 \b
-       $ bob binseg significance -vv drive --names system1 system2 --predictions=path/to/predictions/system-1 path/to/predictions/system-2
+       $ binseg significance -vv drive --names system1 system2 --predictions=path/to/predictions/system-1 path/to/predictions/system-2
 \b
     2. By default, we use a "validation" dataset if it is available, to infer
        the a priori threshold for the comparison of two systems.  Otherwise,
@@ -41,7 +38,7 @@ logger = logging.getLogger(__name__)
        testing the hypothesis - by default we use the "test" dataset if it is
        available, otherwise, specify.
 \b
-       $ bob binseg significance -vv drive --names system1 system2 --predictions=path/to/predictions/system-1 path/to/predictions/system-2 --threshold=train --evaluate=alternate-test
+       $ binseg significance -vv drive --names system1 system2 --predictions=path/to/predictions/system-1 path/to/predictions/system-2 --threshold=train --evaluate=alternate-test
 """,
 )
 @click.option(
@@ -198,7 +195,7 @@ logger = logging.getLogger(__name__)
     show_default=True,
     cls=ResourceOption,
 )
-@verbosity_option(cls=ResourceOption)
+@verbosity_option(logger=logger, cls=ResourceOption)
 @click.pass_context
 def significance(
     ctx,

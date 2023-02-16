@@ -14,9 +14,9 @@
 
 * Configuration resolution: 416 x 608 (after padding)
 * Split reference: [MANINIS-2016]_
-* See :py:mod:`bob.ip.binseg.data.drionsdb` for dataset details
+* See :py:mod:`deepdraw.binseg.data.drionsdb` for dataset details
 """
 
-from bob.ip.binseg.configs.datasets.drionsdb import _maker
+from deepdraw.binseg.configs.datasets.drionsdb import _maker
 
 dataset = _maker("expert2")

@@ -15,6 +15,6 @@
 * Configuration resolution: 768 x 768 (after center cropping, padding and resizing)
 """
 
-from bob.ip.binseg.configs.datasets.refuge import _maker_square
+from deepdraw.binseg.configs.datasets.refuge import _maker_square
 
 dataset = _maker_square("optic-disc", 768)

@@ -21,7 +21,7 @@ TESTDB_TMPDIR = None
 _URL = (
     "http://www.idiap.ch/software/bob/data/bob/bob.ip.binseg/master/_testdb.zip"
 )
-_RCKEY = "bob.ip.binseg.stare.datadir"
+_RCKEY = "deepdraw.binseg.stare.datadir"
 
 
 def teardown_package():
@@ -33,7 +33,9 @@ def teardown_package():
 
 def mock_dataset():
     global TESTDB_TMPDIR
-    from bob.extension import rc
+    from deepdraw.common.utils.rc import load_rc
+
+    rc = load_rc()
 
     if (TESTDB_TMPDIR is not None) or (_RCKEY in rc):
         logger.info("Test database already set up - not downloading")
@@ -53,11 +55,11 @@ def mock_dataset():
             with zipfile.ZipFile(f) as zf:
                 zf.extractall(TESTDB_TMPDIR.name)
 
-    from ...binseg.data import stare
+    from deepdraw.binseg.data import stare
 
     if TESTDB_TMPDIR is None:
         # if the user has the STARE directory ready, then we do a normal return
-        return rc["bob.ip.binseg.stare.datadir"], stare.dataset
+        return rc["deepdraw.binseg.stare.datadir"], stare.dataset
 
     # else, we do a "mock" return
     return (

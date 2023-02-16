@@ -15,9 +15,10 @@ import logging
 import click
 import tabulate
 
-from bob.extension.scripts.click_helper import verbosity_option
+from clapp.click import verbosity_option
+from clapp.logging import setup
 
-logger = logging.getLogger(__name__)
+logger = setup(__name__.split(".")[0], format="%(levelname)s: %(message)s")
 
 
 @click.command(
@@ -26,7 +27,7 @@ logger = logging.getLogger(__name__)
 \b
     1. Compares system A and B, with their own pre-computed measure files:
 \b
-       $ bob detect compare -vv A path/to/A/train.csv B path/to/B/test.csv
+       $ detect compare -vv A path/to/A/train.csv B path/to/B/test.csv
 """,
 )
 @click.argument(
@@ -68,7 +69,9 @@ logger = logging.getLogger(__name__)
     show_default=False,
     required=False,
 )
-@verbosity_option()
+@verbosity_option(
+    logger=logger,
+)
 @click.pass_context
 def compare(
     ctx,

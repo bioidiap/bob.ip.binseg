@@ -21,10 +21,11 @@ to yield more precise segmentations.
 Reference: [RONNEBERGER-2015]_
 """
 
-from bob.ip.binseg.engine.adabound import AdaBound
-from bob.ip.binseg.models.losses import SoftJaccardBCELogitsLoss
-from bob.ip.binseg.models.unet import unet
 from torch.optim.lr_scheduler import MultiStepLR
+
+from deepdraw.binseg.engine.adabound import AdaBound
+from deepdraw.binseg.models.losses import SoftJaccardBCELogitsLoss
+from deepdraw.binseg.models.unet import unet
 
 # config
 lr = 0.001

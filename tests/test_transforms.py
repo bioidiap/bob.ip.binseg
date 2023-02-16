@@ -21,7 +21,7 @@ import pkg_resources
 import torch
 import torchvision.transforms.functional
 
-from ..data.transforms import (
+from deepdraw.common.data.transforms import (
     CenterCrop,
     ColorJitter,
     Compose,

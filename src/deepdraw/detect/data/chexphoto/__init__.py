@@ -27,20 +27,20 @@ The database includes ___. One set of bounding box annotations is available.
 
 import os
 
-import bob.extension
 import pkg_resources
 
 from PIL import Image, ImageDraw
 
 from ....common.data.dataset import JSONDataset
 from ....common.data.loader import load_pil_rgb, make_delayed
+from ....common.utils.rc import load_rc
 
 _protocols = [
     pkg_resources.resource_filename(__name__, "default.json"),
 ]
 
-_root_path = bob.extension.rc.get(
-    "bob.ip.detect.chexphoto.datadir", os.path.realpath(os.curdir)
+_root_path = load_rc().get(
+    "deepdraw.detect.chexphoto.datadir", os.path.realpath(os.curdir)
 )
 
 

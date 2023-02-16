@@ -29,7 +29,6 @@ normal cases.  It contains a total  of 138 resolution of 4020 x 4892, or
 
 import os
 
-import bob.extension
 import numpy as np
 import pkg_resources
 
@@ -37,13 +36,14 @@ from PIL import Image
 
 from ....common.data.dataset import JSONDataset
 from ....common.data.loader import load_pil_1, load_pil_rgb, make_delayed
+from ....common.utils.rc import load_rc
 
 _protocols = [
     pkg_resources.resource_filename(__name__, "default.json"),
 ]
 
-_root_path = bob.extension.rc.get(
-    "bob.ip.detect.montgomery.datadir", os.path.realpath(os.curdir)
+_root_path = load_rc().get(
+    "deepdraw.detect.montgomery.datadir", os.path.realpath(os.curdir)
 )
 
 

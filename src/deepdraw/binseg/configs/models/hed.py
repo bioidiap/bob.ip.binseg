@@ -20,10 +20,11 @@ Reference: [XIE-2015]_
 """
 
 
-from bob.ip.binseg.engine.adabound import AdaBound
-from bob.ip.binseg.models.hed import hed
-from bob.ip.binseg.models.losses import MultiSoftJaccardBCELogitsLoss
 from torch.optim.lr_scheduler import MultiStepLR
+
+from deepdraw.binseg.engine.adabound import AdaBound
+from deepdraw.binseg.models.hed import hed
+from deepdraw.binseg.models.losses import MultiSoftJaccardBCELogitsLoss
 
 # config
 lr = 0.001

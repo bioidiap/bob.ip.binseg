@@ -48,7 +48,7 @@ configuration.  **Copy it locally to make changes**:
 
 .. code-block:: sh
 
-   $ bob binseg config copy csv-dataset-example mydataset.py
+   $ binseg config copy csv-dataset-example mydataset.py
    # edit mydataset.py as explained here, follow the comments
 
 Finally, the only object this file needs to provide is one named ``dataset``,
@@ -58,19 +58,19 @@ will see in this example, we provide boilerplate code to do so.
 
 More information:
 
-* :py:class:`bob.ip.common.data.dataset.CSVDataset` for operational details.
-* :py:class:`bob.ip.common.data.dataset.JSONDataset` for an alternative for
+* :py:class:`deepdraw.common.data.dataset.CSVDataset` for operational details.
+* :py:class:`deepdraw.common.data.dataset.JSONDataset` for an alternative for
   multi-protocol datasets (all of our supported raw datasets are implemented
   using this)
-* :py:func:`bob.ip.binseg.configs.datasets.make_dataset` for extra
+* :py:func:`deepdraw.binseg.configs.datasets.make_dataset` for extra
   information on the sample list to pytorch connector.
 """
 
 import os
 
-from bob.ip.common.data.dataset import CSVDataset
-from bob.ip.common.data.loader import load_pil_1, load_pil_rgb
-from bob.ip.common.data.sample import Sample
+from deepdraw.common.data.dataset import CSVDataset
+from deepdraw.common.data.loader import load_pil_1, load_pil_rgb
+from deepdraw.common.data.sample import Sample
 
 # How we use the loaders - "sample" is a dictionary where keys are defined
 # below and map to the columns of the CSV files you input.  This one is
@@ -126,10 +126,10 @@ _raw_dataset = CSVDataset(
 # that is expected by our engines, after applying the (optional)
 # transformations you define.
 
-# from bob.ip.binseg.configs.datasets import make_dataset as _maker
+# from deepdraw.binseg.configs.datasets import make_dataset as _maker
 
 # Add/tune your (optional) transforms below - these are just examples
 # compatible with a model that requires image inputs of 544 x 544 pixels.
-# from bob.ip.config.data.transforms import CenterCrop
+# from deepdraw.config.data.transforms import CenterCrop
 
 # dataset = _maker(_raw_dataset.subsets(), [CenterCrop((544, 544))])

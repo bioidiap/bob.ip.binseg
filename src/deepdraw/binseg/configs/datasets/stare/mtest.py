@@ -15,9 +15,9 @@
 * Configuration resolution: 704 x 608
 """
 
-from bob.ip.binseg.configs.datasets.stare.xtest import dataset as _xt
-from bob.ip.binseg.configs.datasets.stare.xtest import second_annotator
-from bob.ip.common.data.transforms import CenterCrop, Pad, Resize
+from deepdraw.binseg.configs.datasets.stare.xtest import dataset as _xt
+from deepdraw.binseg.configs.datasets.stare.xtest import second_annotator
+from deepdraw.common.data.transforms import CenterCrop, Pad, Resize
 
 dataset = {
     "train": _xt["train"],

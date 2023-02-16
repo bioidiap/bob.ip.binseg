@@ -18,10 +18,11 @@ closely matches (or outperforms) other more complex techniques.
 Reference: [GALDRAN-2020]_
 """
 
-from bob.ip.binseg.models.losses import MultiWeightedBCELogitsLoss
-from bob.ip.binseg.models.lwnet import lwnet
 from torch.optim import Adam
 from torch.optim.lr_scheduler import CosineAnnealingLR
+
+from deepdraw.binseg.models.losses import MultiWeightedBCELogitsLoss
+from deepdraw.binseg.models.lwnet import lwnet
 
 # config
 max_lr = 0.01  # start

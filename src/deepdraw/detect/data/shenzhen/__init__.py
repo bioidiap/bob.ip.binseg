@@ -30,18 +30,18 @@ available for 566 of the 662 images.
 
 import os
 
-import bob.extension
 import pkg_resources
 
 from ....common.data.dataset import JSONDataset
 from ....common.data.loader import load_pil_1, load_pil_rgb, make_delayed
+from ....common.utils.rc import load_rc
 
 _protocols = [
     pkg_resources.resource_filename(__name__, "default.json"),
 ]
 
-_root_path = bob.extension.rc.get(
-    "bob.ip.detect.shenzhen.datadir", os.path.realpath(os.curdir)
+_root_path = load_rc().get(
+    "deepdraw.detect.shenzhen.datadir", os.path.realpath(os.curdir)
 )
 
 

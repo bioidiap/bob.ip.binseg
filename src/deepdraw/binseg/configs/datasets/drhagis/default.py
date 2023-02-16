@@ -15,6 +15,6 @@
 * This configuration resolution: 1760 x 1760 (Resizing)
 """
 
-from bob.ip.binseg.configs.datasets.drhagis import _maker
+from deepdraw.binseg.configs.datasets.drhagis import _maker
 
 dataset = _maker("default")

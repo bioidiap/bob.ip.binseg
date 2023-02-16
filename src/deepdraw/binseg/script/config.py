@@ -10,71 +10,100 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
+from __future__ import annotations
+
+import importlib.metadata
 import inspect
-import logging
-import shutil
+import typing
 
 import click
-import pkg_resources
 
-from bob.extension.scripts.click_helper import AliasedGroup, verbosity_option
+from clapp.click import AliasedGroup, verbosity_option
+from clapp.logging import setup
 
-logger = logging.getLogger(__name__)
+logger = setup(__name__.split(".")[0], format="%(levelname)s: %(message)s")
+
+
+def _retrieve_entry_points(
+    group: str,
+) -> typing.Iterable[importlib.metadata.EntryPoint]:
+    """Wraps various entry-point retrieval mechanisms.
+
+    For Python 3.9 and 3.10,
+    :py:func:`importlib.metadata.entry_points()`
+    returns a dictionary keyed by entry-point group names.  From Python
+    3.10
+    onwards, one may pass the ``group`` keyword to that function to
+    enable
+    pre-filtering, or use the ``select()`` method on the returned value,
+    which
+    is no longer a dictionary.
+
+    For anything before Python 3.8, you must use the backported library
+    ``importlib_metadata``.
+    """
+    import sys
+
+    if sys.version_info[:2] < (3, 10):
+        all_entry_points = importlib.metadata.entry_points()
+        return all_entry_points.get(group, [])  # Python 3.9
+
+    # Python 3.10 and above
+    return importlib.metadata.entry_points().select(group=group)
 
 
 @click.group(cls=AliasedGroup)
 def config():
-    """Command for listing, describing and copying configuration resources."""
+    """Commands for listing, describing and copying configuration resources."""
     pass
 
 
 @config.command(
-    epilog="""
-\b
-Examples:
+    epilog="""Examples:
 
 \b
-  1. Lists all configuration resources (type: bob.ip.binseg.config) installed:
+  1. Lists all configuration resources (type: binseg.config) installed:
 
-\b
-     $ bob binseg config list
+     .. code:: sh
+
+        binseg config list
 
 
 \b
   2. Lists all configuration resources and their descriptions (notice this may
      be slow as it needs to load all modules once):
 
-\b
-     $ bob binseg config list -v
+     .. code:: sh
+
+        binseg config list -v
 
 """
 )
-@verbosity_option()
-def list(verbose):
-    """List configuration files installed."""
-    entry_points = pkg_resources.iter_entry_points("bob.ip.binseg.config")
-    entry_points = {k.name: k for k in entry_points}
+@verbosity_option(logger=logger)
+def list(verbose) -> None:
+    """Lists configuration files installed."""
+    entry_points = _retrieve_entry_points("binseg.config")
+    entry_point_dict = {k.name: k for k in entry_points}
 
     # all modules with configuration resources
-    modules = {k.module_name.rsplit(".", 1)[0] for k in entry_points.values()}
-    keep_modules = []
+    modules = {k.module.rsplit(".", 1)[0] for k in entry_point_dict.values()}
+    keep_modules: set[str] = set()
     for k in sorted(modules):
         if k not in keep_modules and not any(
-            k.startswith(i) for i in keep_modules
+            k.startswith(element) for element in keep_modules
         ):
-            keep_modules.append(k)
+            keep_modules.add(k)
     modules = keep_modules
 
     # sort data entries by originating module
-    entry_points_by_module = {}
+    entry_points_by_module: dict[str, dict[str, typing.Any]] = {}
     for k in modules:
         entry_points_by_module[k] = {}
-        for name, ep in entry_points.items():
-            if ep.module_name.startswith(k):
+        for name, ep in entry_point_dict.items():
+            if ep.module.startswith(k):
                 entry_points_by_module[k][name] = ep
 
     for config_type in sorted(entry_points_by_module):
-
         # calculates the longest config name so we offset the printing
         longest_name_length = max(
             len(k) for k in entry_points_by_module[config_type].keys()
@@ -87,7 +116,7 @@ def list(verbose):
 
         print(f"module: {config_type}")
         for name in sorted(entry_points_by_module[config_type]):
-            ep = entry_points[name]
+            ep = entry_point_dict[name]
 
             if verbose >= 1:
                 module = ep.load()
@@ -109,23 +138,23 @@ def list(verbose):
 
 
 @config.command(
-    epilog="""
-\b
-Examples:
+    epilog="""Examples:
 
 \b
-  1. Describes the DRIVE (training) dataset configuration:
+  1. Describes the Montgomery dataset configuration:
+
+     .. code:: sh
+
+        binseg config describe montgomery
+
 
 \b
-     $ bob binseg config describe drive
-
-
-\b
-  2. Describes the DRIVE (training) dataset configuration and lists its
+  2. Describes the Montgomery dataset configuration and lists its
      contents:
 
-\b
-     $ bob binseg config describe drive -v
+     .. code:: sh
+
+        binseg config describe montgomery -v
 
 """
 )
@@ -134,19 +163,19 @@ Examples:
     required=True,
     nargs=-1,
 )
-@verbosity_option()
-def describe(name, verbose):
-    """Describe a specific configuration file."""
-    entry_points = pkg_resources.iter_entry_points("bob.ip.binseg.config")
-    entry_points = {k.name: k for k in entry_points}
+@verbosity_option(logger=logger)
+def describe(name, verbose) -> None:
+    """Describes a specific configuration file."""
+    entry_points = _retrieve_entry_points("binseg.config")
+    entry_point_dict = {k.name: k for k in entry_points}
 
     for k in name:
-        if k not in entry_points:
+        if k not in entry_point_dict:
             logger.error("Cannot find configuration resource '%s'", k)
             continue
-        ep = entry_points[k]
+        ep = entry_point_dict[k]
         print(f"Configuration: {ep.name}")
-        print(f"Python Module: {ep.module_name}")
+        print(f"Python Module: {ep.module}")
         print("")
         mod = ep.load()
 
@@ -161,17 +190,15 @@ def describe(name, verbose):
 
 
 @config.command(
-    epilog="""
-\b
-Examples:
+    epilog="""Examples:
 
 \b
   1. Makes a copy of one of the stock configuration files locally, so it can be
      adapted:
 
-\b
-     $ bob binseg config copy drive -vvv newdataset.py
+     .. code:: sh
 
+        $ binseg config copy montgomery -vvv newdataset.py
 
 """
 )
@@ -185,16 +212,19 @@ Examples:
     required=True,
     nargs=1,
 )
-@verbosity_option()
-def copy(source, destination, verbose):
+@verbosity_option(logger=logger, expose_value=False)
+def copy(source, destination) -> None:
     """Copy a specific configuration resource so it can be modified locally."""
-    entry_points = pkg_resources.iter_entry_points("bob.ip.binseg.config")
-    entry_points = {k.name: k for k in entry_points}
+    import shutil
 
-    if source not in entry_points:
+    entry_points = _retrieve_entry_points("binseg.config")
+    entry_point_dict = {k.name: k for k in entry_points}
+
+    if source not in entry_point_dict:
         logger.error("Cannot find configuration resource '%s'", source)
-        return 1
-    ep = entry_points[source]
+        return
+
+    ep = entry_point_dict[source]
     mod = ep.load()
     src_name = inspect.getfile(mod)
     logger.info(f"cp {src_name} -> {destination}")

@@ -15,6 +15,6 @@
 Configuration resolution: 512 x 512 (after padding and resizing)
 """
 
-from bob.ip.binseg.configs.datasets.rimoner3 import _maker_square
+from deepdraw.binseg.configs.datasets.rimoner3 import _maker_square
 
 dataset = _maker_square("optic-cup-exp1", 512)

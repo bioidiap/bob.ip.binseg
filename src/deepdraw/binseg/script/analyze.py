@@ -14,17 +14,14 @@ import logging
 
 import click
 
-from bob.extension.scripts.click_helper import (
-    ConfigCommand,
-    ResourceOption,
-    verbosity_option,
-)
+from clapp.click import ConfigCommand, ResourceOption, verbosity_option
+from clapp.logging import setup
 
-logger = logging.getLogger(__name__)
+logger = setup(__name__.split(".")[0], format="%(levelname)s: %(message)s")
 
 
 @click.command(
-    entry_point_group="bob.ip.binseg.config",
+    entry_point_group="binseg.config",
     cls=ConfigCommand,
     epilog="""Examples:
 
@@ -33,7 +30,7 @@ logger = logging.getLogger(__name__)
     segmentation), on the CPU, by running inference and evaluation on results
     from its test set:
 
-       $ bob binseg analyze -vv m2unet drive --weight=model.path
+       $ binseg analyze -vv m2unet drive --weight=model.path
 
 """,
 )
@@ -57,7 +54,7 @@ logger = logging.getLogger(__name__)
     "--dataset",
     "-d",
     help="A dictionary mapping string keys to "
-    "bob.ip.common.data.utils.SampleList2TorchDataset's.  At least one key "
+    "deepdraw.common.data.utils.SampleList2TorchDataset's.  At least one key "
     "named 'train' must be available.  This dataset will be used for training "
     "the network model.  All other datasets will be used for prediction and "
     "evaluation. Dataset descriptions include all required pre-processing, "
@@ -158,7 +155,7 @@ logger = logging.getLogger(__name__)
     type=float,
     cls=ResourceOption,
 )
-@verbosity_option(cls=ResourceOption)
+@verbosity_option(logger=logger, cls=ResourceOption)
 @click.pass_context
 def analyze(
     ctx,

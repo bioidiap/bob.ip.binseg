@@ -29,7 +29,6 @@ available.
 
 import os
 
-import bob.extension
 import numpy
 import pkg_resources
 
@@ -41,13 +40,14 @@ from ....common.data.loader import (
     load_pil_raw_12bit_jsrt,
     make_delayed,
 )
+from ....common.utils.rc import load_rc
 
 _protocols = [
     pkg_resources.resource_filename(__name__, "default.json"),
 ]
 
-_root_path = bob.extension.rc.get(
-    "bob.ip.binseg.jsrt.datadir", os.path.realpath(os.curdir)
+_root_path = load_rc().get(
+    "deepdraw.binseg.jsrt.datadir", os.path.realpath(os.curdir)
 )
 
 

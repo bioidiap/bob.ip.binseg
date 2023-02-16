@@ -23,10 +23,11 @@ however better performance.
 Reference: [ZHANG-2017]_
 """
 
-from bob.ip.binseg.engine.adabound import AdaBound
-from bob.ip.binseg.models.losses import SoftJaccardBCELogitsLoss
-from bob.ip.binseg.models.resunet import resunet50
 from torch.optim.lr_scheduler import MultiStepLR
+
+from deepdraw.binseg.engine.adabound import AdaBound
+from deepdraw.binseg.models.losses import SoftJaccardBCELogitsLoss
+from deepdraw.binseg.models.resunet import resunet50
 
 # config
 lr = 0.001

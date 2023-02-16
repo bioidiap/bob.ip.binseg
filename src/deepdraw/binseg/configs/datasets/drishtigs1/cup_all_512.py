@@ -15,6 +15,6 @@
 * Configuration resolution: 512 x 512 (after center cropping, padding and resizing)
 """
 
-from bob.ip.binseg.configs.datasets.drishtigs1 import _maker_square
+from deepdraw.binseg.configs.datasets.drishtigs1 import _maker_square
 
 dataset = _maker_square("optic-cup-all", 512)

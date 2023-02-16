@@ -41,19 +41,19 @@ bright strip running down the centre known as the central vessel reflex.
 
 import os
 
-import bob.extension
 import pkg_resources
 
 from ....common.data.dataset import JSONDataset
 from ....common.data.loader import load_pil_1, load_pil_rgb, make_delayed
+from ....common.utils.rc import load_rc
 
 _protocols = [
     pkg_resources.resource_filename(__name__, "first-annotator.json"),
     pkg_resources.resource_filename(__name__, "second-annotator.json"),
 ]
 
-_root_path = bob.extension.rc.get(
-    "bob.ip.binseg.chasedb1.datadir", os.path.realpath(os.curdir)
+_root_path = load_rc().get(
+    "deepdraw.binseg.chasedb1.datadir", os.path.realpath(os.curdir)
 )
 
 _pkg_path = pkg_resources.resource_filename(__name__, "masks")
