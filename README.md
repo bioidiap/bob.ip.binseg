@@ -15,8 +15,8 @@ SPDX-License-Identifier: GPL-3.0-or-later
 [![coverage](https://gitlab.idiap.ch/biosignal/software/deepdraw/badges/main/coverage.svg)](https://www.idiap.ch/software/biosignal/docs/biosignal/software/deepdraw/main/coverage/index.html)
 [![repository](https://img.shields.io/badge/gitlab-project-0000c0.svg)](https://gitlab.idiap.ch/biosignal/software/deepdraw)
 
-# deepdraw
+# Semantic Segmentation Benchmarks on Public Datasets
 
-Binary Segmentation Benchmark Package
-
-For installation and usage instructions, check-out our documentation.
+Package to benchmark and evaluate a range of neural network architectures for
+semantic segmentation tasks. For installation and usage instructions, check-out
+our documentation.

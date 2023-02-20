@@ -10,15 +10,35 @@
 
 .. _deepdraw:
 
-==========
- deepdraw
-==========
+================================================================
+ deepdraw - Semantic Segmentation Benchmarks on Public Datasets
+================================================================
 
-.. todolist::
+Package to benchmark and evaluate a range of neural network architectures for
+semantic segmentation tasks.  It is build using PyTorch.
 
-Binary Segmentation Benchmark Package
+Please at least use the BibTeX references below to cite this work:
 
-.. todo:: write introduction about deepdraw here
+.. code:: bibtex
+
+   @inproceedings{renzo_2021,
+       title     = {Development of a lung segmentation algorithm for analog imaged chest X-Ray: preliminary results},
+       author    = {Matheus A. Renzo and Nat\'{a}lia Fernandez and Andr\'e Baceti and Natanael Nunes de Moura Junior and Andr\'e Anjos},
+       month     = {10},
+       booktitle = {XV Brazilian Congress on Computational Intelligence},
+       year      = {2021},
+       url       = {https://publications.idiap.ch/index.php/publications/show/4649},
+   }
+
+   @misc{laibacher_2019,
+       title         = {On the Evaluation and Real-World Usage Scenarios of Deep Vessel Segmentation for Retinography},
+       author        = {Tim Laibacher and Andr\'e Anjos},
+       year          = {2019},
+       eprint        = {1909.03856},
+       archivePrefix = {arXiv},
+       primaryClass  = {cs.CV},
+       url           = {https://arxiv.org/abs/1909.03856},
+   }
 
 
 Documentation
