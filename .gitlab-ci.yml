@@ -16,3 +16,4 @@ tests:
   before_script:
     - git submodule sync
     - git submodule update --init
+    - !reference [.snippets, test-prepare]
