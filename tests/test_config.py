@@ -15,10 +15,6 @@ import importlib
 import pytest
 import torch
 
-from . import mock_dataset
-
-stare_datadir, stare_dataset = mock_dataset()
-
 # we only iterate over the first N elements at most - dataset loading has
 # already been checked on the individual datset tests.  Here, we are only
 # testing for the extra tools wrapping the dataset
@@ -130,7 +126,7 @@ def test_drive_covd():
             assert sample[1].min() >= 0.0
 
 
-def test_stare_augmentation_manipulation():
+def test_stare_augmentation_manipulation(stare_dataset):
     # some tests to check our context management for dataset augmentation works
     # adequately, with one example dataset
 
@@ -148,7 +144,7 @@ def test_stare_augmentation_manipulation():
     )
 
 
-def test_stare():
+def test_stare(stare_dataset):
     def _check_subset(samples, size, height, width):
         assert len(samples) == size
         for s in samples:
