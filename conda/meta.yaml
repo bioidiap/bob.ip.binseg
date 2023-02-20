@@ -29,8 +29,42 @@ requirements:
   host:
     - python >=3.9
     - pip
+    - click {{ click }}
+    - click-plugins
+    - matplotlib {{ matplotlib }}
+    - numpy {{ numpy }}
+    - scipy {{ scipy }}
+    - pandas {{ pandas }}
+    - h5py {{ h5py }}
+    - pillow {{ pillow }}
+    - psutil {{ psutil }}
+    - setuptools
+    - tabulate {{ tabulate }}
+    - pytorch {{ pytorch }}
+    - torchvision  {{ torchvision }}
+    - tqdm {{ tqdm }}
+    - scikit-image {{ scikit_image }}
+    - tensorboard {{ tensorboard }}
+    - clapp
   run:
     - python >=3.9
+    - {{ pin_compatible('click') }}
+    - click-plugins
+    - {{ pin_compatible('matplotlib') }}
+    - {{ pin_compatible('numpy') }}
+    - {{ pin_compatible('scipy') }}
+    - {{ pin_compatible('pandas') }}
+    - {{ pin_compatible('h5py') }}
+    - {{ pin_compatible('pillow') }}
+    - {{ pin_compatible('psutil') }}
+    - setuptools
+    - {{ pin_compatible('tabulate') }}
+    - {{ pin_compatible('pytorch') }}
+    - {{ pin_compatible('torchvision') }}
+    - {{ pin_compatible('tqdm') }}
+    - {{ pin_compatible('scikit-image') }}
+    - {{ pin_compatible('tensorboard') }}
+    - clapp
 
 test:
   source_files:
