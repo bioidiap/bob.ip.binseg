@@ -11,3 +11,8 @@
 include:
   - project: biosignal/software/dev-profile
     file: /gitlab/python.yml
+
+tests:
+  before_script:
+    - git submodule sync
+    - git submodule update --init
