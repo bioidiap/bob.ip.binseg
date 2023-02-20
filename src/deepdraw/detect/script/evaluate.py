@@ -10,8 +10,6 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-import logging
-
 import click
 
 from clapp.click import ConfigCommand, ResourceOption, verbosity_option

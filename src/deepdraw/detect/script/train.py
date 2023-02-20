@@ -10,13 +10,12 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-import logging
-
 import click
 
 from clapp.click import ConfigCommand, ResourceOption, verbosity_option
+from clapp.logging import setup
 
-logger = logging.getLogger(__name__)
+logger = setup(__name__.split(".")[0], format="%(levelname)s: %(message)s")
 
 
 @click.command(
