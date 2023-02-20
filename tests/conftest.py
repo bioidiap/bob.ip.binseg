@@ -15,6 +15,12 @@ import pathlib
 import pytest
 
 
+@pytest.fixture
+def datadir(request) -> pathlib.Path:
+    """Returns the directory in which the test is sitting."""
+    return pathlib.Path(request.module.__file__).parents[0] / "data"
+
+
 def pytest_configure(config):
     """This function is run once for pytest setup."""
     config.addinivalue_line(
@@ -70,7 +76,7 @@ def temporary_basedir(tmp_path_factory):
 
 
 @pytest.fixture(scope="session")
-def montgomery_datadir(tmp_path_factory) -> pathlib.Path:
+def stare_datadir(tmp_path_factory) -> pathlib.Path:
     from deepdraw.common.utils.rc import load_rc
 
     database_dir = load_rc().get("datadir.stare")
@@ -79,7 +85,10 @@ def montgomery_datadir(tmp_path_factory) -> pathlib.Path:
 
     # else, we must extract the LFS component
     archive = (
-        pathlib.Path(__file__).parents[0] / "data" / "lfs" / "test-database.zip"
+        pathlib.Path(__file__).parents[0]
+        / "data"
+        / "deepdraw-ci-assets"
+        / "test-database.zip"
     )
     assert archive.exists(), (
         f"Neither datadir.stare is set on the global configuration, "

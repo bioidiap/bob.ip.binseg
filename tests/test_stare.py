@@ -17,14 +17,11 @@ import os
 import numpy
 
 # special trick for CI builds
-from tests import mock_dataset
 from tests.utils import count_bw
 
-datadir, dataset = mock_dataset()
 
-
-def test_protocol_consistency():
-    subset = dataset.subsets("ah")
+def test_protocol_consistency(stare_dataset):
+    subset = stare_dataset.subsets("ah")
     assert len(subset) == 2
 
     assert "train" in subset
@@ -37,7 +34,7 @@ def test_protocol_consistency():
     for s in subset["test"]:
         assert s.key.startswith(os.path.join("stare-images", "im0"))
 
-    subset = dataset.subsets("vk")
+    subset = stare_dataset.subsets("vk")
     assert len(subset) == 2
 
     assert "train" in subset
@@ -51,7 +48,7 @@ def test_protocol_consistency():
         assert s.key.startswith(os.path.join("stare-images", "im0"))
 
 
-def test_loading():
+def test_loading(stare_dataset):
     image_size = (700, 605)
 
     def _check_sample(s, bw_threshold_label, bw_threshold_mask):
@@ -105,7 +102,7 @@ def test_loading():
         return w / b
 
     limit = None  # use this to limit testing to first images only
-    subset = dataset.subsets("ah")
+    subset = stare_dataset.subsets("ah")
     proportions = [
         _check_sample(s, 0.10, 2.67) for s in subset["train"][:limit]
     ]
@@ -113,7 +110,7 @@ def test_loading():
     proportions = [_check_sample(s, 0.12, 2.70) for s in subset["test"][:limit]]
     # print(f"max label proportions = {max(proportions)}")
 
-    subset = dataset.subsets("vk")
+    subset = stare_dataset.subsets("vk")
     # proportions = [_check_sample(s, 0.19, 2.67) for s in subset["train"][:limit]]
     # print(f"max label proportions = {max(proportions)}")
     # proportions = [_check_sample(s, 0.18, 2.70) for s in subset["test"][:limit]]
@@ -121,5 +118,5 @@ def test_loading():
     del proportions  # only to satisfy flake8
 
 
-def test_check():
-    assert dataset.check() == 0
+def test_check(stare_dataset):
+    assert stare_dataset.check() == 0

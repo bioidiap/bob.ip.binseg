@@ -19,11 +19,7 @@ import re
 import tempfile
 
 from click.testing import CliRunner
-
-from . import mock_dataset
-from .utils import assert_click_runner_result
-
-stare_datadir, stare_dataset = mock_dataset()
+from utils import assert_click_runner_result
 
 
 def _assert_exit_0(result):
@@ -65,7 +61,9 @@ def _str_counter(substr, s):
     return sum(1 for _ in re.finditer(substr, s, re.MULTILINE))
 
 
-def _check_experiment_stare(caplog, overlay, multiprocess=False, extra_valid=0):
+def _check_experiment_stare(
+    caplog, stare_datadir, overlay, multiprocess=False, extra_valid=0
+):
     from deepdraw.binseg.script.experiment import experiment
 
     # ensures we capture only ERROR messages and above by default
@@ -260,28 +258,30 @@ def _check_experiment_stare(caplog, overlay, multiprocess=False, extra_valid=0):
             )
 
 
-def test_experiment_stare_with_overlay(caplog):
-    _check_experiment_stare(caplog, overlay=True)
+def test_experiment_stare_with_overlay(caplog, stare_datadir):
+    _check_experiment_stare(caplog, stare_datadir, overlay=True)
 
 
-def test_experiment_stare_without_overlay(caplog):
-    _check_experiment_stare(caplog, overlay=False)
+def test_experiment_stare_without_overlay(caplog, stare_datadir):
+    _check_experiment_stare(caplog, stare_datadir, overlay=False)
 
 
-def test_experiment_stare_with_multiprocessing(caplog):
-    _check_experiment_stare(caplog, overlay=False, multiprocess=True)
+def test_experiment_stare_with_multiprocessing(caplog, stare_datadir):
+    _check_experiment_stare(
+        caplog, stare_datadir, overlay=False, multiprocess=True
+    )
 
 
-def test_experiment_stare_with_extra_validation(caplog):
-    _check_experiment_stare(caplog, overlay=False, extra_valid=1)
+def test_experiment_stare_with_extra_validation(caplog, stare_datadir):
+    _check_experiment_stare(caplog, stare_datadir, overlay=False, extra_valid=1)
 
 
-def test_experiment_stare_with_multiple_extra_validation(caplog):
-    _check_experiment_stare(caplog, overlay=False, extra_valid=3)
+def test_experiment_stare_with_multiple_extra_validation(caplog, stare_datadir):
+    _check_experiment_stare(caplog, stare_datadir, overlay=False, extra_valid=3)
 
 
 def _check_experiment_stare_detection(
-    caplog, overlay, multiprocess=False, extra_valid=0
+    caplog, stare_datadir, overlay, multiprocess=False, extra_valid=0
 ):
     from deepdraw.detect.script.experiment import experiment
 
@@ -443,23 +443,29 @@ def _check_experiment_stare_detection(
             )
 
 
-def test_experiment_stare_with_overlay_detection(caplog):
-    _check_experiment_stare_detection(caplog, overlay=True)
+def test_experiment_stare_with_overlay_detection(caplog, stare_datadir):
+    _check_experiment_stare_detection(caplog, stare_datadir, overlay=True)
 
 
-def test_experiment_stare_without_overlay_detection(caplog):
-    _check_experiment_stare_detection(caplog, overlay=False)
+def test_experiment_stare_without_overlay_detection(caplog, stare_datadir):
+    _check_experiment_stare_detection(caplog, stare_datadir, overlay=False)
 
 
-def test_experiment_stare_with_multiprocessing_detection(caplog):
-    _check_experiment_stare_detection(caplog, overlay=False, multiprocess=True)
+def test_experiment_stare_with_multiprocessing_detection(caplog, stare_datadir):
+    _check_experiment_stare_detection(
+        caplog, stare_datadir, overlay=False, multiprocess=True
+    )
 
 
-def test_experiment_stare_with_extra_validation_detection(caplog):
-    _check_experiment_stare_detection(caplog, overlay=False, extra_valid=1)
+def test_experiment_stare_with_extra_validation_detection(
+    caplog, stare_datadir
+):
+    _check_experiment_stare_detection(
+        caplog, stare_datadir, overlay=False, extra_valid=1
+    )
 
 
-def _check_train(caplog, runner):
+def _check_train(caplog, stare_datadir, runner):
     from deepdraw.binseg.script.train import train
 
     with tempfile.NamedTemporaryFile(mode="wt") as config, caplog.at_level(
@@ -519,7 +525,7 @@ def _check_train(caplog, runner):
             )
 
 
-def _check_predict(caplog, runner):
+def _check_predict(caplog, stare_datadir, runner):
     from deepdraw.binseg.script.predict import predict
 
     with tempfile.NamedTemporaryFile(mode="wt") as config, caplog.at_level(
@@ -574,7 +580,7 @@ def _check_predict(caplog, runner):
             )
 
 
-def _check_evaluate(caplog, runner):
+def _check_evaluate(caplog, stare_datadir, runner):
     from deepdraw.binseg.script.evaluate import evaluate
 
     with tempfile.NamedTemporaryFile(mode="wt") as config, caplog.at_level(
@@ -679,7 +685,7 @@ def _check_compare(caplog, runner):
             )
 
 
-def _check_significance(caplog, runner):
+def _check_significance(caplog, stare_datadir, runner):
     from deepdraw.binseg.script.significance import significance
 
     with tempfile.NamedTemporaryFile(mode="wt") as config, caplog.at_level(
@@ -752,7 +758,7 @@ def test_discrete_experiment_stare(caplog):
         # _check_significance(caplog, runner)
 
 
-def _check_train_detection(caplog, runner):
+def _check_train_detection(caplog, stare_datadir, runner):
     from deepdraw.detect.script.train import train
 
     with tempfile.NamedTemporaryFile(mode="wt") as config, caplog.at_level(
@@ -812,7 +818,7 @@ def _check_train_detection(caplog, runner):
             )
 
 
-def _check_predict_detection(caplog, runner):
+def _check_predict_detection(caplog, stare_datadir, runner):
     from deepdraw.detect.script.predict import predict
 
     with tempfile.NamedTemporaryFile(mode="wt") as config, caplog.at_level(
@@ -867,7 +873,7 @@ def _check_predict_detection(caplog, runner):
             )
 
 
-def _check_evaluate_detection(caplog, runner):
+def _check_evaluate_detection(caplog, stare_datadir, runner):
     from deepdraw.detect.script.evaluate import evaluate
 
     with tempfile.NamedTemporaryFile(mode="wt") as config, caplog.at_level(
