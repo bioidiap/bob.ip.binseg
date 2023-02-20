@@ -19,7 +19,8 @@ import re
 import tempfile
 
 from click.testing import CliRunner
-from utils import assert_click_runner_result
+
+from tests.utils import assert_click_runner_result
 
 
 def _assert_exit_0(result):
