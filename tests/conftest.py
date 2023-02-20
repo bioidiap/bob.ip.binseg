@@ -26,7 +26,7 @@ def pytest_configure(config):
     config.addinivalue_line(
         "markers",
         "skip_if_rc_var_not_set(name): this mark skips the test if a certain "
-        "~/.config/ptbench.toml variable is not set",
+        "~/.config/deepdraw.toml variable is not set",
     )
 
     config.addinivalue_line("markers", "slow: this mark indicates slow tests")
@@ -49,14 +49,14 @@ def pytest_runtest_setup(item):
         for mark in item.iter_markers(name="skip_if_rc_var_not_set")
     ]
 
-    # checks all names mentioned are set in ~/.config/ptbench.toml, otherwise,
+    # checks all names mentioned are set in ~/.config/deepdraw.toml, otherwise,
     # skip the test
     if rc_names:
         missing = [k for k in rc_names if rc.get(k) is None]
         if any(missing):
             pytest.skip(
                 f"Test skipped because {', '.join(missing)} is **not** "
-                f"set in ~/.config/ptbench.toml"
+                f"set in ~/.config/deepdraw.toml"
             )
 
 
@@ -92,7 +92,7 @@ def stare_datadir(tmp_path_factory) -> pathlib.Path:
     )
     assert archive.exists(), (
         f"Neither datadir.stare is set on the global configuration, "
-        f"(typically ~/.config/ptbench.toml), or it is possible to detect "
+        f"(typically ~/.config/deepdraw.toml), or it is possible to detect "
         f"the presence of {archive}' (did you git submodule init --update "
         f"this submodule?)"
     )

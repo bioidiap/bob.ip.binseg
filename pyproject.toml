@@ -50,6 +50,7 @@ dependencies = [
     "tqdm",
     "scikit-image",
     "tensorboard",
+    "tomli_w",
 ]
 
 [project.urls]

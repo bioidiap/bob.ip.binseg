@@ -15,4 +15,4 @@ from clapp.rc import UserDefaults
 
 def load_rc() -> UserDefaults:
     """Returns global configuration variables."""
-    return UserDefaults("ptbench.toml")
+    return UserDefaults("deepdraw.toml")

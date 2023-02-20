@@ -61,7 +61,7 @@ def dataset() -> None:
     1. To install a dataset, set up its data directory ("datadir").  For
        example, to setup access to Montgomery files you downloaded locally at
        the directory "/path/to/montgomery/files", edit the RC file (typically
-       ``$HOME/.config/ptbench.toml``), and add a line like the following:
+       ``$HOME/.config/deepdraw.toml``), and add a line like the following:
 
        .. code:: toml
 
@@ -77,7 +77,7 @@ def dataset() -> None:
 
        .. code:: sh
 
-          $ ptbench dataset list
+          $ deepdraw dataset list
 
 """,
 )
@@ -102,19 +102,19 @@ def list():
 
        .. code:: sh
 
-          ptbench dataset check -vv montgomery
+          deepdraw dataset check -vv montgomery
 
     2. Check if all files of multiple installed datasets can be loaded:
 
        .. code:: sh
 
-          ptbench dataset check -vv montgomery shenzhen
+          deepdraw dataset check -vv montgomery shenzhen
 
     3. Check if all files of all installed datasets can be loaded:
 
        .. code:: sh
 
-          ptbench dataset check
+          deepdraw dataset check
 
 """,
 )
@@ -150,7 +150,7 @@ def check(dataset, limit):
             bold=True,
         )
         click.echo(
-            "Try ptbench dataset list --help to get help in "
+            "Try deepdraw dataset list --help to get help in "
             "configuring a dataset"
         )
     else:

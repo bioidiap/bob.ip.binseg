@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 # SPDX-FileCopyrightText: Copyright © 2023 Idiap Research Institute <contact@idiap.ch>
 #
 # SPDX-FileContributor: Tim Laibacher, tim.laibacher@idiap.ch
@@ -126,25 +124,30 @@ def test_drive_covd():
             assert sample[1].min() >= 0.0
 
 
-def test_stare_augmentation_manipulation(stare_dataset):
-    # some tests to check our context management for dataset augmentation works
-    # adequately, with one example dataset
+def test_stare_augmentation_manipulation(stare_datadir):
+    # Temporarily modify Montgomery datadir
+    from . import rc_context
 
-    # hack to allow testing on the CI
-    from deepdraw.binseg.configs.datasets.stare import _maker
+    new_value = {"datadir.stare": str(stare_datadir)}
+    with rc_context(**new_value):
+        # some tests to check our context management for dataset augmentation works
+        # adequately, with one example dataset
 
-    dataset = _maker("ah", stare_dataset)
+        # hack to allow testing on the CI
+        from deepdraw.binseg.configs.datasets.stare import _maker
 
-    assert len(dataset["__train__"]._transforms.transforms) == (
-        len(dataset["test"]._transforms.transforms) + 4
-    )
+        dataset = _maker("ah")
 
-    assert len(dataset["train"]._transforms.transforms) == len(
-        dataset["test"]._transforms.transforms
-    )
+        assert len(dataset["__train__"]._transforms.transforms) == (
+            len(dataset["test"]._transforms.transforms) + 4
+        )
+
+        assert len(dataset["train"]._transforms.transforms) == len(
+            dataset["test"]._transforms.transforms
+        )
 
 
-def test_stare(stare_dataset):
+def test_stare(stare_datadir):
     def _check_subset(samples, size, height, width):
         assert len(samples) == size
         for s in samples:
@@ -159,27 +162,32 @@ def test_stare(stare_dataset):
             assert s[1].max() <= 1.0
             assert s[1].min() >= 0.0
 
-    # hack to allow testing on the CI
-    from deepdraw.binseg.configs.datasets.stare import _maker, _maker_square
+    # Temporarily modify Montgomery datadir
+    from . import rc_context
 
-    for protocol in "ah", "vk":
-        dataset = _maker(protocol, stare_dataset)
+    new_value = {"datadir.stare": str(stare_datadir)}
+    with rc_context(**new_value):
+        # hack to allow testing on the CI
+        from deepdraw.binseg.configs.datasets.stare import _maker, _maker_square
+
+        for protocol in "ah", "vk":
+            dataset = _maker(protocol)
+            assert len(dataset) == 4
+            _check_subset(dataset["__train__"], 10, 608, 704)
+            _check_subset(dataset["train"], 10, 608, 704)
+            _check_subset(dataset["test"], 10, 608, 704)
+
+        dataset = _maker_square("ah", 768)
         assert len(dataset) == 4
-        _check_subset(dataset["__train__"], 10, 608, 704)
-        _check_subset(dataset["train"], 10, 608, 704)
-        _check_subset(dataset["test"], 10, 608, 704)
+        _check_subset(dataset["__train__"], 10, 768, 768)
+        _check_subset(dataset["train"], 10, 768, 768)
+        _check_subset(dataset["test"], 10, 768, 768)
 
-    dataset = _maker_square("ah", 768, stare_dataset)
-    assert len(dataset) == 4
-    _check_subset(dataset["__train__"], 10, 768, 768)
-    _check_subset(dataset["train"], 10, 768, 768)
-    _check_subset(dataset["test"], 10, 768, 768)
-
-    dataset = _maker_square("ah", 1024, stare_dataset)
-    assert len(dataset) == 4
-    _check_subset(dataset["__train__"], 10, 1024, 1024)
-    _check_subset(dataset["train"], 10, 1024, 1024)
-    _check_subset(dataset["test"], 10, 1024, 1024)
+        dataset = _maker_square("ah", 1024)
+        assert len(dataset) == 4
+        _check_subset(dataset["__train__"], 10, 1024, 1024)
+        _check_subset(dataset["train"], 10, 1024, 1024)
+        _check_subset(dataset["test"], 10, 1024, 1024)
 
 
 @pytest.mark.skip_if_rc_var_not_set("datadir.drive")
