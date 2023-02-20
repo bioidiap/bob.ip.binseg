@@ -16,7 +16,9 @@
 """
 
 from deepdraw.binseg.configs.datasets.drive.xtest import dataset as _xt
-from deepdraw.binseg.configs.datasets.drive.xtest import second_annotator
+from deepdraw.binseg.configs.datasets.drive.xtest import (  # noqa
+    second_annotator,
+)
 from deepdraw.common.data.transforms import Crop, Pad, Resize
 
 dataset = {

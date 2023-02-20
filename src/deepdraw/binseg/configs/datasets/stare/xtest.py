@@ -19,7 +19,7 @@ from deepdraw.binseg.configs.datasets.drive.default import dataset as _drive
 from deepdraw.binseg.configs.datasets.hrf.default import dataset as _hrf
 from deepdraw.binseg.configs.datasets.iostar.vessel import dataset as _iostar
 from deepdraw.binseg.configs.datasets.stare.ah import dataset as _stare
-from deepdraw.binseg.configs.datasets.stare.ah import second_annotator
+from deepdraw.binseg.configs.datasets.stare.ah import second_annotator  # noqa
 
 dataset = {
     "train": _stare["train"],

@@ -16,7 +16,9 @@
 """
 
 from deepdraw.binseg.configs.datasets.chasedb1.xtest import dataset as _xt
-from deepdraw.binseg.configs.datasets.chasedb1.xtest import second_annotator
+from deepdraw.binseg.configs.datasets.chasedb1.xtest import (  # noqa
+    second_annotator,
+)
 from deepdraw.common.data.transforms import CenterCrop, Pad, Resize
 
 dataset = {

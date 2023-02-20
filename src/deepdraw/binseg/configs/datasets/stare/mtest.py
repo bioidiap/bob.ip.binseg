@@ -16,7 +16,9 @@
 """
 
 from deepdraw.binseg.configs.datasets.stare.xtest import dataset as _xt
-from deepdraw.binseg.configs.datasets.stare.xtest import second_annotator
+from deepdraw.binseg.configs.datasets.stare.xtest import (  # noqa
+    second_annotator,
+)
 from deepdraw.common.data.transforms import CenterCrop, Pad, Resize
 
 dataset = {

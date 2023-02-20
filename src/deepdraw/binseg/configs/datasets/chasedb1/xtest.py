@@ -15,7 +15,7 @@
 from deepdraw.binseg.configs.datasets.chasedb1.first_annotator import (
     dataset as _chase,
 )
-from deepdraw.binseg.configs.datasets.chasedb1.first_annotator import (
+from deepdraw.binseg.configs.datasets.chasedb1.first_annotator import (  # noqa
     second_annotator,
 )
 from deepdraw.binseg.configs.datasets.drive.default import dataset as _drive

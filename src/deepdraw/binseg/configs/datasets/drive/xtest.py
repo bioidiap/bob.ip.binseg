@@ -16,7 +16,9 @@ from deepdraw.binseg.configs.datasets.chasedb1.first_annotator import (
     dataset as _chase,
 )
 from deepdraw.binseg.configs.datasets.drive.default import dataset as _drive
-from deepdraw.binseg.configs.datasets.drive.default import second_annotator
+from deepdraw.binseg.configs.datasets.drive.default import (  # noqa
+    second_annotator,
+)
 from deepdraw.binseg.configs.datasets.hrf.default import dataset as _hrf
 from deepdraw.binseg.configs.datasets.iostar.vessel import dataset as _iostar
 from deepdraw.binseg.configs.datasets.stare.ah import dataset as _stare
