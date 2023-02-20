@@ -320,7 +320,6 @@ def _summarize(data):
     )
 
     def _row_summary(r):
-
         # run bayesian_measures(), flatten tuple of tuples, name entries
         bayesian = [
             item
@@ -557,7 +556,6 @@ def run(
     )
 
     if threshold is not None:
-
         # get the closest possible threshold we have
         index = int(round(steps * threshold))
         f1_a_priori = measures["mean_f1_score"][index]

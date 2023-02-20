@@ -148,14 +148,12 @@ def run(model, data_loader, name, device, output_folder, overlayed_folder):
     )
 
     for samples in tqdm(data_loader, desc="batches", leave=False, disable=None):
-
         names = samples[0]
         images = samples[1].to(
             device=device, non_blocking=torch.cuda.is_available()
         )
 
         with torch.no_grad():
-
             start_time = time.perf_counter()
             outputs = model(images)
 

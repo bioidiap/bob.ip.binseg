@@ -81,4 +81,4 @@ def _make_dataset(root_path):
 
 
 dataset = _make_dataset(_root_path)
-"""STARE dataset object"""
+"""STARE dataset object."""

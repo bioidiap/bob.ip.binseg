@@ -37,7 +37,6 @@ def test_protocol_consistency():
 @pytest.mark.skip_if_rc_var_not_set("datadir.drhagis")
 def test_loading():
     def _check_sample(s, bw_threshold_label, bw_threshold_mask):
-
         data = s.data
         assert isinstance(data, dict)
         assert len(data) == 3

@@ -57,7 +57,6 @@ def base_predict(
         overlayed = overlayed.strip()
 
     for k, v in dataset.items():
-
         if k.startswith("_"):
             logger.info(f"Skipping dataset '{k}' (not to be evaluated)")
             continue

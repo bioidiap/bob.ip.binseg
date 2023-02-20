@@ -45,7 +45,6 @@ def test_loading():
     max_image_size = (3001, 3001)
 
     def _check_sample(s, bw_threshold_label):
-
         data = s.data
         assert isinstance(data, dict)
         assert len(data) == 2

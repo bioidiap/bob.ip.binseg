@@ -36,7 +36,6 @@ def summary(model):
     """
 
     def repr(model):
-
         # We treat the extra repr like the sub-module, one item per line
         extra_lines = []
         extra_repr = model.extra_repr()

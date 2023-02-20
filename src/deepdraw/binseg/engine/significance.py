@@ -35,7 +35,7 @@ PERFORMANCE_FIGURES = [
     "jaccard",
     "f1_score",
 ]
-"""List of performance figures supported by this module, in order"""
+"""List of performance figures supported by this module, in order."""
 
 
 def _performance_summary(size, winperf, winsize, winstride, figure):
@@ -896,7 +896,6 @@ def write_analysis_figures(names, da, db, fname):
     bins = 50
 
     with PdfPages(fname) as pdf:
-
         fig = plt.figure()
         plt.grid()
         plt.hist(da, bins=bins)

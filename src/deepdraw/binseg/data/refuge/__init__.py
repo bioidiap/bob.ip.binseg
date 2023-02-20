@@ -112,4 +112,4 @@ dataset = JSONDataset(
     fieldnames=("data", "label", "mask"),
     loader=_loader,
 )
-"""REFUGE dataset object"""
+"""REFUGE dataset object."""

@@ -21,7 +21,6 @@ from tests.utils import count_bw
 
 def test_protocol_consistency():
     for protocol in ("optic-disc", "optic-cup"):
-
         subset = dataset.subsets(protocol)
         assert len(subset) == 3
 
@@ -47,7 +46,6 @@ def test_loading():
     def _check_sample(
         s, image_size, glaucoma_label, entries, bw_threshold_label
     ):
-
         data = s.data
         assert isinstance(data, dict)
         assert len(data) == entries

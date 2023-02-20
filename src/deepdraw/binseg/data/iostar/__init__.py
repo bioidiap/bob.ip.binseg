@@ -84,4 +84,4 @@ dataset = JSONDataset(
     fieldnames=("data", "label", "mask"),
     loader=_loader,
 )
-"""IOSTAR dataset object"""
+"""IOSTAR dataset object."""

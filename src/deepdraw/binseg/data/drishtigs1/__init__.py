@@ -98,4 +98,4 @@ def _loader(context, sample):
 dataset = JSONDataset(
     protocols=_protocols, fieldnames=("data", "label", "mask"), loader=_loader
 )
-"""Drishti-GS1 dataset object"""
+"""Drishti-GS1 dataset object."""

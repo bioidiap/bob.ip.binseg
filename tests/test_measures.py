@@ -92,7 +92,6 @@ class TestBayesian:
         assert numpy.isclose(got, exp).all(), f"{got} <> {exp}"
 
     def test_beta_credible_region_small_k(self):
-
         k = 4
         i = 1
         lambda_ = 0.5
@@ -108,7 +107,6 @@ class TestBayesian:
         assert numpy.isclose(got, exp).all(), f"{got} <> {exp}"
 
     def test_beta_credible_region_precision_jeffrey(self):
-
         # simulation of situation for precision TP == FP == 0, Jeffrey's prior
         k = 0
         i = 0
@@ -125,7 +123,6 @@ class TestBayesian:
         assert numpy.isclose(got, exp).all(), f"{got} <> {exp}"
 
     def test_beta_credible_region_precision_flat(self):
-
         # simulation of situation for precision TP == FP == 0, flat prior
         k = 0
         i = 0
@@ -137,7 +134,6 @@ class TestBayesian:
         assert numpy.isclose(got, exp).all(), f"{got} <> {exp}"
 
     def test_bayesian_measures(self):
-
         tp = random.randint(100000, 1000000)
         fp = random.randint(100000, 1000000)
         tn = random.randint(100000, 1000000)
@@ -271,9 +267,7 @@ def test_sample_measures_mask_cross():
     prediction[0, :] = 0.0
     prediction[9, :] = 0.0
     ground_truth = torch.ones((10, 10), dtype=float)
-    ground_truth[
-        :5,
-    ] = 0.0  # lower part is not to be set
+    ground_truth[:5,] = 0.0  # lower part is not to be set
     mask = torch.zeros((10, 10), dtype=float)
     mask[(0, 1, 2, 3, 4, 5, 6, 7, 8, 9), (0, 1, 2, 3, 4, 5, 6, 7, 8, 9)] = 1.0
     mask[(0, 1, 2, 3, 4, 5, 6, 7, 8, 9), (9, 8, 7, 6, 5, 4, 3, 2, 1, 0)] = 1.0

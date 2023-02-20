@@ -38,14 +38,12 @@ class Checkpointer:
     """
 
     def __init__(self, model, optimizer=None, scheduler=None, path="."):
-
         self.model = model
         self.optimizer = optimizer
         self.scheduler = scheduler
         self.path = os.path.realpath(path)
 
     def save(self, name, **kwargs):
-
         data = {}
         data["model"] = self.model.state_dict()
         if self.optimizer is not None:

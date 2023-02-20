@@ -184,11 +184,9 @@ def precision_recall_f1iso(data, limits):
     linecycler = cycle(lines)
 
     with _precision_recall_canvas(title=None, limits=limits) as (fig, axes):
-
         legend = []
 
         for name, value in data.items():
-
             df = value["df"]
             threshold = value["threshold"]
 

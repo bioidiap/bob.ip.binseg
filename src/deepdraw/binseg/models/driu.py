@@ -28,7 +28,6 @@ class ConcatFuseBlock(torch.nn.Module):
         self.conv = conv_with_kaiming_uniform(4 * 16, 1, 1, 1, 0)
 
     def forward(self, x1, x2, x3, x4):
-
         x_cat = torch.cat([x1, x2, x3, x4], dim=1)
         x = self.conv(x_cat)
         return x

@@ -45,7 +45,6 @@ def _maker_augmented(protocol, n):
                     retval["__valid__"] = retval[key]
 
         if ("__train__" in retval) and ("__valid__" not in retval):
-
             retval["__valid__"] = retval["__train__"]
 
         return retval

@@ -28,7 +28,6 @@ def test_protocol_consistency():
         "optic-disc-avg",
         "optic-cup-avg",
     ):
-
         subset = dataset.subsets(protocol)
         assert len(subset) == 2
 
@@ -49,7 +48,6 @@ def test_loading():
     image_size = (1072, 1424)
 
     def _check_sample(s, bw_threshold_label):
-
         data = s.data
         assert isinstance(data, dict)
         assert len(data) == 3

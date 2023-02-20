@@ -18,7 +18,6 @@ from torchvision.models.detection.faster_rcnn import FastRCNNPredictor
 def faster_rcnn(
     weights="FasterRCNN_ResNet50_FPN_Weights.COCO_V1", progress=True
 ):
-
     """Build Faster RCNN implementation on PyTorch.
 
     Parameters

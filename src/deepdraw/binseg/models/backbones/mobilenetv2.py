@@ -58,7 +58,6 @@ def mobilenet_v2_for_segmentation(pretrained=False, progress=True, **kwargs):
     model = MobileNetV24Segmentation(**kwargs)
 
     if pretrained:
-
         state_dict = load_state_dict_from_url(
             torchvision.models.mobilenetv2.MobileNet_V2_Weights.DEFAULT.url,
             progress=progress,

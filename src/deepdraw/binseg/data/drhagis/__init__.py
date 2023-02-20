@@ -69,4 +69,4 @@ dataset = JSONDataset(
     fieldnames=("data", "label", "mask"),
     loader=_loader,
 )
-"""DRHAGIS dataset object"""
+"""DRHAGIS dataset object."""

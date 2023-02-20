@@ -63,4 +63,4 @@ dataset = JSONDataset(
     fieldnames=("data", "label", "mask"),
     loader=_loader,
 )
-"""HRF dataset object"""
+"""HRF dataset object."""

@@ -162,7 +162,6 @@ def test_winperf_measures_cross_with_padding_2():
 def _check_performance_summary(
     pred, gt, mask, threshold, size, stride, s, figure
 ):
-
     figsize = pred.shape
     pred = torch.tensor(pred)
     gt = torch.tensor(gt)

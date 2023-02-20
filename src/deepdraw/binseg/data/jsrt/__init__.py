@@ -80,4 +80,4 @@ dataset = JSONDataset(
     fieldnames=("data", "label_l", "label_r"),
     loader=_loader,
 )
-"""Japanese Society of Radiological Technology dataset object"""
+"""Japanese Society of Radiological Technology dataset object."""

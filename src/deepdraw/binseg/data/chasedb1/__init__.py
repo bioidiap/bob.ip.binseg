@@ -76,4 +76,4 @@ def _loader(context, sample):
 dataset = JSONDataset(
     protocols=_protocols, fieldnames=("data", "label", "mask"), loader=_loader
 )
-"""CHASE-DB1 dataset object"""
+"""CHASE-DB1 dataset object."""

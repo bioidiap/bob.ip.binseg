@@ -339,7 +339,6 @@ class ShrinkIntoSquare:
         self.threshold = threshold
 
     def __call__(self, *args):
-
         ref = numpy.asarray(args[self.reference].convert("L"))
         width = numpy.sum(ref, axis=0) > self.threshold
         height = numpy.sum(ref, axis=1) > self.threshold
@@ -414,7 +413,6 @@ class GetBoundingBox:
         self.reference = reference
 
     def __call__(self, args):
-
         ref = args[self.reference][0, :, :]
 
         obj_ids = ref.unique()

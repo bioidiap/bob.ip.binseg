@@ -75,7 +75,6 @@ class JSONDataset:
     """
 
     def __init__(self, protocols, fieldnames, loader):
-
         if isinstance(protocols, dict):
             self._protocols = protocols
         else:
@@ -214,7 +213,6 @@ class CSVDataset:
     """
 
     def __init__(self, subsets, fieldnames, loader):
-
         if isinstance(subsets, dict):
             self._subsets = subsets
         else:

@@ -49,7 +49,6 @@ def test_loading():
     image_size = (565, 584)
 
     def _check_sample(s, bw_threshold_label, bw_threshold_mask):
-
         data = s.data
         assert isinstance(data, dict)
         assert len(data) == 3

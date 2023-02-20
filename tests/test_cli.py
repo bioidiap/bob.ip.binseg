@@ -75,7 +75,6 @@ def _check_experiment_stare(caplog, overlay, multiprocess=False, extra_valid=0):
     with runner.isolated_filesystem(), caplog.at_level(
         logging.INFO, logger="deepdraw.binseg"
     ), tempfile.NamedTemporaryFile(mode="wt") as config:
-
         # re-write STARE dataset configuration for test
         config.write("from deepdraw.binseg.data.stare import _make_dataset\n")
         config.write(f"_raw = _make_dataset('{stare_datadir}')\n")
@@ -284,7 +283,6 @@ def test_experiment_stare_with_multiple_extra_validation(caplog):
 def _check_experiment_stare_detection(
     caplog, overlay, multiprocess=False, extra_valid=0
 ):
-
     from deepdraw.detect.script.experiment import experiment
 
     # ensures we capture only ERROR messages and above by default
@@ -294,7 +292,6 @@ def _check_experiment_stare_detection(
     with runner.isolated_filesystem(), caplog.at_level(
         logging.INFO, logger="deepdraw.detect"
     ), tempfile.NamedTemporaryFile(mode="wt") as config:
-
         # re-write STARE dataset configuration for test
         config.write("from deepdraw.binseg.data.stare import _make_dataset\n")
         config.write(f"_raw = _make_dataset('{stare_datadir}')\n")
@@ -468,7 +465,6 @@ def _check_train(caplog, runner):
     with tempfile.NamedTemporaryFile(mode="wt") as config, caplog.at_level(
         logging.INFO, logger="deepdraw.binseg"
     ):
-
         # single training set configuration
         config.write("from deepdraw.binseg.data.stare import _make_dataset\n")
         config.write(f"_raw = _make_dataset('{stare_datadir}')\n")
@@ -529,7 +525,6 @@ def _check_predict(caplog, runner):
     with tempfile.NamedTemporaryFile(mode="wt") as config, caplog.at_level(
         logging.INFO, logger="deepdraw.binseg"
     ):
-
         # single training set configuration
         config.write("from deepdraw.binseg.data.stare import _make_dataset\n")
         config.write(f"_raw = _make_dataset('{stare_datadir}')\n")
@@ -585,7 +580,6 @@ def _check_evaluate(caplog, runner):
     with tempfile.NamedTemporaryFile(mode="wt") as config, caplog.at_level(
         logging.INFO, logger="deepdraw.binseg"
     ):
-
         # single training set configuration
         config.write("from deepdraw.binseg.data.stare import _make_dataset\n")
         config.write(f"_raw = _make_dataset('{stare_datadir}')\n")
@@ -651,7 +645,6 @@ def _check_compare(caplog, runner):
     from deepdraw.binseg.script.compare import compare
 
     with caplog.at_level(logging.INFO, logger="deepdraw.binseg"):
-
         output_folder = "evaluations"
         result = runner.invoke(
             compare,
@@ -692,7 +685,6 @@ def _check_significance(caplog, runner):
     with tempfile.NamedTemporaryFile(mode="wt") as config, caplog.at_level(
         logging.INFO, logger="deepdraw.binseg"
     ):
-
         config.write("from deepdraw.binseg.data.stare import _make_dataset\n")
         config.write(f"_raw = _make_dataset('{stare_datadir}')\n")
         config.write(
@@ -766,7 +758,6 @@ def _check_train_detection(caplog, runner):
     with tempfile.NamedTemporaryFile(mode="wt") as config, caplog.at_level(
         logging.INFO, logger="deepdraw.detect"
     ):
-
         # single training set configuration
         config.write("from deepdraw.binseg.data.stare import _make_dataset\n")
         config.write(f"_raw = _make_dataset('{stare_datadir}')\n")
@@ -827,7 +818,6 @@ def _check_predict_detection(caplog, runner):
     with tempfile.NamedTemporaryFile(mode="wt") as config, caplog.at_level(
         logging.INFO, logger="deepdraw.detect"
     ):
-
         # single training set configuration
         config.write("from deepdraw.binseg.data.stare import _make_dataset\n")
         config.write(f"_raw = _make_dataset('{stare_datadir}')\n")
@@ -883,7 +873,6 @@ def _check_evaluate_detection(caplog, runner):
     with tempfile.NamedTemporaryFile(mode="wt") as config, caplog.at_level(
         logging.INFO, logger="deepdraw.detect"
     ):
-
         # single training set configuration
         config.write("from deepdraw.binseg.data.stare import _make_dataset\n")
         config.write(f"_raw = _make_dataset('{stare_datadir}')\n")

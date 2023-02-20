@@ -105,7 +105,6 @@ def _sample_measures(pred, gt, steps):
     step_size = 1.0 / steps
     data = []
     for index, threshold in enumerate(numpy.arange(0.0, 1.0, step_size)):
-
         iou, inter, inter_5, inter_10 = sample_measures_for_threshold(
             pred, gt, threshold
         )
@@ -418,7 +417,6 @@ def run(
     )
 
     if threshold is not None:
-
         # get the closest possible threshold we have
         index = int(round(steps * threshold))
         iou_a_priori = measures["mean_iou"][index]

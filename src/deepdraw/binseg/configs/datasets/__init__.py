@@ -19,11 +19,11 @@ from ....common.data.transforms import RandomRotation as _rotation
 from ....common.data.transforms import RandomVerticalFlip as _vflip
 
 RANDOM_ROTATION = [_rotation()]
-"""Shared data augmentation based on random rotation only"""
+"""Shared data augmentation based on random rotation only."""
 
 
 RANDOM_FLIP_JITTER = [_hflip(), _vflip(), _jitter()]
-"""Shared data augmentation transforms without random rotation"""
+"""Shared data augmentation transforms without random rotation."""
 
 
 def make_subset(samples, transforms, prefixes=[], suffixes=[]):

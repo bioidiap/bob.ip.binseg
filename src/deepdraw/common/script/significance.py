@@ -216,7 +216,6 @@ def base_significance(
             chkpt_fname = None
 
         if not isinstance(threshold, float):
-
             assert threshold in dataset, f"No dataset named '{threshold}'"
 
             logger.info(

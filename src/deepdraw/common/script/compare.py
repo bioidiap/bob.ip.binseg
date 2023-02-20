@@ -124,12 +124,10 @@ def base_compare(
         # loads all data
         retval = {}
         for name, measures_path in tqdm(data.items(), desc="sample"):
-
             logger.info(f"Loading measures from {measures_path}...")
             df = pandas.read_csv(measures_path)
 
             if threshold is None:
-
                 if "threshold_a_priori" in df:
                     use_threshold = df.threshold[df.threshold_a_priori.idxmax()]
                     logger.info(

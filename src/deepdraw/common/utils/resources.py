@@ -26,11 +26,11 @@ import psutil
 logger = logging.getLogger(__name__)
 
 _nvidia_smi = shutil.which("nvidia-smi")
-"""Location of the nvidia-smi program, if one exists"""
+"""Location of the nvidia-smi program, if one exists."""
 
 
 GB = float(2**30)
-"""The number of bytes in a gigabyte"""
+"""The number of bytes in a gigabyte."""
 
 
 def run_nvidia_smi(query, rename=None):
@@ -63,7 +63,6 @@ def run_nvidia_smi(query, rename=None):
     """
 
     if _nvidia_smi is not None:
-
         if rename is None:
             rename = query
         else:
@@ -377,7 +376,6 @@ class ResourceMonitor:
     """
 
     def __init__(self, interval, has_gpu, main_pid, logging_level):
-
         self.interval = interval
         self.has_gpu = has_gpu
         self.main_pid = main_pid
@@ -402,7 +400,6 @@ class ResourceMonitor:
 
     @staticmethod
     def monitored_keys(has_gpu):
-
         return _InformationGatherer(has_gpu, None, logger).keys
 
     def __enter__(self):

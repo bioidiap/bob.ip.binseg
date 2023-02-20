@@ -54,7 +54,6 @@ class VGG4Segmentation(torchvision.models.vgg.VGG):
 def _make_vgg16_typeD_for_segmentation(
     pretrained, batch_norm, progress, **kwargs
 ):
-
     if pretrained:
         kwargs["init_weights"] = False
 
@@ -63,11 +62,10 @@ def _make_vgg16_typeD_for_segmentation(
             torchvision.models.vgg.cfgs["D"],
             batch_norm=batch_norm,
         ),
-        **kwargs
+        **kwargs,
     )
 
     if pretrained:
-
         weights = (
             torchvision.models.vgg.VGG16_Weights.DEFAULT.url
             if not batch_norm

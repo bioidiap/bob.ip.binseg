@@ -61,4 +61,4 @@ dataset = JSONDataset(
     fieldnames=("data", "label", "mask"),
     loader=_loader,
 )
-"""DRIVE dataset object"""
+"""DRIVE dataset object."""

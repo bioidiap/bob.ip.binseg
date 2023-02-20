@@ -79,4 +79,4 @@ dataset = JSONDataset(
     fieldnames=("data", "label", "mask"),
     loader=_loader,
 )
-"""RIM-ONE r3 dataset object"""
+"""RIM-ONE r3 dataset object."""

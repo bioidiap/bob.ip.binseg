@@ -151,7 +151,6 @@ def base_train_analysis(log, constants, output_pdf, verbose, **kwargs):
 
     # now, do the analysis
     with PdfPages(output_pdf) as pdf:
-
         figure = _loss_evolution(data)
         pdf.savefig(figure)
         plt.close(figure)

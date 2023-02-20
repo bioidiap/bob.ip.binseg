@@ -230,7 +230,6 @@ class LittleWNet(torch.nn.Module):
         shortcut=True,
         mode="train",
     ):
-
         super().__init__()
         self.unet1 = LittleUNet(
             in_c=in_c,

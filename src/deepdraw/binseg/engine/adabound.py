@@ -230,7 +230,6 @@ class AdaBoundW(torch.optim.Optimizer):
         weight_decay=0,
         amsbound=False,
     ):
-
         if not 0.0 <= lr:
             raise ValueError(f"Invalid learning rate: {lr}")
         if not 0.0 <= eps:

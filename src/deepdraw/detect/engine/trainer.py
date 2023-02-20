@@ -317,7 +317,6 @@ def validate_epoch(loader, model, device, pbar_desc):
     samples_in_batch = []
 
     with torch.no_grad():
-
         for samples in tqdm(loader, desc=pbar_desc, leave=False, disable=None):
             images = list(
                 image.to(device, non_blocking=torch.cuda.is_available())
@@ -601,7 +600,6 @@ def run(
             leave=False,
             disable=None,
         ):
-
             with ResourceMonitor(
                 interval=monitoring_interval,
                 has_gpu=(device.type == "cuda"),

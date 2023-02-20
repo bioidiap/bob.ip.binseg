@@ -28,7 +28,6 @@ def test_protocol_consistency():
         "optic-disc-any",
         "optic-cup-any",
     ):
-
         subset = dataset.subsets(protocol)
         assert len(subset) == 2
 
@@ -55,7 +54,6 @@ def test_protocol_consistency():
 @pytest.mark.slow
 def test_loading():
     def _check_sample(s, bw_threshold_label):
-
         data = s.data
         assert isinstance(data, dict)
         assert len(data) == 3

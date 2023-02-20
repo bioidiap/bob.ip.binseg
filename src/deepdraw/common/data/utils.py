@@ -192,7 +192,6 @@ class SampleListDataset(torch.utils.data.Dataset):
     """
 
     def __init__(self, samples, transforms=[]):
-
         self._samples = samples
         self.transforms = transforms
 
@@ -298,7 +297,6 @@ class SampleListDetectionDataset(torch.utils.data.Dataset):
     """
 
     def __init__(self, samples, transforms=[]):
-
         self._samples = samples
         self.transforms = transforms
 
