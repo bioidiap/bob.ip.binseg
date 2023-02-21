@@ -52,9 +52,7 @@ _protocols = [
     pkg_resources.resource_filename(__name__, "second-annotator.json"),
 ]
 
-_root_path = load_rc().get(
-    "deepdraw.binseg.chasedb1.datadir", os.path.realpath(os.curdir)
-)
+_root_path = load_rc().get("datadir.chasedb1", os.path.realpath(os.curdir))
 
 _pkg_path = pkg_resources.resource_filename(__name__, "masks")
 

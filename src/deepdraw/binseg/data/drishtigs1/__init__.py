@@ -54,9 +54,7 @@ _protocols = {
     ),
 }
 
-_root_path = load_rc().get(
-    "deepdraw.binseg.drishtigs1.datadir", os.path.realpath(os.curdir)
-)
+_root_path = load_rc().get("datadir.drishtigs1", os.path.realpath(os.curdir))
 _pkg_path = pkg_resources.resource_filename(__name__, "masks")
 
 

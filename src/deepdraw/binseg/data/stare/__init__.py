@@ -47,9 +47,7 @@ _protocols = [
 
 _fieldnames = ("data", "label", "mask")
 
-_root_path = load_rc().get(
-    "deepdraw.binseg.stare.datadir", os.path.realpath(os.curdir)
-)
+_root_path = load_rc().get("datadir.stare", os.path.realpath(os.curdir))
 _pkg_path = pkg_resources.resource_filename(__name__, "masks")
 
 

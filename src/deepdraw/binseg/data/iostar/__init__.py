@@ -45,9 +45,7 @@ _protocols = [
     pkg_resources.resource_filename(__name__, "optic-disc.json"),
 ]
 
-_root_path = load_rc().get(
-    "deepdraw.binseg.iostar.datadir", os.path.realpath(os.curdir)
-)
+_root_path = load_rc().get("datadir.iostar", os.path.realpath(os.curdir))
 
 
 def _vessel_loader(sample):

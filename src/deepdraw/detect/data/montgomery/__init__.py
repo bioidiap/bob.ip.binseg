@@ -42,9 +42,7 @@ _protocols = [
     pkg_resources.resource_filename(__name__, "default.json"),
 ]
 
-_root_path = load_rc().get(
-    "deepdraw.detect.montgomery.datadir", os.path.realpath(os.curdir)
-)
+_root_path = load_rc().get("datadir.montgomery", os.path.realpath(os.curdir))
 
 
 def _raw_data_loader(sample):

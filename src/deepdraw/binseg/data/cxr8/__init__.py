@@ -49,9 +49,7 @@ _protocols = [
     pkg_resources.resource_filename(__name__, "idiap.json"),
 ]
 
-_root_path = load_rc().get(
-    "deepdraw.binseg.cxr8.datadir", os.path.realpath(os.curdir)
-)
+_root_path = load_rc().get("datadir.cxr8", os.path.realpath(os.curdir))
 
 
 def _raw_data_loader(sample):

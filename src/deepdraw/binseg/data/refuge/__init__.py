@@ -54,9 +54,7 @@ _protocols = {
     "optic-cup": pkg_resources.resource_filename(__name__, "default.json"),
 }
 
-_root_path = load_rc().get(
-    "deepdraw.binseg.refuge.datadir", os.path.realpath(os.curdir)
-)
+_root_path = load_rc().get("datadir.refuge", os.path.realpath(os.curdir))
 _pkg_path = pkg_resources.resource_filename(__name__, "masks")
 
 

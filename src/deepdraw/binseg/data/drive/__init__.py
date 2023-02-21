@@ -41,9 +41,7 @@ _protocols = [
     pkg_resources.resource_filename(__name__, "second-annotator.json"),
 ]
 
-_root_path = load_rc().get(
-    "deepdraw.binseg.drive.datadir", os.path.realpath(os.curdir)
-)
+_root_path = load_rc().get("datadir.drive", os.path.realpath(os.curdir))
 
 
 def _raw_data_loader(sample):

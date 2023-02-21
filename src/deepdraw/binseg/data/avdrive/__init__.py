@@ -34,11 +34,9 @@ from ....common.utils.rc import load_rc
 
 _protocols = [pkg_resources.resource_filename(__name__, "default.json")]
 
-_root_path_drive = load_rc().get(
-    "deepdraw.binseg.drive.datadir", os.path.realpath(os.curdir)
-)
+_root_path_drive = load_rc().get("datadir.drive", os.path.realpath(os.curdir))
 _root_path_av_drive = load_rc().get(
-    "deepdraw.binseg.avdrive.datadir", os.path.realpath(os.curdir)
+    "datadir.avdrive", os.path.realpath(os.curdir)
 )
 
 

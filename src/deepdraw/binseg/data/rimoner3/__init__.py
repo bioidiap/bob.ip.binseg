@@ -46,9 +46,7 @@ _protocols = [
     pkg_resources.resource_filename(__name__, "optic-cup-avg.json"),
 ]
 
-_root_path = load_rc().get(
-    "deepdraw.binseg.rimoner3.datadir", os.path.realpath(os.curdir)
-)
+_root_path = load_rc().get("datadir.rimoner3", os.path.realpath(os.curdir))
 _pkg_path = pkg_resources.resource_filename(__name__, "masks")
 
 
