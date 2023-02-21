@@ -28,6 +28,12 @@ extensions = [
     "sphinx.ext.napoleon",
     "sphinx.ext.viewcode",
     "sphinx.ext.intersphinx",
+    "auto_intersphinx",
+    "sphinx_autodoc_typehints",
+    "sphinx_copybutton",
+    "sphinx_inline_tabs",
+    "sphinx_click",
+
 ]
 
 # Be picky about warnings
@@ -115,6 +121,18 @@ autodoc_default_options = {
     "show-inheritance": True,
 }
 
-intersphinx_mapping = {
-    "python": ("https://docs.python.org/3", None),
-}
+auto_intersphinx_packages = [
+    "matplotlib",
+    "numpy",
+    "pandas",
+    "pillow",
+    "psutil",
+    "torch",
+    "torchvision",
+    ("clapp", "latest"),
+    ("python", "3"),
+]
+auto_intersphinx_catalog = "catalog.json"
+
+# Add our private index (for extras and fixes)
+intersphinx_mapping = dict(extras=("", "extras.inv"))

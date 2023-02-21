@@ -1,0 +1,5 @@
+# Sphinx inventory version 2
+# Project: extras
+# Version: stable
+# The remainder of this file is compressed using zlib.
+torchvision.transforms py:module 1 https://pytorch.org/vision/stable/transforms.html -
