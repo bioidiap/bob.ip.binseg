@@ -33,7 +33,6 @@ extensions = [
     "sphinx_copybutton",
     "sphinx_inline_tabs",
     "sphinx_click",
-
 ]
 
 # Be picky about warnings
