@@ -16,12 +16,14 @@ import os
 
 import numpy
 
-# special trick for CI builds
+from deepdraw.binseg.data.stare import _make_dataset
 from tests.utils import count_bw
 
 
-def test_protocol_consistency(stare_dataset):
-    subset = stare_dataset.subsets("ah")
+def test_protocol_consistency(stare_datadir):
+    dataset = _make_dataset(stare_datadir)
+
+    subset = dataset.subsets("ah")
     assert len(subset) == 2
 
     assert "train" in subset
@@ -34,7 +36,7 @@ def test_protocol_consistency(stare_dataset):
     for s in subset["test"]:
         assert s.key.startswith(os.path.join("stare-images", "im0"))
 
-    subset = stare_dataset.subsets("vk")
+    subset = dataset.subsets("vk")
     assert len(subset) == 2
 
     assert "train" in subset
@@ -48,7 +50,7 @@ def test_protocol_consistency(stare_dataset):
         assert s.key.startswith(os.path.join("stare-images", "im0"))
 
 
-def test_loading(stare_dataset):
+def test_loading(stare_datadir):
     image_size = (700, 605)
 
     def _check_sample(s, bw_threshold_label, bw_threshold_mask):
@@ -101,8 +103,10 @@ def test_loading(stare_dataset):
 
         return w / b
 
+    dataset = _make_dataset(stare_datadir)
+
     limit = None  # use this to limit testing to first images only
-    subset = stare_dataset.subsets("ah")
+    subset = dataset.subsets("ah")
     proportions = [
         _check_sample(s, 0.10, 2.67) for s in subset["train"][:limit]
     ]
@@ -110,7 +114,7 @@ def test_loading(stare_dataset):
     proportions = [_check_sample(s, 0.12, 2.70) for s in subset["test"][:limit]]
     # print(f"max label proportions = {max(proportions)}")
 
-    subset = stare_dataset.subsets("vk")
+    subset = dataset.subsets("vk")
     # proportions = [_check_sample(s, 0.19, 2.67) for s in subset["train"][:limit]]
     # print(f"max label proportions = {max(proportions)}")
     # proportions = [_check_sample(s, 0.18, 2.70) for s in subset["test"][:limit]]
@@ -118,5 +122,7 @@ def test_loading(stare_dataset):
     del proportions  # only to satisfy flake8
 
 
-def test_check(stare_dataset):
-    assert stare_dataset.check() == 0
+def test_check(stare_datadir):
+    dataset = _make_dataset(stare_datadir)
+
+    assert dataset.check() == 0

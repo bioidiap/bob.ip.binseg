@@ -45,7 +45,6 @@ def _get_installed_datasets() -> dict[str, str]:
     """
     from deepdraw.common.utils.rc import load_rc
 
-    print([i for i in load_rc().keys()])
     return dict(load_rc().get("datadir", {}))
 
 
@@ -78,7 +77,7 @@ def dataset() -> None:
 
        .. code:: sh
 
-          $ deepdraw dataset list
+          $ binseg dataset list
 
 """,
 )

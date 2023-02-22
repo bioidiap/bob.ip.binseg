@@ -466,7 +466,7 @@ def test_experiment_stare_with_extra_validation_detection(
     )
 
 
-def _check_train(caplog, stare_datadir, runner):
+def _check_train(caplog, runner, stare_datadir):
     from deepdraw.binseg.script.train import train
 
     with tempfile.NamedTemporaryFile(mode="wt") as config, caplog.at_level(
@@ -526,7 +526,7 @@ def _check_train(caplog, stare_datadir, runner):
             )
 
 
-def _check_predict(caplog, stare_datadir, runner):
+def _check_predict(caplog, runner, stare_datadir):
     from deepdraw.binseg.script.predict import predict
 
     with tempfile.NamedTemporaryFile(mode="wt") as config, caplog.at_level(
@@ -581,7 +581,7 @@ def _check_predict(caplog, stare_datadir, runner):
             )
 
 
-def _check_evaluate(caplog, stare_datadir, runner):
+def _check_evaluate(caplog, runner, stare_datadir):
     from deepdraw.binseg.script.evaluate import evaluate
 
     with tempfile.NamedTemporaryFile(mode="wt") as config, caplog.at_level(
@@ -746,20 +746,20 @@ def _check_significance(caplog, stare_datadir, runner):
             )
 
 
-def test_discrete_experiment_stare(caplog):
+def test_discrete_experiment_stare(caplog, stare_datadir):
     # ensures we capture only ERROR messages and above by default
     caplog.set_level(logging.ERROR)
 
     runner = CliRunner()
     with runner.isolated_filesystem():
-        _check_train(caplog, runner)
-        _check_predict(caplog, runner)
-        _check_evaluate(caplog, runner)
+        _check_train(caplog, runner, stare_datadir)
+        _check_predict(caplog, runner, stare_datadir)
+        _check_evaluate(caplog, runner, stare_datadir)
         _check_compare(caplog, runner)
         # _check_significance(caplog, runner)
 
 
-def _check_train_detection(caplog, stare_datadir, runner):
+def _check_train_detection(caplog, runner, stare_datadir):
     from deepdraw.detect.script.train import train
 
     with tempfile.NamedTemporaryFile(mode="wt") as config, caplog.at_level(
@@ -819,7 +819,7 @@ def _check_train_detection(caplog, stare_datadir, runner):
             )
 
 
-def _check_predict_detection(caplog, stare_datadir, runner):
+def _check_predict_detection(caplog, runner, stare_datadir):
     from deepdraw.detect.script.predict import predict
 
     with tempfile.NamedTemporaryFile(mode="wt") as config, caplog.at_level(
@@ -874,7 +874,7 @@ def _check_predict_detection(caplog, stare_datadir, runner):
             )
 
 
-def _check_evaluate_detection(caplog, stare_datadir, runner):
+def _check_evaluate_detection(caplog, runner, stare_datadir):
     from deepdraw.detect.script.evaluate import evaluate
 
     with tempfile.NamedTemporaryFile(mode="wt") as config, caplog.at_level(
@@ -929,15 +929,15 @@ def _check_evaluate_detection(caplog, stare_datadir, runner):
             )
 
 
-def test_discrete_experiment_stare_detection(caplog):
+def test_discrete_experiment_stare_detection(caplog, stare_datadir):
     # ensures we capture only ERROR messages and above by default
     caplog.set_level(logging.ERROR)
 
     runner = CliRunner()
     with runner.isolated_filesystem():
-        _check_train_detection(caplog, runner)
-        _check_predict_detection(caplog, runner)
-        _check_evaluate_detection(caplog, runner)
+        _check_train_detection(caplog, runner, stare_datadir)
+        _check_predict_detection(caplog, runner, stare_datadir)
+        _check_evaluate_detection(caplog, runner, stare_datadir)
 
 
 def test_train_help():

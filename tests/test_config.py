@@ -162,8 +162,12 @@ def test_stare(stare_datadir):
             assert s[1].max() <= 1.0
             assert s[1].min() >= 0.0
 
-    # Temporarily modify Montgomery datadir
+    # Temporarily modify Stare datadir
+    from deepdraw.binseg.data.stare import _make_dataset
+
     from . import rc_context
+
+    raw = _make_dataset(stare_datadir)
 
     new_value = {"datadir.stare": str(stare_datadir)}
     with rc_context(**new_value):
@@ -171,19 +175,19 @@ def test_stare(stare_datadir):
         from deepdraw.binseg.configs.datasets.stare import _maker, _maker_square
 
         for protocol in "ah", "vk":
-            dataset = _maker(protocol)
+            dataset = _maker(protocol, raw=raw)
             assert len(dataset) == 4
             _check_subset(dataset["__train__"], 10, 608, 704)
             _check_subset(dataset["train"], 10, 608, 704)
             _check_subset(dataset["test"], 10, 608, 704)
 
-        dataset = _maker_square("ah", 768)
+        dataset = _maker_square("ah", 768, raw=raw)
         assert len(dataset) == 4
         _check_subset(dataset["__train__"], 10, 768, 768)
         _check_subset(dataset["train"], 10, 768, 768)
         _check_subset(dataset["test"], 10, 768, 768)
 
-        dataset = _maker_square("ah", 1024)
+        dataset = _maker_square("ah", 1024, raw=raw)
         assert len(dataset) == 4
         _check_subset(dataset["__train__"], 10, 1024, 1024)
         _check_subset(dataset["train"], 10, 1024, 1024)
