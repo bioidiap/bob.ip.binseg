@@ -1,4 +1,4 @@
-.. SPDX-FileCopyrightText: Copyright © 2023 Idiap Research Institute <contact@idiap.ch>
+.. SPDX-FileCopyrightText: 2023 Idiap Research Institute <contact@idiap.ch>
 ..
 .. SPDX-FileContributor: Tim Laibacher, tim.laibacher@idiap.ch
 .. SPDX-FileContributor: Oscar Jiménez del Toro, oscar.jimenez@idiap.ch
@@ -8,14 +8,5 @@
 ..
 .. SPDX-License-Identifier: GPL-3.0-or-later
 
-.. _deepdraw.usage:
-
-=======
- Usage
-=======
-
-
-.. todo:: write usage instructions for deepdraw
-
-
-.. include:: links.rst
+{% include "autosummary/module.rst" %}
+.. literalinclude:: ../../../../{{ fullname.replace(".", "/") }}.py

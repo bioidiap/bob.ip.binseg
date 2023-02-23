@@ -1,0 +1,60 @@
+digraph framework {
+
+    graph [
+        rankdir=LR,
+        ];
+    edge [
+        fontname=Helvetica,
+        fontsize=12,
+        fontcolor=blue,
+        minlen=2,
+        labeldistance=2.5,
+        ];
+
+    node [
+        fontname=Helvetica,
+        fontsize=12,
+        fontcolor=black,
+        shape=record,
+        style="filled,rounded",
+        fillcolor=grey92,
+        ];
+
+    dataset [
+        label="<train>\nTraining\n\n|<test>\nTest\n\n",
+        fillcolor=yellow,
+        style="filled",
+        ];
+
+    {rank = min; dataset;}
+
+    subgraph cluster_experiment {
+        label=<<b>experiment</b>>;
+        shape=record;
+        style="filled,rounded";
+        fillcolor=white;
+        train;
+
+        subgraph cluster_analyze {
+            label=<<b>analyze</b>>;
+            predict;
+            evaluate;
+            compare;
+        }
+    }
+
+    figure, table [
+        fillcolor=lightblue,
+        style="filled",
+    ];
+    {rank = max; figure; table; }
+
+    dataset:train -> train [headlabel="sample + label [+ mask]",labelangle=30];
+    dataset:test -> predict [headlabel="sample",labelangle=30];
+    train -> predict [headlabel="model"];
+    dataset:test -> evaluate [headlabel="label"];
+    predict -> evaluate [headlabel="probabilities    ",labelangle=-30];
+    evaluate -> compare [headlabel="metrics"];
+    compare -> figure;
+    compare -> table;
+}
