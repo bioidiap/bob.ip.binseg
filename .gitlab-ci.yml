@@ -15,3 +15,4 @@ include:
 variables:
   GIT_SUBMODULE_STRATEGY: normal
   GIT_SUBMODULE_DEPTH: 1
+  OMP_NUM_THREADS: 1
