@@ -28,7 +28,6 @@ extensions = [
     "sphinx.ext.napoleon",
     "sphinx.ext.viewcode",
     "sphinx.ext.intersphinx",
-    "sphinx.ext.graphviz",
     "auto_intersphinx",
     "sphinx_autodoc_typehints",
     "sphinx_copybutton",

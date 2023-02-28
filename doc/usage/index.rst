@@ -50,8 +50,9 @@ results that can be produced for each of our CLI interfaces (rounded white
 rectangles).  Processing subproducts (marked in blue), are stored on disk by
 the end of each step.
 
-.. graphviz:: ../framework.dot
-   :caption: Framework actions and CLI
+.. figure:: img/experiment.png
+
+   Framework actions and CLI
 
 
 We provide a number of :ref:`preset configuration files that you can check with "config list all"
