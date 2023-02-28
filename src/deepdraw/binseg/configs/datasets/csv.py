@@ -62,7 +62,7 @@ More information:
 * :py:class:`deepdraw.common.data.dataset.JSONDataset` for an alternative for
   multi-protocol datasets (all of our supported raw datasets are implemented
   using this)
-* :py:func:`deepdraw.binseg.configs.datasets.analyze` for extra
+* :py:func:`deepdraw.binseg.configs.datasets.make_dataset` for extra
   information on the sample list to pytorch connector.
 """
 

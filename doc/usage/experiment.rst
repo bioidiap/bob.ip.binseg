@@ -14,7 +14,7 @@
  Running complete experiments
 ==============================
 
-We provide an :ref:`"experiment" command <deepdraw.binseg.cli>` 
+We provide an :ref:`"experiment" command <deepdraw.binseg.cli>`
 that runs training, followed by prediction,
 evaluation and comparison.  After running, you will be able to find results
 from model fitting, prediction, evaluation and comparison under a single output
