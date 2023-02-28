@@ -50,6 +50,8 @@ if applicable.  Use these datasets for training and evaluating your models.
    :toctree: api/configs/datasets
    :template: config.rst
 
+   deepdraw.binseg.configs.datasets.__init__
+
    deepdraw.binseg.configs.datasets.csv
 
    deepdraw.binseg.configs.datasets.chasedb1.first_annotator
