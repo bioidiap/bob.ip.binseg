@@ -14,7 +14,7 @@
 
 * Split reference: [GAAL-2020]_
 * Configuration resolution: 256 x 256
-* See :py:mod:`deepdraw.binseg.data.chexphoto` for dataset details
+* See :py:mod:`deepdraw.detect.data.chexphoto` for dataset details
 """
 
 from deepdraw.detect.configs.datasets.chexphoto import _maker_augmented

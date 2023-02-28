@@ -24,20 +24,25 @@ logger = setup(__name__.split(".")[0], format="%(levelname)s: %(message)s")
     epilog="""Examples:
 
 \b
-    1. Runs evaluation on an existing dataset configuration:
+  1. Runs evaluation on an existing dataset configuration:
+
+     .. code:: sh
+
+        $ detect evaluate -vv drive --predictions-folder=path/to/predictions --output-folder=path/to/results
+
 \b
-       $ detect evaluate -vv drive --predictions-folder=path/to/predictions --output-folder=path/to/results
-\b
-    2. To run evaluation on a folder with your own images and annotations, you
-       must first specify resizing, cropping, etc, so that the image can be
-       correctly input to the model.  Failing to do so will likely result in
-       poor performance.  To figure out such specifications, you must consult
-       the dataset configuration used for **training** the provided model.
-       Once you figured this out, do the following:
-\b
-       $ detect config copy csv-dataset-example mydataset.py
-       # modify "mydataset.py" to your liking
-       $ detect evaluate -vv mydataset.py --predictions-folder=path/to/predictions --output-folder=path/to/results
+ 2. To run evaluation on a folder with your own images and annotations, you
+     must first specify resizing, cropping, etc, so that the image can be
+     correctly input to the model.  Failing to do so will likely result in
+     poor performance.  To figure out such specifications, you must consult
+     the dataset configuration used for **training** the provided model.
+     Once you figured this out, do the following:
+
+     .. code:: sh
+
+        $ detect config copy csv-dataset-example mydataset.py
+        # modify "mydataset.py" to your liking
+        $ detect evaluate -vv mydataset.py --predictions-folder=path/to/predictions --output-folder=path/to/results
 """,
 )
 @click.option(

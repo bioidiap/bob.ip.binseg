@@ -50,7 +50,7 @@ results that can be produced for each of our CLI interfaces (rounded white
 rectangles).  Processing subproducts (marked in blue), are stored on disk by
 the end of each step.
 
-.. graphviz:: framework.dot
+.. graphviz:: ../framework.dot
    :caption: Framework actions and CLI
 
 

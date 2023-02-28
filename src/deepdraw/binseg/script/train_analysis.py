@@ -24,10 +24,11 @@ logger = setup(__name__.split(".")[0], format="%(levelname)s: %(message)s")
     epilog="""Examples:
 
 \b
-    1. Analyzes a training log and produces various plots:
+  1. Analyzes a training log and produces various plots:
 
-       $ binseg train-analysis -vv log.csv constants.csv
+     .. code:: sh
 
+        $ binseg train-analysis -vv log.csv constants.csv
 """,
 )
 @click.argument(

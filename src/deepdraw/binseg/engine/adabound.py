@@ -10,9 +10,9 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-"""Implementation of the `AdaBound optimizer.
+"""Implementation of the AdaBound optimizer.
 
-<https://github.com/Luolc/AdaBound/blob/master/adabound/adabound.py>`::
+<https://github.com/Luolc/AdaBound/blob/master/adabound/adabound.py>::
 
     @inproceedings{Luo2019AdaBound,
       author = {Luo, Liangchen and Xiong, Yuanhao and Liu, Yan and Sun, Xu},

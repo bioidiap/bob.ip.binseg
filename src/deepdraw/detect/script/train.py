@@ -24,18 +24,26 @@ logger = setup(__name__.split(".")[0], format="%(levelname)s: %(message)s")
     epilog="""Examples:
 
 \b
-    1. Trains a Faster-R-CNN model with JSRT (lung detection),
-       on a GPU (``cuda:0``):
+  1. Trains a Faster-R-CNN model with JSRT (lung detection),
+     on a GPU (``cuda:0``):
 
-       $ detect train -vv faster_rcnn faster_rcnn --batch-size=4 --device="cuda:0"
+     .. code:: sh
 
-    2. Trains a Faster-R-CNN model with CXR8 on a GPU (``cuda:0``):
+        $ detect train -vv faster_rcnn faster_rcnn --batch-size=4 --device="cuda:0"
 
-       $ detect train -vv faster_rcnn cxr8 --batch-size=8 --device="cuda:0"
+\b
+  2. Trains a Faster-R-CNN model with CXR8 on a GPU (``cuda:0``):
 
-    3. Trains a Faster-R-CNN model on the CheXphoto dataset on the CPU:
+       .. code:: sh
 
-       $ detect train -vv faster_rcnn chexphoto --batch-size=8
+        $ detect train -vv faster_rcnn cxr8 --batch-size=8 --device="cuda:0"
+
+\b
+  3. Trains a Faster-R-CNN model on the CheXphoto dataset on the CPU:
+
+     .. code:: sh
+
+        $ detect train -vv faster_rcnn chexphoto --batch-size=8
 
 """,
 )

@@ -9,4 +9,5 @@
 .. SPDX-License-Identifier: GPL-3.0-or-later
 
 {% include "autosummary/module.rst" %}
-.. literalinclude:: ../../../../{{ fullname.replace(".", "/") }}.py
+.. literalinclude:: ../../../../src/{{ fullname.replace(".", "/") }}.py
+   :start-at: import

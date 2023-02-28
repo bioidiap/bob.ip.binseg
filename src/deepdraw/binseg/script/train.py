@@ -24,19 +24,28 @@ logger = setup(__name__.split(".")[0], format="%(levelname)s: %(message)s")
     epilog="""Examples:
 
 \b
-    1. Trains a U-Net model (VGG-16 backbone) with DRIVE (vessel segmentation),
-       on a GPU (``cuda:0``):
+  1. Trains a U-Net model (VGG-16 backbone) with DRIVE (vessel segmentation),
+     on a GPU (``cuda:0``):
 
-       $ binseg train -vv unet drive --batch-size=4 --device="cuda:0"
+     .. code:: sh
 
-    2. Trains a HED model with HRF on a GPU (``cuda:0``):
+        $ binseg train -vv unet drive --batch-size=4 --device="cuda:0"
 
-       $ binseg train -vv hed hrf --batch-size=8 --device="cuda:0"
 
-    3. Trains a M2U-Net model on the COVD-DRIVE dataset on the CPU:
+\b
+  2. Trains a HED model with HRF on a GPU (``cuda:0``):
 
-       $ binseg train -vv m2unet covd-drive --batch-size=8
+     .. code:: sh
 
+        $ binseg train -vv hed hrf --batch-size=8 --device="cuda:0"
+
+
+\b
+  3. Trains a M2U-Net model on the COVD-DRIVE dataset on the CPU:
+
+     .. code:: sh
+
+        $ binseg train -vv m2unet covd-drive --batch-size=8
 """,
 )
 @click.option(
