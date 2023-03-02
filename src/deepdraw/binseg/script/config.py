@@ -76,7 +76,6 @@ def config():
      .. code:: sh
 
         binseg config list -v
-
 """
 )
 @verbosity_option(logger=logger)

@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: Copyright © 2023 Idiap Research Institute <contact@idiap.ch>
+# SPDX-FileCopyrightText: 2023 Idiap Research Institute <contact@idiap.ch>
 #
 # SPDX-FileContributor: Tim Laibacher, tim.laibacher@idiap.ch
 # SPDX-FileContributor: Oscar Jiménez del Toro, oscar.jimenez@idiap.ch
