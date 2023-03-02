@@ -1,12 +1,4 @@
-#!/usr/bin/env python
-
 # SPDX-FileCopyrightText: Copyright © 2023 Idiap Research Institute <contact@idiap.ch>
-#
-# SPDX-FileContributor: Tim Laibacher, tim.laibacher@idiap.ch
-# SPDX-FileContributor: Oscar Jiménez del Toro, oscar.jimenez@idiap.ch
-# SPDX-FileContributor: Maxime Délitroz, maxime.delitroz@idiap.ch
-# SPDX-FileContributor: Andre Anjos andre.anjos@idiap.ch
-# SPDX-FileContributor: Daniel Carron, daniel.carron@idiap.ch
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -250,7 +242,7 @@ def train_epoch(loader, model, optimizer, device, batch_chunk_count):
 
         # Forward pass on the network
         loss_dict = model(images, targets)
-        loss = sum(loss for loss in loss_dict.values())
+        loss = sum(k for k in loss_dict.values())
 
         losses_in_batch.append(loss.item())
         samples_in_batch.append(len(samples))

@@ -1,18 +1,89 @@
-#!/usr/bin/env python
-
 # SPDX-FileCopyrightText: Copyright © 2023 Idiap Research Institute <contact@idiap.ch>
-#
-# SPDX-FileContributor: Tim Laibacher, tim.laibacher@idiap.ch
-# SPDX-FileContributor: Oscar Jiménez del Toro, oscar.jimenez@idiap.ch
-# SPDX-FileContributor: Maxime Délitroz, maxime.delitroz@idiap.ch
-# SPDX-FileContributor: Andre Anjos andre.anjos@idiap.ch
-# SPDX-FileContributor: Daniel Carron, daniel.carron@idiap.ch
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
+import contextlib
+import io
+import os
 import pathlib
+import tempfile
+import warnings
+import zipfile
 
 import pytest
+import tomli_w
+
+from click.testing import CliRunner
+
+"""
+
+In your tests:
+
+  def test_foo(cli_runner):
+    r = cli_runner.invoke(mycli, ["mycommand"])
+    assert r.exit_code == 0
+
+In `some_command()`, add:
+
+  @cli.command()
+  def mycommand():
+    import pytest; pytest.set_trace()
+
+Then run via:
+
+  $ pytest -sv --pdb-trace ...
+
+Note any tests checking CliRunner stdout/stderr values will fail when
+--pdb-trace is set.
+
+"""
+
+
+def pytest_addoption(parser) -> None:
+    parser.addoption(
+        "--pdb-trace",
+        action="store_true",
+        default=False,
+        help="Allow calling pytest.set_trace() in Click's CliRunner",
+    )
+
+
+class MyCliRunner(CliRunner):
+    def __init__(self, *args, in_pdb=False, **kwargs) -> None:
+        self._in_pdb = in_pdb
+        super().__init__(*args, **kwargs)
+
+    def invoke(self, cli, args=None, **kwargs):
+        params = kwargs.copy()
+        if self._in_pdb:
+            params["catch_exceptions"] = False
+
+        return super().invoke(cli, args=args, **params)
+
+    def isolation(self, input=None, env=None, color=False):
+        if self._in_pdb:
+            if input or env or color:
+                warnings.warn(
+                    "CliRunner PDB un-isolation doesn't work if input/env/color are passed"
+                )
+            else:
+                return self.isolation_pdb()
+
+        return super().isolation(input=input, env=env, color=color)
+
+    @contextlib.contextmanager
+    def isolation_pdb(self):
+        s = io.BytesIO(b"{stdout not captured because --pdb-trace}")
+        yield (s, not self.mix_stderr and s)
+
+
+@pytest.fixture
+def cli_runner(request) -> MyCliRunner:
+    """A wrapper round Click's test CliRunner to improve usefulness."""
+    return MyCliRunner(
+        # workaround Click's environment isolation so debugging works.
+        in_pdb=request.config.getoption("--pdb-trace")
+    )
 
 
 @pytest.fixture
@@ -75,15 +146,20 @@ def temporary_basedir(tmp_path_factory):
     return tmp_path_factory.mktemp("test-cli")
 
 
-@pytest.fixture(scope="session")
-def stare_datadir(tmp_path_factory) -> pathlib.Path:
+def pytest_sessionstart(session: pytest.Session) -> None:
+    """Presets the session start to ensure the STARE dataset is always
+    available."""
+
     from deepdraw.common.utils.rc import load_rc
 
-    database_dir = load_rc().get("datadir.stare")
-    if database_dir is not None:
-        return pathlib.Path(database_dir)
+    rc = load_rc()
 
-    # else, we must extract the LFS component
+    database_dir = rc.get("datadir.stare")
+    if database_dir is not None:
+        # if the user downloaded it, use that copy
+        return
+
+    # else, we must extract the LFS component (we are likely on the CI)
     archive = (
         pathlib.Path(__file__).parents[0]
         / "data"
@@ -97,11 +173,19 @@ def stare_datadir(tmp_path_factory) -> pathlib.Path:
         f"this submodule?)"
     )
 
-    database_dir = tmp_path_factory.mktemp("stare_datadir")
-
-    import zipfile
+    stare_tempdir = tempfile.TemporaryDirectory()
+    rc.setdefault("datadir.stare", stare_tempdir.name)
 
     with zipfile.ZipFile(archive) as zf:
-        zf.extractall(database_dir)
+        zf.extractall(stare_tempdir.name)
 
-    return database_dir
+    config_filename = "deepdraw.toml"
+    with open(os.path.join(stare_tempdir.name, config_filename), "wb") as f:
+        tomli_w.dump(rc.data, f)
+        f.flush()
+
+    os.environ["XDG_CONFIG_HOME"] = stare_tempdir.name
+
+    # stash the newly created temporary directory so we can erase it when the
+    key = pytest.StashKey[tempfile.TemporaryDirectory]()
+    session.stash[key] = stare_tempdir

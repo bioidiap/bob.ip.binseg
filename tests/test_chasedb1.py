@@ -1,12 +1,4 @@
-#!/usr/bin/env python
-
 # SPDX-FileCopyrightText: Copyright © 2023 Idiap Research Institute <contact@idiap.ch>
-#
-# SPDX-FileContributor: Tim Laibacher, tim.laibacher@idiap.ch
-# SPDX-FileContributor: Oscar Jiménez del Toro, oscar.jimenez@idiap.ch
-# SPDX-FileContributor: Maxime Délitroz, maxime.delitroz@idiap.ch
-# SPDX-FileContributor: Andre Anjos andre.anjos@idiap.ch
-# SPDX-FileContributor: Daniel Carron, daniel.carron@idiap.ch
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -15,11 +7,12 @@
 import numpy
 import pytest
 
-from deepdraw.binseg.data.chasedb1 import dataset
-from tests.utils import count_bw
+from . import count_bw
 
 
 def test_protocol_consistency():
+    from deepdraw.binseg.data.chasedb1 import dataset
+
     subset = dataset.subsets("first-annotator")
     assert len(subset) == 2
 
@@ -49,6 +42,8 @@ def test_protocol_consistency():
 
 @pytest.mark.skip_if_rc_var_not_set("datadir.chasedb1")
 def test_loading():
+    from deepdraw.binseg.data.chasedb1 import dataset
+
     image_size = (999, 960)
 
     def _check_sample(s, bw_threshold_label, bw_threshold_mask):
@@ -123,4 +118,6 @@ def test_loading():
 
 @pytest.mark.skip_if_rc_var_not_set("datadir.chasedb1")
 def test_check():
+    from deepdraw.binseg.data.chasedb1 import dataset
+
     assert dataset.check() == 0

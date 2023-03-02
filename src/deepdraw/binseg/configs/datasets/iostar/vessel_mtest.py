@@ -1,12 +1,4 @@
-#!/usr/bin/env python
-
 # SPDX-FileCopyrightText: Copyright © 2023 Idiap Research Institute <contact@idiap.ch>
-#
-# SPDX-FileContributor: Tim Laibacher, tim.laibacher@idiap.ch
-# SPDX-FileContributor: Oscar Jiménez del Toro, oscar.jimenez@idiap.ch
-# SPDX-FileContributor: Maxime Délitroz, maxime.delitroz@idiap.ch
-# SPDX-FileContributor: Andre Anjos andre.anjos@idiap.ch
-# SPDX-FileContributor: Daniel Carron, daniel.carron@idiap.ch
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -15,8 +7,8 @@
 * Configuration resolution: 1024 x 1024
 """
 
-from deepdraw.binseg.configs.datasets.iostar.vessel_xtest import dataset as _xt
-from deepdraw.common.data.transforms import CenterCrop, Crop, Pad, Resize
+from .....common.data.transforms import CenterCrop, Crop, Pad, Resize
+from .vessel_xtest import dataset as _xt
 
 dataset = {
     "train": _xt["train"],

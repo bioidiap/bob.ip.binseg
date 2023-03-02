@@ -1,23 +1,13 @@
-#!/usr/bin/env python
-
 # SPDX-FileCopyrightText: Copyright © 2023 Idiap Research Institute <contact@idiap.ch>
-#
-# SPDX-FileContributor: Tim Laibacher, tim.laibacher@idiap.ch
-# SPDX-FileContributor: Oscar Jiménez del Toro, oscar.jimenez@idiap.ch
-# SPDX-FileContributor: Maxime Délitroz, maxime.delitroz@idiap.ch
-# SPDX-FileContributor: Andre Anjos andre.anjos@idiap.ch
-# SPDX-FileContributor: Daniel Carron, daniel.carron@idiap.ch
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 """CXR8 cross-evaluation dataset."""
 
-from deepdraw.binseg.configs.datasets.cxr8.default import dataset as _cxr8
-from deepdraw.binseg.configs.datasets.jsrt.default import dataset as _jsrt
-from deepdraw.binseg.configs.datasets.montgomery.default import dataset as _mc
-from deepdraw.binseg.configs.datasets.shenzhen.default import (
-    dataset as _shenzhen,
-)
+from ..jsrt.default import dataset as _jsrt
+from ..montgomery.default import dataset as _mc
+from ..shenzhen.default import dataset as _shenzhen
+from .default import dataset as _cxr8
 
 dataset = {
     "train": _cxr8["train"],

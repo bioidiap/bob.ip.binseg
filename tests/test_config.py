@@ -1,11 +1,5 @@
 # SPDX-FileCopyrightText: Copyright © 2023 Idiap Research Institute <contact@idiap.ch>
 #
-# SPDX-FileContributor: Tim Laibacher, tim.laibacher@idiap.ch
-# SPDX-FileContributor: Oscar Jiménez del Toro, oscar.jimenez@idiap.ch
-# SPDX-FileContributor: Maxime Délitroz, maxime.delitroz@idiap.ch
-# SPDX-FileContributor: Andre Anjos andre.anjos@idiap.ch
-# SPDX-FileContributor: Daniel Carron, daniel.carron@idiap.ch
-#
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 import importlib
@@ -124,30 +118,25 @@ def test_drive_covd():
             assert sample[1].min() >= 0.0
 
 
-def test_stare_augmentation_manipulation(stare_datadir):
-    # Temporarily modify Montgomery datadir
-    from . import rc_context
+@pytest.mark.skip_if_rc_var_not_set("datadir.stare")
+def test_stare_augmentation_manipulation():
+    # some tests to check our context management for dataset augmentation works
+    # adequately, with one example dataset
 
-    new_value = {"datadir.stare": str(stare_datadir)}
-    with rc_context(**new_value):
-        # some tests to check our context management for dataset augmentation works
-        # adequately, with one example dataset
+    # hack to allow testing on the CI
+    from deepdraw.binseg.configs.datasets.stare.ah import dataset
 
-        # hack to allow testing on the CI
-        from deepdraw.binseg.configs.datasets.stare import _maker
+    assert len(dataset["__train__"]._transforms.transforms) == (
+        len(dataset["test"]._transforms.transforms) + 4
+    )
 
-        dataset = _maker("ah")
-
-        assert len(dataset["__train__"]._transforms.transforms) == (
-            len(dataset["test"]._transforms.transforms) + 4
-        )
-
-        assert len(dataset["train"]._transforms.transforms) == len(
-            dataset["test"]._transforms.transforms
-        )
+    assert len(dataset["train"]._transforms.transforms) == len(
+        dataset["test"]._transforms.transforms
+    )
 
 
-def test_stare(stare_datadir):
+@pytest.mark.skip_if_rc_var_not_set("datadir.stare")
+def test_stare():
     def _check_subset(samples, size, height, width):
         assert len(samples) == size
         for s in samples:
@@ -162,36 +151,27 @@ def test_stare(stare_datadir):
             assert s[1].max() <= 1.0
             assert s[1].min() >= 0.0
 
-    # Temporarily modify Stare datadir
-    from deepdraw.binseg.data.stare import _make_dataset
+    # hack to allow testing on the CI
+    from deepdraw.binseg.configs.datasets.stare import _maker, _maker_square
 
-    from . import rc_context
-
-    raw = _make_dataset(stare_datadir)
-
-    new_value = {"datadir.stare": str(stare_datadir)}
-    with rc_context(**new_value):
-        # hack to allow testing on the CI
-        from deepdraw.binseg.configs.datasets.stare import _maker, _maker_square
-
-        for protocol in "ah", "vk":
-            dataset = _maker(protocol, raw=raw)
-            assert len(dataset) == 4
-            _check_subset(dataset["__train__"], 10, 608, 704)
-            _check_subset(dataset["train"], 10, 608, 704)
-            _check_subset(dataset["test"], 10, 608, 704)
-
-        dataset = _maker_square("ah", 768, raw=raw)
+    for protocol in "ah", "vk":
+        dataset = _maker(protocol)
         assert len(dataset) == 4
-        _check_subset(dataset["__train__"], 10, 768, 768)
-        _check_subset(dataset["train"], 10, 768, 768)
-        _check_subset(dataset["test"], 10, 768, 768)
+        _check_subset(dataset["__train__"], 10, 608, 704)
+        _check_subset(dataset["train"], 10, 608, 704)
+        _check_subset(dataset["test"], 10, 608, 704)
 
-        dataset = _maker_square("ah", 1024, raw=raw)
-        assert len(dataset) == 4
-        _check_subset(dataset["__train__"], 10, 1024, 1024)
-        _check_subset(dataset["train"], 10, 1024, 1024)
-        _check_subset(dataset["test"], 10, 1024, 1024)
+    dataset = _maker_square("ah", 768)
+    assert len(dataset) == 4
+    _check_subset(dataset["__train__"], 10, 768, 768)
+    _check_subset(dataset["train"], 10, 768, 768)
+    _check_subset(dataset["test"], 10, 768, 768)
+
+    dataset = _maker_square("ah", 1024)
+    assert len(dataset) == 4
+    _check_subset(dataset["__train__"], 10, 1024, 1024)
+    _check_subset(dataset["train"], 10, 1024, 1024)
+    _check_subset(dataset["test"], 10, 1024, 1024)
 
 
 @pytest.mark.skip_if_rc_var_not_set("datadir.drive")
@@ -772,9 +752,7 @@ def test_combined_vessels():
             assert s[1].max() <= 1.0
             assert s[1].min() >= 0.0
 
-    from deepdraw.binseg.configs.datasets.combined.vessel_combined import (
-        dataset,
-    )
+    from deepdraw.binseg.configs.datasets.combined.vessel import dataset
 
     assert len(dataset) == 4
     _check_subset(dataset["__train__"], 73, 768, 768)

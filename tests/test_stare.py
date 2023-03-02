@@ -1,12 +1,4 @@
-#!/usr/bin/env python
-
 # SPDX-FileCopyrightText: Copyright © 2023 Idiap Research Institute <contact@idiap.ch>
-#
-# SPDX-FileContributor: Tim Laibacher, tim.laibacher@idiap.ch
-# SPDX-FileContributor: Oscar Jiménez del Toro, oscar.jimenez@idiap.ch
-# SPDX-FileContributor: Maxime Délitroz, maxime.delitroz@idiap.ch
-# SPDX-FileContributor: Andre Anjos andre.anjos@idiap.ch
-# SPDX-FileContributor: Daniel Carron, daniel.carron@idiap.ch
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -15,13 +7,13 @@
 import os
 
 import numpy
+import pytest
 
-from deepdraw.binseg.data.stare import _make_dataset
-from tests.utils import count_bw
+from . import count_bw
 
 
-def test_protocol_consistency(stare_datadir):
-    dataset = _make_dataset(stare_datadir)
+def test_protocol_consistency():
+    from deepdraw.binseg.data.stare import dataset
 
     subset = dataset.subsets("ah")
     assert len(subset) == 2
@@ -50,7 +42,10 @@ def test_protocol_consistency(stare_datadir):
         assert s.key.startswith(os.path.join("stare-images", "im0"))
 
 
-def test_loading(stare_datadir):
+@pytest.mark.skip_if_rc_var_not_set("datadir.stare")
+def test_loading():
+    from deepdraw.binseg.data.stare import dataset
+
     image_size = (700, 605)
 
     def _check_sample(s, bw_threshold_label, bw_threshold_mask):
@@ -103,8 +98,6 @@ def test_loading(stare_datadir):
 
         return w / b
 
-    dataset = _make_dataset(stare_datadir)
-
     limit = None  # use this to limit testing to first images only
     subset = dataset.subsets("ah")
     proportions = [
@@ -122,7 +115,8 @@ def test_loading(stare_datadir):
     del proportions  # only to satisfy flake8
 
 
-def test_check(stare_datadir):
-    dataset = _make_dataset(stare_datadir)
+@pytest.mark.skip_if_rc_var_not_set("datadir.stare")
+def test_check():
+    from deepdraw.binseg.data.stare import dataset
 
     assert dataset.check() == 0

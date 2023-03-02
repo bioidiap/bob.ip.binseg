@@ -1,12 +1,4 @@
-#!/usr/bin/env python
-
 # SPDX-FileCopyrightText: Copyright © 2023 Idiap Research Institute <contact@idiap.ch>
-#
-# SPDX-FileContributor: Tim Laibacher, tim.laibacher@idiap.ch
-# SPDX-FileContributor: Oscar Jiménez del Toro, oscar.jimenez@idiap.ch
-# SPDX-FileContributor: Maxime Délitroz, maxime.delitroz@idiap.ch
-# SPDX-FileContributor: Andre Anjos andre.anjos@idiap.ch
-# SPDX-FileContributor: Daniel Carron, daniel.carron@idiap.ch
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -508,9 +500,9 @@ def _compare_annotators_worker(args):
     pred = other_sample[2]  # works as a prediction
     pred = torch.cat(
         (
-            pred["boxes"],
-            pred["label"].unsqueeze(0),
-            torch.tensor([[1]]).unsqueeze(0),
+            pred["boxes"].squeeze(0),
+            pred["labels"],
+            torch.tensor([1]),
         )
     )
     retval = _sample_measures(pred, gt, 2)

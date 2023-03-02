@@ -1,12 +1,4 @@
-#!/usr/bin/env python
-
 # SPDX-FileCopyrightText: Copyright © 2023 Idiap Research Institute <contact@idiap.ch>
-#
-# SPDX-FileContributor: Tim Laibacher, tim.laibacher@idiap.ch
-# SPDX-FileContributor: Oscar Jiménez del Toro, oscar.jimenez@idiap.ch
-# SPDX-FileContributor: Maxime Délitroz, maxime.delitroz@idiap.ch
-# SPDX-FileContributor: Andre Anjos andre.anjos@idiap.ch
-# SPDX-FileContributor: Daniel Carron, daniel.carron@idiap.ch
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -17,11 +9,9 @@
 * See :py:mod:`deepdraw.binseg.data.hrf` for dataset details
 """
 
-from deepdraw.binseg.configs.datasets.hrf import _maker_1168
+from . import _maker_1168
+from .default_fullres import dataset as _fr
 
 dataset = _maker_1168("default")
-
-from deepdraw.binseg.configs.datasets.hrf.default_fullres import dataset as _fr
-
 dataset["train (full resolution)"] = _fr["train"]
 dataset["test (full resolution)"] = _fr["test"]

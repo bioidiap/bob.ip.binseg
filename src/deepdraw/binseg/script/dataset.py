@@ -1,12 +1,4 @@
-#!/usr/bin/env python
-
 # SPDX-FileCopyrightText: Copyright © 2023 Idiap Research Institute <contact@idiap.ch>
-#
-# SPDX-FileContributor: Tim Laibacher, tim.laibacher@idiap.ch
-# SPDX-FileContributor: Oscar Jiménez del Toro, oscar.jimenez@idiap.ch
-# SPDX-FileContributor: Maxime Délitroz, maxime.delitroz@idiap.ch
-# SPDX-FileContributor: Andre Anjos andre.anjos@idiap.ch
-# SPDX-FileContributor: Daniel Carron, daniel.carron@idiap.ch
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -34,7 +26,7 @@ def _get_supported_datasets():
         if candidate.is_dir() and "__init__.py" in os.listdir(str(candidate)):
             retval.append(candidate.name)
 
-    return retval
+    return set(retval)
 
 
 def _get_installed_datasets() -> dict[str, str]:
@@ -87,7 +79,7 @@ def list():
     installed = _get_installed_datasets()
 
     click.echo("Supported datasets:")
-    for k in supported:
+    for k in sorted(supported):
         if k in installed:
             click.echo(f'- {k}: "{installed[k]}"')
         else:
@@ -139,8 +131,17 @@ def check(dataset, limit):
     import importlib
 
     to_check = _get_installed_datasets()
+    supported = _get_supported_datasets()
+    dataset = set(dataset)
 
-    if dataset:  # check only some
+    if dataset:
+        assert supported.issuperset(
+            dataset
+        ), f"Unsupported datasets: {dataset-supported}"
+    else:
+        dataset = supported
+
+    if dataset:
         delete = [k for k in to_check.keys() if k not in dataset]
         for k in delete:
             del to_check[k]

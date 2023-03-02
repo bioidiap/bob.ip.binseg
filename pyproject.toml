@@ -1,11 +1,5 @@
 # SPDX-FileCopyrightText: Copyright © 2023 Idiap Research Institute <contact@idiap.ch>
 #
-# SPDX-FileContributor: Tim Laibacher, tim.laibacher@idiap.ch
-# SPDX-FileContributor: Oscar Jiménez del Toro, oscar.jimenez@idiap.ch
-# SPDX-FileContributor: Maxime Délitroz, maxime.delitroz@idiap.ch
-# SPDX-FileContributor: Andre Anjos andre.anjos@idiap.ch
-# SPDX-FileContributor: Daniel Carron, daniel.carron@idiap.ch
-#
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 [build-system]
@@ -21,8 +15,10 @@ dynamic = ["readme"]
 license = {text = "GNU General Public License v3 (GPLv3)"}
 authors = [
     {name = "Tim Laibacher", email = "tim.laibacher@idiap.ch"},
+    {name = "Andre Anjos", email = "andre.anjos@idiap.ch"},
+    {name = "Maxime Delitroz", email = "maxime.delitroz@idiap.ch"},
     {name = "Oscar Jimenez", email = "oscar.jimenez@idiap.ch"},
-    {name = "Maxime Délitroz", email = "maxime.delitroz@idiap.ch"},
+    {name = "Daniel Carron", email = "daniel.carron@idiap.ch"},
 ]
 classifiers = [
     "Development Status :: 4 - Beta",
@@ -185,9 +181,7 @@ jsrt = "deepdraw.binseg.configs.datasets.jsrt.default"
 jsrt-xtest = "deepdraw.binseg.configs.datasets.jsrt.xtest"
 # cxr8 - cxr
 cxr8 = "deepdraw.binseg.configs.datasets.cxr8.default"
-cxr8-idiap = "deepdraw.binseg.configs.datasets.cxr8.idiap"
 cxr8-xtest = "deepdraw.binseg.configs.datasets.cxr8.xtest"
-cxr8-idiap-xtest = "deepdraw.binseg.configs.datasets.cxr8.xtest_idiap"
 
 [project.entry-points."detect.config"]
 # models
@@ -206,12 +200,12 @@ jsrt = "deepdraw.detect.configs.datasets.jsrt.default"
 jsrt-xtest = "deepdraw.detect.configs.datasets.jsrt.xtest"
 # cxr8 - cxr
 cxr8 = "deepdraw.detect.configs.datasets.cxr8.default"
-cxr8-idiap = "deepdraw.detect.configs.datasets.cxr8.idiap"
 cxr8-xtest = "deepdraw.detect.configs.datasets.cxr8.xtest"
-cxr8-idiap-xtest = "deepdraw.detect.configs.datasets.cxr8.xtest_idiap"
 # chexphoto - cxr
 chexphoto = "deepdraw.detect.configs.datasets.chexphoto.default"
 chexphoto-xtest = "deepdraw.detect.configs.datasets.chexphoto.xtest"
+# stare - eye-fundus (only for tests)
+stare = "deepdraw.detect.configs.datasets.stare.ah"
 
 [tool.setuptools]
 zip-safe = true

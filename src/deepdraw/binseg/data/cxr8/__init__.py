@@ -1,12 +1,4 @@
-#!/usr/bin/env python
-
 # SPDX-FileCopyrightText: Copyright © 2023 Idiap Research Institute <contact@idiap.ch>
-#
-# SPDX-FileContributor: Tim Laibacher, tim.laibacher@idiap.ch
-# SPDX-FileContributor: Oscar Jiménez del Toro, oscar.jimenez@idiap.ch
-# SPDX-FileContributor: Maxime Délitroz, maxime.delitroz@idiap.ch
-# SPDX-FileContributor: Andre Anjos andre.anjos@idiap.ch
-# SPDX-FileContributor: Daniel Carron, daniel.carron@idiap.ch
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -46,16 +38,31 @@ from ....common.utils.rc import load_rc
 
 _protocols = [
     pkg_resources.resource_filename(__name__, "default.json"),
-    pkg_resources.resource_filename(__name__, "idiap.json"),
 ]
 
-_root_path = load_rc().get("datadir.cxr8", os.path.realpath(os.curdir))
+_rc = load_rc()
+_root_path = _rc.get("datadir.cxr8", os.path.realpath(os.curdir))
+_idiap_organisation = True
+if os.path.exists(os.path.join(_root_path, "images", "00000001_000.png")):
+    _idiap_organisation = False
 
 
 def _raw_data_loader(sample):
+    sample_parts = sample["data"].split("/", 1)
+    sample_path = (
+        os.path.join(sample_parts[0], sample_parts[1][:5], sample_parts[1])
+        if _idiap_organisation
+        else sample["data"]
+    )
+    label_parts = sample["data"].split("/", 1)
+    label_path = (
+        os.path.join(label_parts[0], label_parts[1][:5], label_parts[1])
+        if _idiap_organisation
+        else sample["label"]
+    )
     retval = dict(
-        data=load_pil_rgb(os.path.join(_root_path, sample["data"])),
-        label=np.array(Image.open(os.path.join(_root_path, sample["label"]))),
+        data=load_pil_rgb(os.path.join(_root_path, sample_path)),
+        label=np.array(Image.open(os.path.join(_root_path, label_path))),
     )
 
     retval["label"] = np.where(retval["label"] == 255, 0, retval["label"])

@@ -1,12 +1,4 @@
-#!/usr/bin/env python
-
 # SPDX-FileCopyrightText: Copyright © 2023 Idiap Research Institute <contact@idiap.ch>
-#
-# SPDX-FileContributor: Tim Laibacher, tim.laibacher@idiap.ch
-# SPDX-FileContributor: Oscar Jiménez del Toro, oscar.jimenez@idiap.ch
-# SPDX-FileContributor: Maxime Délitroz, maxime.delitroz@idiap.ch
-# SPDX-FileContributor: Andre Anjos andre.anjos@idiap.ch
-# SPDX-FileContributor: Daniel Carron, daniel.carron@idiap.ch
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -27,9 +19,9 @@ For details on those datasets, consult:
 
 from torch.utils.data import ConcatDataset
 
-from deepdraw.binseg.configs.datasets import augment_subset as _augment
-from deepdraw.binseg.configs.datasets.drive.default import dataset as _baseline
-from deepdraw.binseg.configs.datasets.drive.mtest import dataset as _mtest
+from .. import augment_subset as _augment
+from .default import dataset as _baseline
+from .mtest import dataset as _mtest
 
 dataset = dict(**_baseline)
 dataset["__train__"] = ConcatDataset(

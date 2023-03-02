@@ -1,12 +1,4 @@
-#!/usr/bin/env python
-
 # SPDX-FileCopyrightText: Copyright © 2023 Idiap Research Institute <contact@idiap.ch>
-#
-# SPDX-FileContributor: Tim Laibacher, tim.laibacher@idiap.ch
-# SPDX-FileContributor: Oscar Jiménez del Toro, oscar.jimenez@idiap.ch
-# SPDX-FileContributor: Maxime Délitroz, maxime.delitroz@idiap.ch
-# SPDX-FileContributor: Andre Anjos andre.anjos@idiap.ch
-# SPDX-FileContributor: Daniel Carron, daniel.carron@idiap.ch
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -15,11 +7,12 @@
 import numpy
 import pytest
 
-from deepdraw.binseg.data.montgomery import dataset
-from tests.utils import count_bw
+from . import count_bw
 
 
 def test_protocol_consistency():
+    from deepdraw.binseg.data.montgomery import dataset
+
     subset = dataset.subsets("default")
     assert len(subset) == 3
 
@@ -41,6 +34,8 @@ def test_protocol_consistency():
 
 @pytest.mark.skip_if_rc_var_not_set("datadir.montgomery")
 def test_loading():
+    from deepdraw.binseg.data.montgomery import dataset
+
     image_size_1 = (4892, 4020)
     image_size_2 = (4020, 4892)
 
@@ -95,4 +90,6 @@ def test_loading():
 
 @pytest.mark.skip_if_rc_var_not_set("datadir.montgomery")
 def test_check():
+    from deepdraw.binseg.data.montgomery import dataset
+
     assert dataset.check() == 0

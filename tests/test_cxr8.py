@@ -1,12 +1,4 @@
-#!/usr/bin/env python
-
 # SPDX-FileCopyrightText: Copyright © 2023 Idiap Research Institute <contact@idiap.ch>
-#
-# SPDX-FileContributor: Tim Laibacher, tim.laibacher@idiap.ch
-# SPDX-FileContributor: Oscar Jiménez del Toro, oscar.jimenez@idiap.ch
-# SPDX-FileContributor: Maxime Délitroz, maxime.delitroz@idiap.ch
-# SPDX-FileContributor: Andre Anjos andre.anjos@idiap.ch
-# SPDX-FileContributor: Daniel Carron, daniel.carron@idiap.ch
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -15,12 +7,13 @@
 import numpy
 import pytest
 
-from deepdraw.binseg.data.cxr8 import dataset
-from tests.utils import count_bw
+from . import count_bw
 
 
 def test_protocol_consistency():
-    subset = dataset.subsets("idiap")
+    from deepdraw.binseg.data.cxr8 import dataset
+
+    subset = dataset.subsets("default")
     assert len(subset) == 3
 
     assert "train" in subset
@@ -41,6 +34,8 @@ def test_protocol_consistency():
 
 @pytest.mark.skip_if_rc_var_not_set("datadir.cxr8")
 def test_loading():
+    from deepdraw.binseg.data.cxr8 import dataset
+
     image_size = (1024, 1024)
 
     def _check_sample(s, bw_threshold_label):
@@ -79,7 +74,7 @@ def test_loading():
         return w / b
 
     limit = None  # use this to limit testing to first images only
-    subset = dataset.subsets("idiap")
+    subset = dataset.subsets("default")
     proportions = [_check_sample(s, 1.4) for s in subset["train"][:limit]]
     proportions = [_check_sample(s, 1.4) for s in subset["validation"][:limit]]
     proportions = [_check_sample(s, 1.4) for s in subset["test"][:limit]]
@@ -88,4 +83,6 @@ def test_loading():
 
 @pytest.mark.skip_if_rc_var_not_set("datadir.cxr8")
 def test_check():
+    from deepdraw.binseg.data.cxr8 import dataset
+
     assert dataset.check() == 0

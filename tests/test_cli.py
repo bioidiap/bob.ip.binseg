@@ -1,12 +1,4 @@
-#!/usr/bin/env python
-
 # SPDX-FileCopyrightText: Copyright © 2023 Idiap Research Institute <contact@idiap.ch>
-#
-# SPDX-FileContributor: Tim Laibacher, tim.laibacher@idiap.ch
-# SPDX-FileContributor: Oscar Jiménez del Toro, oscar.jimenez@idiap.ch
-# SPDX-FileContributor: Maxime Délitroz, maxime.delitroz@idiap.ch
-# SPDX-FileContributor: Andre Anjos andre.anjos@idiap.ch
-# SPDX-FileContributor: Daniel Carron, daniel.carron@idiap.ch
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -18,44 +10,43 @@ import os
 import re
 import tempfile
 
-from click.testing import CliRunner
+import pytest
 
-from tests.utils import assert_click_runner_result
+from . import assert_click_runner_result
 
 
 def _assert_exit_0(result):
     assert_click_runner_result(result)
 
 
-def _check_help(entry_point):
-    runner = CliRunner()
+def _check_help(entry_point, runner):
     result = runner.invoke(entry_point, ["--help"])
     _assert_exit_0(result)
     assert result.output.startswith("Usage:")
 
 
-def test_main_help_binseg():
+def test_main_help_binseg(cli_runner):
     from deepdraw.common.script.common import binseg
 
-    _check_help(binseg)
+    _check_help(binseg, cli_runner)
 
 
-def test_main_help_detect():
+def test_main_help_detect(cli_runner):
     from deepdraw.common.script.common import detect
 
-    _check_help(detect)
+    _check_help(detect, cli_runner)
 
 
-def test_binseg_experiment_help():
+def test_binseg_experiment_help(cli_runner):
     from deepdraw.binseg.script.experiment import experiment
 
-    _check_help(experiment)
+    _check_help(experiment, cli_runner)
 
 
-def test_detect_experiment_help():
+def test_detect_experiment_help(cli_runner):
     from deepdraw.detect.script.experiment import experiment
 
-    _check_help(experiment)
+    _check_help(experiment, cli_runner)
 
 
 def _str_counter(substr, s):
@@ -63,24 +54,21 @@ def _str_counter(substr, s):
 
 
 def _check_experiment_stare(
-    caplog, stare_datadir, overlay, multiprocess=False, extra_valid=0
+    cli_runner, caplog, overlay, multiprocess=False, extra_valid=0
 ):
     from deepdraw.binseg.script.experiment import experiment
 
     # ensures we capture only ERROR messages and above by default
     caplog.set_level(logging.ERROR)
 
-    runner = CliRunner()
-    with runner.isolated_filesystem(), caplog.at_level(
+    with cli_runner.isolated_filesystem(), caplog.at_level(
         logging.INFO, logger="deepdraw.binseg"
     ), tempfile.NamedTemporaryFile(mode="wt") as config:
         # re-write STARE dataset configuration for test
-        config.write("from deepdraw.binseg.data.stare import _make_dataset\n")
-        config.write(f"_raw = _make_dataset('{stare_datadir}')\n")
         config.write(
-            "from deepdraw.binseg.configs.datasets.stare import _maker\n"
+            "from deepdraw.binseg.configs.datasets.stare.ah import dataset"
+            ", second_annotator\n"
         )
-        config.write("dataset = _maker('ah', _raw)\n")
         if extra_valid > 0:
             # simulates the existence of a single extra validation dataset
             # which is simply a copy of the __valid__ dataset for this test...
@@ -88,7 +76,6 @@ def _check_experiment_stare(
                 f"dataset['__extra_valid__'] = "
                 f"{extra_valid}*[dataset['__valid__']]\n"
             )
-        config.write("second_annotator = _maker('vk', _raw)\n")
         config.flush()
 
         output_folder = "results"
@@ -111,7 +98,7 @@ def _check_experiment_stare(
         if multiprocess:
             options += ["--parallel=1"]
 
-        result = runner.invoke(experiment, options)
+        result = cli_runner.invoke(experiment, options)
 
         _assert_exit_0(result)
 
@@ -259,47 +246,49 @@ def _check_experiment_stare(
             )
 
 
-def test_experiment_stare_with_overlay(caplog, stare_datadir):
-    _check_experiment_stare(caplog, stare_datadir, overlay=True)
+@pytest.mark.skip_if_rc_var_not_set("datadir.stare")
+def test_experiment_stare_with_overlay(cli_runner, caplog):
+    _check_experiment_stare(cli_runner, caplog, overlay=True)
 
 
-def test_experiment_stare_without_overlay(caplog, stare_datadir):
-    _check_experiment_stare(caplog, stare_datadir, overlay=False)
+@pytest.mark.skip_if_rc_var_not_set("datadir.stare")
+def test_experiment_stare_without_overlay(cli_runner, caplog):
+    _check_experiment_stare(cli_runner, caplog, overlay=False)
 
 
-def test_experiment_stare_with_multiprocessing(caplog, stare_datadir):
+@pytest.mark.skip_if_rc_var_not_set("datadir.stare")
+def test_experiment_stare_with_multiprocessing(cli_runner, caplog):
     _check_experiment_stare(
-        caplog, stare_datadir, overlay=False, multiprocess=True
+        cli_runner, caplog, overlay=False, multiprocess=True
     )
 
 
-def test_experiment_stare_with_extra_validation(caplog, stare_datadir):
-    _check_experiment_stare(caplog, stare_datadir, overlay=False, extra_valid=1)
+@pytest.mark.skip_if_rc_var_not_set("datadir.stare")
+def test_experiment_stare_with_extra_validation(cli_runner, caplog):
+    _check_experiment_stare(cli_runner, caplog, overlay=False, extra_valid=1)
 
 
-def test_experiment_stare_with_multiple_extra_validation(caplog, stare_datadir):
-    _check_experiment_stare(caplog, stare_datadir, overlay=False, extra_valid=3)
+@pytest.mark.skip_if_rc_var_not_set("datadir.stare")
+def test_experiment_stare_with_multiple_extra_validation(cli_runner, caplog):
+    _check_experiment_stare(cli_runner, caplog, overlay=False, extra_valid=3)
 
 
+@pytest.mark.skip_if_rc_var_not_set("datadir.stare")
 def _check_experiment_stare_detection(
-    caplog, stare_datadir, overlay, multiprocess=False, extra_valid=0
+    cli_runner, caplog, overlay, multiprocess=False, extra_valid=0
 ):
     from deepdraw.detect.script.experiment import experiment
 
     # ensures we capture only ERROR messages and above by default
     caplog.set_level(logging.ERROR)
 
-    runner = CliRunner()
-    with runner.isolated_filesystem(), caplog.at_level(
+    with cli_runner.isolated_filesystem(), caplog.at_level(
         logging.INFO, logger="deepdraw.detect"
     ), tempfile.NamedTemporaryFile(mode="wt") as config:
         # re-write STARE dataset configuration for test
-        config.write("from deepdraw.binseg.data.stare import _make_dataset\n")
-        config.write(f"_raw = _make_dataset('{stare_datadir}')\n")
         config.write(
-            "from deepdraw.detect.configs.datasets.stare import _maker\n"
+            "from deepdraw.detect.configs.datasets.stare.ah import dataset\n"
         )
-        config.write("dataset = _maker('ah', _raw)\n")
         if extra_valid > 0:
             # simulates the existence of a single extra validation dataset
             # which is simply a copy of the __valid__ dataset for this test...
@@ -325,7 +314,7 @@ def _check_experiment_stare_detection(
         if multiprocess:
             options += ["--parallel=1"]
 
-        result = runner.invoke(experiment, options)
+        result = cli_runner.invoke(experiment, options)
         _assert_exit_0(result)
 
         # check command-line
@@ -444,49 +433,40 @@ def _check_experiment_stare_detection(
             )
 
 
-def test_experiment_stare_with_overlay_detection(caplog, stare_datadir):
-    _check_experiment_stare_detection(caplog, stare_datadir, overlay=True)
+@pytest.mark.skip_if_rc_var_not_set("datadir.stare")
+def test_experiment_stare_with_overlay_detection(cli_runner, caplog):
+    _check_experiment_stare_detection(cli_runner, caplog, overlay=True)
 
 
-def test_experiment_stare_without_overlay_detection(caplog, stare_datadir):
-    _check_experiment_stare_detection(caplog, stare_datadir, overlay=False)
+@pytest.mark.skip_if_rc_var_not_set("datadir.stare")
+def test_experiment_stare_without_overlay_detection(cli_runner, caplog):
+    _check_experiment_stare_detection(cli_runner, caplog, overlay=False)
 
 
-def test_experiment_stare_with_multiprocessing_detection(caplog, stare_datadir):
+@pytest.mark.skip_if_rc_var_not_set("datadir.stare")
+def test_experiment_stare_with_multiprocessing_detection(cli_runner, caplog):
     _check_experiment_stare_detection(
-        caplog, stare_datadir, overlay=False, multiprocess=True
+        cli_runner, caplog, overlay=False, multiprocess=True
     )
 
 
-def test_experiment_stare_with_extra_validation_detection(
-    caplog, stare_datadir
-):
+@pytest.mark.skip_if_rc_var_not_set("datadir.stare")
+def test_experiment_stare_with_extra_validation_detection(cli_runner, caplog):
     _check_experiment_stare_detection(
-        caplog, stare_datadir, overlay=False, extra_valid=1
+        cli_runner, caplog, overlay=False, extra_valid=1
     )
 
 
-def _check_train(caplog, runner, stare_datadir):
+def _check_train(runner, caplog):
     from deepdraw.binseg.script.train import train
 
-    with tempfile.NamedTemporaryFile(mode="wt") as config, caplog.at_level(
-        logging.INFO, logger="deepdraw.binseg"
-    ):
-        # single training set configuration
-        config.write("from deepdraw.binseg.data.stare import _make_dataset\n")
-        config.write(f"_raw = _make_dataset('{stare_datadir}')\n")
-        config.write(
-            "from deepdraw.binseg.configs.datasets.stare import _maker\n"
-        )
-        config.write("dataset = _maker('ah', _raw)\n")
-        config.flush()
-
+    with caplog.at_level(logging.INFO, logger="deepdraw.binseg"):
         output_folder = "results"
         result = runner.invoke(
             train,
             [
                 "lwnet",
-                config.name,
+                "stare",
                 "-vv",
                 "--epochs=1",
                 "--batch-size=1",
@@ -526,28 +506,17 @@ def _check_train(caplog, runner, stare_datadir):
             )
 
 
-def _check_predict(caplog, runner, stare_datadir):
+def _check_predict(runner, caplog):
     from deepdraw.binseg.script.predict import predict
 
-    with tempfile.NamedTemporaryFile(mode="wt") as config, caplog.at_level(
-        logging.INFO, logger="deepdraw.binseg"
-    ):
-        # single training set configuration
-        config.write("from deepdraw.binseg.data.stare import _make_dataset\n")
-        config.write(f"_raw = _make_dataset('{stare_datadir}')\n")
-        config.write(
-            "from deepdraw.binseg.configs.datasets.stare import _maker\n"
-        )
-        config.write("dataset = _maker('ah', _raw)['test']\n")
-        config.flush()
-
+    with caplog.at_level(logging.INFO, logger="deepdraw.binseg"):
         output_folder = "predictions"
         overlay_folder = os.path.join("overlayed", "predictions")
         result = runner.invoke(
             predict,
             [
                 "lwnet",
-                config.name,
+                "stare",
                 "-vv",
                 "--batch-size=1",
                 "--weight=results/model_final_epoch.pth",
@@ -569,7 +538,7 @@ def _check_predict(caplog, runner, stare_datadir):
 
         keywords = {
             r"^Loading checkpoint from.*$": 1,
-            r"^Total time:.*$": 1,
+            r"^Total time:.*$": 2,
         }
 
         messages = "\n".join([k.getMessage() for k in caplog.records])
@@ -581,28 +550,16 @@ def _check_predict(caplog, runner, stare_datadir):
             )
 
 
-def _check_evaluate(caplog, runner, stare_datadir):
+def _check_evaluate(runner, caplog):
     from deepdraw.binseg.script.evaluate import evaluate
 
-    with tempfile.NamedTemporaryFile(mode="wt") as config, caplog.at_level(
-        logging.INFO, logger="deepdraw.binseg"
-    ):
-        # single training set configuration
-        config.write("from deepdraw.binseg.data.stare import _make_dataset\n")
-        config.write(f"_raw = _make_dataset('{stare_datadir}')\n")
-        config.write(
-            "from deepdraw.binseg.configs.datasets.stare import _maker\n"
-        )
-        config.write("dataset = _maker('ah', _raw)['test']\n")
-        config.write("second_annotator = _maker('vk', _raw)['test']\n")
-        config.flush()
-
+    with caplog.at_level(logging.INFO, logger="deepdraw.binseg"):
         output_folder = "evaluations"
         overlay_folder = os.path.join("overlayed", "analysis")
         result = runner.invoke(
             evaluate,
             [
-                config.name,
+                "stare",
                 "-vv",
                 "--steps=10",
                 f"--output-folder={output_folder}",
@@ -634,9 +591,9 @@ def _check_evaluate(caplog, runner, stare_datadir):
         assert len(fnmatch.filter(os.listdir(basedir), "*.png")) == 10
 
         keywords = {
-            r"^Maximum F1-score of.*\(chosen \*a posteriori\*\)$": 1,
-            r"^F1-score of.*\(chosen \*a priori\*\)$": 1,
-            r"^F1-score of.*\(second annotator; threshold=0.5\)$": 1,
+            r"^Maximum F1-score of.*\(chosen \*a posteriori\*\)$": 2,
+            r"^F1-score of.*\(chosen \*a priori\*\)$": 2,
+            r"^F1-score of.*\(second annotator; threshold=0.5\)$": 2,
         }
 
         messages = "\n".join([k.getMessage() for k in caplog.records])
@@ -648,7 +605,7 @@ def _check_evaluate(caplog, runner, stare_datadir):
             )
 
 
-def _check_compare(caplog, runner):
+def _check_compare(runner, caplog):
     from deepdraw.binseg.script.compare import compare
 
     with caplog.at_level(logging.INFO, logger="deepdraw.binseg"):
@@ -686,100 +643,28 @@ def _check_compare(caplog, runner):
             )
 
 
-def _check_significance(caplog, stare_datadir, runner):
-    from deepdraw.binseg.script.significance import significance
-
-    with tempfile.NamedTemporaryFile(mode="wt") as config, caplog.at_level(
-        logging.INFO, logger="deepdraw.binseg"
-    ):
-        config.write("from deepdraw.binseg.data.stare import _make_dataset\n")
-        config.write(f"_raw = _make_dataset('{stare_datadir}')\n")
-        config.write(
-            "from deepdraw.binseg.configs.datasets.stare import _maker\n"
-        )
-        config.write("dataset = _maker('ah', _raw)\n")
-        config.flush()
-
-        ofolder = "significance"
-        cfolder = os.path.join(ofolder, "caches")
-
-        result = runner.invoke(
-            significance,
-            [
-                "-vv",
-                config.name,
-                "--names=v1",
-                "v2",
-                "--predictions=predictions",
-                "predictions",
-                "--threshold=0.5",
-                "--size=64",
-                "64",
-                "--stride=32",
-                "32",
-                "--figure=accuracy",
-                f"--output-folder={ofolder}",
-                f"--checkpoint-folder={cfolder}",
-            ],
-        )
-        _assert_exit_0(result)
-
-        assert os.path.exists(ofolder)
-        assert os.path.exists(cfolder)
-        assert os.path.exists(os.path.join(ofolder, "analysis.pdf"))
-        assert os.path.exists(os.path.join(ofolder, "analysis.txt"))
-
-        keywords = {
-            r"^Evaluating sliding window 'accuracy' on": 2,
-            r"^Evaluating sliding window 'accuracy' differences on": 1,
-            # r"^Basic statistics from distributions:$": 1,
-            r"^Writing analysis figures": 1,
-            r"^Writing analysis summary": 1,
-            r"^Differences are exactly zero": 2,
-        }
-        messages = "\n".join([k.getMessage() for k in caplog.records])
-        for k, v in keywords.items():
-            total = _str_counter(k, messages)
-            assert total == v, (
-                f"message '{k}' appears {total} times, but I expected "
-                f"it to appear {v} times"
-            )
-
-
-def test_discrete_experiment_stare(caplog, stare_datadir):
+@pytest.mark.skip_if_rc_var_not_set("datadir.stare")
+def test_discrete_experiment_stare(cli_runner, caplog):
     # ensures we capture only ERROR messages and above by default
     caplog.set_level(logging.ERROR)
 
-    runner = CliRunner()
-    with runner.isolated_filesystem():
-        _check_train(caplog, runner, stare_datadir)
-        _check_predict(caplog, runner, stare_datadir)
-        _check_evaluate(caplog, runner, stare_datadir)
-        _check_compare(caplog, runner)
-        # _check_significance(caplog, runner)
+    with cli_runner.isolated_filesystem():
+        _check_train(cli_runner, caplog)
+        _check_predict(cli_runner, caplog)
+        _check_evaluate(cli_runner, caplog)
+        _check_compare(cli_runner, caplog)
 
 
-def _check_train_detection(caplog, runner, stare_datadir):
+def _check_train_detection(runner, caplog):
     from deepdraw.detect.script.train import train
 
-    with tempfile.NamedTemporaryFile(mode="wt") as config, caplog.at_level(
-        logging.INFO, logger="deepdraw.detect"
-    ):
-        # single training set configuration
-        config.write("from deepdraw.binseg.data.stare import _make_dataset\n")
-        config.write(f"_raw = _make_dataset('{stare_datadir}')\n")
-        config.write(
-            "from deepdraw.detect.configs.datasets.stare import _maker\n"
-        )
-        config.write("dataset = _maker('ah', _raw)\n")
-        config.flush()
-
+    with caplog.at_level(logging.INFO, logger="deepdraw.detect"):
         output_folder = "results"
         result = runner.invoke(
             train,
             [
                 "faster-rcnn",
-                config.name,
+                "stare",
                 "-vv",
                 "--epochs=1",
                 "--batch-size=1",
@@ -819,28 +704,17 @@ def _check_train_detection(caplog, runner, stare_datadir):
             )
 
 
-def _check_predict_detection(caplog, runner, stare_datadir):
+def _check_predict_detection(runner, caplog):
     from deepdraw.detect.script.predict import predict
 
-    with tempfile.NamedTemporaryFile(mode="wt") as config, caplog.at_level(
-        logging.INFO, logger="deepdraw.detect"
-    ):
-        # single training set configuration
-        config.write("from deepdraw.binseg.data.stare import _make_dataset\n")
-        config.write(f"_raw = _make_dataset('{stare_datadir}')\n")
-        config.write(
-            "from deepdraw.detect.configs.datasets.stare import _maker\n"
-        )
-        config.write("dataset = _maker('ah', _raw)['test']\n")
-        config.flush()
-
+    with caplog.at_level(logging.INFO, logger="deepdraw.detect"):
         output_folder = "predictions"
         overlay_folder = os.path.join("overlayed", "predictions")
         result = runner.invoke(
             predict,
             [
                 "faster-rcnn",
-                config.name,
+                "stare",
                 "-vv",
                 "--batch-size=1",
                 "--weight=results/model_final_epoch.pth",
@@ -862,7 +736,7 @@ def _check_predict_detection(caplog, runner, stare_datadir):
 
         keywords = {
             r"^Loading checkpoint from.*$": 1,
-            r"^Total time:.*$": 1,
+            r"^Total time:.*$": 2,
         }
 
         messages = "\n".join([k.getMessage() for k in caplog.records])
@@ -874,27 +748,16 @@ def _check_predict_detection(caplog, runner, stare_datadir):
             )
 
 
-def _check_evaluate_detection(caplog, runner, stare_datadir):
+def _check_evaluate_detection(runner, caplog):
     from deepdraw.detect.script.evaluate import evaluate
 
-    with tempfile.NamedTemporaryFile(mode="wt") as config, caplog.at_level(
-        logging.INFO, logger="deepdraw.detect"
-    ):
-        # single training set configuration
-        config.write("from deepdraw.binseg.data.stare import _make_dataset\n")
-        config.write(f"_raw = _make_dataset('{stare_datadir}')\n")
-        config.write(
-            "from deepdraw.detect.configs.datasets.stare import _maker\n"
-        )
-        config.write("dataset = _maker('ah', _raw)['test']\n")
-        config.flush()
-
+    with caplog.at_level(logging.INFO, logger="deepdraw.detect"):
         output_folder = "evaluations"
         overlay_folder = os.path.join("overlayed", "analysis")
         result = runner.invoke(
             evaluate,
             [
-                config.name,
+                "stare",
                 "-vv",
                 "--steps=10",
                 f"--output-folder={output_folder}",
@@ -916,8 +779,8 @@ def _check_evaluate_detection(caplog, runner, stare_datadir):
         assert len(fnmatch.filter(os.listdir(basedir), "*.png")) == 10
 
         keywords = {
-            r"^Maximum IoU of.*\(chosen \*a posteriori\*\)$": 1,
-            r"^IoU of.*\(chosen \*a priori\*\)$": 1,
+            r"^Maximum IoU of.*\(chosen \*a posteriori\*\)$": 2,
+            r"^IoU of.*\(chosen \*a priori\*\)$": 2,
         }
 
         messages = "\n".join([k.getMessage() for k in caplog.records])
@@ -929,241 +792,226 @@ def _check_evaluate_detection(caplog, runner, stare_datadir):
             )
 
 
-def test_discrete_experiment_stare_detection(caplog, stare_datadir):
+@pytest.mark.skip_if_rc_var_not_set("datadir.stare")
+def test_discrete_experiment_stare_detection(cli_runner, caplog):
     # ensures we capture only ERROR messages and above by default
     caplog.set_level(logging.ERROR)
 
-    runner = CliRunner()
-    with runner.isolated_filesystem():
-        _check_train_detection(caplog, runner, stare_datadir)
-        _check_predict_detection(caplog, runner, stare_datadir)
-        _check_evaluate_detection(caplog, runner, stare_datadir)
+    with cli_runner.isolated_filesystem():
+        _check_train_detection(cli_runner, caplog)
+        _check_predict_detection(cli_runner, caplog)
+        _check_evaluate_detection(cli_runner, caplog)
 
 
-def test_train_help():
+def test_train_help(cli_runner):
     from deepdraw.binseg.script.train import train
 
-    _check_help(train)
+    _check_help(train, cli_runner)
 
 
-def test_detect_train_help():
+def test_detect_train_help(cli_runner):
     from deepdraw.detect.script.train import train
 
-    _check_help(train)
+    _check_help(train, cli_runner)
 
 
-def test_predict_help():
+def test_predict_help(cli_runner):
     from deepdraw.binseg.script.predict import predict
 
-    _check_help(predict)
+    _check_help(predict, cli_runner)
 
 
-def test_detect_predict_help():
+def test_detect_predict_help(cli_runner):
     from deepdraw.detect.script.predict import predict
 
-    _check_help(predict)
+    _check_help(predict, cli_runner)
 
 
-def test_evaluate_help():
+def test_evaluate_help(cli_runner):
     from deepdraw.binseg.script.evaluate import evaluate
 
-    _check_help(evaluate)
+    _check_help(evaluate, cli_runner)
 
 
-def test_detect_evaluate_help():
+def test_detect_evaluate_help(cli_runner):
     from deepdraw.detect.script.evaluate import evaluate
 
-    _check_help(evaluate)
+    _check_help(evaluate, cli_runner)
 
 
-def test_compare_help():
+def test_compare_help(cli_runner):
     from deepdraw.binseg.script.compare import compare
 
-    _check_help(compare)
+    _check_help(compare, cli_runner)
 
 
-def test_detect_compare_help():
+def test_detect_compare_help(cli_runner):
     from deepdraw.detect.script.compare import compare
 
-    _check_help(compare)
+    _check_help(compare, cli_runner)
 
 
-def test_mkmask_help():
+def test_mkmask_help(cli_runner):
     from deepdraw.binseg.script.mkmask import mkmask
 
-    _check_help(mkmask)
+    _check_help(mkmask, cli_runner)
 
 
-def test_significance_help():
-    from deepdraw.binseg.script.significance import significance
-
-    _check_help(significance)
-
-
-def test_config_help():
+def test_config_help(cli_runner):
     from deepdraw.binseg.script.config import config
 
-    _check_help(config)
+    _check_help(config, cli_runner)
 
 
-def test_detect_config_help():
+def test_detect_config_help(cli_runner):
     from deepdraw.detect.script.config import config
 
-    _check_help(config)
+    _check_help(config, cli_runner)
 
 
-def test_config_list_help():
+def test_config_list_help(cli_runner):
     from deepdraw.binseg.script.config import list
 
-    _check_help(list)
+    _check_help(list, cli_runner)
 
 
-def test_detect_config_list_help():
+def test_detect_config_list_help(cli_runner):
     from deepdraw.detect.script.config import list
 
-    _check_help(list)
+    _check_help(list, cli_runner)
 
 
-def test_config_list():
+def test_config_list(cli_runner):
     from deepdraw.binseg.script.config import list
 
-    runner = CliRunner()
-    result = runner.invoke(list)
+    result = cli_runner.invoke(list)
     _assert_exit_0(result)
     assert "module: deepdraw.binseg.configs.datasets" in result.output
     assert "module: deepdraw.binseg.configs.models" in result.output
 
 
-def test_detect_config_list():
+def test_detect_config_list(cli_runner):
     from deepdraw.detect.script.config import list
 
-    runner = CliRunner()
-    result = runner.invoke(list)
+    result = cli_runner.invoke(list)
     _assert_exit_0(result)
     assert "module: deepdraw.detect.configs.datasets" in result.output
     assert "module: deepdraw.detect.configs.models" in result.output
 
 
-def test_config_list_v():
+def test_config_list_v(cli_runner):
     from deepdraw.binseg.script.config import list
 
-    runner = CliRunner()
-    result = runner.invoke(list, ["--verbose"])
+    result = cli_runner.invoke(list, ["--verbose"])
     _assert_exit_0(result)
     assert "module: deepdraw.binseg.configs.datasets" in result.output
     assert "module: deepdraw.binseg.configs.models" in result.output
 
 
-def test_config_describe_help():
+def test_config_describe_help(cli_runner):
     from deepdraw.binseg.script.config import describe
 
-    _check_help(describe)
+    _check_help(describe, cli_runner)
 
 
-def test_detect_config_describe_help():
+def test_detect_config_describe_help(cli_runner):
     from deepdraw.detect.script.config import describe
 
-    _check_help(describe)
+    _check_help(describe, cli_runner)
 
 
-def test_config_describe_drive():
+def test_config_describe_drive(cli_runner):
     from deepdraw.binseg.script.config import describe
 
-    runner = CliRunner()
-    result = runner.invoke(describe, ["drive"])
+    result = cli_runner.invoke(describe, ["drive"])
     _assert_exit_0(result)
     assert "[DRIVE-2004]" in result.output
 
 
-def test_config_copy_help():
+def test_config_copy_help(cli_runner):
     from deepdraw.binseg.script.config import copy
 
-    _check_help(copy)
+    _check_help(copy, cli_runner)
 
 
-def test_config_copy():
+def test_config_copy(cli_runner):
     from deepdraw.binseg.script.config import copy
 
-    runner = CliRunner()
-    with runner.isolated_filesystem():
-        result = runner.invoke(copy, ["drive", "test.py"])
+    with cli_runner.isolated_filesystem():
+        result = cli_runner.invoke(copy, ["drive", "test.py"])
         _assert_exit_0(result)
         with open("test.py") as f:
             data = f.read()
         assert "[DRIVE-2004]" in data
 
 
-def test_detect_config_copy_help():
+def test_detect_config_copy_help(cli_runner):
     from deepdraw.detect.script.config import copy
 
-    _check_help(copy)
+    _check_help(copy, cli_runner)
 
 
-def test_dataset_help():
+def test_dataset_help(cli_runner):
     from deepdraw.binseg.script.dataset import dataset
 
-    _check_help(dataset)
+    _check_help(dataset, cli_runner)
 
 
-def test_dataset_list_help():
+def test_dataset_list_help(cli_runner):
     from deepdraw.binseg.script.dataset import list
 
-    _check_help(list)
+    _check_help(list, cli_runner)
 
 
-def test_dataset_list():
+def test_dataset_list(cli_runner):
     from deepdraw.binseg.script.dataset import list
 
-    runner = CliRunner()
-    result = runner.invoke(list)
+    result = cli_runner.invoke(list)
     _assert_exit_0(result)
     assert result.output.startswith("Supported datasets:")
 
 
-def test_dataset_check_help():
+def test_dataset_check_help(cli_runner):
     from deepdraw.binseg.script.dataset import check
 
-    _check_help(check)
+    _check_help(check, cli_runner)
 
 
-def test_dataset_check():
+def test_dataset_check(cli_runner):
     from deepdraw.binseg.script.dataset import check
 
-    runner = CliRunner()
-    result = runner.invoke(check, ["--verbose", "--verbose", "--limit=2"])
+    result = cli_runner.invoke(check, ["--verbose", "--verbose", "--limit=2"])
     _assert_exit_0(result)
 
 
-def test_detect_dataset_help():
+def test_detect_dataset_help(cli_runner):
     from deepdraw.detect.script.dataset import dataset
 
-    _check_help(dataset)
+    _check_help(dataset, cli_runner)
 
 
-def test_detect_dataset_list_help():
+def test_detect_dataset_list_help(cli_runner):
     from deepdraw.detect.script.dataset import list
 
-    _check_help(list)
+    _check_help(list, cli_runner)
 
 
-def test_detect_dataset_list():
+def test_detect_dataset_list(cli_runner):
     from deepdraw.detect.script.dataset import list
 
-    runner = CliRunner()
-    result = runner.invoke(list)
+    result = cli_runner.invoke(list)
     _assert_exit_0(result)
     assert result.output.startswith("Supported datasets:")
 
 
-def test_detect_dataset_check_help():
+def test_detect_dataset_check_help(cli_runner):
     from deepdraw.detect.script.dataset import check
 
-    _check_help(check)
+    _check_help(check, cli_runner)
 
 
-def test_detect_dataset_check():
+def test_detect_dataset_check(cli_runner):
     from deepdraw.detect.script.dataset import check
 
-    runner = CliRunner()
-    result = runner.invoke(check, ["--verbose", "--verbose", "--limit=2"])
+    result = cli_runner.invoke(check, ["--verbose", "--verbose", "--limit=2"])
     _assert_exit_0(result)

@@ -1,12 +1,4 @@
-#!/usr/bin/env python
-
 # SPDX-FileCopyrightText: Copyright © 2023 Idiap Research Institute <contact@idiap.ch>
-#
-# SPDX-FileContributor: Tim Laibacher, tim.laibacher@idiap.ch
-# SPDX-FileContributor: Oscar Jiménez del Toro, oscar.jimenez@idiap.ch
-# SPDX-FileContributor: Maxime Délitroz, maxime.delitroz@idiap.ch
-# SPDX-FileContributor: Andre Anjos andre.anjos@idiap.ch
-# SPDX-FileContributor: Daniel Carron, daniel.carron@idiap.ch
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -45,38 +37,27 @@ _protocols = [
     pkg_resources.resource_filename(__name__, "vk.json"),
 ]
 
-_fieldnames = ("data", "label", "mask")
-
 _root_path = load_rc().get("datadir.stare", os.path.realpath(os.curdir))
 _pkg_path = pkg_resources.resource_filename(__name__, "masks")
 
 
-class _make_loader:
-    # hack to get testing on the CI working fine for this dataset
-
-    def __init__(self, root_path):
-        self.root_path = root_path
-
-    def __raw_data_loader__(self, sample):
-        return dict(
-            data=load_pil_rgb(os.path.join(self.root_path, sample["data"])),
-            label=load_pil_1(os.path.join(self.root_path, sample["label"])),
-            mask=load_pil_1(os.path.join(_pkg_path, sample["mask"])),
-        )
-
-    def __call__(self, context, sample):
-        # "context" is ignored in this case - database is homogeneous
-        # we returned delayed samples to avoid loading all images at once
-        return make_delayed(sample, self.__raw_data_loader__)
-
-
-def _make_dataset(root_path):
-    return JSONDataset(
-        protocols=_protocols,
-        fieldnames=_fieldnames,
-        loader=_make_loader(root_path),
+def _raw_data_loader(sample):
+    return dict(
+        data=load_pil_rgb(os.path.join(_root_path, sample["data"])),
+        label=load_pil_1(os.path.join(_root_path, sample["label"])),
+        mask=load_pil_1(os.path.join(_pkg_path, sample["mask"])),
     )
 
 
-dataset = _make_dataset(_root_path)
+def _loader(context, sample):
+    # "context" is ignored in this case - database is homogeneous
+    # we returned delayed samples to avoid loading all images at once
+    return make_delayed(sample, _raw_data_loader)
+
+
+dataset = JSONDataset(
+    protocols=_protocols,
+    fieldnames=("data", "label", "mask"),
+    loader=_loader,
+)
 """STARE dataset object."""
