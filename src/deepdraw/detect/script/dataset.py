@@ -58,26 +58,26 @@ def dataset() -> None:
     epilog="""Examples:
 
 \b
-    1. To install a dataset, set up its data directory ("datadir").  For
-       example, to setup access to Montgomery files you downloaded locally at
-       the directory "/path/to/montgomery/files", edit the RC file (typically
-       ``$HOME/.config/deepdraw.toml``), and add a line like the following:
+  1. To install a dataset, set up its data directory ("datadir").  For
+     example, to setup access to Montgomery files you downloaded locally at
+     the directory "/path/to/montgomery/files", edit the RC file (typically
+     ``$HOME/.config/deepdraw.toml``), and add a line like the following:
 
-       .. code:: toml
+     .. code:: toml
 
-          [datadir]
-          montgomery = "/path/to/montgomery/files"
+        [datadir]
+        montgomery = "/path/to/montgomery/files"
 
-       .. note::
+     .. note::
 
-          This setting **is** case-sensitive.
+        This setting **is** case-sensitive.
 
 \b
-    2. List all raw datasets supported (and configured):
+  2. List all raw datasets supported (and configured):
 
-       .. code:: sh
+     .. code:: sh
 
-          $ deepdraw dataset list
+        $ deepdraw dataset list
 
 """,
 )
@@ -98,23 +98,25 @@ def list():
 @dataset.command(
     epilog="""Examples:
 
-    1. Check if all files of the Montgomery dataset can be loaded:
+  1. Check if all files of the Montgomery dataset can be loaded:
 
-       .. code:: sh
+     .. code:: sh
 
-          deepdraw dataset check -vv montgomery
+        deepdraw dataset check -vv montgomery
 
-    2. Check if all files of multiple installed datasets can be loaded:
+\b
+  2. Check if all files of multiple installed datasets can be loaded:
 
-       .. code:: sh
+     .. code:: sh
 
-          deepdraw dataset check -vv montgomery shenzhen
+        deepdraw dataset check -vv montgomery shenzhen
 
-    3. Check if all files of all installed datasets can be loaded:
+\b
+  3. Check if all files of all installed datasets can be loaded:
 
-       .. code:: sh
+     .. code:: sh
 
-          deepdraw dataset check
+        deepdraw dataset check
 
 """,
 )
