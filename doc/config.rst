@@ -140,8 +140,6 @@ if applicable.  Use these datasets for training and evaluating your models.
    deepdraw.binseg.configs.datasets.shenzhen.xtest
 
    deepdraw.binseg.configs.datasets.cxr8.default
-   deepdraw.binseg.configs.datasets.cxr8.idiap
    deepdraw.binseg.configs.datasets.cxr8.xtest
-   deepdraw.binseg.configs.datasets.cxr8.xtest_idiap
 
 .. include:: links.rst
