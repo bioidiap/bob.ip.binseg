@@ -1,4 +1,8 @@
-. -*- coding: utf-8 -*-
+.. SPDX-FileCopyrightText: 2023 Idiap Research Institute <contact@idiap.ch>
+..
+.. SPDX-License-Identifier: GPL-3.0-or-later
+
+.. _deepdraw.binseg.api:
 
 =====================================
  Application Program Interface (API)
@@ -15,11 +19,11 @@ Data Manipulation
 .. autosummary::
    :toctree: api/data
 
-   bob.ip.common.data.dataset
-   bob.ip.common.data.loader
-   bob.ip.common.data.sample
-   bob.ip.common.data.utils
-   bob.ip.common.data.transforms
+   deepdraw.common.data.dataset
+   deepdraw.common.data.loader
+   deepdraw.common.data.sample
+   deepdraw.common.data.utils
+   deepdraw.common.data.transforms
 
 
 Datasets
@@ -31,16 +35,16 @@ Retinography
 .. autosummary::
    :toctree: api/dataset
 
-   bob.ip.binseg.data.drive
-   bob.ip.binseg.data.stare
-   bob.ip.binseg.data.chasedb1
-   bob.ip.binseg.data.hrf
-   bob.ip.binseg.data.iostar
-   bob.ip.binseg.data.refuge
-   bob.ip.binseg.data.drishtigs1
-   bob.ip.binseg.data.rimoner3
-   bob.ip.binseg.data.drionsdb
-   bob.ip.binseg.data.drhagis
+   deepdraw.binseg.data.drive
+   deepdraw.binseg.data.stare
+   deepdraw.binseg.data.chasedb1
+   deepdraw.binseg.data.hrf
+   deepdraw.binseg.data.iostar
+   deepdraw.binseg.data.refuge
+   deepdraw.binseg.data.drishtigs1
+   deepdraw.binseg.data.rimoner3
+   deepdraw.binseg.data.drionsdb
+   deepdraw.binseg.data.drhagis
 
 
 Chest X-Ray
@@ -49,10 +53,10 @@ Chest X-Ray
 .. autosummary::
    :toctree: api/dataset
 
-   bob.ip.binseg.data.montgomery
-   bob.ip.binseg.data.jsrt
-   bob.ip.binseg.data.shenzhen
-   bob.ip.binseg.data.cxr8
+   deepdraw.binseg.data.montgomery
+   deepdraw.binseg.data.jsrt
+   deepdraw.binseg.data.shenzhen
+   deepdraw.binseg.data.cxr8
 
 
 Engines
@@ -61,11 +65,11 @@ Engines
 .. autosummary::
    :toctree: api/engine
 
-   bob.ip.binseg.engine
-   bob.ip.binseg.engine.trainer
-   bob.ip.binseg.engine.predictor
-   bob.ip.binseg.engine.evaluator
-   bob.ip.binseg.engine.adabound
+   deepdraw.binseg.engine
+   deepdraw.binseg.engine.trainer
+   deepdraw.binseg.engine.predictor
+   deepdraw.binseg.engine.evaluator
+   deepdraw.binseg.engine.adabound
 
 
 Neural Network Models
@@ -74,23 +78,23 @@ Neural Network Models
 .. autosummary::
    :toctree: api/models
 
-   bob.ip.binseg.models
-   bob.ip.binseg.models.backbones
-   bob.ip.binseg.models.backbones.mobilenetv2
-   bob.ip.binseg.models.backbones.resnet
-   bob.ip.binseg.models.backbones.vgg
-   bob.ip.binseg.models.normalizer
-   bob.ip.binseg.models.driu
-   bob.ip.binseg.models.driu_bn
-   bob.ip.binseg.models.driu_od
-   bob.ip.binseg.models.driu_pix
-   bob.ip.binseg.models.hed
-   bob.ip.binseg.models.m2unet
-   bob.ip.binseg.models.resunet
-   bob.ip.binseg.models.unet
-   bob.ip.binseg.models.lwnet
-   bob.ip.binseg.models.losses
-   bob.ip.binseg.models.make_layers
+   deepdraw.binseg.models
+   deepdraw.binseg.models.backbones
+   deepdraw.binseg.models.backbones.mobilenetv2
+   deepdraw.binseg.models.backbones.resnet
+   deepdraw.binseg.models.backbones.vgg
+   deepdraw.binseg.models.normalizer
+   deepdraw.binseg.models.driu
+   deepdraw.binseg.models.driu_bn
+   deepdraw.binseg.models.driu_od
+   deepdraw.binseg.models.driu_pix
+   deepdraw.binseg.models.hed
+   deepdraw.binseg.models.m2unet
+   deepdraw.binseg.models.resunet
+   deepdraw.binseg.models.unet
+   deepdraw.binseg.models.lwnet
+   deepdraw.binseg.models.losses
+   deepdraw.binseg.models.make_layers
 
 
 Toolbox
@@ -99,143 +103,12 @@ Toolbox
 .. autosummary::
    :toctree: api/utils
 
-   bob.ip.common.utils
-   bob.ip.common.utils.checkpointer
-   bob.ip.common.utils.measure
-   bob.ip.common.utils.plot
-   bob.ip.common.utils.table
-   bob.ip.common.utils.summary
+   deepdraw.common.utils
+   deepdraw.common.utils.checkpointer
+   deepdraw.common.utils.measure
+   deepdraw.common.utils.plot
+   deepdraw.common.utils.table
+   deepdraw.common.utils.summary
 
-
-.. _bob.ip.binseg.configs:
-
-Preset Configurations
----------------------
-
-Preset configurations for baseline systems
-
-This module contains preset configurations for baseline FCN architectures and
-datasets.
-
-
-Models
-======
-
-.. autosummary::
-   :toctree: api/configs/models
-   :template: config.rst
-
-   bob.ip.binseg.configs.models.driu
-   bob.ip.binseg.configs.models.driu_bn
-   bob.ip.binseg.configs.models.driu_od
-   bob.ip.binseg.configs.models.hed
-   bob.ip.binseg.configs.models.m2unet
-   bob.ip.binseg.configs.models.resunet
-   bob.ip.binseg.configs.models.unet
-   bob.ip.binseg.configs.models.lwnet
-
-
-.. _bob.ip.binseg.configs.datasets:
-
-Datasets
-========
-
-.. automodule:: bob.ip.binseg.configs.datasets
-
-.. autosummary::
-   :toctree: api/configs/datasets
-   :template: config.rst
-
-   bob.ip.binseg.configs.datasets.csv
-
-   bob.ip.binseg.configs.datasets.chasedb1.first_annotator
-   bob.ip.binseg.configs.datasets.chasedb1.first_annotator_768
-   bob.ip.binseg.configs.datasets.chasedb1.first_annotator_1024
-   bob.ip.binseg.configs.datasets.chasedb1.second_annotator
-   bob.ip.binseg.configs.datasets.chasedb1.xtest
-   bob.ip.binseg.configs.datasets.chasedb1.mtest
-   bob.ip.binseg.configs.datasets.chasedb1.covd
-
-   bob.ip.binseg.configs.datasets.drive.default
-   bob.ip.binseg.configs.datasets.drive.default_768
-   bob.ip.binseg.configs.datasets.drive.default_1024
-   bob.ip.binseg.configs.datasets.drive.second_annotator
-   bob.ip.binseg.configs.datasets.drive.xtest
-   bob.ip.binseg.configs.datasets.drive.mtest
-   bob.ip.binseg.configs.datasets.drive.covd
-
-   bob.ip.binseg.configs.datasets.hrf.default
-   bob.ip.binseg.configs.datasets.hrf.default_768
-   bob.ip.binseg.configs.datasets.hrf.default_1024
-   bob.ip.binseg.configs.datasets.hrf.xtest
-   bob.ip.binseg.configs.datasets.hrf.mtest
-   bob.ip.binseg.configs.datasets.hrf.default_fullres
-   bob.ip.binseg.configs.datasets.hrf.covd
-
-   bob.ip.binseg.configs.datasets.iostar.vessel
-   bob.ip.binseg.configs.datasets.iostar.vessel_768
-   bob.ip.binseg.configs.datasets.iostar.vessel_xtest
-   bob.ip.binseg.configs.datasets.iostar.vessel_mtest
-   bob.ip.binseg.configs.datasets.iostar.optic_disc
-   bob.ip.binseg.configs.datasets.iostar.optic_disc_768
-   bob.ip.binseg.configs.datasets.iostar.optic_disc_512
-   bob.ip.binseg.configs.datasets.iostar.covd
-
-   bob.ip.binseg.configs.datasets.stare.ah
-   bob.ip.binseg.configs.datasets.stare.ah_768
-   bob.ip.binseg.configs.datasets.stare.ah_1024
-   bob.ip.binseg.configs.datasets.stare.vk
-   bob.ip.binseg.configs.datasets.stare.xtest
-   bob.ip.binseg.configs.datasets.stare.mtest
-   bob.ip.binseg.configs.datasets.stare.covd
-
-   bob.ip.binseg.configs.datasets.refuge.cup
-   bob.ip.binseg.configs.datasets.refuge.disc
-   bob.ip.binseg.configs.datasets.refuge.cup_512
-   bob.ip.binseg.configs.datasets.refuge.cup_768
-   bob.ip.binseg.configs.datasets.refuge.disc_512
-   bob.ip.binseg.configs.datasets.refuge.disc_768
-
-   bob.ip.binseg.configs.datasets.rimoner3.cup_exp1
-   bob.ip.binseg.configs.datasets.rimoner3.cup_exp2
-   bob.ip.binseg.configs.datasets.rimoner3.disc_exp1
-   bob.ip.binseg.configs.datasets.rimoner3.disc_exp2
-   bob.ip.binseg.configs.datasets.rimoner3.cup_exp1_512
-   bob.ip.binseg.configs.datasets.rimoner3.disc_exp1_512
-
-   bob.ip.binseg.configs.datasets.rimoner3.cup_exp1_768
-   bob.ip.binseg.configs.datasets.rimoner3.disc_exp1_768
-   bob.ip.binseg.configs.datasets.drishtigs1.cup_all
-   bob.ip.binseg.configs.datasets.drishtigs1.cup_all_512
-   bob.ip.binseg.configs.datasets.drishtigs1.cup_all_768
-   bob.ip.binseg.configs.datasets.drishtigs1.cup_any
-   bob.ip.binseg.configs.datasets.drishtigs1.disc_all
-   bob.ip.binseg.configs.datasets.drishtigs1.disc_all_512
-   bob.ip.binseg.configs.datasets.drishtigs1.disc_all_768
-   bob.ip.binseg.configs.datasets.drishtigs1.disc_any
-
-   bob.ip.binseg.configs.datasets.drionsdb.expert1
-   bob.ip.binseg.configs.datasets.drionsdb.expert2
-   bob.ip.binseg.configs.datasets.drionsdb.expert1_512
-   bob.ip.binseg.configs.datasets.drionsdb.expert2_512
-   bob.ip.binseg.configs.datasets.drionsdb.expert1_768
-   bob.ip.binseg.configs.datasets.drionsdb.expert2_768
-
-   bob.ip.binseg.configs.datasets.drhagis.default
-
-   bob.ip.binseg.configs.datasets.montgomery.default
-   bob.ip.binseg.configs.datasets.montgomery.xtest
-
-   bob.ip.binseg.configs.datasets.jsrt.default
-   bob.ip.binseg.configs.datasets.jsrt.xtest
-
-   bob.ip.binseg.configs.datasets.shenzhen.default
-   bob.ip.binseg.configs.datasets.shenzhen.default_256
-   bob.ip.binseg.configs.datasets.shenzhen.xtest
-
-   bob.ip.binseg.configs.datasets.cxr8.default
-   bob.ip.binseg.configs.datasets.cxr8.idiap
-   bob.ip.binseg.configs.datasets.cxr8.xtest
-   bob.ip.binseg.configs.datasets.cxr8.xtest_idiap
 
 .. include:: links.rst

@@ -1,0 +1,7 @@
+# SPDX-FileCopyrightText: Copyright © 2023 Idiap Research Institute <contact@idiap.ch>
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+[submodule "tests/data/deepdraw-ci-assets"]
+	path = tests/data/deepdraw-ci-assets
+	url = ../deepdraw-ci-assets

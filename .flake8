@@ -1,8 +1,12 @@
+# SPDX-FileCopyrightText: Copyright © 2023 Idiap Research Institute <contact@idiap.ch>
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 [flake8]
 max-line-length = 80
-ignore = E501,W503,E203,E302,E402
+ignore = E501,W503,E302,E402,E203
 per-file-ignores =
-    bob/ip/binseg/test/test_measures.py:E741
-    bob/ip/binseg/engine/ssltrainer.py:E741
-    bob/ip/binseg/utils/measure.py:E741
-    bob/ip/binseg/script/config.py:E741
+    tests/test_measures.py:E741
+    src/deepdraw/binseg/engine/ssltrainer.py:E741
+    src/deepdraw/binseg/utils/measure.py:E741
+    src/deepdraw/binseg/script/config.py:E741

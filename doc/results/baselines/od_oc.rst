@@ -1,6 +1,14 @@
-.. -*- coding: utf-8 -*-
+.. SPDX-FileCopyrightText: 2023 Idiap Research Institute <contact@idiap.ch>
+..
+.. SPDX-FileContributor: Tim Laibacher, tim.laibacher@idiap.ch
+.. SPDX-FileContributor: Oscar Jiménez del Toro, oscar.jimenez@idiap.ch
+.. SPDX-FileContributor: Maxime Délitroz, maxime.delitroz@idiap.ch
+.. SPDX-FileContributor: Andre Anjos andre.anjos@idiap.ch
+.. SPDX-FileContributor: Daniel Carron, daniel.carron@idiap.ch
+..
+.. SPDX-License-Identifier: GPL-3.0-or-later
 
-.. _bob.ip.binseg.results.baselines.od_oc:
+.. _deepdraw.binseg.results.baselines.od_oc:
 
 ========================================================
  Optic disc and Optic cup Segmentation for Retinography
@@ -12,12 +20,12 @@
    :header-rows: 2
 
    * -
-     - :py:mod:`driu <bob.ip.binseg.configs.models.driu>`
-     - :py:mod:`hed <bob.ip.binseg.configs.models.hed>`
-     - :py:mod:`m2unet <bob.ip.binseg.configs.models.m2unet>`
-     - :py:mod:`unet <bob.ip.binseg.configs.models.unet>`
-     - :py:mod:`lwnet <bob.ip.binseg.configs.models.lwnet>`
-     - :py:mod:`driu-od <bob.ip.binseg.configs.models.driu_od>`
+     - :py:mod:`driu <deepdraw.binseg.configs.models.driu>`
+     - :py:mod:`hed <deepdraw.binseg.configs.models.hed>`
+     - :py:mod:`m2unet <deepdraw.binseg.configs.models.m2unet>`
+     - :py:mod:`unet <deepdraw.binseg.configs.models.unet>`
+     - :py:mod:`lwnet <deepdraw.binseg.configs.models.lwnet>`
+     - :py:mod:`driu-od <deepdraw.binseg.configs.models.driu_od>`
    * - Dataset
      - 15M
      - 14.7M
@@ -25,35 +33,35 @@
      - 25.8M
      - 68k
      - 15.2M
-   * - :py:mod:`drionsdb <bob.ip.binseg.configs.datasets.drionsdb.expert1_512>`
+   * - :py:mod:`drionsdb <deepdraw.binseg.configs.datasets.drionsdb.expert1_512>`
      - 0.958
      - 0.961
      - 0.960
      - 0.961
      - 0.922
      - 0.960
-   * - :py:mod:`drishtigs1-disc <bob.ip.binseg.configs.datasets.drishtigs1.disc_all_512>`
+   * - :py:mod:`drishtigs1-disc <deepdraw.binseg.configs.datasets.drishtigs1.disc_all_512>`
      - 0.973
      - 0.975
      - 0.974
      - 0.975
      - 0.965
      - 0.972
-   * - :py:mod:`iostar-disc <bob.ip.binseg.configs.datasets.iostar.optic_disc_512>`
+   * - :py:mod:`iostar-disc <deepdraw.binseg.configs.datasets.iostar.optic_disc_512>`
      - 0.894
      - 0.922
      - 0.913
      - 0.921
      - 0.893
      - 0.921
-   * - :py:mod:`refuge-disc <bob.ip.binseg.configs.datasets.refuge.disc_512>`
+   * - :py:mod:`refuge-disc <deepdraw.binseg.configs.datasets.refuge.disc_512>`
      - 0.921
      - 0.939
      - 0.942
      - 0.945
      - 0.894
      - 0.941
-   * - :py:mod:`rimoner3-disc <bob.ip.binseg.configs.datasets.rimoner3.disc_exp1_512>`
+   * - :py:mod:`rimoner3-disc <deepdraw.binseg.configs.datasets.rimoner3.disc_exp1_512>`
      - 0.950
      - 0.955
      - 0.953
@@ -72,41 +80,41 @@ Notes
    :header-rows: 1
 
    * -
-     - :py:mod:`driu <bob.ip.binseg.configs.models.driu>`
-     - :py:mod:`hed <bob.ip.binseg.configs.models.hed>`
-     - :py:mod:`m2unet <bob.ip.binseg.configs.models.m2unet>`
-     - :py:mod:`unet <bob.ip.binseg.configs.models.unet>`
-     - :py:mod:`lwnet <bob.ip.binseg.configs.models.lwnet>`
-     - :py:mod:`driu-od <bob.ip.binseg.configs.models.driu_od>`
-   * - :py:mod:`drionsdb <bob.ip.binseg.configs.datasets.drionsdb.expert1_512>`
+     - :py:mod:`driu <deepdraw.binseg.configs.models.driu>`
+     - :py:mod:`hed <deepdraw.binseg.configs.models.hed>`
+     - :py:mod:`m2unet <deepdraw.binseg.configs.models.m2unet>`
+     - :py:mod:`unet <deepdraw.binseg.configs.models.unet>`
+     - :py:mod:`lwnet <deepdraw.binseg.configs.models.lwnet>`
+     - :py:mod:`driu-od <deepdraw.binseg.configs.models.driu_od>`
+   * - :py:mod:`drionsdb <deepdraw.binseg.configs.datasets.drionsdb.expert1_512>`
      - 4
      - 4
      - 6
      - 2
      - 6
      - 4
-   * - :py:mod:`drishtigs1-disc <bob.ip.binseg.configs.datasets.drishtigs1.disc_all_512>`
+   * - :py:mod:`drishtigs1-disc <deepdraw.binseg.configs.datasets.drishtigs1.disc_all_512>`
      - 4
      - 4
      - 5
      - 2
      - 5
      - 4
-   * - :py:mod:`iostar-disc <bob.ip.binseg.configs.datasets.iostar.optic_disc_512>`
+   * - :py:mod:`iostar-disc <deepdraw.binseg.configs.datasets.iostar.optic_disc_512>`
      - 4
      - 4
      - 6
      - 4
      - 6
      - 4
-   * - :py:mod:`refuge-disc <bob.ip.binseg.configs.datasets.refuge.disc_512>`
+   * - :py:mod:`refuge-disc <deepdraw.binseg.configs.datasets.refuge.disc_512>`
      - 5
      - 5
      - 10
      - 5
      - 20
      - 5
-   * - :py:mod:`rimoner3-disc <bob.ip.binseg.configs.datasets.rimoner3.disc_exp1_512>`
+   * - :py:mod:`rimoner3-disc <deepdraw.binseg.configs.datasets.rimoner3.disc_exp1_512>`
      - 4
      - 4
      - 5
@@ -120,12 +128,12 @@ Notes
    :header-rows: 2
 
    * -
-     - :py:mod:`driu <bob.ip.binseg.configs.models.driu>`
-     - :py:mod:`hed <bob.ip.binseg.configs.models.hed>`
-     - :py:mod:`m2unet <bob.ip.binseg.configs.models.m2unet>`
-     - :py:mod:`unet <bob.ip.binseg.configs.models.unet>`
-     - :py:mod:`lwnet <bob.ip.binseg.configs.models.lwnet>`
-     - :py:mod:`driu-od <bob.ip.binseg.configs.models.driu_od>`
+     - :py:mod:`driu <deepdraw.binseg.configs.models.driu>`
+     - :py:mod:`hed <deepdraw.binseg.configs.models.hed>`
+     - :py:mod:`m2unet <deepdraw.binseg.configs.models.m2unet>`
+     - :py:mod:`unet <deepdraw.binseg.configs.models.unet>`
+     - :py:mod:`lwnet <deepdraw.binseg.configs.models.lwnet>`
+     - :py:mod:`driu-od <deepdraw.binseg.configs.models.driu_od>`
    * - Dataset
      - 15M
      - 14.7M
@@ -133,35 +141,35 @@ Notes
      - 25.8M
      - 68k
      - 15.2M
-   * - :py:mod:`drionsdb <bob.ip.binseg.configs.datasets.drionsdb.expert1_768>`
+   * - :py:mod:`drionsdb <deepdraw.binseg.configs.datasets.drionsdb.expert1_768>`
      - 0.945
      - 0.917
      - 0.959
      - 0.960
      - 0.875
      - 0.949
-   * - :py:mod:`drishtigs1-disc <bob.ip.binseg.configs.datasets.drishtigs1.disc_all_768>`
+   * - :py:mod:`drishtigs1-disc <deepdraw.binseg.configs.datasets.drishtigs1.disc_all_768>`
      - 0.971
      - 0.975
      - 0.975
      - 0.976
      - 0.959
      - 0.970
-   * - :py:mod:`iostar-disc <bob.ip.binseg.configs.datasets.iostar.optic_disc_768>`
+   * - :py:mod:`iostar-disc <deepdraw.binseg.configs.datasets.iostar.optic_disc_768>`
      - 0.908
      - 0.922
      - 0.917
      - 0.920
      - 0.898
      - 0.911
-   * - :py:mod:`refuge-disc <bob.ip.binseg.configs.datasets.refuge.disc_768>`
+   * - :py:mod:`refuge-disc <deepdraw.binseg.configs.datasets.refuge.disc_768>`
      - 0.921
      - 0.924
      - 0.936
      - 0.938
      - 0.837
      - 0.929
-   * - :py:mod:`rimoner3-disc <bob.ip.binseg.configs.datasets.rimoner3.disc_exp1_768>`
+   * - :py:mod:`rimoner3-disc <deepdraw.binseg.configs.datasets.rimoner3.disc_exp1_768>`
      - 0.950
      - 0.954
      - 0.955
@@ -187,41 +195,41 @@ Notes
    :header-rows: 1
 
    * -
-     - :py:mod:`driu <bob.ip.binseg.configs.models.driu>`
-     - :py:mod:`hed <bob.ip.binseg.configs.models.hed>`
-     - :py:mod:`m2unet <bob.ip.binseg.configs.models.m2unet>`
-     - :py:mod:`unet <bob.ip.binseg.configs.models.unet>`
-     - :py:mod:`lwnet <bob.ip.binseg.configs.models.lwnet>`
-     - :py:mod:`driu-od <bob.ip.binseg.configs.models.driu_od>`
-   * - :py:mod:`drionsdb <bob.ip.binseg.configs.datasets.drionsdb.expert1_512>`
+     - :py:mod:`driu <deepdraw.binseg.configs.models.driu>`
+     - :py:mod:`hed <deepdraw.binseg.configs.models.hed>`
+     - :py:mod:`m2unet <deepdraw.binseg.configs.models.m2unet>`
+     - :py:mod:`unet <deepdraw.binseg.configs.models.unet>`
+     - :py:mod:`lwnet <deepdraw.binseg.configs.models.lwnet>`
+     - :py:mod:`driu-od <deepdraw.binseg.configs.models.driu_od>`
+   * - :py:mod:`drionsdb <deepdraw.binseg.configs.datasets.drionsdb.expert1_512>`
      - 4
      - 4
      - 6
      - 2
      - 6
      - 4
-   * - :py:mod:`drishtigs1-disc <bob.ip.binseg.configs.datasets.drishtigs1.disc_all_768>`
+   * - :py:mod:`drishtigs1-disc <deepdraw.binseg.configs.datasets.drishtigs1.disc_all_768>`
      - 4
      - 4
      - 5
      - 2
      - 5
      - 4
-   * - :py:mod:`iostar-disc <bob.ip.binseg.configs.datasets.iostar.optic_disc_768>`
+   * - :py:mod:`iostar-disc <deepdraw.binseg.configs.datasets.iostar.optic_disc_768>`
      - 4
      - 4
      - 6
      - 4
      - 6
      - 4
-   * - :py:mod:`refuge-disc <bob.ip.binseg.configs.datasets.refuge.disc_768>`
+   * - :py:mod:`refuge-disc <deepdraw.binseg.configs.datasets.refuge.disc_768>`
      - 5
      - 5
      - 10
      - 5
      - 20
      - 5
-   * - :py:mod:`rimoner3-disc <bob.ip.binseg.configs.datasets.rimoner3.disc_exp1_768>`
+   * - :py:mod:`rimoner3-disc <deepdraw.binseg.configs.datasets.rimoner3.disc_exp1_768>`
      - 4
      - 4
      - 5
@@ -238,12 +246,12 @@ Notes
    :header-rows: 2
 
    * -
-     - :py:mod:`driu <bob.ip.binseg.configs.models.driu>`
-     - :py:mod:`hed <bob.ip.binseg.configs.models.hed>`
-     - :py:mod:`m2unet <bob.ip.binseg.configs.models.m2unet>`
-     - :py:mod:`unet <bob.ip.binseg.configs.models.unet>`
-     - :py:mod:`lwnet <bob.ip.binseg.configs.models.lwnet>`
-     - :py:mod:`driu-od <bob.ip.binseg.configs.models.driu_od>`
+     - :py:mod:`driu <deepdraw.binseg.configs.models.driu>`
+     - :py:mod:`hed <deepdraw.binseg.configs.models.hed>`
+     - :py:mod:`m2unet <deepdraw.binseg.configs.models.m2unet>`
+     - :py:mod:`unet <deepdraw.binseg.configs.models.unet>`
+     - :py:mod:`lwnet <deepdraw.binseg.configs.models.lwnet>`
+     - :py:mod:`driu-od <deepdraw.binseg.configs.models.driu_od>`
    * - Dataset
      - 15M
      - 14.7M
@@ -251,21 +259,21 @@ Notes
      - 25.8M
      - 68k
      - 15.2M
-   * - :py:mod:`drishtigs1-cup <bob.ip.binseg.configs.datasets.drishtigs1.cup_all_512>`
+   * - :py:mod:`drishtigs1-cup <deepdraw.binseg.configs.datasets.drishtigs1.cup_all_512>`
      - 0.903
      - 0.910
      - 0.912
      - 0.913
      - 0.877
      - 0.913
-   * - :py:mod:`refuge-cup <bob.ip.binseg.configs.datasets.refuge.cup_512>`
+   * - :py:mod:`refuge-cup <deepdraw.binseg.configs.datasets.refuge.cup_512>`
      - 0.861
      - 0.853
      - 0.831
      - 0.863
      - 0.700
      - 0.854
-   * - :py:mod:`rimoner3-cup <bob.ip.binseg.configs.datasets.rimoner3.cup_exp1_512>`
+   * - :py:mod:`rimoner3-cup <deepdraw.binseg.configs.datasets.rimoner3.cup_exp1_512>`
      - 0.799
      - 0.819
      - 0.829
@@ -284,27 +292,27 @@ Notes
    :header-rows: 1
 
    * -
-     - :py:mod:`driu <bob.ip.binseg.configs.models.driu>`
-     - :py:mod:`hed <bob.ip.binseg.configs.models.hed>`
-     - :py:mod:`m2unet <bob.ip.binseg.configs.models.m2unet>`
-     - :py:mod:`unet <bob.ip.binseg.configs.models.unet>`
-     - :py:mod:`lwnet <bob.ip.binseg.configs.models.lwnet>`
-     - :py:mod:`driu-od <bob.ip.binseg.configs.models.driu_od>`
-   * - :py:mod:`drishtigs1-cup <bob.ip.binseg.configs.datasets.drishtigs1.cup_all_512>`
+     - :py:mod:`driu <deepdraw.binseg.configs.models.driu>`
+     - :py:mod:`hed <deepdraw.binseg.configs.models.hed>`
+     - :py:mod:`m2unet <deepdraw.binseg.configs.models.m2unet>`
+     - :py:mod:`unet <deepdraw.binseg.configs.models.unet>`
+     - :py:mod:`lwnet <deepdraw.binseg.configs.models.lwnet>`
+     - :py:mod:`driu-od <deepdraw.binseg.configs.models.driu_od>`
+   * - :py:mod:`drishtigs1-cup <deepdraw.binseg.configs.datasets.drishtigs1.cup_all_512>`
      - 4
      - 4
      - 5
      - 2
      - 5
      - 4
-   * - :py:mod:`refuge-cup <bob.ip.binseg.configs.datasets.refuge.cup_512>`
+   * - :py:mod:`refuge-cup <deepdraw.binseg.configs.datasets.refuge.cup_512>`
      - 5
      - 5
      - 10
      - 5
      - 20
      - 5
-   * - :py:mod:`rimoner3-cup <bob.ip.binseg.configs.datasets.rimoner3.cup_exp1_512>`
+   * - :py:mod:`rimoner3-cup <deepdraw.binseg.configs.datasets.rimoner3.cup_exp1_512>`
      - 4
      - 4
      - 5
@@ -318,12 +326,12 @@ Notes
    :header-rows: 2
 
    * -
-     - :py:mod:`driu <bob.ip.binseg.configs.models.driu>`
-     - :py:mod:`hed <bob.ip.binseg.configs.models.hed>`
-     - :py:mod:`m2unet <bob.ip.binseg.configs.models.m2unet>`
-     - :py:mod:`unet <bob.ip.binseg.configs.models.unet>`
-     - :py:mod:`lwnet <bob.ip.binseg.configs.models.lwnet>`
-     - :py:mod:`driu-od <bob.ip.binseg.configs.models.driu_od>`
+     - :py:mod:`driu <deepdraw.binseg.configs.models.driu>`
+     - :py:mod:`hed <deepdraw.binseg.configs.models.hed>`
+     - :py:mod:`m2unet <deepdraw.binseg.configs.models.m2unet>`
+     - :py:mod:`unet <deepdraw.binseg.configs.models.unet>`
+     - :py:mod:`lwnet <deepdraw.binseg.configs.models.lwnet>`
+     - :py:mod:`driu-od <deepdraw.binseg.configs.models.driu_od>`
    * - Dataset
      - 15M
      - 14.7M
@@ -331,21 +339,21 @@ Notes
      - 25.8M
      - 68k
      - 15.2M
-   * - :py:mod:`drishtigs1-cup <bob.ip.binseg.configs.datasets.drishtigs1.cup_all_768>`
+   * - :py:mod:`drishtigs1-cup <deepdraw.binseg.configs.datasets.drishtigs1.cup_all_768>`
      - 0.899
      - 0.904
      - 0.918
      - 0.913
      - 0.861
      - 0.913
-   * - :py:mod:`refuge-cup <bob.ip.binseg.configs.datasets.refuge.cup_768>`
+   * - :py:mod:`refuge-cup <deepdraw.binseg.configs.datasets.refuge.cup_768>`
      - 0.830
      - 0.852
      - 0.787
      - 0.828
      - 0.590
      - 0.838
-   * - :py:mod:`rimoner3-cup <bob.ip.binseg.configs.datasets.rimoner3.cup_exp1_768>`
+   * - :py:mod:`rimoner3-cup <deepdraw.binseg.configs.datasets.rimoner3.cup_exp1_768>`
      - 0.769
      - 0.804
      - 0.824
@@ -371,27 +379,27 @@ Notes
    :header-rows: 1
 
    * -
-     - :py:mod:`driu <bob.ip.binseg.configs.models.driu>`
-     - :py:mod:`hed <bob.ip.binseg.configs.models.hed>`
-     - :py:mod:`m2unet <bob.ip.binseg.configs.models.m2unet>`
-     - :py:mod:`unet <bob.ip.binseg.configs.models.unet>`
-     - :py:mod:`lwnet <bob.ip.binseg.configs.models.lwnet>`
-     - :py:mod:`driu-od <bob.ip.binseg.configs.models.driu_od>`
-   * - :py:mod:`drishtigs1-cup <bob.ip.binseg.configs.datasets.drishtigs1.cup_all_768>`
+     - :py:mod:`driu <deepdraw.binseg.configs.models.driu>`
+     - :py:mod:`hed <deepdraw.binseg.configs.models.hed>`
+     - :py:mod:`m2unet <deepdraw.binseg.configs.models.m2unet>`
+     - :py:mod:`unet <deepdraw.binseg.configs.models.unet>`
+     - :py:mod:`lwnet <deepdraw.binseg.configs.models.lwnet>`
+     - :py:mod:`driu-od <deepdraw.binseg.configs.models.driu_od>`
+   * - :py:mod:`drishtigs1-cup <deepdraw.binseg.configs.datasets.drishtigs1.cup_all_768>`
      - 4
      - 4
      - 5
      - 2
      - 5
      - 4
-   * - :py:mod:`refuge-cup <bob.ip.binseg.configs.datasets.refuge.cup_768>`
+   * - :py:mod:`refuge-cup <deepdraw.binseg.configs.datasets.refuge.cup_768>`
      - 5
      - 5
      - 10
      - 5
      - 20
      - 5
-   * - :py:mod:`rimoner3-cup <bob.ip.binseg.configs.datasets.rimoner3.cup_exp1_768>`
+   * - :py:mod:`rimoner3-cup <deepdraw.binseg.configs.datasets.rimoner3.cup_exp1_768>`
      - 4
      - 4
      - 5

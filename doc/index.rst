@@ -1,13 +1,15 @@
-.. -*- coding: utf-8 -*-
+.. SPDX-FileCopyrightText: 2023 Idiap Research Institute <contact@idiap.ch>
+..
+.. SPDX-License-Identifier: GPL-3.0-or-later
 
-.. _bob.ip.binseg:
+.. _deepdraw.binseg:
 
 ===============================================
- Binary Segmentation Benchmark Package for Bob
+ Binary Segmentation Benchmark Package
 ===============================================
 
 Package to benchmark and evaluate a range of neural network architectures for
-binary segmentation tasks.  It is build using PyTorch.
+binary segmentation tasks.  It is built using PyTorch.
 
 Please at least use the BibTeX references below to cite this work:
 
@@ -39,13 +41,13 @@ User Guide
 .. toctree::
    :maxdepth: 2
 
-   setup
-   usage
+   install
+   usage/index
    results/index
-   acknowledgements
    references
-   datasets
+   acknowledgements
    cli
+   config
    api
    contribute
 
