@@ -128,7 +128,7 @@ auto_intersphinx_packages = [
     "psutil",
     "torch",
     "torchvision",
-    ("clapp", "latest"),
+    ("clapper", "latest"),
     ("python", "3"),
 ]
 auto_intersphinx_catalog = "catalog.json"

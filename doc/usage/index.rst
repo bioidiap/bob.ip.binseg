@@ -30,8 +30,8 @@ semantic binary segmentation with support for the following activities:
   dataset.
 
 We provide :ref:`command-line interfaces (CLI) <deepdraw.binseg.cli>` that implement
-each of the phases above. This interface is configurable using :ref:`clapp's
-extensible configuration framework <clapp.config>`.  In essence, each
+each of the phases above. This interface is configurable using :ref:`clapper's
+extensible configuration framework <clapper.config>`.  In essence, each
 command-line option may be provided as a variable with the same name in a
 Python file.  Each file may combine any number of variables that are pertinent
 to an application.

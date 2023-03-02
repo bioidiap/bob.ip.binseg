@@ -12,8 +12,8 @@
 
 import click
 
-from clapp.click import ConfigCommand, ResourceOption, verbosity_option
-from clapp.logging import setup
+from clapper.click import ConfigCommand, ResourceOption, verbosity_option
+from clapper.logging import setup
 
 logger = setup(__name__.split(".")[0], format="%(levelname)s: %(message)s")
 

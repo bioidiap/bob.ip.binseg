@@ -10,7 +10,7 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from clapp.rc import UserDefaults
+from clapper.rc import UserDefaults
 
 
 def load_rc() -> UserDefaults:

@@ -26,7 +26,7 @@ import numpy
 import pkg_resources
 import torch
 
-from clapp.click import AliasedGroup
+from clapper.click import AliasedGroup
 from click_plugins import with_plugins
 from tqdm import tqdm
 

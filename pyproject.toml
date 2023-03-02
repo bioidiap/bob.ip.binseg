@@ -33,7 +33,7 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 dependencies = [
-    "clapp",
+    "clapper",
     "click",
     "click_plugins",
     "matplotlib",

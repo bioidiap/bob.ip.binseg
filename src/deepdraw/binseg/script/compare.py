@@ -13,8 +13,8 @@
 import click
 import tabulate
 
-from clapp.click import verbosity_option
-from clapp.logging import setup
+from clapper.click import verbosity_option
+from clapper.logging import setup
 
 logger = setup(__name__.split(".")[0], format="%(levelname)s: %(message)s")
 

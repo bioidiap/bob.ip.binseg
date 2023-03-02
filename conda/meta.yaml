@@ -46,7 +46,7 @@ requirements:
     - scikit-image {{ scikit_image }}
     - tensorboard {{ tensorboard }}
     - tomli-w {{ tomli_w }}
-    - clapp
+    - clapper
   run:
     - python >=3.9
     - {{ pin_compatible('click') }}
@@ -66,7 +66,7 @@ requirements:
     - {{ pin_compatible('scikit-image') }}
     - {{ pin_compatible('tensorboard') }}
     - {{ pin_compatible('tomli-w') }}
-    - clapp
+    - clapper
 
 test:
   source_files:

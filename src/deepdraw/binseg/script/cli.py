@@ -12,7 +12,7 @@
 
 import click
 
-from clapp.click import AliasedGroup
+from clapper.click import AliasedGroup
 
 from . import (
     analyze,
