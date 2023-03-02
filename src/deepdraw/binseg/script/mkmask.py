@@ -23,22 +23,24 @@ logger = setup(__name__.split(".")[0], format="%(levelname)s: %(message)s")
     epilog="""Examples:
 
 \b
-    1. Generate masks for supported dataset by binseg. Ex: refuge.
-\b
-       $ binseg mkmask --dataset="refuge" --globs="Training400/*Glaucoma/*.jpg" --globs="Training400/*AMD/*.jpg" --threshold=5
-\b
-    Or you can generate the same results with this command
+  1. Generate masks for supported dataset by binseg. Ex: refuge.
+
+     .. code:: sh
+
+        $ binseg mkmask --dataset="refuge" --globs="Training400/*Glaucoma/*.jpg" --globs="Training400/*AMD/*.jpg" --threshold=5
+
+     Or you can generate the same results with this command
+
+     .. code:: sh
+
+        $ binseg mkmask -d "refuge" -g "Training400/*Glaucoma/*.jpg" -g "Training400/*AMD/*.jpg" -t 5
 
 \b
-       $ binseg mkmask -d "refuge" -g "Training400/*Glaucoma/*.jpg" -g "Training400/*AMD/*.jpg" -t 5
+  2. Generate masks for non supported dataset by binseg
 
-\b
-    2. Generate masks for non supported dataset by binseg
+     .. code:: sh
 
-\b
         $ binseg mkmask -d "Path/to/dataset" -g "glob1" -g "glob2" -g glob3  -t 4
-
-
 """,
 )
 @click.option(
@@ -55,7 +57,8 @@ logger = setup(__name__.split(".")[0], format="%(levelname)s: %(message)s")
     "-d",
     help="""The base path to the dataset to which we want to generate the masks. \\
     In case you have already configured the path for the datasets supported by binseg, \\
-    you can just use the name of the dataset as written in the config. """,
+    you can just use the name of the dataset as written in the config.
+    """,
     required=True,
     cls=ResourceOption,
 )
@@ -64,7 +67,7 @@ logger = setup(__name__.split(".")[0], format="%(levelname)s: %(message)s")
     "-g",
     help="""The global path to the dataset to which we want to generate the masks.\\
     We need to specify the path for the images ,\\
-    Ex : --globs="images/*.jpg"\\
+    Ex : --globs="images/\\*.jpg"\\
     It also can be used multiple time.
     """,
     required=True,
@@ -74,7 +77,7 @@ logger = setup(__name__.split(".")[0], format="%(levelname)s: %(message)s")
 @click.option(
     "--threshold",
     "-t",
-    help=" Generating a mask needs a threshold to be fixed in order to transform the image to binary ",
+    help="Generating a mask needs a threshold to be fixed in order to transform the image to binary ",
     required=True,
     cls=ResourceOption,
 )

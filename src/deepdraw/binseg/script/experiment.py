@@ -24,12 +24,13 @@ logger = setup(__name__.split(".")[0], format="%(levelname)s: %(message)s")
     epilog="""Examples:
 
 \b
-    1. Trains an M2U-Net model (VGG-16 backbone) with DRIVE (vessel
-       segmentation), on the CPU, for only two epochs, then runs inference and
-       evaluation on stock datasets, report performance as a table and a figure:
+  1. Trains an M2U-Net model (VGG-16 backbone) with DRIVE (vessel
+     segmentation), on the CPU, for only two epochs, then runs inference and
+     evaluation on stock datasets, report performance as a table and a figure:
 
-       $ binseg experiment -vv m2unet drive --epochs=2
+     .. code:: sh
 
+        $ binseg experiment -vv m2unet drive --epochs=2
 """,
 )
 @click.option(
@@ -290,55 +291,55 @@ def experiment(
 ):
     """Runs a complete experiment, from training, to prediction and evaluation.
 
-        This script is just a wrapper around the individual scripts for training,
-        running prediction, evaluating and comparing FCN model performance.  It
-        organises the output in a preset way::
+    This script is just a wrapper around the individual scripts for training,
+    running prediction, evaluating and comparing FCN model performance.  It
+    organises the output in a preset way::
 
-    \b
-           └─ <output-folder>/
-              ├── model/  #the generated model will be here
-              ├── predictions/  #the prediction outputs for the train/test set
-              ├── overlayed/  #the overlayed outputs for the train/test set
-                 ├── predictions/  #predictions overlayed on the input images
-                 ├── analysis/  #predictions overlayed on the input images
-                 ├              #including analysis of false positives, negatives
-                 ├              #and true positives
-                 └── second-annotator/  #if set, store overlayed images for the
-                                        #second annotator here
-              └── analysis /  #the outputs of the analysis of both train/test sets
-                              #includes second-annotator "mesures" as well, if
-                              # configured
+        \b
+       └─ <output-folder>/
+          ├── model/  #the generated model will be here
+          ├── predictions/  #the prediction outputs for the train/test set
+          ├── overlayed/  #the overlayed outputs for the train/test set
+             ├── predictions/  #predictions overlayed on the input images
+             ├── analysis/  #predictions overlayed on the input images
+             ├              #including analysis of false positives, negatives
+             ├              #and true positives
+             └── second-annotator/  #if set, store overlayed images for the
+                                    #second annotator here
+          └── analysis /  #the outputs of the analysis of both train/test sets
+                          #includes second-annotator "mesures" as well, if
+                          # configured
 
-        Training is performed for a configurable number of epochs, and generates at
-        least a final_model.pth.  It may also generate a number of intermediate
-        checkpoints.  Checkpoints are model files (.pth files) that are stored
-        during the training and useful to resume the procedure in case it stops
-        abruptly.
+    Training is performed for a configurable number of epochs, and generates at
+    least a final_model.pth.  It may also generate a number of intermediate
+    checkpoints.  Checkpoints are model files (.pth files) that are stored
+    during the training and useful to resume the procedure in case it stops
+    abruptly.
 
-        N.B.: The tool is designed to prevent analysis bias and allows one to
-        provide (potentially multiple) separate subsets for training,
-        validation, and evaluation.  Instead of using simple datasets, datasets
-        for full experiment running should be dictionaries with specific subset
-        names:
+    N.B.: The tool is designed to prevent analysis bias and allows one to
+    provide (potentially multiple) separate subsets for training,
+    validation, and evaluation.  Instead of using simple datasets, datasets
+    for full experiment running should be dictionaries with specific subset
+    names:
 
-        * ``__train__``: dataset used for training, prioritarily.  It is typically
-          the dataset containing data augmentation pipelines.
-        * ``__valid__``: dataset used for validation.  It is typically disjoint
-          from the training and test sets.  In such a case, we checkpoint the model
-          with the lowest loss on the validation set as well, throughout all the
-          training, besides the model at the end of training.
-        * ``train`` (optional): a copy of the ``__train__`` dataset, without data
-          augmentation, that will be evaluated alongside other sets available
-        * ``__valid_extra__``: a list of datasets that are tracked during
-          validation, but do not affect checkpoiting. If present, an extra
-          column with an array containing the loss of each set is kept on the
-          training log.
-        * ``*``: any other name, not starting with an underscore character (``_``),
-          will be considered a test set for evaluation.
+    * ``__train__``: dataset used for training, prioritarily.  It is typically
+      the dataset containing data augmentation pipelines.
+    * ``__valid__``: dataset used for validation.  It is typically disjoint
+      from the training and test sets.  In such a case, we checkpoint the model
+      with the lowest loss on the validation set as well, throughout all the
+      training, besides the model at the end of training.
+    * ``train`` (optional): a copy of the ``__train__`` dataset, without data
+      augmentation, that will be evaluated alongside other sets available
+    * ``__valid_extra__``: a list of datasets that are tracked during
+      validation, but do not affect checkpoiting. If present, an extra
+      column with an array containing the loss of each set is kept on the
+      training log.
+    * ``*``: any other name, not starting with an underscore character (``_``),
+      will be considered a test set for evaluation.
 
-        N.B.2: The threshold used for calculating the F1-score on the test set, or
-        overlay analysis (false positives, negatives and true positives overprinted
-        on the original image) also follows the logic above.
+    N.B.2: The threshold used for calculating the F1-score on the test set, or
+    overlay analysis (false positives, negatives and true positives overprinted
+    on the original image) also follows the logic above.
     """
     from ...common.script.experiment import base_experiment
 

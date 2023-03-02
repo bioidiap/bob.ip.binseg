@@ -23,9 +23,11 @@ logger = setup(__name__.split(".")[0], format="%(levelname)s: %(message)s")
     epilog="""Examples:
 
 \b
-    1. Compares system A and B, with their own pre-computed measure files:
-\b
-       $ detect compare -vv A path/to/A/train.csv B path/to/B/test.csv
+  1. Compares system A and B, with their own pre-computed measure files:
+
+     .. code:: sh
+
+        $ detect compare -vv A path/to/A/train.csv B path/to/B/test.csv
 """,
 )
 @click.argument(

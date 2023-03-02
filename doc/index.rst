@@ -1,4 +1,4 @@
-.. SPDX-FileCopyrightText: Copyright © 2023 Idiap Research Institute <contact@idiap.ch>
+.. SPDX-FileCopyrightText: 2023 Idiap Research Institute <contact@idiap.ch>
 ..
 .. SPDX-FileContributor: Tim Laibacher, tim.laibacher@idiap.ch
 .. SPDX-FileContributor: Oscar Jiménez del Toro, oscar.jimenez@idiap.ch
@@ -8,14 +8,14 @@
 ..
 .. SPDX-License-Identifier: GPL-3.0-or-later
 
-.. _deepdraw:
+.. _deepdraw.binseg:
 
-================================================================
- deepdraw - Semantic Segmentation Benchmarks on Public Datasets
-================================================================
+===============================================
+ Binary Segmentation Benchmark Package
+===============================================
 
 Package to benchmark and evaluate a range of neural network architectures for
-semantic segmentation tasks.  It is build using PyTorch.
+binary segmentation tasks.  It is built using PyTorch.
 
 Please at least use the BibTeX references below to cite this work:
 
@@ -41,15 +41,21 @@ Please at least use the BibTeX references below to cite this work:
    }
 
 
-Documentation
--------------
+User Guide
+----------
 
 .. toctree::
    :maxdepth: 2
 
    install
-   usage
+   usage/index
+   results/index
+   references
+   acknowledgements
+   cli
+   config
    api
+   contribute
 
 
 Indices and tables

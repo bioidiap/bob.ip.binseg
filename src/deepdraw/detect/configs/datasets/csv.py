@@ -48,7 +48,7 @@ configuration.  **Copy it locally to make changes**:
 
 .. code-block:: sh
 
-   $ binseg config copy csv-dataset-example mydataset.py
+   $ detect config copy csv-dataset-example mydataset.py
    # edit mydataset.py as explained here, follow the comments
 
 Finally, the only object this file needs to provide is one named ``dataset``,
@@ -62,7 +62,7 @@ More information:
 * :py:class:`deepdraw.common.data.dataset.JSONDataset` for an alternative for
   multi-protocol datasets (all of our supported raw datasets are implemented
   using this)
-* :py:func:`deepdraw.binseg.configs.datasets.make_dataset` for extra
+* :py:func:`deepdraw.detect.configs.datasets.make_dataset` for extra
   information on the sample list to pytorch connector.
 """
 
@@ -126,7 +126,7 @@ _raw_dataset = CSVDataset(
 # that is expected by our engines, after applying the (optional)
 # transformations you define.
 
-# from deepdraw.binseg.configs.datasets import make_dataset as _maker
+# from deepdraw.detect.configs.datasets import make_dataset as _maker
 
 # Add/tune your (optional) transforms below - these are just examples
 # compatible with a model that requires image inputs of 544 x 544 pixels.
