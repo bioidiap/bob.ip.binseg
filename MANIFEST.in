@@ -3,6 +3,6 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 recursive-include doc *.rst
-recursive-include tests *.py
-recursive-include src/deepdraw/binseg/data *.json
-recursive-include src/deepdraw/detect/data *.json
+recursive-include tests *.py *.png *.csv *.json *.zip
+recursive-include src/deepdraw/binseg/data *.json *.csv *.png *.jpg
+recursive-include src/deepdraw/detect/data *.json *.csv *.png *.jpg
