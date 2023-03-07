@@ -1,6 +1,14 @@
-.. -*- coding: utf-8 -*-
+.. SPDX-FileCopyrightText: 2023 Idiap Research Institute <contact@idiap.ch>
+..
+.. SPDX-FileContributor: Tim Laibacher, tim.laibacher@idiap.ch
+.. SPDX-FileContributor: Oscar Jiménez del Toro, oscar.jimenez@idiap.ch
+.. SPDX-FileContributor: Maxime Délitroz, maxime.delitroz@idiap.ch
+.. SPDX-FileContributor: Andre Anjos andre.anjos@idiap.ch
+.. SPDX-FileContributor: Daniel Carron, daniel.carron@idiap.ch
+..
+.. SPDX-License-Identifier: GPL-3.0-or-later
 
-.. _bob.ip.binseg.results.xtest:
+.. _deepdraw.binseg.results.xtest:
 
 ==========================
  Cross-Database (X-)Tests
@@ -21,15 +29,15 @@
   ``-xtest`` resource variant of the dataset the model was trained on.  For
   example, to run cross-evaluation tests for the DRIVE dataset, use the
   configuration resource :py:mod:`drive-xtest
-  <bob.ip.binseg.configs.datasets.drive.xtest>`.
+  <deepdraw.binseg.configs.datasets.drive.xtest>`.
 * For each row, the peak performance is always obtained in an intra-database
   test (training and testing on the same database).  Conversely, we observe a
   performance degradation (albeit not catastrophic in most cases) for all other
   datasets in the cross test.
 * We only show results for select systems in :ref:`baseline analysis
-  <bob.ip.binseg.results.baselines>`.  You may run analysis on the other models
+  <deepdraw.binseg.results.baselines>`.  You may run analysis on the other models
   by downloading them from our website (via the ``--weight`` parameter on the
-  :ref:`analyze script <bob.ip.binseg.cli.analyze>`).
+  :ref:`analyze script <deepdraw.binseg.cli>`).
 
 
 Models on Specific Tasks
