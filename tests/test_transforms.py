@@ -339,9 +339,8 @@ def test_color_jitter():
     assert numpy.all(numpy.array(img3_t2) == numpy.array(img))
 
 
-@pytest.mark.xfail
 def test_blur():
-    im_size = (1, 256, 256)  # (planes, height, width)
+    im_size = (3, 24, 42)  # (planes, height, width)
     transforms = GaussianBlur(p=1)
     img = _create_img(im_size)
 
