@@ -10,7 +10,6 @@ import PIL.Image
 import PIL.ImageDraw
 import PIL.ImageOps
 import pkg_resources
-import pytest
 import torch
 import torchvision.transforms.functional
 
