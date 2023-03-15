@@ -430,3 +430,112 @@ class GetBoundingBox:
         target["labels"] = labels
 
         return [args[self.image], target]
+
+
+class GroundTruthCrop:
+    """Crop image in a square keeping only the area with the ground truth.
+
+    This transform can crop all images given a ground-truth mask as reference.
+    - Notice that the crop will result in a square image at the end, which
+      means that it will keep the bigger dimension and adjust the smaller one
+      to fit into a square.
+    - There's an option to add extra area around the gt bounding box.
+    - If resulting dimensions are larger than the boundaries of the image,
+      minimal padding will be done to keep the image in a square shape.
+
+
+    Parameters
+    ----------
+
+    reference : :py:class:`int`, Optional
+        Which reference part of the sample to use for getting coordinates.
+        If not set, use the second object on the sample (typically, the mask).
+
+    extra_area : :py:class:`float`, Optional
+        Multiplier that will add the extra area around the ground-truth
+        bounding box. Example: 0.1 will result in a crop with dimensions of
+        the largest side increased by 10%.
+        If not set, the default will be 0 (only the ground-truth box).
+    """
+
+    def __init__(self, reference=1, extra_area=0.0):
+        self.reference = reference
+        self.extra_area = extra_area
+
+    def __call__(self, *args):
+        ref = args[self.reference]
+
+        max_w, max_h = ref.size
+
+        where = numpy.where(ref)
+        y0 = numpy.min(where[0])
+        y1 = numpy.max(where[0])
+        x0 = numpy.min(where[1])
+        x1 = numpy.max(where[1])
+
+        w = x1 - x0
+        h = y1 - y0
+
+        extra_x = self.extra_area * w / 2
+        extra_y = self.extra_area * h / 2
+
+        new_w = (1 + self.extra_area) * w
+        new_h = (1 + self.extra_area) * h
+
+        diff = abs(new_w - new_h) / 2
+
+        if new_w == new_h:
+            x0_new = x0.copy() - extra_x
+            x1_new = x1.copy() + extra_x
+            y0_new = y0.copy() - extra_y
+            y1_new = y1.copy() + extra_y
+
+        elif new_w > new_h:
+            x0_new = x0.copy() - extra_x
+            x1_new = x1.copy() + extra_x
+            y0_new = y0.copy() - extra_y - diff
+            y1_new = y1.copy() + extra_y + diff
+
+        else:
+            x0_new = x0.copy() - extra_x - diff
+            x1_new = x1.copy() + extra_x + diff
+            y0_new = y0.copy() - extra_y
+            y1_new = y1.copy() + extra_y
+
+        border = (x0_new, y0_new, max_w - x1_new, max_h - y1_new)
+
+        def _expand_img(
+            pil_img, background_color, x0_pad=0, x1_pad=0, y0_pad=0, y1_pad=0
+        ):
+            width = pil_img.size[0] + x0_pad + x1_pad
+            height = pil_img.size[1] + y0_pad + y1_pad
+
+            result = PIL.Image.new(
+                pil_img.mode, (width, height), background_color
+            )
+            result.paste(pil_img, (x0_pad, y0_pad))
+            return result
+
+        def _black_background(i):
+            return (0, 0, 0) if i.mode == "RGB" else 0
+
+        d_x0 = numpy.rint(max([0 - x0_new, 0])).astype(int)
+        d_y0 = numpy.rint(max([0 - y0_new, 0])).astype(int)
+        d_x1 = numpy.rint(max([x1_new - max_w, 0])).astype(int)
+        d_y1 = numpy.rint(max([y1_new - max_h, 0])).astype(int)
+
+        new_args = [
+            _expand_img(
+                k,
+                _black_background(k),
+                x0_pad=d_x0,
+                x1_pad=d_x1,
+                y0_pad=d_y0,
+                y1_pad=d_y1,
+            )
+            for k in args
+        ]
+
+        new_args = [PIL.ImageOps.crop(k, border) for k in new_args]
+
+        return new_args
