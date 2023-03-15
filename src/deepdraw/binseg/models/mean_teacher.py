@@ -3,7 +3,7 @@ import logging
 import torch
 import torch.nn
 import torchvision.transforms as T
-
+#choose the model to be used as the initialization network
 from deepdraw.binseg.models import unet
 
 # build Mean Teacher model
@@ -48,8 +48,9 @@ class Mean_teacher(torch.nn.Module):
 
         self.weight = weight
         if weight is None:
-            raise RuntimeError(f"--weight ({weight}) is not set).")
+            logger.info(f"Model is not pretrained")
         else:
+            #initialize the model with pretrained weights
             logger.info(f"Loading pretrained model from {weight}")
             input_model = unet.unet()
             input_model.load_state_dict(torch.load(weight), strict=False)

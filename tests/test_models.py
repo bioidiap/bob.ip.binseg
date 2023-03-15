@@ -134,6 +134,14 @@ def test_resunet50():
     print(model)
 
 
+def test_mean_teacher():
+    from deepdraw.binseg.models.mean_teacher import mean_teacher
+    from deepdraw.binseg.models.unet import unet
+    model = mean_teacher()
+    assert type(model.T_model) == unet
+    assert type(model.S_model) == unet  
+
+
 def test_fasterrcnn():
     import torchvision
 
