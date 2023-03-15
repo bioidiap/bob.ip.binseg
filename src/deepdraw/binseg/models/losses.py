@@ -270,8 +270,7 @@ class SemiLoss(_Loss):
     Parameters
     ----------
 
-    lambda_u : int
-        determines the weighting of SoftJaccard and BCE.
+
 
     """
 
