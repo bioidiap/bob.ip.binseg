@@ -436,13 +436,11 @@ class GroundTruthCrop:
     """Crop image in a square keeping only the area with the ground truth.
 
     This transform can crop all images given a ground-truth mask as reference.
-    - Notice that the crop will result in a square image at the end, which
-      means that it will keep the bigger dimension and adjust the smaller one
-      to fit into a square.
-    - There's an option to add extra area around the gt bounding box.
-    - If resulting dimensions are larger than the boundaries of the image,
-      minimal padding will be done to keep the image in a square shape.
-
+    Notice that the crop will result in a square image at the end, which means
+    that it will keep the bigger dimension and adjust the smaller one to fit
+    into a square. There's an option to add extra area around the gt bounding
+    box. If resulting dimensions are larger than the boundaries of the image,
+    minimal padding will be done to keep the image in a square shape.
 
     Parameters
     ----------
@@ -454,8 +452,8 @@ class GroundTruthCrop:
     extra_area : :py:class:`float`, Optional
         Multiplier that will add the extra area around the ground-truth
         bounding box. Example: 0.1 will result in a crop with dimensions of
-        the largest side increased by 10%.
-        If not set, the default will be 0 (only the ground-truth box).
+        the largest side increased by 10%. If not set, the default will be 0
+        (only the ground-truth box).
     """
 
     def __init__(self, reference=1, extra_area=0.0):
