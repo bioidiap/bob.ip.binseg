@@ -138,7 +138,8 @@ def test_mean_teacher():
     from deepdraw.binseg.models.mean_teacher import mean_teacher
     from deepdraw.binseg.models.unet import unet
 
-    model = mean_teacher(weight = None)
+    weight = None
+    model = mean_teacher(weight)
     assert type(model.T_model) == unet
     assert type(model.S_model) == unet
 
