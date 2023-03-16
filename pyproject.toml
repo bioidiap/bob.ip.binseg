@@ -171,16 +171,20 @@ combined-disc = "deepdraw.binseg.configs.datasets.combined.od"
 combined-cup = "deepdraw.binseg.configs.datasets.combined.oc"
 # montgomery county - cxr
 montgomery = "deepdraw.binseg.configs.datasets.montgomery.default"
+montgomery-gt = "deepdraw.binseg.configs.datasets.montgomery.default_gtcrop"
 montgomery-xtest = "deepdraw.binseg.configs.datasets.montgomery.xtest"
 # shenzhen - cxr
 shenzhen = "deepdraw.binseg.configs.datasets.shenzhen.default"
 shenzhen-small = "deepdraw.binseg.configs.datasets.shenzhen.default_256"
+shenzhen-gt = "deepdraw.binseg.configs.datasets.shenzhen.default_gtcrop"
 shenzhen-xtest = "deepdraw.binseg.configs.datasets.shenzhen.xtest"
 # jsrt - cxr
 jsrt = "deepdraw.binseg.configs.datasets.jsrt.default"
+jsrt-gt = "deepdraw.binseg.configs.datasets.jsrt.default_gtcrop"
 jsrt-xtest = "deepdraw.binseg.configs.datasets.jsrt.xtest"
 # cxr8 - cxr
 cxr8 = "deepdraw.binseg.configs.datasets.cxr8.default"
+cxr8-gt = "deepdraw.binseg.configs.datasets.cxr8.default_gtcrop"
 cxr8-xtest = "deepdraw.binseg.configs.datasets.cxr8.xtest"
 
 [project.entry-points."detect.config"]
