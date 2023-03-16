@@ -1,6 +1,5 @@
-"""Take HRF as labeled data and x as unlabeled data
-    x can be DRIVE, STARE, IOSTAR or other datasets
-"""
+"""Take HRF as labeled data and x as unlabeled data x can be DRIVE, STARE,
+IOSTAR or other datasets."""
 
 from ..drive.default_768 import dataset as _y1
 from ..hrf.default_768 import dataset as _hrf

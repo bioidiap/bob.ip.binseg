@@ -3,8 +3,6 @@ import torchvision.transforms as T
 
 from ..drive.default_768 import dataset as _drive
 
-from .. import make_dataset as mk
-
 jitter = T.ColorJitter(hue=0.05)
 
 

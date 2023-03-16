@@ -1,9 +1,6 @@
-"""
-Functions for ramping hyperparameters up or down
-Each function takes the current training step or epoch, and the
-ramp length in the same format, and returns a multiplier between
-0 and 1.
-"""
+"""Functions for ramping hyperparameters up or down Each function takes the
+current training step or epoch, and the ramp length in the same format, and
+returns a multiplier between 0 and 1."""
 
 import numpy
 
@@ -22,7 +19,7 @@ Parameters
 
 
 def sigmoid_rampup(current, rampup_length):
-    """Exponential rampup from https://arxiv.org/abs/1610.02242"""
+    """Exponential rampup from https://arxiv.org/abs/1610.02242."""
     if rampup_length == 0:
         return 1.0
     else:
@@ -32,7 +29,7 @@ def sigmoid_rampup(current, rampup_length):
 
 
 def linear_rampup(current, rampup_length):
-    """Linear rampup"""
+    """Linear rampup."""
     assert current >= 0 and rampup_length >= 0
     if current >= rampup_length:
         return 1.0
@@ -41,7 +38,7 @@ def linear_rampup(current, rampup_length):
 
 
 def cosine_rampdown(current, rampdown_length):
-    """Cosine rampdown from https://arxiv.org/abs/1608.03983"""
+    """Cosine rampdown from https://arxiv.org/abs/1608.03983."""
     assert 0 <= current <= rampdown_length
     return float(0.5 * (numpy.cos(numpy.pi * current / rampdown_length) + 1))
 
@@ -58,5 +55,4 @@ def update_ema_variables(S_model, T_model, global_step):
     else:
         alpha = 0.999
     for T_param, S_param in zip(T_model.parameters(), S_model.parameters()):
-
         T_param.data = alpha * T_param.data + (1 - alpha) * S_param.data

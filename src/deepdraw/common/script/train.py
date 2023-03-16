@@ -3,10 +3,10 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 import logging
-import multiprocessing
-import sys
 import math
+import multiprocessing
 import random
+import sys
 
 import torch
 
@@ -51,39 +51,7 @@ def base_train(
     use_dataset = dataset
     validation_dataset = None
     extra_validation_datasets = []
-    if isinstance(dataset, dict):
-        if "__train__" in dataset:
-            logger.info("Found (dedicated) '__train__' set for training")
-            use_dataset = dataset["__train__"]
-        if "__unlabeled_train__" in dataset:
-            logger.info(
-                "Found (dedicated) 'unlabeled_train' set for semi-supervised training"
-            )
-            use_dataset = semi_use_dataset(dataset)["train"]
-        else:
-            use_dataset = dataset["train"]
 
-        if "__valid__" in dataset:
-            logger.info("Found (dedicated) '__valid__' set for validation")
-            logger.info("Will checkpoint lowest loss model on validation set")
-            validation_dataset = dataset["__valid__"]
-
-        if "__extra_valid__" in dataset:
-            if not isinstance(dataset["__extra_valid__"], list):
-                raise RuntimeError(
-                    f"If present, dataset['__extra_valid__'] must be a list, "
-                    f"but you passed a {type(dataset['__extra_valid__'])}, "
-                    f"which is invalid."
-                )
-            logger.info(
-                f"Found {len(dataset['__extra_valid__'])} extra validation "
-                f"set(s) to be tracked during training"
-            )
-            logger.info(
-                "Extra validation sets are NOT used for model checkpointing!"
-            )
-            extra_validation_datasets = dataset["__extra_valid__"]
-            
     def semi_use_dataset(dataset):
         logger.info("Start setting semi-supervised training dataset")
         datalist = [None] * (
@@ -124,7 +92,6 @@ def base_train(
                 for i in range(
                     len(mylistun) // (batch_size - 1)
                 ):  # i is the number of batches
-
                     for j in range(batch_size):
                         if j == 0:
                             if i < len(mylist):
@@ -167,6 +134,39 @@ def base_train(
         res = [i for i in dataset_dic["train"] if i is not None]
         dataset_dic["train"] = res
         return dataset_dic
+
+    if isinstance(dataset, dict):
+        if "__train__" in dataset:
+            logger.info("Found (dedicated) '__train__' set for training")
+            use_dataset = dataset["__train__"]
+        if "__unlabeled_train__" in dataset:
+            logger.info(
+                "Found (dedicated) 'unlabeled_train' set for semi-supervised training"
+            )
+            use_dataset = semi_use_dataset(dataset)["train"]
+        else:
+            use_dataset = dataset["train"]
+
+        if "__valid__" in dataset:
+            logger.info("Found (dedicated) '__valid__' set for validation")
+            logger.info("Will checkpoint lowest loss model on validation set")
+            validation_dataset = dataset["__valid__"]
+
+        if "__extra_valid__" in dataset:
+            if not isinstance(dataset["__extra_valid__"], list):
+                raise RuntimeError(
+                    f"If present, dataset['__extra_valid__'] must be a list, "
+                    f"but you passed a {type(dataset['__extra_valid__'])}, "
+                    f"which is invalid."
+                )
+            logger.info(
+                f"Found {len(dataset['__extra_valid__'])} extra validation "
+                f"set(s) to be tracked during training"
+            )
+            logger.info(
+                "Extra validation sets are NOT used for model checkpointing!"
+            )
+            extra_validation_datasets = dataset["__extra_valid__"]
 
     # PyTorch dataloader
     multiproc_kwargs = dict()

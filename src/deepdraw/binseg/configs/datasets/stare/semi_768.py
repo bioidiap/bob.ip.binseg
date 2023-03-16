@@ -3,8 +3,6 @@ import torchvision.transforms as T
 
 from ..stare.ah_768 import dataset as _stare
 
-from .. import make_dataset as mk
-
 jitter = T.ColorJitter(saturation=0.3)
 gray = T.Grayscale(num_output_channels=3)
 

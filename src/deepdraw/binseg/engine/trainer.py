@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 import contextlib
 import csv
@@ -29,7 +28,7 @@ logger = logging.getLogger(__name__)
 
 @contextlib.contextmanager
 def torch_evaluation(model):
-    """Context manager to turn ON/OFF model evaluation
+    """Context manager to turn ON/OFF model evaluation.
 
     This context manager will turn evaluation mode ON on entry and turn it OFF
     when exiting the ``with`` statement block.
@@ -47,7 +46,6 @@ def torch_evaluation(model):
 
     model : :py:class:`torch.nn.Module`
         Network (e.g. driu, hed, unet)
-
     """
 
     model.eval()
@@ -56,15 +54,13 @@ def torch_evaluation(model):
 
 
 def check_gpu(device):
-    """
-    Check the device type and the availability of GPU.
+    """Check the device type and the availability of GPU.
 
     Parameters
     ----------
 
     device : :py:class:`torch.device`
         device to use
-
     """
     if device.type == "cuda":
         # asserts we do have a GPU
@@ -74,8 +70,7 @@ def check_gpu(device):
 
 
 def save_model_summary(output_folder, model):
-    """
-    Save a little summary of the model in a txt file.
+    """Save a little summary of the model in a txt file.
 
     Parameters
     ----------
@@ -93,11 +88,10 @@ def save_model_summary(output_folder, model):
 
     n : int
         The number of parameters of the model.
-
     """
     summary_path = os.path.join(output_folder, "model_summary.txt")
     logger.info(f"Saving model summary at {summary_path}...")
-    with open(summary_path, "wt") as f:
+    with open(summary_path, "w") as f:
         r, n = summary(model)
         logger.info(f"Model has {n} parameters...")
         f.write(r)
@@ -105,15 +99,13 @@ def save_model_summary(output_folder, model):
 
 
 def static_information_to_csv(static_logfile_name, device, n):
-    """
-    Save the static information in a csv file.
+    """Save the static information in a csv file.
 
     Parameters
     ----------
 
     static_logfile_name : str
         The static file name which is a join between the output folder and "constant.csv"
-
     """
     if os.path.exists(static_logfile_name):
         backup = static_logfile_name + "~"
@@ -131,9 +123,8 @@ def static_information_to_csv(static_logfile_name, device, n):
 
 
 def check_exist_logfile(logfile_name, arguments):
-    """
-    Check existance of logfile (trainlog.csv),
-    If the logfile exist the and the epochs number are still 0, The logfile will be replaced.
+    """Check existance of logfile (trainlog.csv), If the logfile exist the and
+    the epochs number are still 0, The logfile will be replaced.
 
     Parameters
     ----------
@@ -143,7 +134,6 @@ def check_exist_logfile(logfile_name, arguments):
 
     arguments : dict
         start and end epochs
-
     """
     if arguments["epoch"] == 0 and os.path.exists(logfile_name):
         backup = logfile_name + "~"
@@ -153,8 +143,7 @@ def check_exist_logfile(logfile_name, arguments):
 
 
 def create_logfile_fields(valid_loader, extra_valid_loaders, device):
-    """
-    Creation of the logfile fields that will appear in the logfile.
+    """Creation of the logfile fields that will appear in the logfile.
 
     Parameters
     ----------
@@ -177,8 +166,6 @@ def create_logfile_fields(valid_loader, extra_valid_loaders, device):
 
     logfile_fields: tuple
         The fields that will appear in trainlog.csv
-
-
     """
     logfile_fields = (
         "epoch",
@@ -199,8 +186,7 @@ def create_logfile_fields(valid_loader, extra_valid_loaders, device):
 
 
 def create_mt_logfile_fields(valid_loader, extra_valid_loaders, device):
-    """
-    Creation of the logfile fields that will appear in the logfile.
+    """Creation of the logfile fields that will appear in the logfile.
 
     Parameters
     ----------
@@ -223,8 +209,6 @@ def create_mt_logfile_fields(valid_loader, extra_valid_loaders, device):
 
     logfile_fields: tuple
         The fields that will appear in trainlog.csv
-
-
     """
     logfile_fields = (
         "epoch",
@@ -307,7 +291,6 @@ def mt_train_epoch(
     for idx, samples in enumerate(
         tqdm(loader, desc="train", leave=False, disable=None)
     ):
-
         images = samples[1].to(
             device=device, non_blocking=torch.cuda.is_available()
         )
@@ -323,7 +306,6 @@ def mt_train_epoch(
             )
         )
         if len(samples) > 4:
-
             flags = samples[-1]
 
         # forward pass on the SSL network
@@ -432,7 +414,6 @@ def train_epoch(loader, model, optimizer, device, criterion, batch_chunk_count):
     loss : float
         A floating-point value corresponding the weighted average of this
         epoch's loss
-
     """
 
     losses_in_epoch = []
@@ -444,7 +425,6 @@ def train_epoch(loader, model, optimizer, device, criterion, batch_chunk_count):
     for idx, samples in enumerate(
         tqdm(loader, desc="train", leave=False, disable=None)
     ):
-
         images = samples[1].to(
             device=device, non_blocking=torch.cuda.is_available()
         )
@@ -496,9 +476,7 @@ def train_epoch(loader, model, optimizer, device, criterion, batch_chunk_count):
 
 
 def validate_epoch(loader, model, device, criterion, pbar_desc):
-    """
-    Processes input samples and returns loss (scalar)
-
+    """Processes input samples and returns loss (scalar)
 
     Parameters
     ----------
@@ -527,14 +505,12 @@ def validate_epoch(loader, model, device, criterion, pbar_desc):
     loss : float
         A floating-point value corresponding the weighted average of this
         epoch's loss
-
     """
 
     batch_losses = []
     samples_in_batch = []
 
     with torch.no_grad(), torch_evaluation(model):
-
         for samples in tqdm(loader, desc=pbar_desc, leave=False, disable=None):
             images = samples[1].to(
                 device=device,
@@ -583,8 +559,8 @@ def checkpointer_process(
     epoch,
     max_epoch,
 ):
-    """
-    Process the checkpointer, save the final model and keep track of the best model.
+    """Process the checkpointer, save the final model and keep track of the
+    best model.
 
     Parameters
     ----------
@@ -614,8 +590,6 @@ def checkpointer_process(
 
     lowest_validation_loss : float
         The lowest validation loss currently observed
-
-
     """
     if checkpoint_period and (epoch % checkpoint_period == 0):
         checkpointer.save("model_periodic_save", **arguments)
@@ -645,8 +619,7 @@ def write_log_info(
     logfile,
     resource_data,
 ):
-    """
-    Write log info in trainlog.csv
+    """Write log info in trainlog.csv.
 
     Parameters
     ----------
@@ -679,7 +652,6 @@ def write_log_info(
 
     resource_data : tuple
         Monitored resources at the machine (CPU and GPU)
-
     """
 
     logdata = (
@@ -725,8 +697,7 @@ def write_mt_log_info(
     logfile,
     resource_data,
 ):
-    """
-    Write log info in trainlog.csv
+    """Write log info in trainlog.csv.
 
     Parameters
     ----------
@@ -759,7 +730,6 @@ def write_mt_log_info(
 
     resource_data : tuple
         Monitored resources at the machine (CPU and GPU)
-
     """
 
     logdata = (
@@ -809,8 +779,7 @@ def run(
     monitoring_interval,
     batch_chunk_count,
 ):
-    """
-    Fits an FCN model using supervised learning and save it to disk.
+    """Fits an FCN model using supervised learning and save it to disk.
 
     This method supports periodic checkpointing and the output of a
     CSV-formatted log with the evolution of some figures during training.
@@ -869,7 +838,6 @@ def run(
         mini-batch.   This is particularly interesting when one has limited RAM
         on the GPU, but would like to keep training with larger batches.  One
         exchanges for longer processing times in this case.
-
     """
 
     start_epoch = arguments["epoch"]
@@ -897,7 +865,6 @@ def run(
             valid_loader, extra_valid_loaders, device
         )
     else:
-
         logfile_fields = create_logfile_fields(
             valid_loader, extra_valid_loaders, device
         )
@@ -929,7 +896,6 @@ def run(
             leave=False,
             disable=None,
         ):
-
             with ResourceMonitor(
                 interval=monitoring_interval,
                 has_gpu=(device.type == "cuda"),
@@ -957,7 +923,6 @@ def run(
                         epoch,
                     )
                 else:
-
                     train_loss = train_epoch(
                         data_loader,
                         model,
@@ -1020,7 +985,6 @@ def run(
                     resource_monitor.data,
                 )
             else:
-
                 write_log_info(
                     epoch,
                     current_time,

@@ -3,7 +3,8 @@ import logging
 import torch
 import torch.nn
 import torchvision.transforms as T
-#choose the model to be used as the initialization network
+
+# choose the model to be used as the initialization network
 from deepdraw.binseg.models import unet
 
 # build Mean Teacher model
@@ -42,15 +43,15 @@ class Mean_teacher(torch.nn.Module):
         self,
         weight,
     ):
-        super(Mean_teacher, self).__init__()
+        super().__init__()
         self.T_model = unet.unet(pretrained_backbone=True, progress=True)
         self.S_model = unet.unet(pretrained_backbone=True, progress=True)
 
         self.weight = weight
         if weight is None:
-            logger.info(f"Model is not pretrained")
+            logger.info("Model is not pretrained")
         else:
-            #initialize the model with pretrained weights
+            # initialize the model with pretrained weights
             logger.info(f"Loading pretrained model from {weight}")
             input_model = unet.unet()
             input_model.load_state_dict(torch.load(weight), strict=False)
@@ -67,8 +68,8 @@ class Mean_teacher(torch.nn.Module):
     def forward(self, x):
         self.x = x
         # data augmentation on input image
-        x_t = gray(gauss1((x)))
-        x_s = gray(gauss2((x)))
+        x_t = gray(gauss1(x))
+        x_s = gray(gauss2(x))
         y_s = self.S_model(x_s)
         y_t = self.T_model(x_t)
         return y_s, y_t

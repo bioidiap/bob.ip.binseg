@@ -264,6 +264,7 @@ class MixJacLoss(_Loss):
         loss = ll + self.lambda_u * ramp_up_factor * ul
         return loss, ll, ul
 
+
 class SemiLoss(_Loss):
     """
 
@@ -275,7 +276,7 @@ class SemiLoss(_Loss):
     """
 
     def __init__(self, jacalpha=0.7):
-        super(SemiLoss, self).__init__()
+        super().__init__()
 
         self.jacalpha = jacalpha
 
@@ -320,4 +321,3 @@ class SemiLoss(_Loss):
             ll = labeled_loss(unlabeled_input, target, mask)
             loss = ll + ramp_up_factor * ul
         return loss, ll, ul
-

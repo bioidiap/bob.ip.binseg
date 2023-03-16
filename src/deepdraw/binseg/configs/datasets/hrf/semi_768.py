@@ -3,8 +3,6 @@ import torchvision.transforms as T
 
 from ..hrf.default_768 import dataset as _hrf
 
-from .. import make_dataset as mk
-
 jitter = T.ColorJitter(saturation=0.3, brightness=0.3, contrast=0.3)
 gray = T.Grayscale(num_output_channels=3)
 train = []
