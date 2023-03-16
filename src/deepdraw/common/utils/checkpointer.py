@@ -37,7 +37,11 @@ class Checkpointer:
 
     def save(self, name, **kwargs):
         data = {}
-        data["model"] = self.model.state_dict()
+        if self.model.name == "mean_teacher":
+            data["model_student"] = self.model.S_model.state_dict()
+            data["model"] = self.model.T_model.state_dict()
+        else:
+            data["model"] = self.model.state_dict()
         if self.optimizer is not None:
             data["optimizer"] = self.optimizer.state_dict()
         if self.scheduler is not None:
@@ -77,7 +81,16 @@ class Checkpointer:
         checkpoint = torch.load(f, map_location=torch.device("cpu"))
 
         # converts model entry to model parameters
-        self.model.load_state_dict(checkpoint.pop("model"))
+        if self.model.name == "mean_teacher":
+            logger.info(f"Loading mean_teacher checkpoint from {f}...")
+            self.model.S_model.load_state_dict(
+                checkpoint.pop("model_student"), strict=False
+            )
+            self.model.T_model.load_state_dict(
+                checkpoint.pop("model"), strict=False
+            )
+        else:
+            self.model.load_state_dict(checkpoint.pop("model"))
 
         if self.optimizer is not None:
             self.optimizer.load_state_dict(checkpoint.pop("optimizer"))

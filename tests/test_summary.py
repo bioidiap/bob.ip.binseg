@@ -7,6 +7,7 @@ import unittest
 from deepdraw.binseg.models.driu import driu
 from deepdraw.binseg.models.driu_od import driu_od
 from deepdraw.binseg.models.hed import hed
+from deepdraw.binseg.models.mean_teacher import mean_teacher
 from deepdraw.binseg.models.resunet import resunet50
 from deepdraw.binseg.models.unet import unet
 from deepdraw.common.utils.summary import summary
@@ -48,6 +49,13 @@ class Tester(unittest.TestCase):
 
     def test_summary_fasterrcnn(self):
         model = faster_rcnn()
+        s, param = summary(model)
+        self.assertIsInstance(s, str)
+        self.assertIsInstance(param, int)
+
+    def test_summary_mean_teacher(self):
+        weight = None
+        model = mean_teacher(weight)
         s, param = summary(model)
         self.assertIsInstance(s, str)
         self.assertIsInstance(param, int)

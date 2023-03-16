@@ -263,3 +263,61 @@ class MixJacLoss(_Loss):
 
         loss = ll + self.lambda_u * ramp_up_factor * ul
         return loss, ll, ul
+
+
+class SemiLoss(_Loss):
+    """
+
+    Parameters
+    ----------
+
+
+
+    """
+
+    def __init__(self, jacalpha=0.7):
+        super().__init__()
+
+        self.jacalpha = jacalpha
+
+    def forward(
+        self,
+        target,
+        mask,
+        unlabeled_input,
+        unlabeled_target,
+        flag,
+        ramp_up_factor,
+    ):
+        """
+        Parameters
+        ----------
+
+        samples : dict
+        unlabeled_input : :py:class:`torch.Tensor`
+        unlabeled_target : :py:class:`torch.Tensor`
+        ramp_up_factor : float
+
+        Returns
+        -------
+
+        list
+
+        """
+        ll = 0
+        sigmoid = torch.nn.Sigmoid()
+        u_target = sigmoid(unlabeled_target)
+        ul = torch.nn.functional.binary_cross_entropy_with_logits(
+            unlabeled_input, u_target, reduction="mean"
+        )  # consistency loss
+        labeled_loss = SoftJaccardBCELogitsLoss(
+            self.jacalpha
+        )  # segmenation loss
+        # if input is unlabeled data, return consistency loss
+        if flag[0] == "0":
+            loss = ul
+        # if input is labeled data, return combined loss
+        else:
+            ll = labeled_loss(unlabeled_input, target, mask)
+            loss = ll + ramp_up_factor * ul
+        return loss, ll, ul

@@ -1,6 +1,4 @@
-# SPDX-FileCopyrightText: Copyright © 2023 Idiap Research Institute <contact@idiap.ch>
-#
-# SPDX-License-Identifier: GPL-3.0-or-later
+#!/usr/bin/env python
 
 import contextlib
 import csv
@@ -15,6 +13,8 @@ import numpy
 import torch
 
 from tqdm import tqdm
+
+from deepdraw.binseg.models import losses, ramps
 
 from ...common.utils.resources import (
     ResourceMonitor,
@@ -178,10 +178,205 @@ def create_logfile_fields(valid_loader, extra_valid_loaders, device):
         logfile_fields += ("validation_loss",)
     if extra_valid_loaders:
         logfile_fields += ("extra_validation_losses",)
+
     logfile_fields += tuple(
         ResourceMonitor.monitored_keys(device.type == "cuda")
     )
     return logfile_fields
+
+
+def create_mt_logfile_fields(valid_loader, extra_valid_loaders, device):
+    """Creation of the logfile fields that will appear in the logfile.
+
+    Parameters
+    ----------
+
+    valid_loader : :py:class:`torch.utils.data.DataLoader`
+        To be used to validate the model and enable automatic checkpointing.
+        If set to ``None``, then do not validate it.
+
+    extra_valid_loaders : :py:class:`list` of :py:class:`torch.utils.data.DataLoader`
+        To be used to validate the model, however **does not affect** automatic
+        checkpointing. If set to ``None``, or empty, then does not log anything
+        else.  Otherwise, an extra column with the loss of every dataset in
+        this list is kept on the final training log.
+
+    device : :py:class:`torch.device`
+        device to use
+
+    Returns
+    -------
+
+    logfile_fields: tuple
+        The fields that will appear in trainlog.csv
+    """
+    logfile_fields = (
+        "epoch",
+        "total_time",
+        "eta",
+        "loss",
+        "consistency",
+        "segmentation",
+        "learning_rate",
+    )
+    if valid_loader is not None:
+        logfile_fields += ("validation_loss",)
+    if extra_valid_loaders:
+        logfile_fields += ("extra_validation_losses",)
+
+    logfile_fields += tuple(
+        ResourceMonitor.monitored_keys(device.type == "cuda")
+    )
+    return logfile_fields
+
+
+def mt_train_epoch(
+    loader,
+    model,
+    optimizer,
+    device,
+    criterion,
+    batch_chunk_count,
+    epoch,
+):
+    """Trains the model for a single epoch (through all batches)
+
+    Parameters
+    ----------
+
+    loader : :py:class:`torch.utils.data.DataLoader`
+        To be used to train the model
+
+    model : :py:class:`torch.nn.Module`
+        Network mean teacher
+
+    optimizer : :py:mod:`torch.optim`
+
+    device : :py:class:`torch.device`
+        device to use
+
+    criterion : :py:class:`torch.nn.modules.loss._Loss`
+
+    batch_chunk_count: int
+        If this number is different than 1, then each batch will be divided in
+        this number of chunks.  Gradients will be accumulated to perform each
+        mini-batch.   This is particularly interesting when one has limited RAM
+        on the GPU, but would like to keep training with larger batches.  One
+        exchanges for longer processing times in this case.  To better understand
+        gradient accumulation, read
+        https://stackoverflow.com/questions/62067400/understanding-accumulated-gradients-in-pytorch.
+
+    epoch : :int, indicate the current epoch
+
+    Returns
+    -------
+
+    loss : float
+        A floating-point value corresponding the average of this epoch's loss
+    consistency : float
+        consistency loss corresponding the average of this epoch's consistency loss
+    segmentation : float
+        segmentation loss corresponding the average of this epoch's segmentation loss
+    """
+
+    losses_in_epoch = []
+    samples_in_epoch = []
+    losses_in_batch = []
+    samples_in_batch = []
+    consistency_in_epoch = []
+    segmentation_in_epoch = []
+    consistency_in_batch = []
+    segmentation_in_batch = []
+    # progress bar only on interactive jobs
+    for idx, samples in enumerate(
+        tqdm(loader, desc="train", leave=False, disable=None)
+    ):
+        images = samples[1].to(
+            device=device, non_blocking=torch.cuda.is_available()
+        )
+
+        ground_truths = samples[2].to(
+            device=device, non_blocking=torch.cuda.is_available()
+        )
+        masks = (
+            torch.ones_like(ground_truths)
+            if len(samples) < 4
+            else samples[3].to(
+                device=device, non_blocking=torch.cuda.is_available()
+            )
+        )
+        if len(samples) > 4:
+            flags = samples[-1]
+
+        # forward pass on the SSL network
+        outputs1, outputs2 = model(images)
+
+        ramp_up_factor = ramps.get_current_consistency_weight(epoch)
+        loss, segmentation, consistency = criterion(
+            ground_truths, masks, outputs1, outputs2, flags, ramp_up_factor
+        )
+
+        losses_in_batch.append(loss.item())
+        if consistency != 0:
+            consistency_in_batch.append(consistency.item())
+        else:
+            consistency_in_batch.append(0)
+        if segmentation != 0:
+            segmentation_in_batch.append(segmentation.item())
+        else:
+            segmentation_in_batch.append(0)
+
+        samples_in_batch.append(len(samples))
+
+        # Normalize loss to account for batch accumulation
+        loss = loss / batch_chunk_count
+        consistency = consistency / batch_chunk_count
+        segmentation = segmentation / batch_chunk_count
+        # Accumulate gradients - does not update weights just yet...
+        loss.backward()
+
+        # Weight update on the network
+        if ((idx + 1) % batch_chunk_count == 0) or (idx + 1 == len(loader)):
+            # Advances optimizer to the "next" state and applies weight update
+            # over the student model
+            optimizer.step()
+
+            # Zeroes gradients for the next batch
+            optimizer.zero_grad()
+
+            # update teacher model
+            ramps.update_ema_variables(model.S_model, model.T_model, epoch)
+
+            # Normalize loss for current batch
+            batch_loss = numpy.average(
+                losses_in_batch, weights=samples_in_batch
+            )
+            batch_consistency = numpy.average(
+                consistency_in_batch, weights=samples_in_batch
+            )
+            batch_segmentation = numpy.average(
+                segmentation_in_batch, weights=samples_in_batch
+            )
+
+            losses_in_epoch.append(batch_loss.item())
+            consistency_in_epoch.append(batch_consistency.item())
+            segmentation_in_epoch.append(batch_segmentation.item())
+            samples_in_epoch.append(len(samples))
+
+            losses_in_batch.clear()
+            consistency_in_batch.clear()
+            segmentation_in_batch.clear()
+            samples_in_batch.clear()
+
+            logger.debug(f"batch loss: {batch_loss.item()}")
+            logger.debug(f"batch segmentation: {batch_segmentation.item()}")
+            logger.debug(f"batch consistency: {batch_consistency.item()}")
+
+    return (
+        numpy.average(losses_in_epoch, weights=samples_in_epoch),
+        numpy.average(segmentation_in_epoch, weights=samples_in_epoch),
+        numpy.average(consistency_in_epoch, weights=samples_in_epoch),
+    )
 
 
 def train_epoch(loader, model, optimizer, device, criterion, batch_chunk_count):
@@ -334,14 +529,25 @@ def validate_epoch(loader, model, device, criterion, pbar_desc):
                 )
             )
 
-            # data forwarding on the existing network
-            outputs = model(images)
-            loss = criterion(outputs, ground_truths, masks)
+            if model.name == "mean_teacher":
+                # data forwarding on the teacher model
 
-            batch_losses.append(loss.item())
-            samples_in_batch.append(len(samples))
+                criterion = losses.SoftJaccardBCELogitsLoss()
+                outputs = model.T_model(images)
+                loss = criterion(outputs, ground_truths, masks)
 
-    return numpy.average(batch_losses, weights=samples_in_batch)
+                batch_losses.append(loss.item())
+                samples_in_batch.append(len(samples))
+
+            else:
+                # data forwarding on the existing network
+                outputs = model(images)
+                loss = criterion(outputs, ground_truths, masks)
+
+                batch_losses.append(loss.item())
+                samples_in_batch.append(len(samples))
+
+        return numpy.average(batch_losses, weights=samples_in_batch)
 
 
 def checkpointer_process(
@@ -358,8 +564,9 @@ def checkpointer_process(
 
     Parameters
     ----------
+    model : :py:class:`torch.nn.Module`
 
-    checkpointer : :py:class:`deepdraw.common.utils.checkpointer.Checkpointer`
+    checkpointer : :py:class:`bob.ip.common.utils.checkpointer.Checkpointer`
         checkpointer implementation
 
     checkpoint_period : int
@@ -476,6 +683,86 @@ def write_log_info(
     tqdm.write("|".join([f"{k}: {v}" for (k, v) in logdata[:4]]))
 
 
+def write_mt_log_info(
+    epoch,
+    current_time,
+    eta_seconds,
+    loss,
+    segmentation,
+    consistency,
+    valid_loss,
+    extra_valid_losses,
+    optimizer,
+    logwriter,
+    logfile,
+    resource_data,
+):
+    """Write log info in trainlog.csv.
+
+    Parameters
+    ----------
+
+    epoch : int
+        Current epoch
+
+    current_time : float
+        Current training time
+
+    eta_seconds : float
+        estimated time-of-arrival taking into consideration previous epoch performance
+
+    loss : float
+        Current epoch's training loss
+
+    valid_loss : :py:class:`float`, None
+        Current epoch's validation loss
+
+    extra_valid_losses : :py:class:`list` of :py:class:`float`
+        Validation losses from other validation datasets being currently
+        tracked
+
+    optimizer : :py:mod:`torch.optim`
+
+    logwriter : csv.DictWriter
+        Dictionary writer that give the ability to write on the trainlog.csv
+
+    logfile : io.TextIOWrapper
+
+    resource_data : tuple
+        Monitored resources at the machine (CPU and GPU)
+    """
+
+    logdata = (
+        ("epoch", f"{epoch}"),
+        (
+            "total_time",
+            f"{datetime.timedelta(seconds=int(current_time))}",
+        ),
+        ("eta", f"{datetime.timedelta(seconds=int(eta_seconds))}"),
+        ("loss", f"{loss:.6f}"),
+        ("segmentation", f"{segmentation:.6f}"),
+        ("consistency", f"{consistency:.6f}"),
+        ("learning_rate", f"{optimizer.param_groups[0]['lr']:.6f}"),
+    )
+
+    if valid_loss is not None:
+        logdata += (("validation_loss", f"{valid_loss:.6f}"),)
+
+    if extra_valid_losses:
+        entry = numpy.array_str(
+            numpy.array(extra_valid_losses),
+            max_line_width=sys.maxsize,
+            precision=6,
+        )
+        logdata += (("extra_validation_losses", entry),)
+
+    logdata += resource_data
+
+    logwriter.writerow(dict(k for k in logdata))
+    logfile.flush()
+    tqdm.write("|".join([f"{k}: {v}" for (k, v) in logdata[:4]]))
+
+
 def run(
     model,
     data_loader,
@@ -525,7 +812,7 @@ def run(
     scheduler : :py:mod:`torch.optim`
         learning rate scheduler
 
-    checkpointer : :py:class:`deepdraw.common.utils.checkpointer.Checkpointer`
+    checkpointer : :py:class:`bob.ip.common.utils.checkpointer.Checkpointer`
         checkpointer implementation
 
     checkpoint_period : int
@@ -573,9 +860,14 @@ def run(
 
     check_exist_logfile(logfile_name, arguments)
 
-    logfile_fields = create_logfile_fields(
-        valid_loader, extra_valid_loaders, device
-    )
+    if model.name == "mean_teacher":
+        logfile_fields = create_mt_logfile_fields(
+            valid_loader, extra_valid_loaders, device
+        )
+    else:
+        logfile_fields = create_logfile_fields(
+            valid_loader, extra_valid_loaders, device
+        )
 
     # the lowest validation loss obtained so far - this value is updated only
     # if a validation set is available
@@ -616,14 +908,29 @@ def run(
                 # Epoch time
                 start_epoch_time = time.time()
 
-                train_loss = train_epoch(
-                    data_loader,
-                    model,
-                    optimizer,
-                    device,
-                    criterion,
-                    batch_chunk_count,
-                )
+                if model.name == "mean_teacher":
+                    (
+                        train_loss,
+                        segmentation_loss,
+                        consistency_loss,
+                    ) = mt_train_epoch(
+                        data_loader,
+                        model,
+                        optimizer,
+                        device,
+                        criterion,
+                        batch_chunk_count,
+                        epoch,
+                    )
+                else:
+                    train_loss = train_epoch(
+                        data_loader,
+                        model,
+                        optimizer,
+                        device,
+                        criterion,
+                        batch_chunk_count,
+                    )
 
                 scheduler.step()
 
@@ -662,18 +969,34 @@ def run(
             eta_seconds = epoch_time * (max_epoch - epoch)
             current_time = time.time() - start_training_time
 
-            write_log_info(
-                epoch,
-                current_time,
-                eta_seconds,
-                train_loss,
-                valid_loss,
-                extra_valid_losses,
-                optimizer,
-                logwriter,
-                logfile,
-                resource_monitor.data,
-            )
+            if model.name == "mean_teacher":
+                write_mt_log_info(
+                    epoch,
+                    current_time,
+                    eta_seconds,
+                    train_loss,
+                    segmentation_loss,
+                    consistency_loss,
+                    valid_loss,
+                    extra_valid_losses,
+                    optimizer,
+                    logwriter,
+                    logfile,
+                    resource_monitor.data,
+                )
+            else:
+                write_log_info(
+                    epoch,
+                    current_time,
+                    eta_seconds,
+                    train_loss,
+                    valid_loss,
+                    extra_valid_losses,
+                    optimizer,
+                    logwriter,
+                    logfile,
+                    resource_monitor.data,
+                )
 
         total_training_time = time.time() - start_training_time
         logger.info(
