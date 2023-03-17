@@ -37,7 +37,7 @@ class Checkpointer:
 
     def save(self, name, **kwargs):
         data = {}
-        if self.model.name == "mean_teacher":
+        if hasattr(self.model, "name") and self.model.name == "mean_teacher":
             data["model_student"] = self.model.S_model.state_dict()
             data["model"] = self.model.T_model.state_dict()
         else:
@@ -81,7 +81,7 @@ class Checkpointer:
         checkpoint = torch.load(f, map_location=torch.device("cpu"))
 
         # converts model entry to model parameters
-        if self.model.name == "mean_teacher":
+        if hasattr(self.model, "name") and self.model.name == "mean_teacher":
             logger.info(f"Loading mean_teacher checkpoint from {f}...")
             self.model.S_model.load_state_dict(
                 checkpoint.pop("model_student"), strict=False
