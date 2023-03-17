@@ -234,7 +234,7 @@ def base_train(
     else:
         from ...binseg.engine.trainer import run
 
-        if model.name == "mean_teacher":
+        if hasattr(model, "name") and model.name == "mean_teacher":
             data_loader = DataLoader(
                 dataset=use_dataset,
                 batch_size=batch_chunk_size,
