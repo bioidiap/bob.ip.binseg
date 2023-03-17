@@ -136,14 +136,14 @@ def base_train(
         return dataset_dic
 
     if isinstance(dataset, dict):
-        if "__train__" in dataset:
-            logger.info("Found (dedicated) '__train__' set for training")
-            use_dataset = dataset["__train__"]
         if "__unlabeled_train__" in dataset:
             logger.info(
                 "Found (dedicated) 'unlabeled_train' set for semi-supervised training"
             )
             use_dataset = semi_use_dataset(dataset)["train"]
+        elif "__train__" in dataset:
+            logger.info("Found (dedicated) '__train__' set for training")
+            use_dataset = dataset["__train__"]
         else:
             use_dataset = dataset["train"]
 
