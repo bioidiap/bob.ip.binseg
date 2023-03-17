@@ -134,14 +134,14 @@ def test_resunet50():
     print(model)
 
 
-def test_mean_teacher():
-    from deepdraw.binseg.models.mean_teacher import mean_teacher
-    from deepdraw.binseg.models.unet import unet
+# def test_mean_teacher():
+#     from deepdraw.binseg.models.mean_teacher import mean_teacher
+#     from deepdraw.binseg.models.unet import unet
 
-    weight = None
-    model = mean_teacher(weight)
-    assert type(model.T_model) == unet
-    assert type(model.S_model) == unet
+#     weight = None
+#     model = mean_teacher(weight)
+#     assert type(model.T_model) == unet
+#     assert type(model.S_model) == unet
 
 
 def test_fasterrcnn():

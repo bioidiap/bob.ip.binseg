@@ -529,7 +529,7 @@ def validate_epoch(loader, model, device, criterion, pbar_desc):
                 )
             )
 
-            if model.name == "mean_teacher":
+            if hasattr(model, "name") and model.name == "mean_teacher":
                 # data forwarding on the teacher model
 
                 criterion = losses.SoftJaccardBCELogitsLoss()
@@ -860,7 +860,7 @@ def run(
 
     check_exist_logfile(logfile_name, arguments)
 
-    if model.name == "mean_teacher":
+    if hasattr(model, "name") and model.name == "mean_teacher":
         logfile_fields = create_mt_logfile_fields(
             valid_loader, extra_valid_loaders, device
         )
@@ -908,7 +908,7 @@ def run(
                 # Epoch time
                 start_epoch_time = time.time()
 
-                if model.name == "mean_teacher":
+                if hasattr(model, "name") and model.name == "mean_teacher":
                     (
                         train_loss,
                         segmentation_loss,
@@ -969,7 +969,7 @@ def run(
             eta_seconds = epoch_time * (max_epoch - epoch)
             current_time = time.time() - start_training_time
 
-            if model.name == "mean_teacher":
+            if hasattr(model, "name") and model.name == "mean_teacher":
                 write_mt_log_info(
                     epoch,
                     current_time,
