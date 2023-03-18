@@ -238,7 +238,7 @@ def mt_train_epoch(
     device,
     criterion,
     batch_chunk_count,
-    epoch,
+    epoch=0,
 ):
     """Trains the model for a single epoch (through all batches)
 
