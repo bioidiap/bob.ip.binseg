@@ -238,7 +238,7 @@ def mt_train_epoch(
     device,
     criterion,
     batch_chunk_count,
-    epoch=0,
+    epoch,
 ):
     """Trains the model for a single epoch (through all batches)
 
@@ -267,7 +267,7 @@ def mt_train_epoch(
         gradient accumulation, read
         https://stackoverflow.com/questions/62067400/understanding-accumulated-gradients-in-pytorch.
 
-    epoch : :int, indicate the current epoch
+    epoch: int, indicate the current epoch
 
     Returns
     -------
