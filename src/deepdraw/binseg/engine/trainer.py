@@ -267,7 +267,8 @@ def mt_train_epoch(
         gradient accumulation, read
         https://stackoverflow.com/questions/62067400/understanding-accumulated-gradients-in-pytorch.
 
-    epoch: int, indicate the current epoch
+    epoch: int
+        Indicate the current epoch
 
     Returns
     -------
