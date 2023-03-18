@@ -118,6 +118,19 @@ def test_drive_covd():
             assert sample[1].min() >= 0.0
 
 
+def test_drive_semi_768():
+    from deepdraw.binseg.configs.datasets.drive.semi_768 import dataset
+
+    assert len(dataset) == 4
+
+    from deepdraw.binseg.configs.datasets.drive.default_768 import (
+        dataset as baseline,
+    )
+
+    assert dataset["train"] == dataset["__valid__"]
+    assert dataset["test"] == baseline["test"]
+
+
 @pytest.mark.skip_if_rc_var_not_set("datadir.stare")
 def test_stare_augmentation_manipulation():
     # some tests to check our context management for dataset augmentation works
