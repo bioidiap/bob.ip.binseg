@@ -1,0 +1,79 @@
+# SPDX-FileCopyrightText: Copyright © 2023 Idiap Research Institute <contact@idiap.ch>
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+{% set data = load_file_data(RECIPE_DIR + '/../pyproject.toml') %}
+
+package:
+  name: {{ data['project']['name'] }}
+  version: {{ data['project']['version'] }}
+
+source:
+  path: ..
+
+build:
+  noarch: python
+  number: {{ environ.get('NEXT_BUILD_NUMBER', 0) }}
+  run_exports:
+    - {{ pin_subpackage(data['project']['name']) }}
+  script:
+    - "{{ PYTHON }} -m pip install {{ SRC_DIR }} -vv"
+
+requirements:
+  host:
+    - python >=3.9
+    - pip
+    - click {{ click }}
+    - click-plugins
+    - matplotlib {{ matplotlib }}
+    - numpy {{ numpy }}
+    - scipy {{ scipy }}
+    - pandas {{ pandas }}
+    - h5py {{ h5py }}
+    - pillow {{ pillow }}
+    - psutil {{ psutil }}
+    - setuptools
+    - tabulate {{ tabulate }}
+    - pytorch {{ pytorch }}
+    - torchvision  {{ torchvision }}
+    - tqdm {{ tqdm }}
+    - scikit-image {{ scikit_image }}
+    - tensorboard {{ tensorboard }}
+    - tomli-w {{ tomli_w }}
+    - clapper
+  run:
+    - python >=3.9
+    - {{ pin_compatible('click') }}
+    - click-plugins
+    - {{ pin_compatible('matplotlib') }}
+    - {{ pin_compatible('numpy') }}
+    - {{ pin_compatible('scipy') }}
+    - {{ pin_compatible('pandas') }}
+    - {{ pin_compatible('h5py') }}
+    - {{ pin_compatible('pillow') }}
+    - {{ pin_compatible('psutil') }}
+    - setuptools
+    - {{ pin_compatible('tabulate') }}
+    - {{ pin_compatible('pytorch') }}
+    - {{ pin_compatible('torchvision') }}
+    - {{ pin_compatible('tqdm') }}
+    - {{ pin_compatible('scikit-image') }}
+    - {{ pin_compatible('tensorboard') }}
+    - {{ pin_compatible('tomli-w') }}
+    - clapper
+
+test:
+  source_files:
+    - tests
+  imports:
+    - {{ data['project']['name'].replace('-','_') }}
+  commands:
+    - pytest -sv tests
+  requires:
+    - pytest {{ pytest }}
+
+about:
+  home: {{ data['project']['urls']['homepage'] }}
+  summary: {{ data['project']['description'] }}
+  license: {{ data['project']['license']['text'] }}
+  license_family: GPL

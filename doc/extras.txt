@@ -1,0 +1,25 @@
+# Sphinx inventory version 2
+# Project: extras
+# Version: stable
+# The remainder of this file is compressed using zlib.
+torch.device py:class 1 https://pytorch.org/docs/master/tensor_attributes.html#torch.torch.device -
+torch.optim.optimizer.Optimizer py:class 1 https://pytorch.org/docs/stable/optim.html#torch.optim.Optimizer -
+torch.nn.Module py:class 1 https://pytorch.org/docs/stable/nn.html?highlight=module#torch.nn.Module -
+torch.nn.modules.module.Module py:class 1 https://pytorch.org/docs/stable/nn.html?highlight=module#torch.nn.Module -
+torch.utils.data.dataset.Dataset py:class 1 https://pytorch.org/docs/stable/data.html?highlight=dataset#torch.utils.data.Dataset -
+unittest.case.TestCase py:class 1 https://docs.python.org/3/library/unittest.html?highlight=testcase#unittest.TestCase -
+click.core.Option py:class 1 https://click.palletsprojects.com/en/7.x/api/#click.Option -
+torchvision.transforms.transforms.ColorJitter py:class 1 https://pytorch.org/vision/stable/transforms.html#torchvision.transforms.ColorJitter -
+torchvision.transforms.transforms.RandomRotation py:class 1 https://pytorch.org/vision/stable/transforms.html#torchvision.transforms.RandomRotation -
+torchvision.transforms.transforms.RandomVerticalFlip py:class 1 https://pytorch.org/vision/stable/transforms.html#torchvision.transforms.RandomVerticalFlip -
+torchvision.transforms.transforms.RandomHorizontalFlip py:class 1 https://pytorch.org/vision/stable/transforms.html#torchvision.transforms.RandomHorizontalFlip -
+torchvision.transforms.transforms.Compose py:class 1 https://pytorch.org/vision/stable/transforms.html#torchvision.transforms.Compose -
+torchvision.transforms.transforms.ToTensor py:class 1 https://pytorch.org/vision/stable/transforms.html#torchvision.transforms.ToTensor -
+torchvision.transforms.transforms.Resize py:class 1 https://pytorch.org/vision/stable/transforms.html#torchvision.transforms.Resize -
+torchvision.transforms.transforms.Pad py:class 1 https://pytorch.org/vision/stable/transforms.html#torchvision.transforms.Pad -
+torchvision.transforms.transforms.CenterCrop py:class 1 https://pytorch.org/vision/stable/transforms.html#torchvision.transforms.CenterCrop -
+torchvision.transforms.transforms.GaussianBlur py:class 1 https://pytorch.org/vision/master/generated/torchvision.transforms.GaussianBlur.html#gaussianblur -
+torchvision.transforms py:module 1 https://pytorch.org/vision/stable/transforms.html -
+torchvision.models.mobilenetv2.MobileNetV2 py:class 1 https://pytorch.org/vision/stable/models.html#mobilenet-v2 -
+torchvision.models.resnet.ResNet py:class 1 https://pytorch.org/vision/stable/models.html#id10 -
+torchvision.models.vgg.VGG py:class 1 https://pytorch.org/vision/stable/models.html#id2 -

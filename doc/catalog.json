@@ -1,0 +1,9 @@
+{
+  "clapper": {
+    "versions": {
+      "stable": "https://clapper.readthedocs.io/en/stable/",
+      "latest": "https://clapper.readthedocs.io/en/latest/"
+    },
+    "sources": {}
+  }
+}

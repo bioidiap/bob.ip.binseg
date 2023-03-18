@@ -1,0 +1,1243 @@
+{
+ "train": [
+  [
+   "All247images/JPCLN049.IMG",
+   "scratch/fold1/masks/left lung/JPCLN049.gif",
+   "scratch/fold1/masks/right lung/JPCLN049.gif"
+  ],
+  [
+   "All247images/JPCNN064.IMG",
+   "scratch/fold2/masks/left lung/JPCNN064.gif",
+   "scratch/fold2/masks/right lung/JPCNN064.gif"
+  ],
+  [
+   "All247images/JPCLN102.IMG",
+   "scratch/fold2/masks/left lung/JPCLN102.gif",
+   "scratch/fold2/masks/right lung/JPCLN102.gif"
+  ],
+  [
+   "All247images/JPCLN039.IMG",
+   "scratch/fold1/masks/left lung/JPCLN039.gif",
+   "scratch/fold1/masks/right lung/JPCLN039.gif"
+  ],
+  [
+   "All247images/JPCLN087.IMG",
+   "scratch/fold1/masks/left lung/JPCLN087.gif",
+   "scratch/fold1/masks/right lung/JPCLN087.gif"
+  ],
+  [
+   "All247images/JPCLN104.IMG",
+   "scratch/fold2/masks/left lung/JPCLN104.gif",
+   "scratch/fold2/masks/right lung/JPCLN104.gif"
+  ],
+  [
+   "All247images/JPCLN079.IMG",
+   "scratch/fold1/masks/left lung/JPCLN079.gif",
+   "scratch/fold1/masks/right lung/JPCLN079.gif"
+  ],
+  [
+   "All247images/JPCNN046.IMG",
+   "scratch/fold2/masks/left lung/JPCNN046.gif",
+   "scratch/fold2/masks/right lung/JPCNN046.gif"
+  ],
+  [
+   "All247images/JPCLN081.IMG",
+   "scratch/fold1/masks/left lung/JPCLN081.gif",
+   "scratch/fold1/masks/right lung/JPCLN081.gif"
+  ],
+  [
+   "All247images/JPCLN096.IMG",
+   "scratch/fold2/masks/left lung/JPCLN096.gif",
+   "scratch/fold2/masks/right lung/JPCLN096.gif"
+  ],
+  [
+   "All247images/JPCNN022.IMG",
+   "scratch/fold2/masks/left lung/JPCNN022.gif",
+   "scratch/fold2/masks/right lung/JPCNN022.gif"
+  ],
+  [
+   "All247images/JPCLN065.IMG",
+   "scratch/fold1/masks/left lung/JPCLN065.gif",
+   "scratch/fold1/masks/right lung/JPCLN065.gif"
+  ],
+  [
+   "All247images/JPCLN137.IMG",
+   "scratch/fold1/masks/left lung/JPCLN137.gif",
+   "scratch/fold1/masks/right lung/JPCLN137.gif"
+  ],
+  [
+   "All247images/JPCLN139.IMG",
+   "scratch/fold1/masks/left lung/JPCLN139.gif",
+   "scratch/fold1/masks/right lung/JPCLN139.gif"
+  ],
+  [
+   "All247images/JPCLN029.IMG",
+   "scratch/fold1/masks/left lung/JPCLN029.gif",
+   "scratch/fold1/masks/right lung/JPCLN029.gif"
+  ],
+  [
+   "All247images/JPCNN083.IMG",
+   "scratch/fold1/masks/left lung/JPCNN083.gif",
+   "scratch/fold1/masks/right lung/JPCNN083.gif"
+  ],
+  [
+   "All247images/JPCLN038.IMG",
+   "scratch/fold2/masks/left lung/JPCLN038.gif",
+   "scratch/fold2/masks/right lung/JPCLN038.gif"
+  ],
+  [
+   "All247images/JPCLN088.IMG",
+   "scratch/fold2/masks/left lung/JPCLN088.gif",
+   "scratch/fold2/masks/right lung/JPCLN088.gif"
+  ],
+  [
+   "All247images/JPCNN005.IMG",
+   "scratch/fold1/masks/left lung/JPCNN005.gif",
+   "scratch/fold1/masks/right lung/JPCNN005.gif"
+  ],
+  [
+   "All247images/JPCLN055.IMG",
+   "scratch/fold1/masks/left lung/JPCLN055.gif",
+   "scratch/fold1/masks/right lung/JPCLN055.gif"
+  ],
+  [
+   "All247images/JPCNN056.IMG",
+   "scratch/fold2/masks/left lung/JPCNN056.gif",
+   "scratch/fold2/masks/right lung/JPCNN056.gif"
+  ],
+  [
+   "All247images/JPCLN001.IMG",
+   "scratch/fold1/masks/left lung/JPCLN001.gif",
+   "scratch/fold1/masks/right lung/JPCLN001.gif"
+  ],
+  [
+   "All247images/JPCNN063.IMG",
+   "scratch/fold1/masks/left lung/JPCNN063.gif",
+   "scratch/fold1/masks/right lung/JPCNN063.gif"
+  ],
+  [
+   "All247images/JPCLN072.IMG",
+   "scratch/fold2/masks/left lung/JPCLN072.gif",
+   "scratch/fold2/masks/right lung/JPCLN072.gif"
+  ],
+  [
+   "All247images/JPCNN039.IMG",
+   "scratch/fold1/masks/left lung/JPCNN039.gif",
+   "scratch/fold1/masks/right lung/JPCNN039.gif"
+  ],
+  [
+   "All247images/JPCNN004.IMG",
+   "scratch/fold2/masks/left lung/JPCNN004.gif",
+   "scratch/fold2/masks/right lung/JPCNN004.gif"
+  ],
+  [
+   "All247images/JPCNN038.IMG",
+   "scratch/fold2/masks/left lung/JPCNN038.gif",
+   "scratch/fold2/masks/right lung/JPCNN038.gif"
+  ],
+  [
+   "All247images/JPCLN012.IMG",
+   "scratch/fold2/masks/left lung/JPCLN012.gif",
+   "scratch/fold2/masks/right lung/JPCLN012.gif"
+  ],
+  [
+   "All247images/JPCLN076.IMG",
+   "scratch/fold2/masks/left lung/JPCLN076.gif",
+   "scratch/fold2/masks/right lung/JPCLN076.gif"
+  ],
+  [
+   "All247images/JPCNN014.IMG",
+   "scratch/fold2/masks/left lung/JPCNN014.gif",
+   "scratch/fold2/masks/right lung/JPCNN014.gif"
+  ],
+  [
+   "All247images/JPCLN078.IMG",
+   "scratch/fold2/masks/left lung/JPCLN078.gif",
+   "scratch/fold2/masks/right lung/JPCLN078.gif"
+  ],
+  [
+   "All247images/JPCLN101.IMG",
+   "scratch/fold1/masks/left lung/JPCLN101.gif",
+   "scratch/fold1/masks/right lung/JPCLN101.gif"
+  ],
+  [
+   "All247images/JPCLN126.IMG",
+   "scratch/fold2/masks/left lung/JPCLN126.gif",
+   "scratch/fold2/masks/right lung/JPCLN126.gif"
+  ],
+  [
+   "All247images/JPCNN086.IMG",
+   "scratch/fold2/masks/left lung/JPCNN086.gif",
+   "scratch/fold2/masks/right lung/JPCNN086.gif"
+  ],
+  [
+   "All247images/JPCLN082.IMG",
+   "scratch/fold2/masks/left lung/JPCLN082.gif",
+   "scratch/fold2/masks/right lung/JPCLN082.gif"
+  ],
+  [
+   "All247images/JPCNN001.IMG",
+   "scratch/fold1/masks/left lung/JPCNN001.gif",
+   "scratch/fold1/masks/right lung/JPCNN001.gif"
+  ],
+  [
+   "All247images/JPCLN099.IMG",
+   "scratch/fold1/masks/left lung/JPCLN099.gif",
+   "scratch/fold1/masks/right lung/JPCLN099.gif"
+  ],
+  [
+   "All247images/JPCLN154.IMG",
+   "scratch/fold2/masks/left lung/JPCLN154.gif",
+   "scratch/fold2/masks/right lung/JPCLN154.gif"
+  ],
+  [
+   "All247images/JPCLN010.IMG",
+   "scratch/fold2/masks/left lung/JPCLN010.gif",
+   "scratch/fold2/masks/right lung/JPCLN010.gif"
+  ],
+  [
+   "All247images/JPCLN148.IMG",
+   "scratch/fold2/masks/left lung/JPCLN148.gif",
+   "scratch/fold2/masks/right lung/JPCLN148.gif"
+  ],
+  [
+   "All247images/JPCNN027.IMG",
+   "scratch/fold1/masks/left lung/JPCNN027.gif",
+   "scratch/fold1/masks/right lung/JPCNN027.gif"
+  ],
+  [
+   "All247images/JPCLN129.IMG",
+   "scratch/fold1/masks/left lung/JPCLN129.gif",
+   "scratch/fold1/masks/right lung/JPCLN129.gif"
+  ],
+  [
+   "All247images/JPCNN080.IMG",
+   "scratch/fold2/masks/left lung/JPCNN080.gif",
+   "scratch/fold2/masks/right lung/JPCNN080.gif"
+  ],
+  [
+   "All247images/JPCLN094.IMG",
+   "scratch/fold2/masks/left lung/JPCLN094.gif",
+   "scratch/fold2/masks/right lung/JPCLN094.gif"
+  ],
+  [
+   "All247images/JPCLN125.IMG",
+   "scratch/fold1/masks/left lung/JPCLN125.gif",
+   "scratch/fold1/masks/right lung/JPCLN125.gif"
+  ],
+  [
+   "All247images/JPCLN149.IMG",
+   "scratch/fold1/masks/left lung/JPCLN149.gif",
+   "scratch/fold1/masks/right lung/JPCLN149.gif"
+  ],
+  [
+   "All247images/JPCNN034.IMG",
+   "scratch/fold2/masks/left lung/JPCNN034.gif",
+   "scratch/fold2/masks/right lung/JPCNN034.gif"
+  ],
+  [
+   "All247images/JPCNN028.IMG",
+   "scratch/fold2/masks/left lung/JPCNN028.gif",
+   "scratch/fold2/masks/right lung/JPCNN028.gif"
+  ],
+  [
+   "All247images/JPCNN067.IMG",
+   "scratch/fold1/masks/left lung/JPCNN067.gif",
+   "scratch/fold1/masks/right lung/JPCNN067.gif"
+  ],
+  [
+   "All247images/JPCNN009.IMG",
+   "scratch/fold1/masks/left lung/JPCNN009.gif",
+   "scratch/fold1/masks/right lung/JPCNN009.gif"
+  ],
+  [
+   "All247images/JPCLN020.IMG",
+   "scratch/fold2/masks/left lung/JPCLN020.gif",
+   "scratch/fold2/masks/right lung/JPCLN020.gif"
+  ],
+  [
+   "All247images/JPCNN058.IMG",
+   "scratch/fold2/masks/left lung/JPCNN058.gif",
+   "scratch/fold2/masks/right lung/JPCNN058.gif"
+  ],
+  [
+   "All247images/JPCNN041.IMG",
+   "scratch/fold1/masks/left lung/JPCNN041.gif",
+   "scratch/fold1/masks/right lung/JPCNN041.gif"
+  ],
+  [
+   "All247images/JPCLN095.IMG",
+   "scratch/fold1/masks/left lung/JPCLN095.gif",
+   "scratch/fold1/masks/right lung/JPCLN095.gif"
+  ],
+  [
+   "All247images/JPCNN084.IMG",
+   "scratch/fold2/masks/left lung/JPCNN084.gif",
+   "scratch/fold2/masks/right lung/JPCNN084.gif"
+  ],
+  [
+   "All247images/JPCLN014.IMG",
+   "scratch/fold2/masks/left lung/JPCLN014.gif",
+   "scratch/fold2/masks/right lung/JPCLN014.gif"
+  ],
+  [
+   "All247images/JPCNN015.IMG",
+   "scratch/fold1/masks/left lung/JPCNN015.gif",
+   "scratch/fold1/masks/right lung/JPCNN015.gif"
+  ],
+  [
+   "All247images/JPCNN081.IMG",
+   "scratch/fold1/masks/left lung/JPCNN081.gif",
+   "scratch/fold1/masks/right lung/JPCNN081.gif"
+  ],
+  [
+   "All247images/JPCLN052.IMG",
+   "scratch/fold2/masks/left lung/JPCLN052.gif",
+   "scratch/fold2/masks/right lung/JPCLN052.gif"
+  ],
+  [
+   "All247images/JPCLN113.IMG",
+   "scratch/fold1/masks/left lung/JPCLN113.gif",
+   "scratch/fold1/masks/right lung/JPCLN113.gif"
+  ],
+  [
+   "All247images/JPCLN121.IMG",
+   "scratch/fold1/masks/left lung/JPCLN121.gif",
+   "scratch/fold1/masks/right lung/JPCLN121.gif"
+  ],
+  [
+   "All247images/JPCLN141.IMG",
+   "scratch/fold1/masks/left lung/JPCLN141.gif",
+   "scratch/fold1/masks/right lung/JPCLN141.gif"
+  ],
+  [
+   "All247images/JPCLN085.IMG",
+   "scratch/fold1/masks/left lung/JPCLN085.gif",
+   "scratch/fold1/masks/right lung/JPCLN085.gif"
+  ],
+  [
+   "All247images/JPCLN035.IMG",
+   "scratch/fold1/masks/left lung/JPCLN035.gif",
+   "scratch/fold1/masks/right lung/JPCLN035.gif"
+  ],
+  [
+   "All247images/JPCLN070.IMG",
+   "scratch/fold2/masks/left lung/JPCLN070.gif",
+   "scratch/fold2/masks/right lung/JPCLN070.gif"
+  ],
+  [
+   "All247images/JPCLN005.IMG",
+   "scratch/fold1/masks/left lung/JPCLN005.gif",
+   "scratch/fold1/masks/right lung/JPCLN005.gif"
+  ],
+  [
+   "All247images/JPCLN145.IMG",
+   "scratch/fold1/masks/left lung/JPCLN145.gif",
+   "scratch/fold1/masks/right lung/JPCLN145.gif"
+  ],
+  [
+   "All247images/JPCNN047.IMG",
+   "scratch/fold1/masks/left lung/JPCNN047.gif",
+   "scratch/fold1/masks/right lung/JPCNN047.gif"
+  ],
+  [
+   "All247images/JPCLN017.IMG",
+   "scratch/fold1/masks/left lung/JPCLN017.gif",
+   "scratch/fold1/masks/right lung/JPCLN017.gif"
+  ],
+  [
+   "All247images/JPCNN011.IMG",
+   "scratch/fold1/masks/left lung/JPCNN011.gif",
+   "scratch/fold1/masks/right lung/JPCNN011.gif"
+  ],
+  [
+   "All247images/JPCLN152.IMG",
+   "scratch/fold2/masks/left lung/JPCLN152.gif",
+   "scratch/fold2/masks/right lung/JPCLN152.gif"
+  ],
+  [
+   "All247images/JPCLN004.IMG",
+   "scratch/fold2/masks/left lung/JPCLN004.gif",
+   "scratch/fold2/masks/right lung/JPCLN004.gif"
+  ],
+  [
+   "All247images/JPCNN093.IMG",
+   "scratch/fold1/masks/left lung/JPCNN093.gif",
+   "scratch/fold1/masks/right lung/JPCNN093.gif"
+  ],
+  [
+   "All247images/JPCLN131.IMG",
+   "scratch/fold1/masks/left lung/JPCLN131.gif",
+   "scratch/fold1/masks/right lung/JPCLN131.gif"
+  ],
+  [
+   "All247images/JPCNN049.IMG",
+   "scratch/fold1/masks/left lung/JPCNN049.gif",
+   "scratch/fold1/masks/right lung/JPCNN049.gif"
+  ],
+  [
+   "All247images/JPCNN045.IMG",
+   "scratch/fold1/masks/left lung/JPCNN045.gif",
+   "scratch/fold1/masks/right lung/JPCNN045.gif"
+  ],
+  [
+   "All247images/JPCNN052.IMG",
+   "scratch/fold2/masks/left lung/JPCNN052.gif",
+   "scratch/fold2/masks/right lung/JPCNN052.gif"
+  ],
+  [
+   "All247images/JPCLN098.IMG",
+   "scratch/fold2/masks/left lung/JPCLN098.gif",
+   "scratch/fold2/masks/right lung/JPCLN098.gif"
+  ],
+  [
+   "All247images/JPCNN035.IMG",
+   "scratch/fold1/masks/left lung/JPCNN035.gif",
+   "scratch/fold1/masks/right lung/JPCNN035.gif"
+  ],
+  [
+   "All247images/JPCLN115.IMG",
+   "scratch/fold1/masks/left lung/JPCLN115.gif",
+   "scratch/fold1/masks/right lung/JPCLN115.gif"
+  ],
+  [
+   "All247images/JPCLN047.IMG",
+   "scratch/fold1/masks/left lung/JPCLN047.gif",
+   "scratch/fold1/masks/right lung/JPCLN047.gif"
+  ],
+  [
+   "All247images/JPCLN127.IMG",
+   "scratch/fold1/masks/left lung/JPCLN127.gif",
+   "scratch/fold1/masks/right lung/JPCLN127.gif"
+  ],
+  [
+   "All247images/JPCLN074.IMG",
+   "scratch/fold2/masks/left lung/JPCLN074.gif",
+   "scratch/fold2/masks/right lung/JPCLN074.gif"
+  ],
+  [
+   "All247images/JPCNN025.IMG",
+   "scratch/fold1/masks/left lung/JPCNN025.gif",
+   "scratch/fold1/masks/right lung/JPCNN025.gif"
+  ],
+  [
+   "All247images/JPCNN092.IMG",
+   "scratch/fold2/masks/left lung/JPCNN092.gif",
+   "scratch/fold2/masks/right lung/JPCNN092.gif"
+  ],
+  [
+   "All247images/JPCLN068.IMG",
+   "scratch/fold2/masks/left lung/JPCLN068.gif",
+   "scratch/fold2/masks/right lung/JPCLN068.gif"
+  ],
+  [
+   "All247images/JPCLN153.IMG",
+   "scratch/fold1/masks/left lung/JPCLN153.gif",
+   "scratch/fold1/masks/right lung/JPCLN153.gif"
+  ],
+  [
+   "All247images/JPCLN109.IMG",
+   "scratch/fold1/masks/left lung/JPCLN109.gif",
+   "scratch/fold1/masks/right lung/JPCLN109.gif"
+  ],
+  [
+   "All247images/JPCLN117.IMG",
+   "scratch/fold1/masks/left lung/JPCLN117.gif",
+   "scratch/fold1/masks/right lung/JPCLN117.gif"
+  ],
+  [
+   "All247images/JPCLN089.IMG",
+   "scratch/fold1/masks/left lung/JPCLN089.gif",
+   "scratch/fold1/masks/right lung/JPCLN089.gif"
+  ],
+  [
+   "All247images/JPCNN030.IMG",
+   "scratch/fold2/masks/left lung/JPCNN030.gif",
+   "scratch/fold2/masks/right lung/JPCNN030.gif"
+  ],
+  [
+   "All247images/JPCNN082.IMG",
+   "scratch/fold2/masks/left lung/JPCNN082.gif",
+   "scratch/fold2/masks/right lung/JPCNN082.gif"
+  ],
+  [
+   "All247images/JPCLN059.IMG",
+   "scratch/fold1/masks/left lung/JPCLN059.gif",
+   "scratch/fold1/masks/right lung/JPCLN059.gif"
+  ],
+  [
+   "All247images/JPCLN123.IMG",
+   "scratch/fold1/masks/left lung/JPCLN123.gif",
+   "scratch/fold1/masks/right lung/JPCLN123.gif"
+  ],
+  [
+   "All247images/JPCNN040.IMG",
+   "scratch/fold2/masks/left lung/JPCNN040.gif",
+   "scratch/fold2/masks/right lung/JPCNN040.gif"
+  ],
+  [
+   "All247images/JPCNN079.IMG",
+   "scratch/fold1/masks/left lung/JPCNN079.gif",
+   "scratch/fold1/masks/right lung/JPCNN079.gif"
+  ],
+  [
+   "All247images/JPCLN119.IMG",
+   "scratch/fold1/masks/left lung/JPCLN119.gif",
+   "scratch/fold1/masks/right lung/JPCLN119.gif"
+  ],
+  [
+   "All247images/JPCNN091.IMG",
+   "scratch/fold1/masks/left lung/JPCNN091.gif",
+   "scratch/fold1/masks/right lung/JPCNN091.gif"
+  ],
+  [
+   "All247images/JPCNN055.IMG",
+   "scratch/fold1/masks/left lung/JPCNN055.gif",
+   "scratch/fold1/masks/right lung/JPCNN055.gif"
+  ],
+  [
+   "All247images/JPCLN143.IMG",
+   "scratch/fold1/masks/left lung/JPCLN143.gif",
+   "scratch/fold1/masks/right lung/JPCLN143.gif"
+  ],
+  [
+   "All247images/JPCLN138.IMG",
+   "scratch/fold2/masks/left lung/JPCLN138.gif",
+   "scratch/fold2/masks/right lung/JPCLN138.gif"
+  ],
+  [
+   "All247images/JPCNN002.IMG",
+   "scratch/fold2/masks/left lung/JPCNN002.gif",
+   "scratch/fold2/masks/right lung/JPCNN002.gif"
+  ],
+  [
+   "All247images/JPCLN103.IMG",
+   "scratch/fold1/masks/left lung/JPCLN103.gif",
+   "scratch/fold1/masks/right lung/JPCLN103.gif"
+  ],
+  [
+   "All247images/JPCLN043.IMG",
+   "scratch/fold1/masks/left lung/JPCLN043.gif",
+   "scratch/fold1/masks/right lung/JPCLN043.gif"
+  ],
+  [
+   "All247images/JPCNN037.IMG",
+   "scratch/fold1/masks/left lung/JPCNN037.gif",
+   "scratch/fold1/masks/right lung/JPCNN037.gif"
+  ],
+  [
+   "All247images/JPCNN006.IMG",
+   "scratch/fold2/masks/left lung/JPCNN006.gif",
+   "scratch/fold2/masks/right lung/JPCNN006.gif"
+  ],
+  [
+   "All247images/JPCLN019.IMG",
+   "scratch/fold1/masks/left lung/JPCLN019.gif",
+   "scratch/fold1/masks/right lung/JPCLN019.gif"
+  ],
+  [
+   "All247images/JPCLN091.IMG",
+   "scratch/fold1/masks/left lung/JPCLN091.gif",
+   "scratch/fold1/masks/right lung/JPCLN091.gif"
+  ],
+  [
+   "All247images/JPCNN044.IMG",
+   "scratch/fold2/masks/left lung/JPCNN044.gif",
+   "scratch/fold2/masks/right lung/JPCNN044.gif"
+  ],
+  [
+   "All247images/JPCNN023.IMG",
+   "scratch/fold1/masks/left lung/JPCNN023.gif",
+   "scratch/fold1/masks/right lung/JPCNN023.gif"
+  ],
+  [
+   "All247images/JPCLN086.IMG",
+   "scratch/fold2/masks/left lung/JPCLN086.gif",
+   "scratch/fold2/masks/right lung/JPCLN086.gif"
+  ],
+  [
+   "All247images/JPCNN085.IMG",
+   "scratch/fold1/masks/left lung/JPCNN085.gif",
+   "scratch/fold1/masks/right lung/JPCNN085.gif"
+  ],
+  [
+   "All247images/JPCLN071.IMG",
+   "scratch/fold1/masks/left lung/JPCLN071.gif",
+   "scratch/fold1/masks/right lung/JPCLN071.gif"
+  ],
+  [
+   "All247images/JPCLN054.IMG",
+   "scratch/fold2/masks/left lung/JPCLN054.gif",
+   "scratch/fold2/masks/right lung/JPCLN054.gif"
+  ],
+  [
+   "All247images/JPCLN140.IMG",
+   "scratch/fold2/masks/left lung/JPCLN140.gif",
+   "scratch/fold2/masks/right lung/JPCLN140.gif"
+  ],
+  [
+   "All247images/JPCLN097.IMG",
+   "scratch/fold1/masks/left lung/JPCLN097.gif",
+   "scratch/fold1/masks/right lung/JPCLN097.gif"
+  ],
+  [
+   "All247images/JPCLN002.IMG",
+   "scratch/fold2/masks/left lung/JPCLN002.gif",
+   "scratch/fold2/masks/right lung/JPCLN002.gif"
+  ],
+  [
+   "All247images/JPCNN003.IMG",
+   "scratch/fold1/masks/left lung/JPCNN003.gif",
+   "scratch/fold1/masks/right lung/JPCNN003.gif"
+  ],
+  [
+   "All247images/JPCLN093.IMG",
+   "scratch/fold1/masks/left lung/JPCLN093.gif",
+   "scratch/fold1/masks/right lung/JPCLN093.gif"
+  ],
+  [
+   "All247images/JPCNN089.IMG",
+   "scratch/fold1/masks/left lung/JPCNN089.gif",
+   "scratch/fold1/masks/right lung/JPCNN089.gif"
+  ],
+  [
+   "All247images/JPCLN077.IMG",
+   "scratch/fold1/masks/left lung/JPCLN077.gif",
+   "scratch/fold1/masks/right lung/JPCLN077.gif"
+  ],
+  [
+   "All247images/JPCLN083.IMG",
+   "scratch/fold1/masks/left lung/JPCLN083.gif",
+   "scratch/fold1/masks/right lung/JPCLN083.gif"
+  ],
+  [
+   "All247images/JPCNN061.IMG",
+   "scratch/fold1/masks/left lung/JPCNN061.gif",
+   "scratch/fold1/masks/right lung/JPCNN061.gif"
+  ],
+  [
+   "All247images/JPCNN042.IMG",
+   "scratch/fold2/masks/left lung/JPCNN042.gif",
+   "scratch/fold2/masks/right lung/JPCNN042.gif"
+  ],
+  [
+   "All247images/JPCLN030.IMG",
+   "scratch/fold2/masks/left lung/JPCLN030.gif",
+   "scratch/fold2/masks/right lung/JPCLN030.gif"
+  ],
+  [
+   "All247images/JPCLN110.IMG",
+   "scratch/fold2/masks/left lung/JPCLN110.gif",
+   "scratch/fold2/masks/right lung/JPCLN110.gif"
+  ],
+  [
+   "All247images/JPCLN150.IMG",
+   "scratch/fold2/masks/left lung/JPCLN150.gif",
+   "scratch/fold2/masks/right lung/JPCLN150.gif"
+  ],
+  [
+   "All247images/JPCLN106.IMG",
+   "scratch/fold2/masks/left lung/JPCLN106.gif",
+   "scratch/fold2/masks/right lung/JPCLN106.gif"
+  ],
+  [
+   "All247images/JPCLN006.IMG",
+   "scratch/fold2/masks/left lung/JPCLN006.gif",
+   "scratch/fold2/masks/right lung/JPCLN006.gif"
+  ],
+  [
+   "All247images/JPCNN017.IMG",
+   "scratch/fold1/masks/left lung/JPCNN017.gif",
+   "scratch/fold1/masks/right lung/JPCNN017.gif"
+  ],
+  [
+   "All247images/JPCNN018.IMG",
+   "scratch/fold2/masks/left lung/JPCNN018.gif",
+   "scratch/fold2/masks/right lung/JPCNN018.gif"
+  ],
+  [
+   "All247images/JPCLN080.IMG",
+   "scratch/fold2/masks/left lung/JPCLN080.gif",
+   "scratch/fold2/masks/right lung/JPCLN080.gif"
+  ],
+  [
+   "All247images/JPCNN090.IMG",
+   "scratch/fold2/masks/left lung/JPCNN090.gif",
+   "scratch/fold2/masks/right lung/JPCNN090.gif"
+  ],
+  [
+   "All247images/JPCLN114.IMG",
+   "scratch/fold2/masks/left lung/JPCLN114.gif",
+   "scratch/fold2/masks/right lung/JPCLN114.gif"
+  ],
+  [
+   "All247images/JPCNN007.IMG",
+   "scratch/fold1/masks/left lung/JPCNN007.gif",
+   "scratch/fold1/masks/right lung/JPCNN007.gif"
+  ],
+  [
+   "All247images/JPCLN056.IMG",
+   "scratch/fold2/masks/left lung/JPCLN056.gif",
+   "scratch/fold2/masks/right lung/JPCLN056.gif"
+  ],
+  [
+   "All247images/JPCNN016.IMG",
+   "scratch/fold2/masks/left lung/JPCNN016.gif",
+   "scratch/fold2/masks/right lung/JPCNN016.gif"
+  ],
+  [
+   "All247images/JPCLN116.IMG",
+   "scratch/fold2/masks/left lung/JPCLN116.gif",
+   "scratch/fold2/masks/right lung/JPCLN116.gif"
+  ],
+  [
+   "All247images/JPCNN012.IMG",
+   "scratch/fold2/masks/left lung/JPCNN012.gif",
+   "scratch/fold2/masks/right lung/JPCNN012.gif"
+  ],
+  [
+   "All247images/JPCNN021.IMG",
+   "scratch/fold1/masks/left lung/JPCNN021.gif",
+   "scratch/fold1/masks/right lung/JPCNN021.gif"
+  ],
+  [
+   "All247images/JPCLN024.IMG",
+   "scratch/fold2/masks/left lung/JPCLN024.gif",
+   "scratch/fold2/masks/right lung/JPCLN024.gif"
+  ],
+  [
+   "All247images/JPCLN067.IMG",
+   "scratch/fold1/masks/left lung/JPCLN067.gif",
+   "scratch/fold1/masks/right lung/JPCLN067.gif"
+  ],
+  [
+   "All247images/JPCNN008.IMG",
+   "scratch/fold2/masks/left lung/JPCNN008.gif",
+   "scratch/fold2/masks/right lung/JPCNN008.gif"
+  ],
+  [
+   "All247images/JPCLN107.IMG",
+   "scratch/fold1/masks/left lung/JPCLN107.gif",
+   "scratch/fold1/masks/right lung/JPCLN107.gif"
+  ],
+  [
+   "All247images/JPCLN053.IMG",
+   "scratch/fold1/masks/left lung/JPCLN053.gif",
+   "scratch/fold1/masks/right lung/JPCLN053.gif"
+  ],
+  [
+   "All247images/JPCLN041.IMG",
+   "scratch/fold1/masks/left lung/JPCLN041.gif",
+   "scratch/fold1/masks/right lung/JPCLN041.gif"
+  ],
+  [
+   "All247images/JPCLN133.IMG",
+   "scratch/fold1/masks/left lung/JPCLN133.gif",
+   "scratch/fold1/masks/right lung/JPCLN133.gif"
+  ],
+  [
+   "All247images/JPCLN128.IMG",
+   "scratch/fold2/masks/left lung/JPCLN128.gif",
+   "scratch/fold2/masks/right lung/JPCLN128.gif"
+  ],
+  [
+   "All247images/JPCNN078.IMG",
+   "scratch/fold2/masks/left lung/JPCNN078.gif",
+   "scratch/fold2/masks/right lung/JPCNN078.gif"
+  ],
+  [
+   "All247images/JPCLN147.IMG",
+   "scratch/fold1/masks/left lung/JPCLN147.gif",
+   "scratch/fold1/masks/right lung/JPCLN147.gif"
+  ],
+  [
+   "All247images/JPCNN074.IMG",
+   "scratch/fold2/masks/left lung/JPCNN074.gif",
+   "scratch/fold2/masks/right lung/JPCNN074.gif"
+  ],
+  [
+   "All247images/JPCLN025.IMG",
+   "scratch/fold1/masks/left lung/JPCLN025.gif",
+   "scratch/fold1/masks/right lung/JPCLN025.gif"
+  ],
+  [
+   "All247images/JPCLN015.IMG",
+   "scratch/fold1/masks/left lung/JPCLN015.gif",
+   "scratch/fold1/masks/right lung/JPCLN015.gif"
+  ],
+  [
+   "All247images/JPCLN063.IMG",
+   "scratch/fold1/masks/left lung/JPCLN063.gif",
+   "scratch/fold1/masks/right lung/JPCLN063.gif"
+  ],
+  [
+   "All247images/JPCLN036.IMG",
+   "scratch/fold2/masks/left lung/JPCLN036.gif",
+   "scratch/fold2/masks/right lung/JPCLN036.gif"
+  ],
+  [
+   "All247images/JPCLN044.IMG",
+   "scratch/fold2/masks/left lung/JPCLN044.gif",
+   "scratch/fold2/masks/right lung/JPCLN044.gif"
+  ],
+  [
+   "All247images/JPCLN066.IMG",
+   "scratch/fold2/masks/left lung/JPCLN066.gif",
+   "scratch/fold2/masks/right lung/JPCLN066.gif"
+  ],
+  [
+   "All247images/JPCNN036.IMG",
+   "scratch/fold2/masks/left lung/JPCNN036.gif",
+   "scratch/fold2/masks/right lung/JPCNN036.gif"
+  ],
+  [
+   "All247images/JPCLN046.IMG",
+   "scratch/fold2/masks/left lung/JPCLN046.gif",
+   "scratch/fold2/masks/right lung/JPCLN046.gif"
+  ],
+  [
+   "All247images/JPCNN070.IMG",
+   "scratch/fold2/masks/left lung/JPCNN070.gif",
+   "scratch/fold2/masks/right lung/JPCNN070.gif"
+  ],
+  [
+   "All247images/JPCNN033.IMG",
+   "scratch/fold1/masks/left lung/JPCNN033.gif",
+   "scratch/fold1/masks/right lung/JPCNN033.gif"
+  ],
+  [
+   "All247images/JPCLN048.IMG",
+   "scratch/fold2/masks/left lung/JPCLN048.gif",
+   "scratch/fold2/masks/right lung/JPCLN048.gif"
+  ],
+  [
+   "All247images/JPCLN034.IMG",
+   "scratch/fold2/masks/left lung/JPCLN034.gif",
+   "scratch/fold2/masks/right lung/JPCLN034.gif"
+  ],
+  [
+   "All247images/JPCLN060.IMG",
+   "scratch/fold2/masks/left lung/JPCLN060.gif",
+   "scratch/fold2/masks/right lung/JPCLN060.gif"
+  ],
+  [
+   "All247images/JPCLN100.IMG",
+   "scratch/fold2/masks/left lung/JPCLN100.gif",
+   "scratch/fold2/masks/right lung/JPCLN100.gif"
+  ],
+  [
+   "All247images/JPCNN060.IMG",
+   "scratch/fold2/masks/left lung/JPCNN060.gif",
+   "scratch/fold2/masks/right lung/JPCNN060.gif"
+  ],
+  [
+   "All247images/JPCLN075.IMG",
+   "scratch/fold1/masks/left lung/JPCLN075.gif",
+   "scratch/fold1/masks/right lung/JPCLN075.gif"
+  ],
+  [
+   "All247images/JPCNN072.IMG",
+   "scratch/fold2/masks/left lung/JPCNN072.gif",
+   "scratch/fold2/masks/right lung/JPCNN072.gif"
+  ],
+  [
+   "All247images/JPCLN120.IMG",
+   "scratch/fold2/masks/left lung/JPCLN120.gif",
+   "scratch/fold2/masks/right lung/JPCLN120.gif"
+  ],
+  [
+   "All247images/JPCLN090.IMG",
+   "scratch/fold2/masks/left lung/JPCLN090.gif",
+   "scratch/fold2/masks/right lung/JPCLN090.gif"
+  ],
+  [
+   "All247images/JPCLN108.IMG",
+   "scratch/fold2/masks/left lung/JPCLN108.gif",
+   "scratch/fold2/masks/right lung/JPCLN108.gif"
+  ],
+  [
+   "All247images/JPCLN026.IMG",
+   "scratch/fold2/masks/left lung/JPCLN026.gif",
+   "scratch/fold2/masks/right lung/JPCLN026.gif"
+  ]
+ ],
+ "validation": [
+  [
+   "All247images/JPCLN146.IMG",
+   "scratch/fold2/masks/left lung/JPCLN146.gif",
+   "scratch/fold2/masks/right lung/JPCLN146.gif"
+  ],
+  [
+   "All247images/JPCLN013.IMG",
+   "scratch/fold1/masks/left lung/JPCLN013.gif",
+   "scratch/fold1/masks/right lung/JPCLN013.gif"
+  ],
+  [
+   "All247images/JPCLN022.IMG",
+   "scratch/fold2/masks/left lung/JPCLN022.gif",
+   "scratch/fold2/masks/right lung/JPCLN022.gif"
+  ],
+  [
+   "All247images/JPCLN105.IMG",
+   "scratch/fold1/masks/left lung/JPCLN105.gif",
+   "scratch/fold1/masks/right lung/JPCLN105.gif"
+  ],
+  [
+   "All247images/JPCLN136.IMG",
+   "scratch/fold2/masks/left lung/JPCLN136.gif",
+   "scratch/fold2/masks/right lung/JPCLN136.gif"
+  ],
+  [
+   "All247images/JPCNN053.IMG",
+   "scratch/fold1/masks/left lung/JPCNN053.gif",
+   "scratch/fold1/masks/right lung/JPCNN053.gif"
+  ],
+  [
+   "All247images/JPCNN050.IMG",
+   "scratch/fold2/masks/left lung/JPCNN050.gif",
+   "scratch/fold2/masks/right lung/JPCNN050.gif"
+  ],
+  [
+   "All247images/JPCNN010.IMG",
+   "scratch/fold2/masks/left lung/JPCNN010.gif",
+   "scratch/fold2/masks/right lung/JPCNN010.gif"
+  ],
+  [
+   "All247images/JPCNN043.IMG",
+   "scratch/fold1/masks/left lung/JPCNN043.gif",
+   "scratch/fold1/masks/right lung/JPCNN043.gif"
+  ],
+  [
+   "All247images/JPCLN037.IMG",
+   "scratch/fold1/masks/left lung/JPCLN037.gif",
+   "scratch/fold1/masks/right lung/JPCLN037.gif"
+  ],
+  [
+   "All247images/JPCLN016.IMG",
+   "scratch/fold2/masks/left lung/JPCLN016.gif",
+   "scratch/fold2/masks/right lung/JPCLN016.gif"
+  ],
+  [
+   "All247images/JPCLN118.IMG",
+   "scratch/fold2/masks/left lung/JPCLN118.gif",
+   "scratch/fold2/masks/right lung/JPCLN118.gif"
+  ],
+  [
+   "All247images/JPCLN021.IMG",
+   "scratch/fold1/masks/left lung/JPCLN021.gif",
+   "scratch/fold1/masks/right lung/JPCLN021.gif"
+  ],
+  [
+   "All247images/JPCLN073.IMG",
+   "scratch/fold1/masks/left lung/JPCLN073.gif",
+   "scratch/fold1/masks/right lung/JPCLN073.gif"
+  ],
+  [
+   "All247images/JPCNN062.IMG",
+   "scratch/fold2/masks/left lung/JPCNN062.gif",
+   "scratch/fold2/masks/right lung/JPCNN062.gif"
+  ],
+  [
+   "All247images/JPCNN048.IMG",
+   "scratch/fold2/masks/left lung/JPCNN048.gif",
+   "scratch/fold2/masks/right lung/JPCNN048.gif"
+  ],
+  [
+   "All247images/JPCNN057.IMG",
+   "scratch/fold1/masks/left lung/JPCNN057.gif",
+   "scratch/fold1/masks/right lung/JPCNN057.gif"
+  ],
+  [
+   "All247images/JPCLN111.IMG",
+   "scratch/fold1/masks/left lung/JPCLN111.gif",
+   "scratch/fold1/masks/right lung/JPCLN111.gif"
+  ],
+  [
+   "All247images/JPCNN065.IMG",
+   "scratch/fold1/masks/left lung/JPCNN065.gif",
+   "scratch/fold1/masks/right lung/JPCNN065.gif"
+  ],
+  [
+   "All247images/JPCNN075.IMG",
+   "scratch/fold1/masks/left lung/JPCNN075.gif",
+   "scratch/fold1/masks/right lung/JPCNN075.gif"
+  ],
+  [
+   "All247images/JPCLN092.IMG",
+   "scratch/fold2/masks/left lung/JPCLN092.gif",
+   "scratch/fold2/masks/right lung/JPCLN092.gif"
+  ],
+  [
+   "All247images/JPCLN027.IMG",
+   "scratch/fold1/masks/left lung/JPCLN027.gif",
+   "scratch/fold1/masks/right lung/JPCLN027.gif"
+  ],
+  [
+   "All247images/JPCNN071.IMG",
+   "scratch/fold1/masks/left lung/JPCNN071.gif",
+   "scratch/fold1/masks/right lung/JPCNN071.gif"
+  ],
+  [
+   "All247images/JPCLN124.IMG",
+   "scratch/fold2/masks/left lung/JPCLN124.gif",
+   "scratch/fold2/masks/right lung/JPCLN124.gif"
+  ],
+  [
+   "All247images/JPCNN051.IMG",
+   "scratch/fold1/masks/left lung/JPCNN051.gif",
+   "scratch/fold1/masks/right lung/JPCNN051.gif"
+  ]
+ ],
+ "test": [
+  [
+   "All247images/JPCNN026.IMG",
+   "scratch/fold2/masks/left lung/JPCNN026.gif",
+   "scratch/fold2/masks/right lung/JPCNN026.gif"
+  ],
+  [
+   "All247images/JPCLN009.IMG",
+   "scratch/fold1/masks/left lung/JPCLN009.gif",
+   "scratch/fold1/masks/right lung/JPCLN009.gif"
+  ],
+  [
+   "All247images/JPCNN054.IMG",
+   "scratch/fold2/masks/left lung/JPCNN054.gif",
+   "scratch/fold2/masks/right lung/JPCNN054.gif"
+  ],
+  [
+   "All247images/JPCLN061.IMG",
+   "scratch/fold1/masks/left lung/JPCLN061.gif",
+   "scratch/fold1/masks/right lung/JPCLN061.gif"
+  ],
+  [
+   "All247images/JPCLN050.IMG",
+   "scratch/fold2/masks/left lung/JPCLN050.gif",
+   "scratch/fold2/masks/right lung/JPCLN050.gif"
+  ],
+  [
+   "All247images/JPCLN051.IMG",
+   "scratch/fold1/masks/left lung/JPCLN051.gif",
+   "scratch/fold1/masks/right lung/JPCLN051.gif"
+  ],
+  [
+   "All247images/JPCLN084.IMG",
+   "scratch/fold2/masks/left lung/JPCLN084.gif",
+   "scratch/fold2/masks/right lung/JPCLN084.gif"
+  ],
+  [
+   "All247images/JPCLN028.IMG",
+   "scratch/fold2/masks/left lung/JPCLN028.gif",
+   "scratch/fold2/masks/right lung/JPCLN028.gif"
+  ],
+  [
+   "All247images/JPCLN057.IMG",
+   "scratch/fold1/masks/left lung/JPCLN057.gif",
+   "scratch/fold1/masks/right lung/JPCLN057.gif"
+  ],
+  [
+   "All247images/JPCLN142.IMG",
+   "scratch/fold2/masks/left lung/JPCLN142.gif",
+   "scratch/fold2/masks/right lung/JPCLN142.gif"
+  ],
+  [
+   "All247images/JPCLN122.IMG",
+   "scratch/fold2/masks/left lung/JPCLN122.gif",
+   "scratch/fold2/masks/right lung/JPCLN122.gif"
+  ],
+  [
+   "All247images/JPCNN029.IMG",
+   "scratch/fold1/masks/left lung/JPCNN029.gif",
+   "scratch/fold1/masks/right lung/JPCNN029.gif"
+  ],
+  [
+   "All247images/JPCLN045.IMG",
+   "scratch/fold1/masks/left lung/JPCLN045.gif",
+   "scratch/fold1/masks/right lung/JPCLN045.gif"
+  ],
+  [
+   "All247images/JPCLN003.IMG",
+   "scratch/fold1/masks/left lung/JPCLN003.gif",
+   "scratch/fold1/masks/right lung/JPCLN003.gif"
+  ],
+  [
+   "All247images/JPCNN068.IMG",
+   "scratch/fold2/masks/left lung/JPCNN068.gif",
+   "scratch/fold2/masks/right lung/JPCNN068.gif"
+  ],
+  [
+   "All247images/JPCLN134.IMG",
+   "scratch/fold2/masks/left lung/JPCLN134.gif",
+   "scratch/fold2/masks/right lung/JPCLN134.gif"
+  ],
+  [
+   "All247images/JPCLN062.IMG",
+   "scratch/fold2/masks/left lung/JPCLN062.gif",
+   "scratch/fold2/masks/right lung/JPCLN062.gif"
+  ],
+  [
+   "All247images/JPCLN033.IMG",
+   "scratch/fold1/masks/left lung/JPCLN033.gif",
+   "scratch/fold1/masks/right lung/JPCLN033.gif"
+  ],
+  [
+   "All247images/JPCNN024.IMG",
+   "scratch/fold2/masks/left lung/JPCNN024.gif",
+   "scratch/fold2/masks/right lung/JPCNN024.gif"
+  ],
+  [
+   "All247images/JPCNN077.IMG",
+   "scratch/fold1/masks/left lung/JPCNN077.gif",
+   "scratch/fold1/masks/right lung/JPCNN077.gif"
+  ],
+  [
+   "All247images/JPCLN031.IMG",
+   "scratch/fold1/masks/left lung/JPCLN031.gif",
+   "scratch/fold1/masks/right lung/JPCLN031.gif"
+  ],
+  [
+   "All247images/JPCNN032.IMG",
+   "scratch/fold2/masks/left lung/JPCNN032.gif",
+   "scratch/fold2/masks/right lung/JPCNN032.gif"
+  ],
+  [
+   "All247images/JPCNN076.IMG",
+   "scratch/fold2/masks/left lung/JPCNN076.gif",
+   "scratch/fold2/masks/right lung/JPCNN076.gif"
+  ],
+  [
+   "All247images/JPCNN069.IMG",
+   "scratch/fold1/masks/left lung/JPCNN069.gif",
+   "scratch/fold1/masks/right lung/JPCNN069.gif"
+  ],
+  [
+   "All247images/JPCNN013.IMG",
+   "scratch/fold1/masks/left lung/JPCNN013.gif",
+   "scratch/fold1/masks/right lung/JPCNN013.gif"
+  ],
+  [
+   "All247images/JPCNN066.IMG",
+   "scratch/fold2/masks/left lung/JPCNN066.gif",
+   "scratch/fold2/masks/right lung/JPCNN066.gif"
+  ],
+  [
+   "All247images/JPCLN007.IMG",
+   "scratch/fold1/masks/left lung/JPCLN007.gif",
+   "scratch/fold1/masks/right lung/JPCLN007.gif"
+  ],
+  [
+   "All247images/JPCLN064.IMG",
+   "scratch/fold2/masks/left lung/JPCLN064.gif",
+   "scratch/fold2/masks/right lung/JPCLN064.gif"
+  ],
+  [
+   "All247images/JPCLN132.IMG",
+   "scratch/fold2/masks/left lung/JPCLN132.gif",
+   "scratch/fold2/masks/right lung/JPCLN132.gif"
+  ],
+  [
+   "All247images/JPCNN073.IMG",
+   "scratch/fold1/masks/left lung/JPCNN073.gif",
+   "scratch/fold1/masks/right lung/JPCNN073.gif"
+  ],
+  [
+   "All247images/JPCLN011.IMG",
+   "scratch/fold1/masks/left lung/JPCLN011.gif",
+   "scratch/fold1/masks/right lung/JPCLN011.gif"
+  ],
+  [
+   "All247images/JPCNN031.IMG",
+   "scratch/fold1/masks/left lung/JPCNN031.gif",
+   "scratch/fold1/masks/right lung/JPCNN031.gif"
+  ],
+  [
+   "All247images/JPCLN042.IMG",
+   "scratch/fold2/masks/left lung/JPCLN042.gif",
+   "scratch/fold2/masks/right lung/JPCLN042.gif"
+  ],
+  [
+   "All247images/JPCLN018.IMG",
+   "scratch/fold2/masks/left lung/JPCLN018.gif",
+   "scratch/fold2/masks/right lung/JPCLN018.gif"
+  ],
+  [
+   "All247images/JPCLN130.IMG",
+   "scratch/fold2/masks/left lung/JPCLN130.gif",
+   "scratch/fold2/masks/right lung/JPCLN130.gif"
+  ],
+  [
+   "All247images/JPCLN008.IMG",
+   "scratch/fold2/masks/left lung/JPCLN008.gif",
+   "scratch/fold2/masks/right lung/JPCLN008.gif"
+  ],
+  [
+   "All247images/JPCNN019.IMG",
+   "scratch/fold1/masks/left lung/JPCNN019.gif",
+   "scratch/fold1/masks/right lung/JPCNN019.gif"
+  ],
+  [
+   "All247images/JPCNN059.IMG",
+   "scratch/fold1/masks/left lung/JPCNN059.gif",
+   "scratch/fold1/masks/right lung/JPCNN059.gif"
+  ],
+  [
+   "All247images/JPCLN040.IMG",
+   "scratch/fold2/masks/left lung/JPCLN040.gif",
+   "scratch/fold2/masks/right lung/JPCLN040.gif"
+  ],
+  [
+   "All247images/JPCLN069.IMG",
+   "scratch/fold1/masks/left lung/JPCLN069.gif",
+   "scratch/fold1/masks/right lung/JPCLN069.gif"
+  ],
+  [
+   "All247images/JPCLN032.IMG",
+   "scratch/fold2/masks/left lung/JPCLN032.gif",
+   "scratch/fold2/masks/right lung/JPCLN032.gif"
+  ],
+  [
+   "All247images/JPCLN023.IMG",
+   "scratch/fold1/masks/left lung/JPCLN023.gif",
+   "scratch/fold1/masks/right lung/JPCLN023.gif"
+  ],
+  [
+   "All247images/JPCNN020.IMG",
+   "scratch/fold2/masks/left lung/JPCNN020.gif",
+   "scratch/fold2/masks/right lung/JPCNN020.gif"
+  ],
+  [
+   "All247images/JPCNN087.IMG",
+   "scratch/fold1/masks/left lung/JPCNN087.gif",
+   "scratch/fold1/masks/right lung/JPCNN087.gif"
+  ],
+  [
+   "All247images/JPCLN058.IMG",
+   "scratch/fold2/masks/left lung/JPCLN058.gif",
+   "scratch/fold2/masks/right lung/JPCLN058.gif"
+  ],
+  [
+   "All247images/JPCLN151.IMG",
+   "scratch/fold1/masks/left lung/JPCLN151.gif",
+   "scratch/fold1/masks/right lung/JPCLN151.gif"
+  ],
+  [
+   "All247images/JPCLN135.IMG",
+   "scratch/fold1/masks/left lung/JPCLN135.gif",
+   "scratch/fold1/masks/right lung/JPCLN135.gif"
+  ],
+  [
+   "All247images/JPCLN144.IMG",
+   "scratch/fold2/masks/left lung/JPCLN144.gif",
+   "scratch/fold2/masks/right lung/JPCLN144.gif"
+  ],
+  [
+   "All247images/JPCNN088.IMG",
+   "scratch/fold2/masks/left lung/JPCNN088.gif",
+   "scratch/fold2/masks/right lung/JPCNN088.gif"
+  ],
+  [
+   "All247images/JPCLN112.IMG",
+   "scratch/fold2/masks/left lung/JPCLN112.gif",
+   "scratch/fold2/masks/right lung/JPCLN112.gif"
+  ]
+ ]
+}

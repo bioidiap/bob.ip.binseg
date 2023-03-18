@@ -1,0 +1,801 @@
+{
+    "train":[
+       [
+          "Healthy/Stereo Images/N-10-R.jpg",
+          "Healthy/Expert2_masks/N-10-R-1-Disc-exp2.png",
+          "Healthy/N-10-R.jpg"
+       ],
+       [
+          "Healthy/Stereo Images/N-11-L.jpg",
+          "Healthy/Expert2_masks/N-11-L-1-Disc-exp2.png",
+          "Healthy/N-11-L.jpg"
+       ],
+       [
+          "Healthy/Stereo Images/N-12-R.jpg",
+          "Healthy/Expert2_masks/N-12-R-1-Disc-exp2.png",
+          "Healthy/N-12-R.jpg"
+       ],
+       [
+          "Healthy/Stereo Images/N-13-L.jpg",
+          "Healthy/Expert2_masks/N-13-L-1-Disc-exp2.png",
+          "Healthy/N-13-L.jpg"
+       ],
+       [
+          "Healthy/Stereo Images/N-14-R.jpg",
+          "Healthy/Expert2_masks/N-14-R-1-Disc-exp2.png",
+          "Healthy/N-14-R.jpg"
+       ],
+       [
+          "Healthy/Stereo Images/N-16-R.jpg",
+          "Healthy/Expert2_masks/N-16-R-1-Disc-exp2.png",
+          "Healthy/N-16-R.jpg"
+       ],
+       [
+          "Healthy/Stereo Images/N-24-R.jpg",
+          "Healthy/Expert2_masks/N-24-R-1-Disc-exp2.png",
+          "Healthy/N-24-R.jpg"
+       ],
+       [
+          "Healthy/Stereo Images/N-25-L.jpg",
+          "Healthy/Expert2_masks/N-25-L-1-Disc-exp2.png",
+          "Healthy/N-25-L.jpg"
+       ],
+       [
+          "Healthy/Stereo Images/N-26-R.jpg",
+          "Healthy/Expert2_masks/N-26-R-1-Disc-exp2.png",
+          "Healthy/N-26-R.jpg"
+       ],
+       [
+          "Healthy/Stereo Images/N-27-L.jpg",
+          "Healthy/Expert2_masks/N-27-L-1-Disc-exp2.png",
+          "Healthy/N-27-L.jpg"
+       ],
+       [
+          "Healthy/Stereo Images/N-52-R.jpg",
+          "Healthy/Expert2_masks/N-52-R-1-Disc-exp2.png",
+          "Healthy/N-52-R.jpg"
+       ],
+       [
+          "Healthy/Stereo Images/N-53-L.jpg",
+          "Healthy/Expert2_masks/N-53-L-1-Disc-exp2.png",
+          "Healthy/N-53-L.jpg"
+       ],
+       [
+          "Healthy/Stereo Images/N-54-R.jpg",
+          "Healthy/Expert2_masks/N-54-R-1-Disc-exp2.png",
+          "Healthy/N-54-R.jpg"
+       ],
+       [
+          "Healthy/Stereo Images/N-55-L.jpg",
+          "Healthy/Expert2_masks/N-55-L-1-Disc-exp2.png",
+          "Healthy/N-55-L.jpg"
+       ],
+       [
+          "Healthy/Stereo Images/N-56-R.jpg",
+          "Healthy/Expert2_masks/N-56-R-1-Disc-exp2.png",
+          "Healthy/N-56-R.jpg"
+       ],
+       [
+          "Healthy/Stereo Images/N-58-R.jpg",
+          "Healthy/Expert2_masks/N-58-R-1-Disc-exp2.png",
+          "Healthy/N-58-R.jpg"
+       ],
+       [
+          "Healthy/Stereo Images/N-59-L.jpg",
+          "Healthy/Expert2_masks/N-59-L-1-Disc-exp2.png",
+          "Healthy/N-59-L.jpg"
+       ],
+       [
+          "Healthy/Stereo Images/N-5-L.jpg",
+          "Healthy/Expert2_masks/N-5-L-1-Disc-exp2.png",
+          "Healthy/N-5-L.jpg"
+       ],
+       [
+          "Healthy/Stereo Images/N-61-L.jpg",
+          "Healthy/Expert2_masks/N-61-L-1-Disc-exp2.png",
+          "Healthy/N-61-L.jpg"
+       ],
+       [
+          "Healthy/Stereo Images/N-62-R.jpg",
+          "Healthy/Expert2_masks/N-62-R-1-Disc-exp2.png",
+          "Healthy/N-62-R.jpg"
+       ],
+       [
+          "Healthy/Stereo Images/N-63-L.jpg",
+          "Healthy/Expert2_masks/N-63-L-1-Disc-exp2.png",
+          "Healthy/N-63-L.jpg"
+       ],
+       [
+          "Healthy/Stereo Images/N-64-R.jpg",
+          "Healthy/Expert2_masks/N-64-R-1-Disc-exp2.png",
+          "Healthy/N-64-R.jpg"
+       ],
+       [
+          "Healthy/Stereo Images/N-65-L.jpg",
+          "Healthy/Expert2_masks/N-65-L-1-Disc-exp2.png",
+          "Healthy/N-65-L.jpg"
+       ],
+       [
+          "Healthy/Stereo Images/N-66-R.jpg",
+          "Healthy/Expert2_masks/N-66-R-1-Disc-exp2.png",
+          "Healthy/N-66-R.jpg"
+       ],
+       [
+          "Healthy/Stereo Images/N-67-L.jpg",
+          "Healthy/Expert2_masks/N-67-L-1-Disc-exp2.png",
+          "Healthy/N-67-L.jpg"
+       ],
+       [
+          "Healthy/Stereo Images/N-68-R.jpg",
+          "Healthy/Expert2_masks/N-68-R-1-Disc-exp2.png",
+          "Healthy/N-68-R.jpg"
+       ],
+       [
+          "Healthy/Stereo Images/N-69-L.jpg",
+          "Healthy/Expert2_masks/N-69-L-1-Disc-exp2.png",
+          "Healthy/N-69-L.jpg"
+       ],
+       [
+          "Healthy/Stereo Images/N-6-R.jpg",
+          "Healthy/Expert2_masks/N-6-R-1-Disc-exp2.png",
+          "Healthy/N-6-R.jpg"
+       ],
+       [
+          "Healthy/Stereo Images/N-70-R.jpg",
+          "Healthy/Expert2_masks/N-70-R-1-Disc-exp2.png",
+          "Healthy/N-70-R.jpg"
+       ],
+       [
+          "Healthy/Stereo Images/N-71-L.jpg",
+          "Healthy/Expert2_masks/N-71-L-1-Disc-exp2.png",
+          "Healthy/N-71-L.jpg"
+       ],
+       [
+          "Healthy/Stereo Images/N-72-R.jpg",
+          "Healthy/Expert2_masks/N-72-R-1-Disc-exp2.png",
+          "Healthy/N-72-R.jpg"
+       ],
+       [
+          "Healthy/Stereo Images/N-73-R.jpg",
+          "Healthy/Expert2_masks/N-73-R-1-Disc-exp2.png",
+          "Healthy/N-73-R.jpg"
+       ],
+       [
+          "Healthy/Stereo Images/N-74-L.jpg",
+          "Healthy/Expert2_masks/N-74-L-1-Disc-exp2.png",
+          "Healthy/N-74-L.jpg"
+       ],
+       [
+          "Healthy/Stereo Images/N-75-R.jpg",
+          "Healthy/Expert2_masks/N-75-R-1-Disc-exp2.png",
+          "Healthy/N-75-R.jpg"
+       ],
+       [
+          "Healthy/Stereo Images/N-76-R.jpg",
+          "Healthy/Expert2_masks/N-76-R-1-Disc-exp2.png",
+          "Healthy/N-76-R.jpg"
+       ],
+       [
+          "Healthy/Stereo Images/N-79-L.jpg",
+          "Healthy/Expert2_masks/N-79-L-1-Disc-exp2.png",
+          "Healthy/N-79-L.jpg"
+       ],
+       [
+          "Healthy/Stereo Images/N-7-L.jpg",
+          "Healthy/Expert2_masks/N-7-L-1-Disc-exp2.png",
+          "Healthy/N-7-L.jpg"
+       ],
+       [
+          "Healthy/Stereo Images/N-80-R.jpg",
+          "Healthy/Expert2_masks/N-80-R-1-Disc-exp2.png",
+          "Healthy/N-80-R.jpg"
+       ],
+       [
+          "Healthy/Stereo Images/N-81-L.jpg",
+          "Healthy/Expert2_masks/N-81-L-1-Disc-exp2.png",
+          "Healthy/N-81-L.jpg"
+       ],
+       [
+          "Healthy/Stereo Images/N-82-R.jpg",
+          "Healthy/Expert2_masks/N-82-R-1-Disc-exp2.png",
+          "Healthy/N-82-R.jpg"
+       ],
+       [
+          "Healthy/Stereo Images/N-83-L.jpg",
+          "Healthy/Expert2_masks/N-83-L-1-Disc-exp2.png",
+          "Healthy/N-83-L.jpg"
+       ],
+       [
+          "Healthy/Stereo Images/N-84-R.jpg",
+          "Healthy/Expert2_masks/N-84-R-1-Disc-exp2.png",
+          "Healthy/N-84-R.jpg"
+       ],
+       [
+          "Healthy/Stereo Images/N-85-L.jpg",
+          "Healthy/Expert2_masks/N-85-L-1-Disc-exp2.png",
+          "Healthy/N-85-L.jpg"
+       ],
+       [
+          "Healthy/Stereo Images/N-86-R.jpg",
+          "Healthy/Expert2_masks/N-86-R-1-Disc-exp2.png",
+          "Healthy/N-86-R.jpg"
+       ],
+       [
+          "Healthy/Stereo Images/N-87-L.jpg",
+          "Healthy/Expert2_masks/N-87-L-1-Disc-exp2.png",
+          "Healthy/N-87-L.jpg"
+       ],
+       [
+          "Healthy/Stereo Images/N-88-R.jpg",
+          "Healthy/Expert2_masks/N-88-R-1-Disc-exp2.png",
+          "Healthy/N-88-R.jpg"
+       ],
+       [
+          "Healthy/Stereo Images/N-8-L.jpg",
+          "Healthy/Expert2_masks/N-8-L-1-Disc-exp2.png",
+          "Healthy/N-8-L.jpg"
+       ],
+       [
+          "Healthy/Stereo Images/N-90-R.jpg",
+          "Healthy/Expert2_masks/N-90-R-1-Disc-exp2.png",
+          "Healthy/N-90-R.jpg"
+       ],
+       [
+          "Healthy/Stereo Images/N-91-L.jpg",
+          "Healthy/Expert2_masks/N-91-L-1-Disc-exp2.png",
+          "Healthy/N-91-L.jpg"
+       ],
+       [
+          "Healthy/Stereo Images/N-92-R.jpg",
+          "Healthy/Expert2_masks/N-92-R-1-Disc-exp2.png",
+          "Healthy/N-92-R.jpg"
+       ],
+       [
+          "Healthy/Stereo Images/N-9-L.jpg",
+          "Healthy/Expert2_masks/N-9-L-1-Disc-exp2.png",
+          "Healthy/N-9-L.jpg"
+       ],
+       [
+          "Glaucoma and suspects/Stereo Images/G-10-L.jpg",
+          "Glaucoma and suspects/Expert2_masks/G-10-L-1-Disc-exp2.png",
+          "Glaucoma and suspects/G-10-L.jpg"
+       ],
+       [
+          "Glaucoma and suspects/Stereo Images/G-11-R.jpg",
+          "Glaucoma and suspects/Expert2_masks/G-11-R-1-Disc-exp2.png",
+          "Glaucoma and suspects/G-11-R.jpg"
+       ],
+       [
+          "Glaucoma and suspects/Stereo Images/G-12-L.jpg",
+          "Glaucoma and suspects/Expert2_masks/G-12-L-1-Disc-exp2.png",
+          "Glaucoma and suspects/G-12-L.jpg"
+       ],
+       [
+          "Glaucoma and suspects/Stereo Images/G-13-R.jpg",
+          "Glaucoma and suspects/Expert2_masks/G-13-R-1-Disc-exp2.png",
+          "Glaucoma and suspects/G-13-R.jpg"
+       ],
+       [
+          "Glaucoma and suspects/Stereo Images/G-14-R.jpg",
+          "Glaucoma and suspects/Expert2_masks/G-14-R-1-Disc-exp2.png",
+          "Glaucoma and suspects/G-14-R.jpg"
+       ],
+       [
+          "Glaucoma and suspects/Stereo Images/G-15-L.jpg",
+          "Glaucoma and suspects/Expert2_masks/G-15-L-1-Disc-exp2.png",
+          "Glaucoma and suspects/G-15-L.jpg"
+       ],
+       [
+          "Glaucoma and suspects/Stereo Images/G-16-R.jpg",
+          "Glaucoma and suspects/Expert2_masks/G-16-R-1-Disc-exp2.png",
+          "Glaucoma and suspects/G-16-R.jpg"
+       ],
+       [
+          "Glaucoma and suspects/Stereo Images/G-17-L.jpg",
+          "Glaucoma and suspects/Expert2_masks/G-17-L-1-Disc-exp2.png",
+          "Glaucoma and suspects/G-17-L.jpg"
+       ],
+       [
+          "Glaucoma and suspects/Stereo Images/G-18-R.jpg",
+          "Glaucoma and suspects/Expert2_masks/G-18-R-1-Disc-exp2.png",
+          "Glaucoma and suspects/G-18-R.jpg"
+       ],
+       [
+          "Glaucoma and suspects/Stereo Images/G-19-R.jpg",
+          "Glaucoma and suspects/Expert2_masks/G-19-R-1-Disc-exp2.png",
+          "Glaucoma and suspects/G-19-R.jpg"
+       ],
+       [
+          "Glaucoma and suspects/Stereo Images/G-1-L.jpg",
+          "Glaucoma and suspects/Expert2_masks/G-1-L-1-Disc-exp2.png",
+          "Glaucoma and suspects/G-1-L.jpg"
+       ],
+       [
+          "Glaucoma and suspects/Stereo Images/G-20-L.jpg",
+          "Glaucoma and suspects/Expert2_masks/G-20-L-1-Disc-exp2.png",
+          "Glaucoma and suspects/G-20-L.jpg"
+       ],
+       [
+          "Glaucoma and suspects/Stereo Images/G-21-R.jpg",
+          "Glaucoma and suspects/Expert2_masks/G-21-R-1-Disc-exp2.png",
+          "Glaucoma and suspects/G-21-R.jpg"
+       ],
+       [
+          "Glaucoma and suspects/Stereo Images/G-32-L.jpg",
+          "Glaucoma and suspects/Expert2_masks/G-32-L-1-Disc-exp2.png",
+          "Glaucoma and suspects/G-32-L.jpg"
+       ],
+       [
+          "Glaucoma and suspects/Stereo Images/G-33-R.jpg",
+          "Glaucoma and suspects/Expert2_masks/G-33-R-1-Disc-exp2.png",
+          "Glaucoma and suspects/G-33-R.jpg"
+       ],
+       [
+          "Glaucoma and suspects/Stereo Images/G-34-L.jpg",
+          "Glaucoma and suspects/Expert2_masks/G-34-L-1-Disc-exp2.png",
+          "Glaucoma and suspects/G-34-L.jpg"
+       ],
+       [
+          "Glaucoma and suspects/Stereo Images/G-35-R.jpg",
+          "Glaucoma and suspects/Expert2_masks/G-35-R-1-Disc-exp2.png",
+          "Glaucoma and suspects/G-35-R.jpg"
+       ],
+       [
+          "Glaucoma and suspects/Stereo Images/G-36-R.jpg",
+          "Glaucoma and suspects/Expert2_masks/G-36-R-1-Disc-exp2.png",
+          "Glaucoma and suspects/G-36-R.jpg"
+       ],
+       [
+          "Glaucoma and suspects/Stereo Images/G-37-R.jpg",
+          "Glaucoma and suspects/Expert2_masks/G-37-R-1-Disc-exp2.png",
+          "Glaucoma and suspects/G-37-R.jpg"
+       ],
+       [
+          "Glaucoma and suspects/Stereo Images/G-38-L.jpg",
+          "Glaucoma and suspects/Expert2_masks/G-38-L-1-Disc-exp2.png",
+          "Glaucoma and suspects/G-38-L.jpg"
+       ],
+       [
+          "Glaucoma and suspects/Stereo Images/G-39-L.jpg",
+          "Glaucoma and suspects/Expert2_masks/G-39-L-1-Disc-exp2.png",
+          "Glaucoma and suspects/G-39-L.jpg"
+       ],
+       [
+          "Glaucoma and suspects/Stereo Images/G-3-R.jpg",
+          "Glaucoma and suspects/Expert2_masks/G-3-R-1-Disc-exp2.png",
+          "Glaucoma and suspects/G-3-R.jpg"
+       ],
+       [
+          "Glaucoma and suspects/Stereo Images/G-4-L.jpg",
+          "Glaucoma and suspects/Expert2_masks/G-4-L-1-Disc-exp2.png",
+          "Glaucoma and suspects/G-4-L.jpg"
+       ],
+       [
+          "Glaucoma and suspects/Stereo Images/G-5-R.jpg",
+          "Glaucoma and suspects/Expert2_masks/G-5-R-1-Disc-exp2.png",
+          "Glaucoma and suspects/G-5-R.jpg"
+       ],
+       [
+          "Glaucoma and suspects/Stereo Images/G-6-L.jpg",
+          "Glaucoma and suspects/Expert2_masks/G-6-L-1-Disc-exp2.png",
+          "Glaucoma and suspects/G-6-L.jpg"
+       ],
+       [
+          "Glaucoma and suspects/Stereo Images/G-7-L.jpg",
+          "Glaucoma and suspects/Expert2_masks/G-7-L-1-Disc-exp2.png",
+          "Glaucoma and suspects/G-7-L.jpg"
+       ],
+       [
+          "Glaucoma and suspects/Stereo Images/G-8-R.jpg",
+          "Glaucoma and suspects/Expert2_masks/G-8-R-1-Disc-exp2.png",
+          "Glaucoma and suspects/G-8-R.jpg"
+       ],
+       [
+          "Glaucoma and suspects/Stereo Images/G-9-R.jpg",
+          "Glaucoma and suspects/Expert2_masks/G-9-R-1-Disc-exp2.png",
+          "Glaucoma and suspects/G-9-R.jpg"
+       ],
+       [
+          "Glaucoma and suspects/Stereo Images/S-10-R.jpg",
+          "Glaucoma and suspects/Expert2_masks/S-10-R-1-Disc-exp2.png",
+          "Glaucoma and suspects/S-10-R.jpg"
+       ],
+       [
+          "Glaucoma and suspects/Stereo Images/S-11-L.jpg",
+          "Glaucoma and suspects/Expert2_masks/S-11-L-1-Disc-exp2.png",
+          "Glaucoma and suspects/S-11-L.jpg"
+       ],
+       [
+          "Glaucoma and suspects/Stereo Images/S-12-L.jpg",
+          "Glaucoma and suspects/Expert2_masks/S-12-L-1-Disc-exp2.png",
+          "Glaucoma and suspects/S-12-L.jpg"
+       ],
+       [
+          "Glaucoma and suspects/Stereo Images/S-13-R.jpg",
+          "Glaucoma and suspects/Expert2_masks/S-13-R-1-Disc-exp2.png",
+          "Glaucoma and suspects/S-13-R.jpg"
+       ],
+       [
+          "Glaucoma and suspects/Stereo Images/S-14-R.jpg",
+          "Glaucoma and suspects/Expert2_masks/S-14-R-1-Disc-exp2.png",
+          "Glaucoma and suspects/S-14-R.jpg"
+       ],
+       [
+          "Glaucoma and suspects/Stereo Images/S-15-L.jpg",
+          "Glaucoma and suspects/Expert2_masks/S-15-L-1-Disc-exp2.png",
+          "Glaucoma and suspects/S-15-L.jpg"
+       ],
+       [
+          "Glaucoma and suspects/Stereo Images/S-16-R.jpg",
+          "Glaucoma and suspects/Expert2_masks/S-16-R-1-Disc-exp2.png",
+          "Glaucoma and suspects/S-16-R.jpg"
+       ],
+       [
+          "Glaucoma and suspects/Stereo Images/S-17-L.jpg",
+          "Glaucoma and suspects/Expert2_masks/S-17-L-1-Disc-exp2.png",
+          "Glaucoma and suspects/S-17-L.jpg"
+       ],
+       [
+          "Glaucoma and suspects/Stereo Images/S-18-L.jpg",
+          "Glaucoma and suspects/Expert2_masks/S-18-L-1-Disc-exp2.png",
+          "Glaucoma and suspects/S-18-L.jpg"
+       ],
+       [
+          "Glaucoma and suspects/Stereo Images/S-19-R.jpg",
+          "Glaucoma and suspects/Expert2_masks/S-19-R-1-Disc-exp2.png",
+          "Glaucoma and suspects/S-19-R.jpg"
+       ],
+       [
+          "Glaucoma and suspects/Stereo Images/S-1-L.jpg",
+          "Glaucoma and suspects/Expert2_masks/S-1-L-1-Disc-exp2.png",
+          "Glaucoma and suspects/S-1-L.jpg"
+       ],
+       [
+          "Glaucoma and suspects/Stereo Images/S-20-L.jpg",
+          "Glaucoma and suspects/Expert2_masks/S-20-L-1-Disc-exp2.png",
+          "Glaucoma and suspects/S-20-L.jpg"
+       ],
+       [
+          "Glaucoma and suspects/Stereo Images/S-21-R.jpg",
+          "Glaucoma and suspects/Expert2_masks/S-21-R-1-Disc-exp2.png",
+          "Glaucoma and suspects/S-21-R.jpg"
+       ],
+       [
+          "Glaucoma and suspects/Stereo Images/S-22-L.jpg",
+          "Glaucoma and suspects/Expert2_masks/S-22-L-1-Disc-exp2.png",
+          "Glaucoma and suspects/S-22-L.jpg"
+       ],
+       [
+          "Glaucoma and suspects/Stereo Images/S-23-L.jpg",
+          "Glaucoma and suspects/Expert2_masks/S-23-L-1-Disc-exp2.png",
+          "Glaucoma and suspects/S-23-L.jpg"
+       ],
+       [
+          "Glaucoma and suspects/Stereo Images/S-24-R.jpg",
+          "Glaucoma and suspects/Expert2_masks/S-24-R-1-Disc-exp2.png",
+          "Glaucoma and suspects/S-24-R.jpg"
+       ],
+       [
+          "Glaucoma and suspects/Stereo Images/S-25-L.jpg",
+          "Glaucoma and suspects/Expert2_masks/S-25-L-1-Disc-exp2.png",
+          "Glaucoma and suspects/S-25-L.jpg"
+       ],
+       [
+          "Glaucoma and suspects/Stereo Images/S-26-R.jpg",
+          "Glaucoma and suspects/Expert2_masks/S-26-R-1-Disc-exp2.png",
+          "Glaucoma and suspects/S-26-R.jpg"
+       ],
+       [
+          "Glaucoma and suspects/Stereo Images/S-27-L.jpg",
+          "Glaucoma and suspects/Expert2_masks/S-27-L-1-Disc-exp2.png",
+          "Glaucoma and suspects/S-27-L.jpg"
+       ],
+       [
+          "Glaucoma and suspects/Stereo Images/S-28-R.jpg",
+          "Glaucoma and suspects/Expert2_masks/S-28-R-1-Disc-exp2.png",
+          "Glaucoma and suspects/S-28-R.jpg"
+       ]
+    ],
+    "test":[
+       [
+          "Glaucoma and suspects/Stereo Images/G-22-L.jpg",
+          "Glaucoma and suspects/Expert2_masks/G-22-L-1-Disc-exp2.png",
+          "Glaucoma and suspects/G-22-L.jpg"
+       ],
+       [
+          "Glaucoma and suspects/Stereo Images/G-23-R.jpg",
+          "Glaucoma and suspects/Expert2_masks/G-23-R-1-Disc-exp2.png",
+          "Glaucoma and suspects/G-23-R.jpg"
+       ],
+       [
+          "Glaucoma and suspects/Stereo Images/G-24-L.jpg",
+          "Glaucoma and suspects/Expert2_masks/G-24-L-1-Disc-exp2.png",
+          "Glaucoma and suspects/G-24-L.jpg"
+       ],
+       [
+          "Glaucoma and suspects/Stereo Images/G-25-L.jpg",
+          "Glaucoma and suspects/Expert2_masks/G-25-L-1-Disc-exp2.png",
+          "Glaucoma and suspects/G-25-L.jpg"
+       ],
+       [
+          "Glaucoma and suspects/Stereo Images/G-26-R.jpg",
+          "Glaucoma and suspects/Expert2_masks/G-26-R-1-Disc-exp2.png",
+          "Glaucoma and suspects/G-26-R.jpg"
+       ],
+       [
+          "Glaucoma and suspects/Stereo Images/G-27-R.jpg",
+          "Glaucoma and suspects/Expert2_masks/G-27-R-1-Disc-exp2.png",
+          "Glaucoma and suspects/G-27-R.jpg"
+       ],
+       [
+          "Glaucoma and suspects/Stereo Images/G-28-L.jpg",
+          "Glaucoma and suspects/Expert2_masks/G-28-L-1-Disc-exp2.png",
+          "Glaucoma and suspects/G-28-L.jpg"
+       ],
+       [
+          "Glaucoma and suspects/Stereo Images/G-29-R.jpg",
+          "Glaucoma and suspects/Expert2_masks/G-29-R-1-Disc-exp2.png",
+          "Glaucoma and suspects/G-29-R.jpg"
+       ],
+       [
+          "Glaucoma and suspects/Stereo Images/G-2-R.jpg",
+          "Glaucoma and suspects/Expert2_masks/G-2-R-1-Disc-exp2.png",
+          "Glaucoma and suspects/G-2-R.jpg"
+       ],
+       [
+          "Glaucoma and suspects/Stereo Images/G-30-L.jpg",
+          "Glaucoma and suspects/Expert2_masks/G-30-L-1-Disc-exp2.png",
+          "Glaucoma and suspects/G-30-L.jpg"
+       ],
+       [
+          "Glaucoma and suspects/Stereo Images/G-31-R.jpg",
+          "Glaucoma and suspects/Expert2_masks/G-31-R-1-Disc-exp2.png",
+          "Glaucoma and suspects/G-31-R.jpg"
+       ],
+       [
+          "Healthy/Stereo Images/N-17-L.jpg",
+          "Healthy/Expert2_masks/N-17-L-1-Disc-exp2.png",
+          "Healthy/N-17-L.jpg"
+       ],
+       [
+          "Healthy/Stereo Images/N-18-R.jpg",
+          "Healthy/Expert2_masks/N-18-R-1-Disc-exp2.png",
+          "Healthy/N-18-R.jpg"
+       ],
+       [
+          "Healthy/Stereo Images/N-1-L.jpg",
+          "Healthy/Expert2_masks/N-1-L-1-Disc-exp2.png",
+          "Healthy/N-1-L.jpg"
+       ],
+       [
+          "Healthy/Stereo Images/N-20-R.jpg",
+          "Healthy/Expert2_masks/N-20-R-1-Disc-exp2.png",
+          "Healthy/N-20-R.jpg"
+       ],
+       [
+          "Healthy/Stereo Images/N-21-L.jpg",
+          "Healthy/Expert2_masks/N-21-L-1-Disc-exp2.png",
+          "Healthy/N-21-L.jpg"
+       ],
+       [
+          "Healthy/Stereo Images/N-22-R.jpg",
+          "Healthy/Expert2_masks/N-22-R-1-Disc-exp2.png",
+          "Healthy/N-22-R.jpg"
+       ],
+       [
+          "Healthy/Stereo Images/N-23-L.jpg",
+          "Healthy/Expert2_masks/N-23-L-1-Disc-exp2.png",
+          "Healthy/N-23-L.jpg"
+       ],
+       [
+          "Healthy/Stereo Images/N-28-R.jpg",
+          "Healthy/Expert2_masks/N-28-R-1-Disc-exp2.png",
+          "Healthy/N-28-R.jpg"
+       ],
+       [
+          "Healthy/Stereo Images/N-29-L.jpg",
+          "Healthy/Expert2_masks/N-29-L-1-Disc-exp2.png",
+          "Healthy/N-29-L.jpg"
+       ],
+       [
+          "Healthy/Stereo Images/N-2-R.jpg",
+          "Healthy/Expert2_masks/N-2-R-1-Disc-exp2.png",
+          "Healthy/N-2-R.jpg"
+       ],
+       [
+          "Healthy/Stereo Images/N-30-R.jpg",
+          "Healthy/Expert2_masks/N-30-R-1-Disc-exp2.png",
+          "Healthy/N-30-R.jpg"
+       ],
+       [
+          "Healthy/Stereo Images/N-31-L.jpg",
+          "Healthy/Expert2_masks/N-31-L-1-Disc-exp2.png",
+          "Healthy/N-31-L.jpg"
+       ],
+       [
+          "Healthy/Stereo Images/N-32-R.jpg",
+          "Healthy/Expert2_masks/N-32-R-1-Disc-exp2.png",
+          "Healthy/N-32-R.jpg"
+       ],
+       [
+          "Healthy/Stereo Images/N-33-L.jpg",
+          "Healthy/Expert2_masks/N-33-L-1-Disc-exp2.png",
+          "Healthy/N-33-L.jpg"
+       ],
+       [
+          "Healthy/Stereo Images/N-34-R.jpg",
+          "Healthy/Expert2_masks/N-34-R-1-Disc-exp2.png",
+          "Healthy/N-34-R.jpg"
+       ],
+       [
+          "Healthy/Stereo Images/N-35-L.jpg",
+          "Healthy/Expert2_masks/N-35-L-1-Disc-exp2.png",
+          "Healthy/N-35-L.jpg"
+       ],
+       [
+          "Healthy/Stereo Images/N-36-R.jpg",
+          "Healthy/Expert2_masks/N-36-R-1-Disc-exp2.png",
+          "Healthy/N-36-R.jpg"
+       ],
+       [
+          "Healthy/Stereo Images/N-37-L.jpg",
+          "Healthy/Expert2_masks/N-37-L-1-Disc-exp2.png",
+          "Healthy/N-37-L.jpg"
+       ],
+       [
+          "Healthy/Stereo Images/N-38-R.jpg",
+          "Healthy/Expert2_masks/N-38-R-1-Disc-exp2.png",
+          "Healthy/N-38-R.jpg"
+       ],
+       [
+          "Healthy/Stereo Images/N-39-L.jpg",
+          "Healthy/Expert2_masks/N-39-L-1-Disc-exp2.png",
+          "Healthy/N-39-L.jpg"
+       ],
+       [
+          "Healthy/Stereo Images/N-3-L.jpg",
+          "Healthy/Expert2_masks/N-3-L-1-Disc-exp2.png",
+          "Healthy/N-3-L.jpg"
+       ],
+       [
+          "Healthy/Stereo Images/N-40-R.jpg",
+          "Healthy/Expert2_masks/N-40-R-1-Disc-exp2.png",
+          "Healthy/N-40-R.jpg"
+       ],
+       [
+          "Healthy/Stereo Images/N-41-L.jpg",
+          "Healthy/Expert2_masks/N-41-L-1-Disc-exp2.png",
+          "Healthy/N-41-L.jpg"
+       ],
+       [
+          "Healthy/Stereo Images/N-42-R.jpg",
+          "Healthy/Expert2_masks/N-42-R-1-Disc-exp2.png",
+          "Healthy/N-42-R.jpg"
+       ],
+       [
+          "Healthy/Stereo Images/N-43-L.jpg",
+          "Healthy/Expert2_masks/N-43-L-1-Disc-exp2.png",
+          "Healthy/N-43-L.jpg"
+       ],
+       [
+          "Healthy/Stereo Images/N-44-R.jpg",
+          "Healthy/Expert2_masks/N-44-R-1-Disc-exp2.png",
+          "Healthy/N-44-R.jpg"
+       ],
+       [
+          "Healthy/Stereo Images/N-46-R.jpg",
+          "Healthy/Expert2_masks/N-46-R-1-Disc-exp2.png",
+          "Healthy/N-46-R.jpg"
+       ],
+       [
+          "Healthy/Stereo Images/N-47-L.jpg",
+          "Healthy/Expert2_masks/N-47-L-1-Disc-exp2.png",
+          "Healthy/N-47-L.jpg"
+       ],
+       [
+          "Healthy/Stereo Images/N-48-R.jpg",
+          "Healthy/Expert2_masks/N-48-R-1-Disc-exp2.png",
+          "Healthy/N-48-R.jpg"
+       ],
+       [
+          "Healthy/Stereo Images/N-49-L.jpg",
+          "Healthy/Expert2_masks/N-49-L-1-Disc-exp2.png",
+          "Healthy/N-49-L.jpg"
+       ],
+       [
+          "Healthy/Stereo Images/N-4-R.jpg",
+          "Healthy/Expert2_masks/N-4-R-1-Disc-exp2.png",
+          "Healthy/N-4-R.jpg"
+       ],
+       [
+          "Healthy/Stereo Images/N-50-R.jpg",
+          "Healthy/Expert2_masks/N-50-R-1-Disc-exp2.png",
+          "Healthy/N-50-R.jpg"
+       ],
+       [
+          "Healthy/Stereo Images/N-51-L.jpg",
+          "Healthy/Expert2_masks/N-51-L-1-Disc-exp2.png",
+          "Healthy/N-51-L.jpg"
+       ],
+       [
+          "Healthy/Stereo Images/N-78-R.jpg",
+          "Healthy/Expert2_masks/N-78-R-1-Disc-exp2.png",
+          "Healthy/N-78-R.jpg"
+       ],
+       [
+          "Glaucoma and suspects/Stereo Images/S-29-R.jpg",
+          "Glaucoma and suspects/Expert2_masks/S-29-R-1-Disc-exp2.png",
+          "Glaucoma and suspects/S-29-R.jpg"
+       ],
+       [
+          "Glaucoma and suspects/Stereo Images/S-2-L.jpg",
+          "Glaucoma and suspects/Expert2_masks/S-2-L-1-Disc-exp2.png",
+          "Glaucoma and suspects/S-2-L.jpg"
+       ],
+       [
+          "Glaucoma and suspects/Stereo Images/S-30-L.jpg",
+          "Glaucoma and suspects/Expert2_masks/S-30-L-1-Disc-exp2.png",
+          "Glaucoma and suspects/S-30-L.jpg"
+       ],
+       [
+          "Glaucoma and suspects/Stereo Images/S-31-L.jpg",
+          "Glaucoma and suspects/Expert2_masks/S-31-L-1-Disc-exp2.png",
+          "Glaucoma and suspects/S-31-L.jpg"
+       ],
+       [
+          "Glaucoma and suspects/Stereo Images/S-32-L.jpg",
+          "Glaucoma and suspects/Expert2_masks/S-32-L-1-Disc-exp2.png",
+          "Glaucoma and suspects/S-32-L.jpg"
+       ],
+       [
+          "Glaucoma and suspects/Stereo Images/S-33-R.jpg",
+          "Glaucoma and suspects/Expert2_masks/S-33-R-1-Disc-exp2.png",
+          "Glaucoma and suspects/S-33-R.jpg"
+       ],
+       [
+          "Glaucoma and suspects/Stereo Images/S-34-L.jpg",
+          "Glaucoma and suspects/Expert2_masks/S-34-L-1-Disc-exp2.png",
+          "Glaucoma and suspects/S-34-L.jpg"
+       ],
+       [
+          "Glaucoma and suspects/Stereo Images/S-35-R.jpg",
+          "Glaucoma and suspects/Expert2_masks/S-35-R-1-Disc-exp2.png",
+          "Glaucoma and suspects/S-35-R.jpg"
+       ],
+       [
+          "Glaucoma and suspects/Stereo Images/S-3-R.jpg",
+          "Glaucoma and suspects/Expert2_masks/S-3-R-1-Disc-exp2.png",
+          "Glaucoma and suspects/S-3-R.jpg"
+       ],
+       [
+          "Glaucoma and suspects/Stereo Images/S-4-L.jpg",
+          "Glaucoma and suspects/Expert2_masks/S-4-L-1-Disc-exp2.png",
+          "Glaucoma and suspects/S-4-L.jpg"
+       ],
+       [
+          "Glaucoma and suspects/Stereo Images/S-5-L.jpg",
+          "Glaucoma and suspects/Expert2_masks/S-5-L-1-Disc-exp2.png",
+          "Glaucoma and suspects/S-5-L.jpg"
+       ],
+       [
+          "Glaucoma and suspects/Stereo Images/S-6-R.jpg",
+          "Glaucoma and suspects/Expert2_masks/S-6-R-1-Disc-exp2.png",
+          "Glaucoma and suspects/S-6-R.jpg"
+       ],
+       [
+          "Glaucoma and suspects/Stereo Images/S-7-L.jpg",
+          "Glaucoma and suspects/Expert2_masks/S-7-L-1-Disc-exp2.png",
+          "Glaucoma and suspects/S-7-L.jpg"
+       ],
+       [
+          "Glaucoma and suspects/Stereo Images/S-8-R.jpg",
+          "Glaucoma and suspects/Expert2_masks/S-8-R-1-Disc-exp2.png",
+          "Glaucoma and suspects/S-8-R.jpg"
+       ],
+       [
+          "Glaucoma and suspects/Stereo Images/S-9-L.jpg",
+          "Glaucoma and suspects/Expert2_masks/S-9-L-1-Disc-exp2.png",
+          "Glaucoma and suspects/S-9-L.jpg"
+       ]
+    ]
+ }
