@@ -15,7 +15,9 @@ import numpy
 import torch
 
 from tqdm import tqdm
+
 from deepdraw.binseg.models import losses, ramps
+
 from ...common.utils.resources import (
     ResourceMonitor,
     cpu_constants,

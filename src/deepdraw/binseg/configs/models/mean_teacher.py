@@ -1,5 +1,4 @@
-"""Mean Teacher model for semi-supervised image segmentation.
-"""
+"""Mean Teacher model for semi-supervised image segmentation."""
 
 from torch.optim.lr_scheduler import MultiStepLR
 

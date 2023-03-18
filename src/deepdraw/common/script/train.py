@@ -3,10 +3,10 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 import logging
-import multiprocessing
-import sys
-import random
 import math
+import multiprocessing
+import random
+import sys
 
 import torch
 
@@ -51,6 +51,7 @@ def base_train(
     use_dataset = dataset
     validation_dataset = None
     extra_validation_datasets = []
+
     def semi_use_dataset(dataset):
         logger.info("Start setting semi-supervised training dataset")
         datalist = [None] * (
@@ -133,6 +134,7 @@ def base_train(
         res = [i for i in dataset_dic["train"] if i is not None]
         dataset_dic["train"] = res
         return dataset_dic
+
     if isinstance(dataset, dict):
         if "__unlabeled_train__" in dataset:
             logger.info(
