@@ -1,5 +1,0 @@
-py:obj torch.utils.data.dataset.T_co
-py:class torch.nn.modules.loss._Loss
-py:class Module
-py:class torchvision.models._api.WeightsEnum
-py:class optional

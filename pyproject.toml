@@ -87,7 +87,7 @@ m2unet = "deepdraw.binseg.configs.models.m2unet"
 unet = "deepdraw.binseg.configs.models.unet"
 resunet = "deepdraw.binseg.configs.models.resunet"
 lwnet = "deepdraw.binseg.configs.models.lwnet"
-mean_teacher = "deepdraw.binseg.configs.models.mean_teacher"
+mean-teacher = "deepdraw.binseg.configs.models.mean_teacher"
 # example datasets
 csv-dataset-example = "deepdraw.binseg.configs.datasets.csv"
 # drive dataset - retinography
