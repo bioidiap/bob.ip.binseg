@@ -34,6 +34,7 @@ Models
    deepdraw.binseg.configs.models.resunet
    deepdraw.binseg.configs.models.unet
    deepdraw.binseg.configs.models.lwnet
+   deepdraw.binseg.configs.models.mean_teacher
 
 
 
@@ -69,6 +70,8 @@ if applicable.  Use these datasets for training and evaluating your models.
    deepdraw.binseg.configs.datasets.drive.xtest
    deepdraw.binseg.configs.datasets.drive.mtest
    deepdraw.binseg.configs.datasets.drive.covd
+   deepdraw.binseg.configs.datasets.drive.semi_768
+   deepdraw.binseg.configs.datasets.drive.semi_x768
 
    deepdraw.binseg.configs.datasets.hrf.default
    deepdraw.binseg.configs.datasets.hrf.default_768
@@ -77,6 +80,8 @@ if applicable.  Use these datasets for training and evaluating your models.
    deepdraw.binseg.configs.datasets.hrf.mtest
    deepdraw.binseg.configs.datasets.hrf.default_fullres
    deepdraw.binseg.configs.datasets.hrf.covd
+   deepdraw.binseg.configs.datasets.hrf.semi_768
+   deepdraw.binseg.configs.datasets.hrf.semi_x768
 
    deepdraw.binseg.configs.datasets.iostar.vessel
    deepdraw.binseg.configs.datasets.iostar.vessel_768
@@ -86,6 +91,8 @@ if applicable.  Use these datasets for training and evaluating your models.
    deepdraw.binseg.configs.datasets.iostar.optic_disc_768
    deepdraw.binseg.configs.datasets.iostar.optic_disc_512
    deepdraw.binseg.configs.datasets.iostar.covd
+   deepdraw.binseg.configs.datasets.iostar.semi_768
+   deepdraw.binseg.configs.datasets.iostar.semi_x768
 
    deepdraw.binseg.configs.datasets.stare.ah
    deepdraw.binseg.configs.datasets.stare.ah_768
@@ -94,6 +101,8 @@ if applicable.  Use these datasets for training and evaluating your models.
    deepdraw.binseg.configs.datasets.stare.xtest
    deepdraw.binseg.configs.datasets.stare.mtest
    deepdraw.binseg.configs.datasets.stare.covd
+   deepdraw.binseg.configs.datasets.stare.semi_768
+   deepdraw.binseg.configs.datasets.stare.semi_x768
 
    deepdraw.binseg.configs.datasets.refuge.cup
    deepdraw.binseg.configs.datasets.refuge.disc
