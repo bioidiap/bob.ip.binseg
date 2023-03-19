@@ -124,7 +124,7 @@ def test_drive_semi_768():
     assert len(dataset) == 5
     assert dataset["__extra_valid__"] == dataset["test"]
 
-    for sample in dataset["train"]:
+    for sample in dataset["test"]:
         assert len(sample) == 4
         assert isinstance(sample[0], str)
         assert sample[1].shape, (3, 768 == 768)
