@@ -49,7 +49,6 @@ def test_drive():
     _check_subset(dataset["train"], 20, 768, 768)
     _check_subset(dataset["test"], 20, 768, 768)
 
-
     from deepdraw.binseg.configs.datasets.drive.default_1024 import dataset
 
     _check_subset(dataset["__train__"], 20, 1024, 1024)
@@ -136,6 +135,7 @@ def test_drive_semi_768():
         assert sample[3].dtype == torch.float32
         assert sample[1].max() <= 1.0
         assert sample[1].min() >= 0.0
+
 
 @pytest.mark.skip_if_rc_var_not_set("datadir.drive")
 @pytest.mark.skip_if_rc_var_not_set("datadir.stare")
