@@ -45,7 +45,7 @@ logger = setup(__name__.split(".")[0], format="%(levelname)s: %(message)s")
     "--dataset",
     "-d",
     help="A dictionary mapping string keys to "
-    "deepdraw.common.data.utils.SampleList2TorchDataset's.  At least one key "
+    "deepdraw.binseg.data.utils.SampleList2TorchDataset's.  At least one key "
     "named 'train' must be available.  This dataset will be used for training "
     "the network model.  All other datasets will be used for prediction and "
     "evaluation. Dataset descriptions include all required pre-processing, "

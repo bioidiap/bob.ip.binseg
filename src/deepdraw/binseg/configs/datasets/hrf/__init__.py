@@ -4,7 +4,7 @@
 
 
 def _maker_1168(protocol):
-    from .....common.data.transforms import Crop, Resize
+    from .....binseg.data.transforms import Crop, Resize
     from ....data.hrf import dataset as raw
     from .. import make_dataset as mk
 
@@ -12,7 +12,7 @@ def _maker_1168(protocol):
 
 
 def _maker(protocol):
-    from .....common.data.transforms import Crop
+    from .....binseg.data.transforms import Crop
     from ....data.hrf import dataset as raw
     from .. import make_dataset as mk
 
@@ -20,7 +20,7 @@ def _maker(protocol):
 
 
 def _maker_square_768(protocol):
-    from .....common.data.transforms import Pad, Resize
+    from .....binseg.data.transforms import Pad, Resize
     from ....data.hrf import dataset as raw
     from .. import make_dataset as mk
 
@@ -28,7 +28,7 @@ def _maker_square_768(protocol):
 
 
 def _maker_square_1024(protocol):
-    from .....common.data.transforms import Pad, Resize
+    from .....binseg.data.transforms import Pad, Resize
     from ....data.hrf import dataset as raw
     from .. import make_dataset as mk
 
@@ -36,7 +36,7 @@ def _maker_square_1024(protocol):
 
 
 def _maker_square(protocol, size):
-    from .....common.data.transforms import Pad, Resize
+    from .....binseg.data.transforms import Pad, Resize
     from ....data.hrf import dataset as raw
     from .. import make_dataset as mk
 

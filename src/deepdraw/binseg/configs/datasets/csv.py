@@ -50,8 +50,8 @@ will see in this example, we provide boilerplate code to do so.
 
 More information:
 
-* :py:class:`deepdraw.common.data.dataset.CSVDataset` for operational details.
-* :py:class:`deepdraw.common.data.dataset.JSONDataset` for an alternative for
+* :py:class:`deepdraw.binseg.data.dataset.CSVDataset` for operational details.
+* :py:class:`deepdraw.binseg.data.dataset.JSONDataset` for an alternative for
   multi-protocol datasets (all of our supported raw datasets are implemented
   using this)
 * :py:func:`deepdraw.binseg.configs.datasets.__init__.make_dataset` for extra
@@ -60,9 +60,9 @@ More information:
 
 import os
 
-from deepdraw.common.data.dataset import CSVDataset
-from deepdraw.common.data.loader import load_pil_1, load_pil_rgb
-from deepdraw.common.data.sample import Sample
+from deepdraw.binseg.data.dataset import CSVDataset
+from deepdraw.binseg.data.loader import load_pil_1, load_pil_rgb
+from deepdraw.binseg.data.sample import Sample
 
 # How we use the loaders - "sample" is a dictionary where keys are defined
 # below and map to the columns of the CSV files you input.  This one is

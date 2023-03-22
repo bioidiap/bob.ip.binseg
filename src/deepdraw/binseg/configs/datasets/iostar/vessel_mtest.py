@@ -7,7 +7,7 @@
 * Configuration resolution: 1024 x 1024
 """
 
-from .....common.data.transforms import CenterCrop, Crop, Pad, Resize
+from .....binseg.data.transforms import CenterCrop, Crop, Pad, Resize
 from .vessel_xtest import dataset as _xt
 
 dataset = {

@@ -4,7 +4,7 @@
 
 
 def _maker(protocol):
-    from .....common.data.transforms import CenterCrop, Pad, Resize
+    from .....binseg.data.transforms import CenterCrop, Pad, Resize
     from ....data.refuge import dataset as raw
     from .. import make_dataset as mk
 
@@ -18,7 +18,7 @@ def _maker(protocol):
 
 
 def _maker_square(protocol, size):
-    from .....common.data.transforms import CenterCrop, Pad, Resize
+    from .....binseg.data.transforms import CenterCrop, Pad, Resize
     from ....data.refuge import dataset as raw
     from .. import make_dataset as mk
 

@@ -26,8 +26,8 @@ import pkg_resources
 
 from PIL import Image
 
-from ....common.data.dataset import JSONDataset
-from ....common.data.loader import (
+from ....binseg.data.dataset import JSONDataset
+from ..loader import (
     load_pil_1,
     load_pil_raw_12bit_jsrt,
     make_delayed,

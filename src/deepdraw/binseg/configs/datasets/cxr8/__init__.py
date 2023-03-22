@@ -4,7 +4,7 @@
 
 
 def _maker(protocol, n):
-    from .....common.data.transforms import Resize
+    from .....binseg.data.transforms import Resize
     from ....data.cxr8 import dataset as raw
     from .. import make_dataset as mk
 
@@ -12,12 +12,12 @@ def _maker(protocol, n):
 
 
 def _maker_augmented(protocol, n):
-    from .....common.data.transforms import ColorJitter as _jitter
-    from .....common.data.transforms import Compose as _compose
-    from .....common.data.transforms import GaussianBlur as _blur
-    from .....common.data.transforms import RandomHorizontalFlip as _hflip
-    from .....common.data.transforms import RandomRotation as _rotation
-    from .....common.data.transforms import Resize as _resize
+    from .....binseg.data.transforms import ColorJitter as _jitter
+    from .....binseg.data.transforms import Compose as _compose
+    from .....binseg.data.transforms import GaussianBlur as _blur
+    from .....binseg.data.transforms import RandomHorizontalFlip as _hflip
+    from .....binseg.data.transforms import RandomRotation as _rotation
+    from .....binseg.data.transforms import Resize as _resize
     from ....data.cxr8 import dataset as raw
     from .. import make_subset
 
@@ -58,13 +58,13 @@ def _maker_augmented(protocol, n):
 
 
 def _maker_augmented_gt_box(protocol, n):
-    from .....common.data.transforms import ColorJitter as _jitter
-    from .....common.data.transforms import Compose as _compose
-    from .....common.data.transforms import GaussianBlur as _blur
-    from .....common.data.transforms import GroundTruthCrop as _gtcrop
-    from .....common.data.transforms import RandomHorizontalFlip as _hflip
-    from .....common.data.transforms import RandomRotation as _rotation
-    from .....common.data.transforms import Resize as _resize
+    from .....binseg.data.transforms import ColorJitter as _jitter
+    from .....binseg.data.transforms import Compose as _compose
+    from .....binseg.data.transforms import GaussianBlur as _blur
+    from .....binseg.data.transforms import GroundTruthCrop as _gtcrop
+    from .....binseg.data.transforms import RandomHorizontalFlip as _hflip
+    from .....binseg.data.transforms import RandomRotation as _rotation
+    from .....binseg.data.transforms import Resize as _resize
     from ....data.cxr8 import dataset as raw
     from .. import make_subset
 

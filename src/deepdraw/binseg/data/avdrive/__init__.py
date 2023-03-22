@@ -20,8 +20,8 @@ import os
 
 import pkg_resources
 
-from ....common.data.dataset import JSONDataset
-from ....common.data.loader import load_pil_1, load_pil_rgb, make_delayed
+from ....binseg.data.dataset import JSONDataset
+from ..loader import load_pil_1, load_pil_rgb, make_delayed
 from ....common.utils.rc import load_rc
 
 _protocols = [pkg_resources.resource_filename(__name__, "default.json")]

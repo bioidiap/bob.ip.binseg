@@ -7,7 +7,7 @@
 * Configuration resolution: 704 x 608
 """
 
-from .....common.data.transforms import CenterCrop, Pad, Resize
+from .....binseg.data.transforms import CenterCrop, Pad, Resize
 from .xtest import dataset as _xt
 from .xtest import second_annotator  # noqa
 

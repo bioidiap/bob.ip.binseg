@@ -26,8 +26,8 @@ import pkg_resources
 
 from PIL import Image
 
-from ....common.data.dataset import JSONDataset
-from ....common.data.loader import load_pil_1, load_pil_rgb, make_delayed
+from ....binseg.data.dataset import JSONDataset
+from ..loader import load_pil_1, load_pil_rgb, make_delayed
 from ....common.utils.rc import load_rc
 
 _protocols = [

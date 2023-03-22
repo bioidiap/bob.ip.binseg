@@ -83,6 +83,9 @@ class Sample:
         _copy_attributes(self, kwargs)
 
 
+
+# NEVER USED ANYWHERE IN THE PACKAGE
+# Should it be kept?
 class SampleSet(MutableSequence):
     """A set of samples with extra attributes
     https://docs.python.org/3/library/collections.abc.html#collections-

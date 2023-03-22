@@ -7,7 +7,7 @@
 * Configuration resolution: 1168 x 1648
 """
 
-from .....common.data.transforms import Crop, Pad, Resize
+from .....binseg.data.transforms import Crop, Pad, Resize
 from .xtest import dataset as _xt
 
 dataset = {

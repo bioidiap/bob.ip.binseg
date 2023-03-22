@@ -19,11 +19,11 @@ Data Manipulation
 .. autosummary::
    :toctree: api/data
 
-   deepdraw.common.data.dataset
+   deepdraw.binseg.data.dataset
    deepdraw.common.data.loader
    deepdraw.common.data.sample
-   deepdraw.common.data.utils
-   deepdraw.common.data.transforms
+   deepdraw.binseg.data.utils
+   deepdraw.binseg.data.transforms
 
 
 Datasets

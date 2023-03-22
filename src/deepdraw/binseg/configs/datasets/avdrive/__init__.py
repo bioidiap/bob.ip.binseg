@@ -4,7 +4,7 @@
 
 
 def _maker(protocol):
-    from .....common.data.transforms import CenterCrop as ccrop
+    from .....binseg.data.transforms import CenterCrop as ccrop
     from ....data.drive import dataset as raw
     from .. import make_dataset as mk
 

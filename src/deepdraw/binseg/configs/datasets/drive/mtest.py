@@ -7,7 +7,7 @@
 * Configuration resolution: 544 x 544
 """
 
-from .....common.data.transforms import Crop, Pad, Resize
+from .....binseg.data.transforms import Crop, Pad, Resize
 from .xtest import dataset as _xt
 from .xtest import second_annotator  # noqa
 

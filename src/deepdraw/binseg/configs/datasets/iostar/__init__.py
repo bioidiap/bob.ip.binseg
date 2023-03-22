@@ -11,7 +11,7 @@ def _maker(protocol):
 
 
 def _maker_square(protocol, size):
-    from .....common.data.transforms import Resize
+    from .....binseg.data.transforms import Resize
     from ....data.iostar import dataset as raw
     from .. import make_dataset as mk
 

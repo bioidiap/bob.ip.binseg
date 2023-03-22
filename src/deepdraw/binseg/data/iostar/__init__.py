@@ -27,9 +27,9 @@ import os
 
 import pkg_resources
 
-from ....common.data.dataset import JSONDataset
-from ....common.data.loader import load_pil_1, load_pil_rgb, make_delayed
-from ....common.data.utils import invert_mode1_image, subtract_mode1_images
+from ....binseg.data.dataset import JSONDataset
+from ..loader import load_pil_1, load_pil_rgb, make_delayed
+from ..utils import invert_mode1_image, subtract_mode1_images
 from ....common.utils.rc import load_rc
 
 _protocols = [
