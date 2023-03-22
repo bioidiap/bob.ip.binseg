@@ -26,7 +26,7 @@ def _check_help(entry_point, runner):
 
 
 def test_main_help_binseg(cli_runner):
-    from deepdraw.common.script.common import binseg
+    from deepdraw.binseg.script.common import binseg
 
     _check_help(binseg, cli_runner)
 
