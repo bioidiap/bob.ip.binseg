@@ -10,7 +10,7 @@ from tempfile import TemporaryDirectory
 
 import torch
 
-from deepdraw.common.utils.checkpointer import Checkpointer
+from deepdraw.binseg.utils.checkpointer import Checkpointer
 
 
 class TestCheckpointer(unittest.TestCase):

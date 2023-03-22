@@ -10,7 +10,7 @@ import torch
 
 from torch.utils.data import DataLoader
 
-from ..utils.checkpointer import Checkpointer
+from ...binseg.utils.checkpointer import Checkpointer
 from .common import set_seeds, setup_pytorch_device
 from ...binseg.engine.trainer import run
 

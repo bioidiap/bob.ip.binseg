@@ -34,7 +34,7 @@ from PIL import Image
 
 from ....binseg.data.dataset import JSONDataset
 from ..loader import load_pil_rgb, make_delayed
-from ....common.utils.rc import load_rc
+from ...utils.rc import load_rc
 
 _protocols = [
     pkg_resources.resource_filename(__name__, "default.json"),

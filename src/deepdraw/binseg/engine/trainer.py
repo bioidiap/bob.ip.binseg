@@ -16,12 +16,12 @@ import torch
 
 from tqdm import tqdm
 
-from ...common.utils.resources import (
+from ..utils.resources import (
     ResourceMonitor,
     cpu_constants,
     gpu_constants,
 )
-from ...common.utils.summary import summary
+from ..utils.summary import summary
 
 logger = logging.getLogger(__name__)
 

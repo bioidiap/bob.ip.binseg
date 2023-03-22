@@ -35,7 +35,7 @@ def _get_installed_datasets() -> dict[str, str]:
     * group(0): the name of the key for the dataset directory
     * group("name"): the short name for the dataset
     """
-    from deepdraw.common.utils.rc import load_rc
+    from deepdraw.binseg.utils.rc import load_rc
 
     return dict(load_rc().get("datadir", {}))
 

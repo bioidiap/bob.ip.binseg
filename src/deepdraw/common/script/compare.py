@@ -151,13 +151,13 @@ def base_compare(
     data = _load(data, detection=detection, threshold=threshold)
 
     if detection:
-        from ..utils.table import (
+        from ...binseg.utils.table import (
             performance_table_detection as performance_table,
         )
 
     else:
-        from ..utils.plot import precision_recall_f1iso
-        from ..utils.table import performance_table
+        from ...binseg.utils.plot import precision_recall_f1iso
+        from ...binseg.utils.table import performance_table
 
         if output_figure is not None:
             output_figure = os.path.realpath(output_figure)

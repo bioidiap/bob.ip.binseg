@@ -9,7 +9,7 @@ from deepdraw.binseg.models.driu_od import driu_od
 from deepdraw.binseg.models.hed import hed
 from deepdraw.binseg.models.resunet import resunet50
 from deepdraw.binseg.models.unet import unet
-from deepdraw.common.utils.summary import summary
+from deepdraw.binseg.utils.summary import summary
 
 
 class Tester(unittest.TestCase):

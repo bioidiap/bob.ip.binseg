@@ -11,7 +11,7 @@ import pytest
 import torch
 
 from deepdraw.binseg.engine.evaluator import sample_measures_for_threshold
-from deepdraw.common.utils.measure import (
+from deepdraw.binseg.utils.measure import (
     auc,
     base_measures,
     bayesian_measures,

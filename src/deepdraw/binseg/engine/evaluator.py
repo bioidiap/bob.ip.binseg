@@ -19,7 +19,7 @@ import torchvision.transforms.functional as VF
 
 from tqdm import tqdm
 
-from ...common.utils.measure import base_measures, bayesian_measures
+from ..utils.measure import base_measures, bayesian_measures
 
 logger = logging.getLogger(__name__)
 

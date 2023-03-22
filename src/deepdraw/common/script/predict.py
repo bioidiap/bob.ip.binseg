@@ -11,7 +11,7 @@ import torch
 
 from torch.utils.data import DataLoader
 
-from ..utils.checkpointer import Checkpointer
+from ...binseg.utils.checkpointer import Checkpointer
 from .common import download_to_tempfile, setup_pytorch_device
 from ...binseg.engine.predictor import run
 

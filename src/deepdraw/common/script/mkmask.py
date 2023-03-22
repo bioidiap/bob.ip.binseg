@@ -12,7 +12,7 @@ import skimage.io
 import skimage.measure
 import skimage.morphology
 
-from ..utils.rc import load_rc
+from ...binseg.utils.rc import load_rc
 
 logger = logging.getLogger(__name__)
 
