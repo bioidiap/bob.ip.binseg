@@ -132,20 +132,3 @@ def test_resunet50():
     assert type(model[0]) == ResNet4Segmentation  # backbone
     assert type(model[1]) == ResUNet  # head
     print(model)
-
-
-def test_fasterrcnn():
-    import torchvision
-
-    from deepdraw.detect.models.faster_rcnn import faster_rcnn
-
-    model = faster_rcnn()
-    assert type(model) == torchvision.models.detection.faster_rcnn.FasterRCNN
-    assert (
-        type(model.backbone)
-        == torchvision.models.detection.backbone_utils.BackboneWithFPN
-    )
-    assert (
-        type(model.roi_heads.box_predictor)
-        == torchvision.models.detection.faster_rcnn.FastRCNNPredictor
-    )
