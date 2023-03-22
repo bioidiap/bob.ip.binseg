@@ -12,12 +12,13 @@ from torch.utils.data import DataLoader
 
 from ..utils.checkpointer import Checkpointer
 from .common import set_seeds, setup_pytorch_device
+from ...binseg.engine.trainer import run
 
 logger = logging.getLogger(__name__)
 
 
-def _collate_fn(batch):
-    return tuple(zip(*batch))
+# def _collate_fn(batch):
+#     return tuple(zip(*batch))
 
 
 def base_train(
@@ -103,77 +104,37 @@ def base_train(
     else:
         batch_chunk_size = batch_size // batch_chunk_count
 
-    if detection:
-        from ...detect.engine.trainer import run
+    data_loader = DataLoader(
+        dataset=use_dataset,
+        batch_size=batch_chunk_size,
+        shuffle=True,
+        drop_last=drop_incomplete_batch,
+        pin_memory=torch.cuda.is_available(),
+        **multiproc_kwargs,
+    )
 
-        data_loader = DataLoader(
-            dataset=use_dataset,
+    valid_loader = None
+    if validation_dataset is not None:
+        valid_loader = DataLoader(
+            dataset=validation_dataset,
             batch_size=batch_chunk_size,
-            shuffle=True,
-            drop_last=drop_incomplete_batch,
-            pin_memory=torch.cuda.is_available(),
-            collate_fn=_collate_fn,
-            **multiproc_kwargs,
-        )
-
-        valid_loader = None
-        if validation_dataset is not None:
-            valid_loader = DataLoader(
-                dataset=validation_dataset,
-                batch_size=batch_chunk_size,
-                shuffle=False,
-                drop_last=False,
-                pin_memory=torch.cuda.is_available(),
-                collate_fn=_collate_fn,
-                **multiproc_kwargs,
-            )
-
-        extra_valid_loaders = [
-            DataLoader(
-                dataset=k,
-                batch_size=batch_chunk_size,
-                shuffle=False,
-                drop_last=False,
-                pin_memory=torch.cuda.is_available(),
-                collate_fn=_collate_fn,
-                **multiproc_kwargs,
-            )
-            for k in extra_validation_datasets
-        ]
-    else:
-        from ...binseg.engine.trainer import run
-
-        data_loader = DataLoader(
-            dataset=use_dataset,
-            batch_size=batch_chunk_size,
-            shuffle=True,
-            drop_last=drop_incomplete_batch,
+            shuffle=False,
+            drop_last=False,
             pin_memory=torch.cuda.is_available(),
             **multiproc_kwargs,
         )
 
-        valid_loader = None
-        if validation_dataset is not None:
-            valid_loader = DataLoader(
-                dataset=validation_dataset,
-                batch_size=batch_chunk_size,
-                shuffle=False,
-                drop_last=False,
-                pin_memory=torch.cuda.is_available(),
-                **multiproc_kwargs,
-            )
-
-        extra_valid_loaders = [
-            DataLoader(
-                dataset=k,
-                batch_size=batch_chunk_size,
-                shuffle=False,
-                drop_last=False,
-                pin_memory=torch.cuda.is_available(),
-                **multiproc_kwargs,
-            )
-            for k in extra_validation_datasets
-        ]
+    extra_valid_loaders = [
+        DataLoader(
+            dataset=k,
+            batch_size=batch_chunk_size,
+            shuffle=False,
+            drop_last=False,
+            pin_memory=torch.cuda.is_available(),
+            **multiproc_kwargs,
+        )
+        for k in extra_validation_datasets
+    ]
 
     checkpointer = Checkpointer(model, optimizer, scheduler, path=output_folder)
 

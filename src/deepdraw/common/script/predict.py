@@ -13,12 +13,13 @@ from torch.utils.data import DataLoader
 
 from ..utils.checkpointer import Checkpointer
 from .common import download_to_tempfile, setup_pytorch_device
+from ...binseg.engine.predictor import run
 
 logger = logging.getLogger(__name__)
 
 
-def _collate_fn(batch):
-    return tuple(zip(*batch))
+# def _collate_fn(batch):
+#     return tuple(zip(*batch))
 
 
 def base_predict(
@@ -75,26 +76,12 @@ def base_predict(
                 "multiprocessing_context"
             ] = multiprocessing.get_context("spawn")
 
-        if detection:
-            from ...detect.engine.predictor import run
-
-            data_loader = DataLoader(
-                dataset=v,
-                batch_size=batch_size,
-                shuffle=False,
-                pin_memory=torch.cuda.is_available(),
-                collate_fn=_collate_fn,
-                **multiproc_kwargs,
-            )
-        else:
-            from ...binseg.engine.predictor import run
-
-            data_loader = DataLoader(
-                dataset=v,
-                batch_size=batch_size,
-                shuffle=False,
-                pin_memory=torch.cuda.is_available(),
-                **multiproc_kwargs,
-            )
+        data_loader = DataLoader(
+            dataset=v,
+            batch_size=batch_size,
+            shuffle=False,
+            pin_memory=torch.cuda.is_available(),
+            **multiproc_kwargs,
+        )
 
         run(model, data_loader, k, device, output_folder, overlayed)

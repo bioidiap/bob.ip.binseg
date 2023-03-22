@@ -4,6 +4,8 @@
 
 import logging
 
+from ...binseg.engine.evaluator import compare_annotators, run
+
 logger = logging.getLogger(__name__)
 
 
@@ -20,11 +22,7 @@ def base_evaluate(
     **kwargs,
 ):
     """Create base evaluate function for segmentation / detection tasks."""
-    if detection:
-        from ...detect.engine.evaluator import compare_annotators, run
-    else:
-        from ...binseg.engine.evaluator import compare_annotators, run
-
+    
     def _validate_threshold(t, dataset):
         """Validate the user threshold selection.
 

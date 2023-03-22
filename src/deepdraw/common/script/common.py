@@ -236,9 +236,3 @@ def download_to_tempfile(url, progress=False):
 @click.group(cls=AliasedGroup)
 def binseg():
     """Binary 2D Image Segmentation Benchmark commands."""
-
-
-@with_plugins(pkg_resources.iter_entry_points("deepdraw.detect.cli"))
-@click.group(cls=AliasedGroup)
-def detect():
-    """Object Detection Benchmark commands."""
