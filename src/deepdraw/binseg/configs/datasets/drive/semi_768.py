@@ -4,30 +4,7 @@
 
 """Semi-supervised pretrain dataset for the DRIVE dataset."""
 
-import torch
-import torchvision.transforms as T
+from . import _semi_data_augmentation
 
-from .default_768 import dataset as _drive
-
-jitter = T.ColorJitter(hue=0.05)
-
-
-def rotate(x):
-    return T.functional.rotate(x, angle=4.5)
-
-
-gray = T.Grayscale(num_output_channels=3)
-
-
-train = _drive["train"].copy()
-for i in train:
-    i[1] = i[1] + 0.01 * torch.randn_like(i[1])  # add gaussian noise
-    i[1] = gray(i[1])
-
-dataset = {
-    "train": _drive["train"],
-    "test": _drive["test"],
-    "__train__": train,
-    "__valid__": _drive["train"],
-}
+dataset = _semi_data_augmentation("default", 768)
 dataset["__extra_valid__"] = dataset["test"]

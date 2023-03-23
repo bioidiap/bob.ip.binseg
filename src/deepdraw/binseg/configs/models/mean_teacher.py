@@ -18,7 +18,7 @@ amsbound = False
 scheduler_milestones = [300]
 scheduler_gamma = 0.1
 
-weight = "/home/chao/Desktop/drive/driu/model/model_lowest_valid_loss.pth"  # path to the pretrained model
+weight = None  # path to the pretrained model
 
 model = mean_teacher(weight)
 
