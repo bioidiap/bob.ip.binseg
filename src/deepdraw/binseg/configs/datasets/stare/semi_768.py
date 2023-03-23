@@ -6,5 +6,5 @@
 
 from . import _semi_data_augmentation
 
-dataset = _semi_data_augmentation("default", 768)
+dataset = _semi_data_augmentation("ah", 768)
 dataset["__extra_valid__"] = [dataset["test"]]
