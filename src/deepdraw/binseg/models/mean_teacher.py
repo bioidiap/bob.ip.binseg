@@ -57,8 +57,8 @@ class Mean_teacher(torch.nn.Module):
         else:
             # initialize the model with pretrained weights
             logger.info(f"Loading pretrained model from {weight}")
-            input_model = driu.driu()
-            input_model.load_state_dict(torch.load(weight), strict=False)
+        input_model = driu.driu()
+        input_model.load_state_dict(torch.load(weight), strict=False)
         for T_param, input_param in zip(
             self.T_model.parameters(), input_model.parameters()
         ):
