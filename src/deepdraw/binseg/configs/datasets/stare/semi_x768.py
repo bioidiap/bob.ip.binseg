@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-"""Take STARE as labeled data and X as unlabeled data X can be  DRIVE, HRF,
+"""Take STARE as labeled data; x, y as unlabeled data and can be  DRIVE, HRF,
 IOSTAR or other datasets."""
 
 from ..drive.default_768 import dataset as _y1
