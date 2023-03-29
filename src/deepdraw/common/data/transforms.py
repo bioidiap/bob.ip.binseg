@@ -573,9 +573,8 @@ class Grayscale:
     the first image passed as input argument.
     Parameters
     ----------
-    num_output_channels : int, Optional
-        Number of channels to output. If 1, the image will be converted to
-        grayscale. If 3, the image will be converted to RGB.
+    num_output_channels : :py:class:`int`, Optional
+        Number of channels to output. If 1, the image will be converted to grayscale. If 3, the image will be converted to RGB.
     """
 
     def __init__(self, num_output_channels=1):
