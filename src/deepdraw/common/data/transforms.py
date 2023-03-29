@@ -537,3 +537,23 @@ class GroundTruthCrop:
         new_args = [PIL.ImageOps.crop(k, border) for k in new_args]
 
         return new_args
+
+
+class Gaussian_noise:
+    """Add gaussian noise to the image.
+
+    Parameters
+    ----------
+    mean : :py:class:`float`, Optional
+        Mean of the gaussian noise.
+
+    std : :py:class:`float`, Optional
+        Standard deviation of the gaussian noise.
+    """
+
+    def __init__(self, mean=0.0, std=1.0):
+        self.mean = mean
+        self.std = std
+
+    def __call__(self, *args):
+        return [k + torch.randn(k.size()) * self.std + self.mean for k in args]
