@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: Copyright © 2023 Idiap Research Institute <contact@idiap.ch>
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 """Functions for ramping hyperparameters up or down Each function takes the
 current training step or epoch, and the ramp length in the same format, and
 returns a multiplier between 0 and 1."""

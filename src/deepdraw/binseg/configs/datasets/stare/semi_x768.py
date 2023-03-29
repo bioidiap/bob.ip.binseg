@@ -1,5 +1,9 @@
-"""Take STARE as labeled data and X as unlabeled data X can be  DRIVE, HRF,
-IOSTAR or other datasets."""
+# SPDX-FileCopyrightText: Copyright © 2023 Idiap Research Institute <contact@idiap.ch>
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+"""Take STARE as labeled dataset; x as test dataset; y as unlabeled data and x,
+y can be  DRIVE, HRF, IOSTAR or other datasets."""
 
 from ..drive.default_768 import dataset as _y1
 

@@ -53,10 +53,3 @@ class Tester(unittest.TestCase):
         s, param = summary(model)
         self.assertIsInstance(s, str)
         self.assertIsInstance(param, int)
-
-    # def test_summary_mean_teacher(self):
-    #     weight = None
-    #     model = mean_teacher(weight)
-    #     s, param = summary(model)
-    #     self.assertIsInstance(s, str)
-    #     self.assertIsInstance(param, int)

@@ -234,6 +234,7 @@ def base_train(
     else:
         from ...binseg.engine.trainer import run
 
+        # In the mean teacher model, the training data is not shuffled.
         if hasattr(model, "name") and model.name == "mean_teacher":
             data_loader = DataLoader(
                 dataset=use_dataset,
@@ -242,7 +243,6 @@ def base_train(
                 drop_last=drop_incomplete_batch,
                 # set for one GPU
                 pin_memory=torch.cuda.is_available(),
-                collate_fn=_collate_fn,
                 # set for multiple GPUs
                 # persistent_workers=True,
                 # pin_memory=False,
@@ -256,7 +256,6 @@ def base_train(
                 drop_last=drop_incomplete_batch,
                 # set for one GPU
                 pin_memory=torch.cuda.is_available(),
-                collate_fn=_collate_fn,
                 # set for multiple GPUs
                 # persistent_workers=True,
                 # pin_memory=False,

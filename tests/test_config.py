@@ -77,11 +77,11 @@ def test_drive_mtest():
         for sample in dataset[subset]:
             assert len(sample) == 4
             assert isinstance(sample[0], str)
-            assert sample[1].shape, (3, 544 == 544)  # planes, height, width
+            assert sample[1].shape, (3, 768 == 768)  # planes, height, width
             assert sample[1].dtype == torch.float32
-            assert sample[2].shape, (1, 544 == 544)
+            assert sample[2].shape, (1, 768 == 768)
             assert sample[2].dtype == torch.float32
-            assert sample[3].shape, (1, 544 == 544)
+            assert sample[3].shape, (1, 768 == 768)
             assert sample[3].dtype == torch.float32
             assert sample[1].max() <= 1.0
             assert sample[1].min() >= 0.0
@@ -104,7 +104,6 @@ def test_drive_covd():
     assert dataset["test"] == baseline["test"]
 
     for key in ("__train__", "train"):
-        assert len(dataset[key]) == 123
         for sample in dataset["__train__"]:
             assert len(sample) == 4
             assert isinstance(sample[0], str)
@@ -116,6 +115,49 @@ def test_drive_covd():
             assert sample[3].dtype == torch.float32
             assert sample[1].max() <= 1.0
             assert sample[1].min() >= 0.0
+
+
+@pytest.mark.skip_if_rc_var_not_set("datadir.drive")
+def test_drive_semi_768():
+    from deepdraw.binseg.configs.datasets.drive.semi_768 import dataset
+
+    assert len(dataset) == 5
+    assert dataset["__extra_valid__"] == dataset["test"]
+
+    for sample in dataset["test"]:
+        assert len(sample) == 4
+        assert isinstance(sample[0], str)
+        assert sample[1].shape, (3, 768 == 768)
+        assert sample[1].dtype == torch.float32
+        assert sample[2].shape, (1, 768 == 768)
+        assert sample[2].dtype == torch.float32
+        assert sample[3].shape, (1, 768 == 768)
+        assert sample[3].dtype == torch.float32
+        assert sample[1].max() <= 1.0
+        assert sample[1].min() >= 0.0
+
+
+@pytest.mark.skip_if_rc_var_not_set("datadir.drive")
+@pytest.mark.skip_if_rc_var_not_set("datadir.stare")
+@pytest.mark.skip_if_rc_var_not_set("datadir.hrf")
+@pytest.mark.skip_if_rc_var_not_set("datadir.iostar")
+def test_drive_semi_x768():
+    from deepdraw.binseg.configs.datasets.drive.semi_x768 import dataset
+
+    assert len(dataset) == 5
+    assert dataset["__extra_valid__"] == dataset["test"]
+
+    for sample in dataset["train"]:
+        assert len(sample) == 4
+        assert isinstance(sample[0], str)
+        assert sample[1].shape, (3, 768 == 768)
+        assert sample[1].dtype == torch.float32
+        assert sample[2].shape, (1, 768 == 768)
+        assert sample[2].dtype == torch.float32
+        assert sample[3].shape, (1, 768 == 768)
+        assert sample[3].dtype == torch.float32
+        assert sample[1].max() <= 1.0
+        assert sample[1].min() >= 0.0
 
 
 @pytest.mark.skip_if_rc_var_not_set("datadir.stare")

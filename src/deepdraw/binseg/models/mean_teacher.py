@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: Copyright © 2023 Idiap Research Institute <contact@idiap.ch>
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 import logging
 
 import torch
@@ -5,7 +9,7 @@ import torch.nn
 import torchvision.transforms as T
 
 # choose the model to be used as the initialization network
-from deepdraw.binseg.models import unet
+from deepdraw.binseg.models import driu
 
 # build Mean Teacher model
 logger = logging.getLogger(__name__)
@@ -44,16 +48,16 @@ class Mean_teacher(torch.nn.Module):
         weight,
     ):
         super().__init__()
-        self.T_model = unet.unet(pretrained_backbone=True, progress=True)
-        self.S_model = unet.unet(pretrained_backbone=True, progress=True)
+        self.T_model = driu.driu(pretrained_backbone=True, progress=True)
+        self.S_model = driu.driu(pretrained_backbone=True, progress=True)
 
         self.weight = weight
+        input_model = driu.driu()
         if weight is None:
             logger.info("Model is not pretrained")
         else:
             # initialize the model with pretrained weights
             logger.info(f"Loading pretrained model from {weight}")
-            input_model = unet.unet()
             input_model.load_state_dict(torch.load(weight), strict=False)
         for T_param, input_param in zip(
             self.T_model.parameters(), input_model.parameters()

@@ -1,4 +1,6 @@
-#!/usr/bin/env python
+# SPDX-FileCopyrightText: Copyright © 2023 Idiap Research Institute <contact@idiap.ch>
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
 
 import contextlib
 import csv
@@ -178,7 +180,6 @@ def create_logfile_fields(valid_loader, extra_valid_loaders, device):
         logfile_fields += ("validation_loss",)
     if extra_valid_loaders:
         logfile_fields += ("extra_validation_losses",)
-
     logfile_fields += tuple(
         ResourceMonitor.monitored_keys(device.type == "cuda")
     )
@@ -266,7 +267,8 @@ def mt_train_epoch(
         gradient accumulation, read
         https://stackoverflow.com/questions/62067400/understanding-accumulated-gradients-in-pytorch.
 
-    epoch : :int, indicate the current epoch
+    epoch: int
+        Indicate the current epoch
 
     Returns
     -------
@@ -564,9 +566,8 @@ def checkpointer_process(
 
     Parameters
     ----------
-    model : :py:class:`torch.nn.Module`
 
-    checkpointer : :py:class:`bob.ip.common.utils.checkpointer.Checkpointer`
+    checkpointer : :py:class:`deepdraw.common.utils.checkpointer.Checkpointer`
         checkpointer implementation
 
     checkpoint_period : int
@@ -812,7 +813,7 @@ def run(
     scheduler : :py:mod:`torch.optim`
         learning rate scheduler
 
-    checkpointer : :py:class:`bob.ip.common.utils.checkpointer.Checkpointer`
+    checkpointer : :py:class:`deepdraw.common.utils.checkpointer.Checkpointer`
         checkpointer implementation
 
     checkpoint_period : int
