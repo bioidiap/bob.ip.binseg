@@ -26,15 +26,15 @@
      - 768 x 768
      - 768 x 768
      - 768 x 768
-   * - :py:mod:`drishtigs1-cup <deepdraw.binseg.configs.datasets.drishtigs1.cup_all_768>`
+   * - :py:mod:`drishtigs1-cup <deepdraw.configs.datasets.drishtigs1.cup_all_768>`
      - **0.904**
      - 0.789
      - 0.727
-   * - :py:mod:`refuge-cup <deepdraw.binseg.configs.datasets.refuge.cup_768>`
+   * - :py:mod:`refuge-cup <deepdraw.configs.datasets.refuge.cup_768>`
      - 0.818
      - **0.852**
      - 0.690
-   * - :py:mod:`rimoner3-cup <deepdraw.binseg.configs.datasets.rimoner3.cup_exp1_512>`
+   * - :py:mod:`rimoner3-cup <deepdraw.configs.datasets.rimoner3.cup_exp1_512>`
      - 0.720
      - 0.673
      - **0.804**

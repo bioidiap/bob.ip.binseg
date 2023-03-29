@@ -26,13 +26,13 @@ def _check_help(entry_point, runner):
 
 
 def test_main_help_binseg(cli_runner):
-    from deepdraw.binseg.script.common import binseg
+    from deepdraw.script.common import deepdraw
 
-    _check_help(binseg, cli_runner)
+    _check_help(deepdraw, cli_runner)
 
 
 def test_binseg_experiment_help(cli_runner):
-    from deepdraw.binseg.script.experiment import experiment
+    from deepdraw.script.experiment import experiment
 
     _check_help(experiment, cli_runner)
 
@@ -44,17 +44,17 @@ def _str_counter(substr, s):
 def _check_experiment_stare(
     cli_runner, caplog, overlay, multiprocess=False, extra_valid=0
 ):
-    from deepdraw.binseg.script.experiment import experiment
+    from deepdraw.script.experiment import experiment
 
     # ensures we capture only ERROR messages and above by default
     caplog.set_level(logging.ERROR)
 
     with cli_runner.isolated_filesystem(), caplog.at_level(
-        logging.INFO, logger="deepdraw.binseg"
+        logging.INFO, logger="deepdraw"
     ), tempfile.NamedTemporaryFile(mode="wt") as config:
         # re-write STARE dataset configuration for test
         config.write(
-            "from deepdraw.binseg.configs.datasets.stare.ah import dataset"
+            "from deepdraw.configs.datasets.stare.ah import dataset"
             ", second_annotator\n"
         )
         if extra_valid > 0:
@@ -262,9 +262,9 @@ def test_experiment_stare_with_multiple_extra_validation(cli_runner, caplog):
 
 
 def _check_train(runner, caplog):
-    from deepdraw.binseg.script.train import train
+    from deepdraw.script.train import train
 
-    with caplog.at_level(logging.INFO, logger="deepdraw.binseg"):
+    with caplog.at_level(logging.INFO, logger="deepdraw"):
         output_folder = "results"
         result = runner.invoke(
             train,
@@ -311,9 +311,9 @@ def _check_train(runner, caplog):
 
 
 def _check_predict(runner, caplog):
-    from deepdraw.binseg.script.predict import predict
+    from deepdraw.script.predict import predict
 
-    with caplog.at_level(logging.INFO, logger="deepdraw.binseg"):
+    with caplog.at_level(logging.INFO, logger="deepdraw"):
         output_folder = "predictions"
         overlay_folder = os.path.join("overlayed", "predictions")
         result = runner.invoke(
@@ -355,9 +355,9 @@ def _check_predict(runner, caplog):
 
 
 def _check_evaluate(runner, caplog):
-    from deepdraw.binseg.script.evaluate import evaluate
+    from deepdraw.script.evaluate import evaluate
 
-    with caplog.at_level(logging.INFO, logger="deepdraw.binseg"):
+    with caplog.at_level(logging.INFO, logger="deepdraw"):
         output_folder = "evaluations"
         overlay_folder = os.path.join("overlayed", "analysis")
         result = runner.invoke(
@@ -410,9 +410,9 @@ def _check_evaluate(runner, caplog):
 
 
 def _check_compare(runner, caplog):
-    from deepdraw.binseg.script.compare import compare
+    from deepdraw.script.compare import compare
 
-    with caplog.at_level(logging.INFO, logger="deepdraw.binseg"):
+    with caplog.at_level(logging.INFO, logger="deepdraw"):
         output_folder = "evaluations"
         result = runner.invoke(
             compare,
@@ -460,73 +460,73 @@ def test_discrete_experiment_stare(cli_runner, caplog):
 
 
 def test_train_help(cli_runner):
-    from deepdraw.binseg.script.train import train
+    from deepdraw.script.train import train
 
     _check_help(train, cli_runner)
 
 
 def test_predict_help(cli_runner):
-    from deepdraw.binseg.script.predict import predict
+    from deepdraw.script.predict import predict
 
     _check_help(predict, cli_runner)
 
 
 def test_evaluate_help(cli_runner):
-    from deepdraw.binseg.script.evaluate import evaluate
+    from deepdraw.script.evaluate import evaluate
 
     _check_help(evaluate, cli_runner)
 
 
 def test_compare_help(cli_runner):
-    from deepdraw.binseg.script.compare import compare
+    from deepdraw.script.compare import compare
 
     _check_help(compare, cli_runner)
 
 
 def test_mkmask_help(cli_runner):
-    from deepdraw.binseg.script.mkmask import mkmask
+    from deepdraw.script.mkmask import mkmask
 
     _check_help(mkmask, cli_runner)
 
 
 def test_config_help(cli_runner):
-    from deepdraw.binseg.script.config import config
+    from deepdraw.script.config import config
 
     _check_help(config, cli_runner)
 
 
 def test_config_list_help(cli_runner):
-    from deepdraw.binseg.script.config import list
+    from deepdraw.script.config import list
 
     _check_help(list, cli_runner)
 
 
 def test_config_list(cli_runner):
-    from deepdraw.binseg.script.config import list
+    from deepdraw.script.config import list
 
     result = cli_runner.invoke(list)
     _assert_exit_0(result)
-    assert "module: deepdraw.binseg.configs.datasets" in result.output
-    assert "module: deepdraw.binseg.configs.models" in result.output
+    assert "module: deepdraw.configs.datasets" in result.output
+    assert "module: deepdraw.configs.models" in result.output
 
 
 def test_config_list_v(cli_runner):
-    from deepdraw.binseg.script.config import list
+    from deepdraw.script.config import list
 
     result = cli_runner.invoke(list, ["--verbose"])
     _assert_exit_0(result)
-    assert "module: deepdraw.binseg.configs.datasets" in result.output
-    assert "module: deepdraw.binseg.configs.models" in result.output
+    assert "module: deepdraw.configs.datasets" in result.output
+    assert "module: deepdraw.configs.models" in result.output
 
 
 def test_config_describe_help(cli_runner):
-    from deepdraw.binseg.script.config import describe
+    from deepdraw.script.config import describe
 
     _check_help(describe, cli_runner)
 
 
 def test_config_describe_drive(cli_runner):
-    from deepdraw.binseg.script.config import describe
+    from deepdraw.script.config import describe
 
     result = cli_runner.invoke(describe, ["drive"])
     _assert_exit_0(result)
@@ -534,13 +534,13 @@ def test_config_describe_drive(cli_runner):
 
 
 def test_config_copy_help(cli_runner):
-    from deepdraw.binseg.script.config import copy
+    from deepdraw.script.config import copy
 
     _check_help(copy, cli_runner)
 
 
 def test_config_copy(cli_runner):
-    from deepdraw.binseg.script.config import copy
+    from deepdraw.script.config import copy
 
     with cli_runner.isolated_filesystem():
         result = cli_runner.invoke(copy, ["drive", "test.py"])
@@ -551,19 +551,19 @@ def test_config_copy(cli_runner):
 
 
 def test_dataset_help(cli_runner):
-    from deepdraw.binseg.script.dataset import dataset
+    from deepdraw.script.dataset import dataset
 
     _check_help(dataset, cli_runner)
 
 
 def test_dataset_list_help(cli_runner):
-    from deepdraw.binseg.script.dataset import list
+    from deepdraw.script.dataset import list
 
     _check_help(list, cli_runner)
 
 
 def test_dataset_list(cli_runner):
-    from deepdraw.binseg.script.dataset import list
+    from deepdraw.script.dataset import list
 
     result = cli_runner.invoke(list)
     _assert_exit_0(result)
@@ -571,13 +571,13 @@ def test_dataset_list(cli_runner):
 
 
 def test_dataset_check_help(cli_runner):
-    from deepdraw.binseg.script.dataset import check
+    from deepdraw.script.dataset import check
 
     _check_help(check, cli_runner)
 
 
 def test_dataset_check(cli_runner):
-    from deepdraw.binseg.script.dataset import check
+    from deepdraw.script.dataset import check
 
     result = cli_runner.invoke(check, ["--verbose", "--verbose", "--limit=2"])
     _assert_exit_0(result)

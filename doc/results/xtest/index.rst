@@ -29,15 +29,15 @@
   ``-xtest`` resource variant of the dataset the model was trained on.  For
   example, to run cross-evaluation tests for the DRIVE dataset, use the
   configuration resource :py:mod:`drive-xtest
-  <deepdraw.binseg.configs.datasets.drive.xtest>`.
+  <deepdraw.configs.datasets.drive.xtest>`.
 * For each row, the peak performance is always obtained in an intra-database
   test (training and testing on the same database).  Conversely, we observe a
   performance degradation (albeit not catastrophic in most cases) for all other
   datasets in the cross test.
 * We only show results for select systems in :ref:`baseline analysis
-  <deepdraw.binseg.results.baselines>`.  You may run analysis on the other models
+  <deepdraw.results.baselines>`.  You may run analysis on the other models
   by downloading them from our website (via the ``--weight`` parameter on the
-  :ref:`analyze script <deepdraw.binseg.cli>`).
+  :ref:`analyze script <deepdraw.cli>`).
 
 
 Models on Specific Tasks

@@ -26,14 +26,14 @@ Models
    :toctree: api/configs/models
    :template: config.rst
 
-   deepdraw.binseg.configs.models.driu
-   deepdraw.binseg.configs.models.driu_bn
-   deepdraw.binseg.configs.models.driu_od
-   deepdraw.binseg.configs.models.hed
-   deepdraw.binseg.configs.models.m2unet
-   deepdraw.binseg.configs.models.resunet
-   deepdraw.binseg.configs.models.unet
-   deepdraw.binseg.configs.models.lwnet
+   deepdraw.configs.models.driu
+   deepdraw.configs.models.driu_bn
+   deepdraw.configs.models.driu_od
+   deepdraw.configs.models.hed
+   deepdraw.configs.models.m2unet
+   deepdraw.configs.models.resunet
+   deepdraw.configs.models.unet
+   deepdraw.configs.models.lwnet
 
 
 
@@ -50,96 +50,96 @@ if applicable.  Use these datasets for training and evaluating your models.
    :toctree: api/configs/datasets
    :template: config.rst
 
-   deepdraw.binseg.configs.datasets.__init__
+   deepdraw.configs.datasets.__init__
 
-   deepdraw.binseg.configs.datasets.csv
+   deepdraw.configs.datasets.csv
 
-   deepdraw.binseg.configs.datasets.chasedb1.first_annotator
-   deepdraw.binseg.configs.datasets.chasedb1.first_annotator_768
-   deepdraw.binseg.configs.datasets.chasedb1.first_annotator_1024
-   deepdraw.binseg.configs.datasets.chasedb1.second_annotator
-   deepdraw.binseg.configs.datasets.chasedb1.xtest
-   deepdraw.binseg.configs.datasets.chasedb1.mtest
-   deepdraw.binseg.configs.datasets.chasedb1.covd
+   deepdraw.configs.datasets.chasedb1.first_annotator
+   deepdraw.configs.datasets.chasedb1.first_annotator_768
+   deepdraw.configs.datasets.chasedb1.first_annotator_1024
+   deepdraw.configs.datasets.chasedb1.second_annotator
+   deepdraw.configs.datasets.chasedb1.xtest
+   deepdraw.configs.datasets.chasedb1.mtest
+   deepdraw.configs.datasets.chasedb1.covd
 
-   deepdraw.binseg.configs.datasets.drive.default
-   deepdraw.binseg.configs.datasets.drive.default_768
-   deepdraw.binseg.configs.datasets.drive.default_1024
-   deepdraw.binseg.configs.datasets.drive.second_annotator
-   deepdraw.binseg.configs.datasets.drive.xtest
-   deepdraw.binseg.configs.datasets.drive.mtest
-   deepdraw.binseg.configs.datasets.drive.covd
+   deepdraw.configs.datasets.drive.default
+   deepdraw.configs.datasets.drive.default_768
+   deepdraw.configs.datasets.drive.default_1024
+   deepdraw.configs.datasets.drive.second_annotator
+   deepdraw.configs.datasets.drive.xtest
+   deepdraw.configs.datasets.drive.mtest
+   deepdraw.configs.datasets.drive.covd
 
-   deepdraw.binseg.configs.datasets.hrf.default
-   deepdraw.binseg.configs.datasets.hrf.default_768
-   deepdraw.binseg.configs.datasets.hrf.default_1024
-   deepdraw.binseg.configs.datasets.hrf.xtest
-   deepdraw.binseg.configs.datasets.hrf.mtest
-   deepdraw.binseg.configs.datasets.hrf.default_fullres
-   deepdraw.binseg.configs.datasets.hrf.covd
+   deepdraw.configs.datasets.hrf.default
+   deepdraw.configs.datasets.hrf.default_768
+   deepdraw.configs.datasets.hrf.default_1024
+   deepdraw.configs.datasets.hrf.xtest
+   deepdraw.configs.datasets.hrf.mtest
+   deepdraw.configs.datasets.hrf.default_fullres
+   deepdraw.configs.datasets.hrf.covd
 
-   deepdraw.binseg.configs.datasets.iostar.vessel
-   deepdraw.binseg.configs.datasets.iostar.vessel_768
-   deepdraw.binseg.configs.datasets.iostar.vessel_xtest
-   deepdraw.binseg.configs.datasets.iostar.vessel_mtest
-   deepdraw.binseg.configs.datasets.iostar.optic_disc
-   deepdraw.binseg.configs.datasets.iostar.optic_disc_768
-   deepdraw.binseg.configs.datasets.iostar.optic_disc_512
-   deepdraw.binseg.configs.datasets.iostar.covd
+   deepdraw.configs.datasets.iostar.vessel
+   deepdraw.configs.datasets.iostar.vessel_768
+   deepdraw.configs.datasets.iostar.vessel_xtest
+   deepdraw.configs.datasets.iostar.vessel_mtest
+   deepdraw.configs.datasets.iostar.optic_disc
+   deepdraw.configs.datasets.iostar.optic_disc_768
+   deepdraw.configs.datasets.iostar.optic_disc_512
+   deepdraw.configs.datasets.iostar.covd
 
-   deepdraw.binseg.configs.datasets.stare.ah
-   deepdraw.binseg.configs.datasets.stare.ah_768
-   deepdraw.binseg.configs.datasets.stare.ah_1024
-   deepdraw.binseg.configs.datasets.stare.vk
-   deepdraw.binseg.configs.datasets.stare.xtest
-   deepdraw.binseg.configs.datasets.stare.mtest
-   deepdraw.binseg.configs.datasets.stare.covd
+   deepdraw.configs.datasets.stare.ah
+   deepdraw.configs.datasets.stare.ah_768
+   deepdraw.configs.datasets.stare.ah_1024
+   deepdraw.configs.datasets.stare.vk
+   deepdraw.configs.datasets.stare.xtest
+   deepdraw.configs.datasets.stare.mtest
+   deepdraw.configs.datasets.stare.covd
 
-   deepdraw.binseg.configs.datasets.refuge.cup
-   deepdraw.binseg.configs.datasets.refuge.disc
-   deepdraw.binseg.configs.datasets.refuge.cup_512
-   deepdraw.binseg.configs.datasets.refuge.cup_768
-   deepdraw.binseg.configs.datasets.refuge.disc_512
-   deepdraw.binseg.configs.datasets.refuge.disc_768
+   deepdraw.configs.datasets.refuge.cup
+   deepdraw.configs.datasets.refuge.disc
+   deepdraw.configs.datasets.refuge.cup_512
+   deepdraw.configs.datasets.refuge.cup_768
+   deepdraw.configs.datasets.refuge.disc_512
+   deepdraw.configs.datasets.refuge.disc_768
 
-   deepdraw.binseg.configs.datasets.rimoner3.cup_exp1
-   deepdraw.binseg.configs.datasets.rimoner3.cup_exp2
-   deepdraw.binseg.configs.datasets.rimoner3.disc_exp1
-   deepdraw.binseg.configs.datasets.rimoner3.disc_exp2
-   deepdraw.binseg.configs.datasets.rimoner3.cup_exp1_512
-   deepdraw.binseg.configs.datasets.rimoner3.disc_exp1_512
+   deepdraw.configs.datasets.rimoner3.cup_exp1
+   deepdraw.configs.datasets.rimoner3.cup_exp2
+   deepdraw.configs.datasets.rimoner3.disc_exp1
+   deepdraw.configs.datasets.rimoner3.disc_exp2
+   deepdraw.configs.datasets.rimoner3.cup_exp1_512
+   deepdraw.configs.datasets.rimoner3.disc_exp1_512
 
-   deepdraw.binseg.configs.datasets.rimoner3.cup_exp1_768
-   deepdraw.binseg.configs.datasets.rimoner3.disc_exp1_768
-   deepdraw.binseg.configs.datasets.drishtigs1.cup_all
-   deepdraw.binseg.configs.datasets.drishtigs1.cup_all_512
-   deepdraw.binseg.configs.datasets.drishtigs1.cup_all_768
-   deepdraw.binseg.configs.datasets.drishtigs1.cup_any
-   deepdraw.binseg.configs.datasets.drishtigs1.disc_all
-   deepdraw.binseg.configs.datasets.drishtigs1.disc_all_512
-   deepdraw.binseg.configs.datasets.drishtigs1.disc_all_768
-   deepdraw.binseg.configs.datasets.drishtigs1.disc_any
+   deepdraw.configs.datasets.rimoner3.cup_exp1_768
+   deepdraw.configs.datasets.rimoner3.disc_exp1_768
+   deepdraw.configs.datasets.drishtigs1.cup_all
+   deepdraw.configs.datasets.drishtigs1.cup_all_512
+   deepdraw.configs.datasets.drishtigs1.cup_all_768
+   deepdraw.configs.datasets.drishtigs1.cup_any
+   deepdraw.configs.datasets.drishtigs1.disc_all
+   deepdraw.configs.datasets.drishtigs1.disc_all_512
+   deepdraw.configs.datasets.drishtigs1.disc_all_768
+   deepdraw.configs.datasets.drishtigs1.disc_any
 
-   deepdraw.binseg.configs.datasets.drionsdb.expert1
-   deepdraw.binseg.configs.datasets.drionsdb.expert2
-   deepdraw.binseg.configs.datasets.drionsdb.expert1_512
-   deepdraw.binseg.configs.datasets.drionsdb.expert2_512
-   deepdraw.binseg.configs.datasets.drionsdb.expert1_768
-   deepdraw.binseg.configs.datasets.drionsdb.expert2_768
+   deepdraw.configs.datasets.drionsdb.expert1
+   deepdraw.configs.datasets.drionsdb.expert2
+   deepdraw.configs.datasets.drionsdb.expert1_512
+   deepdraw.configs.datasets.drionsdb.expert2_512
+   deepdraw.configs.datasets.drionsdb.expert1_768
+   deepdraw.configs.datasets.drionsdb.expert2_768
 
-   deepdraw.binseg.configs.datasets.drhagis.default
+   deepdraw.configs.datasets.drhagis.default
 
-   deepdraw.binseg.configs.datasets.montgomery.default
-   deepdraw.binseg.configs.datasets.montgomery.xtest
+   deepdraw.configs.datasets.montgomery.default
+   deepdraw.configs.datasets.montgomery.xtest
 
-   deepdraw.binseg.configs.datasets.jsrt.default
-   deepdraw.binseg.configs.datasets.jsrt.xtest
+   deepdraw.configs.datasets.jsrt.default
+   deepdraw.configs.datasets.jsrt.xtest
 
-   deepdraw.binseg.configs.datasets.shenzhen.default
-   deepdraw.binseg.configs.datasets.shenzhen.default_256
-   deepdraw.binseg.configs.datasets.shenzhen.xtest
+   deepdraw.configs.datasets.shenzhen.default
+   deepdraw.configs.datasets.shenzhen.default_256
+   deepdraw.configs.datasets.shenzhen.xtest
 
-   deepdraw.binseg.configs.datasets.cxr8.default
-   deepdraw.binseg.configs.datasets.cxr8.xtest
+   deepdraw.configs.datasets.cxr8.default
+   deepdraw.configs.datasets.cxr8.xtest
 
 .. include:: links.rst

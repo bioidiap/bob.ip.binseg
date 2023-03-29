@@ -29,7 +29,7 @@ def test_drive():
             assert s[1].max() <= 1.0
             assert s[1].min() >= 0.0
 
-    from deepdraw.binseg.configs.datasets.drive.default import dataset
+    from deepdraw.configs.datasets.drive.default import dataset
 
     assert len(dataset) == 4
     _check_subset(dataset["__train__"], 20, 544, 544)
@@ -37,19 +37,19 @@ def test_drive():
     _check_subset(dataset["train"], 20, 544, 544)
     _check_subset(dataset["test"], 20, 544, 544)
 
-    from deepdraw.binseg.configs.datasets.drive.second_annotator import dataset
+    from deepdraw.configs.datasets.drive.second_annotator import dataset
 
     assert len(dataset) == 1
     _check_subset(dataset["test"], 20, 544, 544)
 
-    from deepdraw.binseg.configs.datasets.drive.default_768 import dataset
+    from deepdraw.configs.datasets.drive.default_768 import dataset
 
     _check_subset(dataset["__train__"], 20, 768, 768)
     _check_subset(dataset["__valid__"], 20, 768, 768)
     _check_subset(dataset["train"], 20, 768, 768)
     _check_subset(dataset["test"], 20, 768, 768)
 
-    from deepdraw.binseg.configs.datasets.drive.default_1024 import dataset
+    from deepdraw.configs.datasets.drive.default_1024 import dataset
 
     _check_subset(dataset["__train__"], 20, 1024, 1024)
     _check_subset(dataset["__valid__"], 20, 1024, 1024)
@@ -62,11 +62,11 @@ def test_drive():
 @pytest.mark.skip_if_rc_var_not_set("datadir.hrf")
 @pytest.mark.skip_if_rc_var_not_set("datadir.iostar")
 def test_drive_mtest():
-    from deepdraw.binseg.configs.datasets.drive.mtest import dataset
+    from deepdraw.configs.datasets.drive.mtest import dataset
 
     assert len(dataset) == 10
 
-    from deepdraw.binseg.configs.datasets.drive.default import (
+    from deepdraw.configs.datasets.drive.default import (
         dataset as baseline,
     )
 
@@ -92,11 +92,11 @@ def test_drive_mtest():
 @pytest.mark.skip_if_rc_var_not_set("datadir.hrf")
 @pytest.mark.skip_if_rc_var_not_set("datadir.iostar")
 def test_drive_covd():
-    from deepdraw.binseg.configs.datasets.drive.covd import dataset
+    from deepdraw.configs.datasets.drive.covd import dataset
 
     assert len(dataset) == 4
 
-    from deepdraw.binseg.configs.datasets.drive.default import (
+    from deepdraw.configs.datasets.drive.default import (
         dataset as baseline,
     )
 
@@ -124,7 +124,7 @@ def test_stare_augmentation_manipulation():
     # adequately, with one example dataset
 
     # hack to allow testing on the CI
-    from deepdraw.binseg.configs.datasets.stare.ah import dataset
+    from deepdraw.configs.datasets.stare.ah import dataset
 
     assert len(dataset["__train__"]._transforms.transforms) == (
         len(dataset["test"]._transforms.transforms) + 4
@@ -152,7 +152,7 @@ def test_stare():
             assert s[1].min() >= 0.0
 
     # hack to allow testing on the CI
-    from deepdraw.binseg.configs.datasets.stare import _maker, _maker_square
+    from deepdraw.configs.datasets.stare import _maker, _maker_square
 
     for protocol in "ah", "vk":
         dataset = _maker(protocol)
@@ -179,11 +179,11 @@ def test_stare():
 @pytest.mark.skip_if_rc_var_not_set("datadir.hrf")
 @pytest.mark.skip_if_rc_var_not_set("datadir.iostar")
 def test_stare_mtest():
-    from deepdraw.binseg.configs.datasets.stare.mtest import dataset
+    from deepdraw.configs.datasets.stare.mtest import dataset
 
     assert len(dataset) == 10
 
-    from deepdraw.binseg.configs.datasets.stare.ah import dataset as baseline
+    from deepdraw.configs.datasets.stare.ah import dataset as baseline
 
     assert dataset["train"] == baseline["train"]
     assert dataset["test"] == baseline["test"]
@@ -207,11 +207,11 @@ def test_stare_mtest():
 @pytest.mark.skip_if_rc_var_not_set("datadir.hrf")
 @pytest.mark.skip_if_rc_var_not_set("datadir.iostar")
 def test_stare_covd():
-    from deepdraw.binseg.configs.datasets.stare.covd import dataset
+    from deepdraw.configs.datasets.stare.covd import dataset
 
     assert len(dataset) == 4
 
-    from deepdraw.binseg.configs.datasets.stare.ah import dataset as baseline
+    from deepdraw.configs.datasets.stare.ah import dataset as baseline
 
     assert dataset["train"] == dataset["__valid__"]
     assert dataset["test"] == baseline["test"]
@@ -250,7 +250,7 @@ def test_chasedb1():
 
     for m in ("first_annotator", "second_annotator"):
         d = importlib.import_module(
-            f"deepdraw.binseg.configs.datasets.chasedb1.{m}", package=__name__
+            f"deepdraw.configs.datasets.chasedb1.{m}", package=__name__
         ).dataset
         assert len(d) == 4
         _check_subset(d["__train__"], 8, 960, 960)
@@ -258,7 +258,7 @@ def test_chasedb1():
         _check_subset(d["train"], 8, 960, 960)
         _check_subset(d["test"], 20, 960, 960)
 
-    from deepdraw.binseg.configs.datasets.chasedb1.first_annotator_768 import (
+    from deepdraw.configs.datasets.chasedb1.first_annotator_768 import (
         dataset,
     )
 
@@ -268,7 +268,7 @@ def test_chasedb1():
     _check_subset(dataset["train"], 8, 768, 768)
     _check_subset(dataset["test"], 20, 768, 768)
 
-    from deepdraw.binseg.configs.datasets.chasedb1.first_annotator_1024 import (
+    from deepdraw.configs.datasets.chasedb1.first_annotator_1024 import (
         dataset,
     )
 
@@ -284,11 +284,11 @@ def test_chasedb1():
 @pytest.mark.skip_if_rc_var_not_set("datadir.hrf")
 @pytest.mark.skip_if_rc_var_not_set("datadir.iostar")
 def test_chasedb1_mtest():
-    from deepdraw.binseg.configs.datasets.chasedb1.mtest import dataset
+    from deepdraw.configs.datasets.chasedb1.mtest import dataset
 
     assert len(dataset) == 10
 
-    from deepdraw.binseg.configs.datasets.chasedb1.first_annotator import (
+    from deepdraw.configs.datasets.chasedb1.first_annotator import (
         dataset as baseline,
     )
 
@@ -314,11 +314,11 @@ def test_chasedb1_mtest():
 @pytest.mark.skip_if_rc_var_not_set("datadir.hrf")
 @pytest.mark.skip_if_rc_var_not_set("datadir.iostar")
 def test_chasedb1_covd():
-    from deepdraw.binseg.configs.datasets.chasedb1.covd import dataset
+    from deepdraw.configs.datasets.chasedb1.covd import dataset
 
     assert len(dataset) == 4
 
-    from deepdraw.binseg.configs.datasets.chasedb1.first_annotator import (
+    from deepdraw.configs.datasets.chasedb1.first_annotator import (
         dataset as baseline,
     )
 
@@ -371,7 +371,7 @@ def test_hrf():
             assert s[1].max() <= 1.0
             assert s[1].min() >= 0.0
 
-    from deepdraw.binseg.configs.datasets.hrf.default import dataset
+    from deepdraw.configs.datasets.hrf.default import dataset
 
     assert len(dataset) == 6
     _check_subset(dataset["__train__"], 15, 1168, 1648)
@@ -380,14 +380,14 @@ def test_hrf():
     _check_subset_fullres(dataset["train (full resolution)"], 15)
     _check_subset_fullres(dataset["test (full resolution)"], 30)
 
-    from deepdraw.binseg.configs.datasets.hrf.default_768 import dataset
+    from deepdraw.configs.datasets.hrf.default_768 import dataset
 
     assert len(dataset) == 4
     _check_subset(dataset["__train__"], 15, 768, 768)
     _check_subset(dataset["train"], 15, 768, 768)
     _check_subset(dataset["test"], 30, 768, 768)
 
-    from deepdraw.binseg.configs.datasets.hrf.default_1024 import dataset
+    from deepdraw.configs.datasets.hrf.default_1024 import dataset
 
     assert len(dataset) == 4
     _check_subset(dataset["__train__"], 15, 1024, 1024)
@@ -400,11 +400,11 @@ def test_hrf():
 @pytest.mark.skip_if_rc_var_not_set("datadir.hrf")
 @pytest.mark.skip_if_rc_var_not_set("datadir.iostar")
 def test_hrf_mtest():
-    from deepdraw.binseg.configs.datasets.hrf.mtest import dataset
+    from deepdraw.configs.datasets.hrf.mtest import dataset
 
     assert len(dataset) == 12
 
-    from deepdraw.binseg.configs.datasets.hrf.default import dataset as baseline
+    from deepdraw.configs.datasets.hrf.default import dataset as baseline
 
     assert dataset["train"] == baseline["train"]
     assert dataset["test"] == baseline["test"]
@@ -436,11 +436,11 @@ def test_hrf_mtest():
 @pytest.mark.skip_if_rc_var_not_set("datadir.hrf")
 @pytest.mark.skip_if_rc_var_not_set("datadir.iostar")
 def test_hrf_covd():
-    from deepdraw.binseg.configs.datasets.hrf.covd import dataset
+    from deepdraw.configs.datasets.hrf.covd import dataset
 
     assert len(dataset) == 6
 
-    from deepdraw.binseg.configs.datasets.hrf.default import dataset as baseline
+    from deepdraw.configs.datasets.hrf.default import dataset as baseline
 
     assert dataset["train"] == dataset["__valid__"]
     assert dataset["test"] == baseline["test"]
@@ -479,7 +479,7 @@ def test_iostar():
 
     for m in ("vessel", "optic_disc"):
         d = importlib.import_module(
-            f"deepdraw.binseg.configs.datasets.iostar.{m}", package=__name__
+            f"deepdraw.configs.datasets.iostar.{m}", package=__name__
         ).dataset
         assert len(d) == 4
         _check_subset(d["__train__"], 20, 1024, 1024)
@@ -488,14 +488,14 @@ def test_iostar():
 
     for m in ("vessel_768", "optic_disc_768"):
         d = importlib.import_module(
-            f"deepdraw.binseg.configs.datasets.iostar.{m}", package=__name__
+            f"deepdraw.configs.datasets.iostar.{m}", package=__name__
         ).dataset
         assert len(d) == 4
         _check_subset(d["__train__"], 20, 768, 768)
         _check_subset(d["train"], 20, 768, 768)
         _check_subset(d["test"], 10, 768, 768)
 
-    from deepdraw.binseg.configs.datasets.iostar.optic_disc_512 import dataset
+    from deepdraw.configs.datasets.iostar.optic_disc_512 import dataset
 
     assert len(dataset) == 4
     _check_subset(dataset["__train__"], 20, 512, 512)
@@ -508,11 +508,11 @@ def test_iostar():
 @pytest.mark.skip_if_rc_var_not_set("datadir.hrf")
 @pytest.mark.skip_if_rc_var_not_set("datadir.iostar")
 def test_iostar_mtest():
-    from deepdraw.binseg.configs.datasets.iostar.vessel_mtest import dataset
+    from deepdraw.configs.datasets.iostar.vessel_mtest import dataset
 
     assert len(dataset) == 10
 
-    from deepdraw.binseg.configs.datasets.iostar.vessel import (
+    from deepdraw.configs.datasets.iostar.vessel import (
         dataset as baseline,
     )
 
@@ -538,11 +538,11 @@ def test_iostar_mtest():
 @pytest.mark.skip_if_rc_var_not_set("datadir.hrf")
 @pytest.mark.skip_if_rc_var_not_set("datadir.iostar")
 def test_iostar_covd():
-    from deepdraw.binseg.configs.datasets.iostar.covd import dataset
+    from deepdraw.configs.datasets.iostar.covd import dataset
 
     assert len(dataset) == 4
 
-    from deepdraw.binseg.configs.datasets.iostar.vessel import (
+    from deepdraw.configs.datasets.iostar.vessel import (
         dataset as baseline,
     )
 
@@ -581,7 +581,7 @@ def test_refuge():
 
     for m in ("disc", "cup"):
         d = importlib.import_module(
-            f"deepdraw.binseg.configs.datasets.refuge.{m}", package=__name__
+            f"deepdraw.configs.datasets.refuge.{m}", package=__name__
         ).dataset
         assert len(d) == 5
         _check_subset(d["__train__"], 400, 1632, 1632)
@@ -591,7 +591,7 @@ def test_refuge():
 
     for m in ("disc_512", "cup_512"):
         d = importlib.import_module(
-            f"deepdraw.binseg.configs.datasets.refuge.{m}", package=__name__
+            f"deepdraw.configs.datasets.refuge.{m}", package=__name__
         ).dataset
         assert len(d) == 5
         _check_subset(d["__train__"], 400, 512, 512)
@@ -601,7 +601,7 @@ def test_refuge():
 
     for m in ("disc_768", "cup_768"):
         d = importlib.import_module(
-            f"deepdraw.binseg.configs.datasets.refuge.{m}", package=__name__
+            f"deepdraw.configs.datasets.refuge.{m}", package=__name__
         ).dataset
         assert len(d) == 5
         _check_subset(d["__train__"], 400, 768, 768)
@@ -626,7 +626,7 @@ def test_drishtigs1():
 
     for m in ("disc_all", "cup_all", "disc_any", "cup_any"):
         d = importlib.import_module(
-            f"deepdraw.binseg.configs.datasets.drishtigs1.{m}", package=__name__
+            f"deepdraw.configs.datasets.drishtigs1.{m}", package=__name__
         ).dataset
         assert len(d) == 4
         _check_subset(d["__train__"], 50, 1760, 2048)
@@ -635,7 +635,7 @@ def test_drishtigs1():
 
     for m in ("disc_all_512", "cup_all_512"):
         d = importlib.import_module(
-            f"deepdraw.binseg.configs.datasets.drishtigs1.{m}", package=__name__
+            f"deepdraw.configs.datasets.drishtigs1.{m}", package=__name__
         ).dataset
         assert len(d) == 4
         _check_subset(d["__train__"], 50, 512, 512)
@@ -643,7 +643,7 @@ def test_drishtigs1():
         _check_subset(d["test"], 51, 512, 512)
     for m in ("disc_all_768", "cup_all_768"):
         d = importlib.import_module(
-            f"deepdraw.binseg.configs.datasets.drishtigs1.{m}", package=__name__
+            f"deepdraw.configs.datasets.drishtigs1.{m}", package=__name__
         ).dataset
         assert len(d) == 4
         _check_subset(d["__train__"], 50, 768, 768)
@@ -667,7 +667,7 @@ def test_rimoner3():
 
     for m in ("disc_exp1", "cup_exp1", "disc_exp2", "cup_exp2"):
         d = importlib.import_module(
-            f"deepdraw.binseg.configs.datasets.rimoner3.{m}", package=__name__
+            f"deepdraw.configs.datasets.rimoner3.{m}", package=__name__
         ).dataset
         assert len(d) == 4
         _check_subset(d["__train__"], 99, 1440, 1088)
@@ -676,7 +676,7 @@ def test_rimoner3():
 
     for m in ("disc_exp1_512", "cup_exp1_512"):
         d = importlib.import_module(
-            f"deepdraw.binseg.configs.datasets.rimoner3.{m}", package=__name__
+            f"deepdraw.configs.datasets.rimoner3.{m}", package=__name__
         ).dataset
         assert len(d) == 4
         _check_subset(d["__train__"], 99, 512, 512)
@@ -685,7 +685,7 @@ def test_rimoner3():
 
     for m in ("disc_exp1_768", "cup_exp1_768"):
         d = importlib.import_module(
-            f"deepdraw.binseg.configs.datasets.rimoner3.{m}", package=__name__
+            f"deepdraw.configs.datasets.rimoner3.{m}", package=__name__
         ).dataset
         assert len(d) == 4
         _check_subset(d["__train__"], 99, 768, 768)
@@ -709,7 +709,7 @@ def test_drionsdb():
 
     for m in ("expert1", "expert2"):
         d = importlib.import_module(
-            f"deepdraw.binseg.configs.datasets.drionsdb.{m}", package=__name__
+            f"deepdraw.configs.datasets.drionsdb.{m}", package=__name__
         ).dataset
         assert len(d) == 4
         _check_subset(d["__train__"], 60, 416, 608)
@@ -718,7 +718,7 @@ def test_drionsdb():
 
     for m in ("expert1_512", "expert2_512"):
         d = importlib.import_module(
-            f"deepdraw.binseg.configs.datasets.drionsdb.{m}", package=__name__
+            f"deepdraw.configs.datasets.drionsdb.{m}", package=__name__
         ).dataset
         assert len(d) == 4
         _check_subset(d["__train__"], 60, 512, 512)
@@ -727,7 +727,7 @@ def test_drionsdb():
 
     for m in ("expert1_768", "expert2_768"):
         d = importlib.import_module(
-            f"deepdraw.binseg.configs.datasets.drionsdb.{m}", package=__name__
+            f"deepdraw.configs.datasets.drionsdb.{m}", package=__name__
         ).dataset
         assert len(d) == 4
         _check_subset(d["__train__"], 60, 768, 768)
@@ -752,7 +752,7 @@ def test_combined_vessels():
             assert s[1].max() <= 1.0
             assert s[1].min() >= 0.0
 
-    from deepdraw.binseg.configs.datasets.combined.vessel import dataset
+    from deepdraw.configs.datasets.combined.vessel import dataset
 
     assert len(dataset) == 4
     _check_subset(dataset["__train__"], 73, 768, 768)

@@ -109,7 +109,7 @@ def pytest_runtest_setup(item):
     The test is run if this function returns ``None``.  To skip a test,
     call ``pytest.skip()``, specifying a reason.
     """
-    from deepdraw.binseg.utils.rc import load_rc
+    from deepdraw.utils.rc import load_rc
 
     rc = load_rc()
 
@@ -132,7 +132,7 @@ def pytest_runtest_setup(item):
 
 
 def rc_variable_set(name):
-    from deepdraw.binseg.utils.rc import load_rc
+    from deepdraw.utils.rc import load_rc
 
     rc = load_rc()
     pytest.mark.skipif(
@@ -150,7 +150,7 @@ def pytest_sessionstart(session: pytest.Session) -> None:
     """Presets the session start to ensure the STARE dataset is always
     available."""
 
-    from deepdraw.binseg.utils.rc import load_rc
+    from deepdraw.utils.rc import load_rc
 
     rc = load_rc()
 

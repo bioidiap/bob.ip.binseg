@@ -13,7 +13,7 @@ import pkg_resources
 import torch
 import torchvision.transforms.functional
 
-from deepdraw.binseg.data.transforms import (
+from deepdraw.data.transforms import (
     CenterCrop,
     ColorJitter,
     Compose,

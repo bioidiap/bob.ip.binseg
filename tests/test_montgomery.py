@@ -11,7 +11,7 @@ from . import count_bw
 
 
 def test_protocol_consistency():
-    from deepdraw.binseg.data.montgomery import dataset
+    from deepdraw.data.montgomery import dataset
 
     subset = dataset.subsets("default")
     assert len(subset) == 3
@@ -34,7 +34,7 @@ def test_protocol_consistency():
 
 @pytest.mark.skip_if_rc_var_not_set("datadir.montgomery")
 def test_loading():
-    from deepdraw.binseg.data.montgomery import dataset
+    from deepdraw.data.montgomery import dataset
 
     image_size_1 = (4892, 4020)
     image_size_2 = (4020, 4892)
@@ -90,6 +90,6 @@ def test_loading():
 
 @pytest.mark.skip_if_rc_var_not_set("datadir.montgomery")
 def test_check():
-    from deepdraw.binseg.data.montgomery import dataset
+    from deepdraw.data.montgomery import dataset
 
     assert dataset.check() == 0

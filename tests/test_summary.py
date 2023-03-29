@@ -4,12 +4,12 @@
 
 import unittest
 
-from deepdraw.binseg.models.driu import driu
-from deepdraw.binseg.models.driu_od import driu_od
-from deepdraw.binseg.models.hed import hed
-from deepdraw.binseg.models.resunet import resunet50
-from deepdraw.binseg.models.unet import unet
-from deepdraw.binseg.utils.summary import summary
+from deepdraw.models.driu import driu
+from deepdraw.models.driu_od import driu_od
+from deepdraw.models.hed import hed
+from deepdraw.models.resunet import resunet50
+from deepdraw.models.unet import unet
+from deepdraw.utils.summary import summary
 
 
 class Tester(unittest.TestCase):

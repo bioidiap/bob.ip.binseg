@@ -27,7 +27,7 @@ Inference
 In inference (or prediction) mode, we input data, the trained model, and output
 a CSV file containing the prediction outputs for every input image.
 
-To run inference, use the sub-command :ref:`predict <deepdraw.binseg.cli>` to run
+To run inference, use the sub-command :ref:`predict <deepdraw.cli>` to run
 prediction on an existing dataset:
 
 .. code:: sh
@@ -36,7 +36,7 @@ prediction on an existing dataset:
 
 
 Replace ``<model>`` and ``<dataset>`` by the appropriate :ref:`configuration
-files <deepdraw.binseg.config>`.  Replace ``<path/to/model.pth>`` to a path leading to
+files <deepdraw.config>`.  Replace ``<path/to/model.pth>`` to a path leading to
 the pre-trained model.
 
 
@@ -45,7 +45,7 @@ Evaluation
 
 In evaluation, we input a dataset and predictions to generate performance
 summaries that help analysis of a trained model.  Evaluation is done using the
-:ref:`evaluate command <deepdraw.binseg.cli>` followed by the model and the annotated
+:ref:`evaluate command <deepdraw.cli>` followed by the model and the annotated
 dataset configuration, and the path to the pretrained weights via the
 ``--weight`` argument.
 
@@ -62,7 +62,7 @@ Comparing Systems
 -----------------
 
 To compare multiple systems together and generate combined plots and tables,
-use the :ref:`compare command <deepdraw.binseg.cli>`.  Use ``--help`` for a quick
+use the :ref:`compare command <deepdraw.cli>`.  Use ``--help`` for a quick
 guide.
 
 .. code:: sh

@@ -26,15 +26,15 @@
      - 256 x 256
      - 256 x 256
      - 256 x 256
-   * - :py:mod:`montgomery <deepdraw.binseg.configs.datasets.montgomery.default>` (`model <baselines_lwnet_montgomery_>`_)
+   * - :py:mod:`montgomery <deepdraw.configs.datasets.montgomery.default>` (`model <baselines_lwnet_montgomery_>`_)
      - **0.978**
      - 0.969
      - 0.964
-   * - :py:mod:`jsrt <deepdraw.binseg.configs.datasets.jsrt.default>` (`model <baselines_lwnet_jsrt_>`_)
+   * - :py:mod:`jsrt <deepdraw.configs.datasets.jsrt.default>` (`model <baselines_lwnet_jsrt_>`_)
      - 0.967
      - **0.979**
      - 0.963
-   * - :py:mod:`shenzhen <deepdraw.binseg.configs.datasets.shenzhen.default>` (`model <baselines_lwnet_shenzhen_>`_)
+   * - :py:mod:`shenzhen <deepdraw.configs.datasets.shenzhen.default>` (`model <baselines_lwnet_shenzhen_>`_)
      - 0.920
      - 0.939
      - **0.950**

@@ -19,11 +19,11 @@ Data Manipulation
 .. autosummary::
    :toctree: api/data
 
-   deepdraw.binseg.data.dataset
+   deepdraw.data.dataset
    deepdraw.common.data.loader
    deepdraw.common.data.sample
-   deepdraw.binseg.data.utils
-   deepdraw.binseg.data.transforms
+   deepdraw.data.utils
+   deepdraw.data.transforms
 
 
 Datasets
@@ -35,16 +35,16 @@ Retinography
 .. autosummary::
    :toctree: api/dataset
 
-   deepdraw.binseg.data.drive
-   deepdraw.binseg.data.stare
-   deepdraw.binseg.data.chasedb1
-   deepdraw.binseg.data.hrf
-   deepdraw.binseg.data.iostar
-   deepdraw.binseg.data.refuge
-   deepdraw.binseg.data.drishtigs1
-   deepdraw.binseg.data.rimoner3
-   deepdraw.binseg.data.drionsdb
-   deepdraw.binseg.data.drhagis
+   deepdraw.data.drive
+   deepdraw.data.stare
+   deepdraw.data.chasedb1
+   deepdraw.data.hrf
+   deepdraw.data.iostar
+   deepdraw.data.refuge
+   deepdraw.data.drishtigs1
+   deepdraw.data.rimoner3
+   deepdraw.data.drionsdb
+   deepdraw.data.drhagis
 
 
 Chest X-Ray
@@ -53,10 +53,10 @@ Chest X-Ray
 .. autosummary::
    :toctree: api/dataset
 
-   deepdraw.binseg.data.montgomery
-   deepdraw.binseg.data.jsrt
-   deepdraw.binseg.data.shenzhen
-   deepdraw.binseg.data.cxr8
+   deepdraw.data.montgomery
+   deepdraw.data.jsrt
+   deepdraw.data.shenzhen
+   deepdraw.data.cxr8
 
 
 Engines
@@ -65,11 +65,11 @@ Engines
 .. autosummary::
    :toctree: api/engine
 
-   deepdraw.binseg.engine
-   deepdraw.binseg.engine.trainer
-   deepdraw.binseg.engine.predictor
-   deepdraw.binseg.engine.evaluator
-   deepdraw.binseg.engine.adabound
+   deepdraw.engine
+   deepdraw.engine.trainer
+   deepdraw.engine.predictor
+   deepdraw.engine.evaluator
+   deepdraw.engine.adabound
 
 
 Neural Network Models
@@ -78,23 +78,23 @@ Neural Network Models
 .. autosummary::
    :toctree: api/models
 
-   deepdraw.binseg.models
-   deepdraw.binseg.models.backbones
-   deepdraw.binseg.models.backbones.mobilenetv2
-   deepdraw.binseg.models.backbones.resnet
-   deepdraw.binseg.models.backbones.vgg
-   deepdraw.binseg.models.normalizer
-   deepdraw.binseg.models.driu
-   deepdraw.binseg.models.driu_bn
-   deepdraw.binseg.models.driu_od
-   deepdraw.binseg.models.driu_pix
-   deepdraw.binseg.models.hed
-   deepdraw.binseg.models.m2unet
-   deepdraw.binseg.models.resunet
-   deepdraw.binseg.models.unet
-   deepdraw.binseg.models.lwnet
-   deepdraw.binseg.models.losses
-   deepdraw.binseg.models.make_layers
+   deepdraw.models
+   deepdraw.models.backbones
+   deepdraw.models.backbones.mobilenetv2
+   deepdraw.models.backbones.resnet
+   deepdraw.models.backbones.vgg
+   deepdraw.models.normalizer
+   deepdraw.models.driu
+   deepdraw.models.driu_bn
+   deepdraw.models.driu_od
+   deepdraw.models.driu_pix
+   deepdraw.models.hed
+   deepdraw.models.m2unet
+   deepdraw.models.resunet
+   deepdraw.models.unet
+   deepdraw.models.lwnet
+   deepdraw.models.losses
+   deepdraw.models.make_layers
 
 
 Toolbox

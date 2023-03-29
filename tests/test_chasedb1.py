@@ -11,7 +11,7 @@ from . import count_bw
 
 
 def test_protocol_consistency():
-    from deepdraw.binseg.data.chasedb1 import dataset
+    from deepdraw.data.chasedb1 import dataset
 
     subset = dataset.subsets("first-annotator")
     assert len(subset) == 2
@@ -42,7 +42,7 @@ def test_protocol_consistency():
 
 @pytest.mark.skip_if_rc_var_not_set("datadir.chasedb1")
 def test_loading():
-    from deepdraw.binseg.data.chasedb1 import dataset
+    from deepdraw.data.chasedb1 import dataset
 
     image_size = (999, 960)
 
@@ -118,6 +118,6 @@ def test_loading():
 
 @pytest.mark.skip_if_rc_var_not_set("datadir.chasedb1")
 def test_check():
-    from deepdraw.binseg.data.chasedb1 import dataset
+    from deepdraw.data.chasedb1 import dataset
 
     assert dataset.check() == 0
