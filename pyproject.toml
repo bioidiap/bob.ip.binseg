@@ -173,19 +173,23 @@ combined-cup = "deepdraw.binseg.configs.datasets.combined.oc"
 montgomery = "deepdraw.binseg.configs.datasets.montgomery.default"
 montgomery-gt = "deepdraw.binseg.configs.datasets.montgomery.default_gtcrop"
 montgomery-xtest = "deepdraw.binseg.configs.datasets.montgomery.xtest"
+montgomery-gt-xtest = "deepdraw.binseg.configs.datasets.montgomery.gt_xtest"
 # shenzhen - cxr
 shenzhen = "deepdraw.binseg.configs.datasets.shenzhen.default"
 shenzhen-small = "deepdraw.binseg.configs.datasets.shenzhen.default_256"
 shenzhen-gt = "deepdraw.binseg.configs.datasets.shenzhen.default_gtcrop"
 shenzhen-xtest = "deepdraw.binseg.configs.datasets.shenzhen.xtest"
+shenzhen-gt-xtest = "deepdraw.binseg.configs.datasets.shenzhen.gt_xtest"
 # jsrt - cxr
 jsrt = "deepdraw.binseg.configs.datasets.jsrt.default"
 jsrt-gt = "deepdraw.binseg.configs.datasets.jsrt.default_gtcrop"
 jsrt-xtest = "deepdraw.binseg.configs.datasets.jsrt.xtest"
+jsrt-gt-xtest = "deepdraw.binseg.configs.datasets.jsrt.gt_xtest"
 # cxr8 - cxr
 cxr8 = "deepdraw.binseg.configs.datasets.cxr8.default"
 cxr8-gt = "deepdraw.binseg.configs.datasets.cxr8.default_gtcrop"
 cxr8-xtest = "deepdraw.binseg.configs.datasets.cxr8.xtest"
+cxr8-gt-xtest = "deepdraw.binseg.configs.datasets.cxr8.gt_xtest"
 
 [project.entry-points."detect.config"]
 # models
