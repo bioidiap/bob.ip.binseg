@@ -10,9 +10,12 @@ import os
 
 import numpy
 import PIL.Image
+import PIL.ImageFile
 import skimage.exposure
 
 from .sample import DelayedSample
+
+PIL.ImageFile.LOAD_TRUNCATED_IMAGES = True
 
 
 def load_pil_raw_12bit_jsrt(path, width):
