@@ -6,7 +6,7 @@ Reference:
 from torch.optim.lr_scheduler import MultiStepLR
 
 from deepdraw.binseg.engine.adabound import AdaBound
-from deepdraw.binseg.models.losses import SemiLoss
+from deepdraw.binseg.models.losses import Semi_supervised_Loss
 from deepdraw.binseg.models.mean_teacher import mean_teacher
 
 # config
@@ -38,7 +38,7 @@ optimizer = AdaBound(
 )
 
 # criterion
-criterion = SemiLoss()
+criterion = Semi_supervised_Loss()
 
 
 # scheduler

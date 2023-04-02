@@ -43,7 +43,7 @@ def _maker_square(protocol, size):
     return mk(raw.subsets(protocol), [Pad((0, 584)), Resize((size, size))])
 
 
-def _semi_data_augmentation(protocol, size):
+def _semi_supervised_data_augmentation(protocol, size):
     from .....common.data.transforms import ColorJitter as _jitter
     from .....common.data.transforms import Compose as _compose
     from .....common.data.transforms import Gaussian_noise as _noise

@@ -265,7 +265,7 @@ class MixJacLoss(_Loss):
         return loss, ll, ul
 
 
-class SemiLoss(_Loss):
+class Semi_supervised_Loss(_Loss):
     """
 
     Parameters

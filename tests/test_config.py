@@ -118,8 +118,10 @@ def test_drive_covd():
 
 
 @pytest.mark.skip_if_rc_var_not_set("datadir.drive")
-def test_drive_semi_768():
-    from deepdraw.binseg.configs.datasets.drive.semi_768 import dataset
+def test_drive_semi_supervised_768():
+    from deepdraw.binseg.configs.datasets.drive.semi_supervised_768 import (
+        dataset,
+    )
 
     assert len(dataset) == 5
     assert dataset["__extra_valid__"] == dataset["test"]
@@ -142,7 +144,9 @@ def test_drive_semi_768():
 @pytest.mark.skip_if_rc_var_not_set("datadir.hrf")
 @pytest.mark.skip_if_rc_var_not_set("datadir.iostar")
 def test_drive_semi_x768():
-    from deepdraw.binseg.configs.datasets.drive.semi_x768 import dataset
+    from deepdraw.binseg.configs.datasets.drive.semi_supervised_supervised_x768 import (
+        dataset,
+    )
 
     assert len(dataset) == 5
     assert dataset["__extra_valid__"] == dataset["test"]

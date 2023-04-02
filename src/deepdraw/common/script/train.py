@@ -52,7 +52,7 @@ def base_train(
     validation_dataset = None
     extra_validation_datasets = []
 
-    def semi_use_dataset(dataset):
+    def semi_supervised_use_dataset(dataset):
         logger.info("Start setting semi-supervised training dataset")
         datalist = [None] * (
             ((len(dataset["__unlabeled_train__"])) + len(dataset["train"])) * 2
@@ -140,7 +140,7 @@ def base_train(
             logger.info(
                 "Found (dedicated) 'unlabeled_train' set for semi-supervised training"
             )
-            use_dataset = semi_use_dataset(dataset)["train"]
+            use_dataset = semi_supervised_use_dataset(dataset)["train"]
         elif "__train__" in dataset:
             logger.info("Found (dedicated) '__train__' set for training")
             use_dataset = dataset["__train__"]

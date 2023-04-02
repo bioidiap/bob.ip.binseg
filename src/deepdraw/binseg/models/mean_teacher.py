@@ -9,7 +9,7 @@ import torch.nn
 import torchvision.transforms as T
 
 # choose the model to be used as the initialization network
-from deepdraw.binseg.models import driu
+from deepdraw.binseg.models import unet
 
 # build Mean Teacher model
 logger = logging.getLogger(__name__)
@@ -48,25 +48,25 @@ class Mean_teacher(torch.nn.Module):
         weight,
     ):
         super().__init__()
-        self.T_model = driu.driu(pretrained_backbone=True, progress=True)
-        self.S_model = driu.driu(pretrained_backbone=True, progress=True)
+        self.T_model = unet.unet(pretrained_backbone=True, progress=True)
+        self.S_model = unet.unet(pretrained_backbone=True, progress=True)
 
         self.weight = weight
-        input_model = driu.driu()
+        input_model = unet.unet()
         if weight is None:
             logger.info("Model is not pretrained")
         else:
             # initialize the model with pretrained weights
             logger.info(f"Loading pretrained model from {weight}")
             input_model.load_state_dict(torch.load(weight), strict=False)
-        for T_param, input_param in zip(
-            self.T_model.parameters(), input_model.parameters()
-        ):
-            T_param.data.copy_(input_param.data)
-        for S_param, input_param in zip(
-            self.S_model.parameters(), input_model.parameters()
-        ):
-            S_param.data.copy_(input_param.data)
+            for T_param, input_param in zip(
+                self.T_model.parameters(), input_model.parameters()
+            ):
+                T_param.data.copy_(input_param.data)
+            for S_param, input_param in zip(
+                self.S_model.parameters(), input_model.parameters()
+            ):
+                S_param.data.copy_(input_param.data)
 
     # forward should return the output of both models
     def forward(self, x):
