@@ -15,7 +15,7 @@ from .common import save_sh_command
 
 
 @click.command(
-    entry_point_group="binseg.config",
+    entry_point_group="deepdraw.config",
     cls=ConfigCommand,
     epilog="""Examples:
 

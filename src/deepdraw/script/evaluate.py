@@ -11,8 +11,9 @@ logger = setup(__name__.split(".")[0], format="%(levelname)s: %(message)s")
 
 from ..engine.evaluator import compare_annotators, run
 
+
 @click.command(
-    entry_point_group="binseg.config",
+    entry_point_group="deepdraw.config",
     cls=ConfigCommand,
     epilog="""Examples:
 
@@ -146,7 +147,6 @@ def evaluate(
     verbose,
     **kwargs,
 ):
-    
     def _validate_threshold(t, dataset):
         """Validate the user threshold selection.
 

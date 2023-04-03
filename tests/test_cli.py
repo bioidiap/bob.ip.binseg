@@ -25,13 +25,13 @@ def _check_help(entry_point, runner):
     assert result.output.startswith("Usage:")
 
 
-def test_main_help_binseg(cli_runner):
+def test_main_help_deepdraw(cli_runner):
     from deepdraw.script.common import deepdraw
 
     _check_help(deepdraw, cli_runner)
 
 
-def test_binseg_experiment_help(cli_runner):
+def test_deepdraw_experiment_help(cli_runner):
     from deepdraw.script.experiment import experiment
 
     _check_help(experiment, cli_runner)

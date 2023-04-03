@@ -3,15 +3,15 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 import os
-import numpy
-import pandas
-import matplotlib.pyplot as plt
-from matplotlib.backends.backend_pdf import PdfPages
 
 import click
+import matplotlib.pyplot as plt
+import numpy
+import pandas
 
 from clapper.click import ConfigCommand, ResourceOption, verbosity_option
 from clapper.logging import setup
+from matplotlib.backends.backend_pdf import PdfPages
 
 logger = setup(__name__.split(".")[0], format="%(levelname)s: %(message)s")
 
@@ -133,7 +133,7 @@ def _hardware_utilisation(df, const):
 
 
 @click.command(
-    entry_point_group="binseg.config",
+    entry_point_group="deepdraw.config",
     cls=ConfigCommand,
     epilog="""Examples:
 

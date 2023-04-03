@@ -73,7 +73,7 @@ def config():
 @verbosity_option(logger=logger)
 def list(verbose) -> None:
     """Lists configuration files installed."""
-    entry_points = _retrieve_entry_points("binseg.config")
+    entry_points = _retrieve_entry_points("deepdraw.config")
     entry_point_dict = {k.name: k for k in entry_points}
 
     # all modules with configuration resources
@@ -157,7 +157,7 @@ def list(verbose) -> None:
 @verbosity_option(logger=logger)
 def describe(name, verbose) -> None:
     """Describes a specific configuration file."""
-    entry_points = _retrieve_entry_points("binseg.config")
+    entry_points = _retrieve_entry_points("deepdraw.config")
     entry_point_dict = {k.name: k for k in entry_points}
 
     for k in name:
@@ -208,7 +208,7 @@ def copy(source, destination) -> None:
     """Copy a specific configuration resource so it can be modified locally."""
     import shutil
 
-    entry_points = _retrieve_entry_points("binseg.config")
+    entry_points = _retrieve_entry_points("deepdraw.config")
     entry_point_dict = {k.name: k for k in entry_points}
 
     if source not in entry_point_dict:

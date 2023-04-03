@@ -4,9 +4,9 @@
 
 import os
 import sys
-import numpy
 
 import click
+import numpy
 
 from clapper.click import ConfigCommand, ResourceOption, verbosity_option
 from clapper.logging import setup
@@ -16,16 +16,16 @@ logger = setup(__name__.split(".")[0], format="%(levelname)s: %(message)s")
 from ..engine.evaluator import run as run_evaluation
 from ..engine.significance import (
     PERFORMANCE_FIGURES,
+    index_of_outliers,
     sliding_window_performances,
     visual_performances,
-    index_of_outliers,
     write_analysis_figures,
-    write_analysis_text
+    write_analysis_text,
 )
 
 
 @click.command(
-    entry_point_group="binseg.config",
+    entry_point_group="deepdraw.config",
     cls=ConfigCommand,
     epilog="""Examples:
 
@@ -232,7 +232,7 @@ def significance(
     models operating on the same dataset, and subject to a priori
     threshold tunning.
     """
-    
+
     def _validate_threshold(t, dataset):
         """Validate the user threshold selection.
 
@@ -652,4 +652,3 @@ def significance(
         with open(fname, "w") as f:
             write_analysis_text(names, da, db, f)
     write_analysis_text(names, da, db, sys.stdout)
-

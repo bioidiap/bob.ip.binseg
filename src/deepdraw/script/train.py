@@ -2,27 +2,25 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-import sys
 import multiprocessing
-
-import torch
-from torch.utils.data import DataLoader
+import sys
 
 import click
+import torch
 
 from clapper.click import ConfigCommand, ResourceOption, verbosity_option
 from clapper.logging import setup
+from torch.utils.data import DataLoader
 
 logger = setup(__name__.split(".")[0], format="%(levelname)s: %(message)s")
 
-from .common import set_seeds, setup_pytorch_device
-
-from ..utils.checkpointer import Checkpointer
 from ..engine.trainer import run
+from ..utils.checkpointer import Checkpointer
+from .common import set_seeds, setup_pytorch_device
 
 
 @click.command(
-    entry_point_group="binseg.config",
+    entry_point_group="deepdraw.config",
     cls=ConfigCommand,
     epilog="""Examples:
 

@@ -8,7 +8,7 @@
 ..
 .. SPDX-License-Identifier: GPL-3.0-or-later
 
-.. _deepdraw.binseg.config:
+.. _deepdraw.deepdraw.config:
 
 Preset Configurations
 ---------------------
@@ -37,7 +37,7 @@ Models
 
 
 
-.. _deepdraw.binseg.configs.datasets:
+.. _deepdraw.deepdraw.configs.datasets:
 
 Datasets
 ========

@@ -4,6 +4,7 @@
 
 import os
 import shutil
+
 import click
 
 from clapper.click import ConfigCommand, ResourceOption, verbosity_option
@@ -15,7 +16,7 @@ from .common import save_sh_command
 
 
 @click.command(
-    entry_point_group="binseg.config",
+    entry_point_group="deepdraw.config",
     cls=ConfigCommand,
     epilog="""Examples:
 
@@ -337,7 +338,7 @@ def experiment(
     overlay analysis (false positives, negatives and true positives overprinted
     on the original image) also follows the logic above.
     """
-    
+
     command_sh = os.path.join(output_folder, "command.sh")
     if os.path.exists(command_sh):
         backup = command_sh + "~"
