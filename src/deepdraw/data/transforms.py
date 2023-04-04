@@ -17,7 +17,6 @@ import random
 import numpy
 import PIL.Image
 import PIL.ImageOps
-import torch
 import torchvision.transforms
 import torchvision.transforms.functional
 
