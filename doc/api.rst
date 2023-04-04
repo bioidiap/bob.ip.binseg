@@ -2,7 +2,7 @@
 ..
 .. SPDX-License-Identifier: GPL-3.0-or-later
 
-.. _deepdraw.binseg.api:
+.. _deepdraw.api:
 
 =====================================
  Application Program Interface (API)
@@ -20,8 +20,8 @@ Data Manipulation
    :toctree: api/data
 
    deepdraw.data.dataset
-   deepdraw.common.data.loader
-   deepdraw.common.data.sample
+   deepdraw.data.loader
+   deepdraw.data.sample
    deepdraw.data.utils
    deepdraw.data.transforms
 
@@ -103,12 +103,12 @@ Toolbox
 .. autosummary::
    :toctree: api/utils
 
-   deepdraw.common.utils
-   deepdraw.common.utils.checkpointer
-   deepdraw.common.utils.measure
-   deepdraw.common.utils.plot
-   deepdraw.common.utils.table
-   deepdraw.common.utils.summary
+   deepdraw.utils
+   deepdraw.utils.checkpointer
+   deepdraw.utils.measure
+   deepdraw.utils.plot
+   deepdraw.utils.table
+   deepdraw.utils.summary
 
 
 .. include:: links.rst

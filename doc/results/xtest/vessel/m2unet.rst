@@ -8,7 +8,7 @@
 ..
 .. SPDX-License-Identifier: GPL-3.0-or-later
 
-.. _deepdraw.binseg.results.xtest.vessel.m2unet:
+.. _deepdraw.results.xtest.vessel.m2unet:
 
 ================================
  M2U-Net on Vessel Segmentation

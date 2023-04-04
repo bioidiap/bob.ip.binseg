@@ -8,7 +8,7 @@
 ..
 .. SPDX-License-Identifier: GPL-3.0-or-later
 
-.. _deepdraw.binseg.results.xtest.lung.lwnet:
+.. _deepdraw.results.xtest.lung.lwnet:
 
 ===================================
  Little W-Net on Lung Segmentation

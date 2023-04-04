@@ -8,7 +8,7 @@
 ..
 .. SPDX-License-Identifier: GPL-3.0-or-later
 
-.. _deepdraw.binseg.results.xtest.lung.unet:
+.. _deepdraw.results.xtest.lung.unet:
 
 ============================
  UNet on Lung Segmentation

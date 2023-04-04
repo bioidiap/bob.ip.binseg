@@ -8,7 +8,7 @@
 ..
 .. SPDX-License-Identifier: GPL-3.0-or-later
 
-.. _deepdraw.binseg.acknowledgements:
+.. _deepdraw.acknowledgements:
 
 ==================
  Acknowledgements

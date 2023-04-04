@@ -8,7 +8,7 @@
 ..
 .. SPDX-License-Identifier: GPL-3.0-or-later
 
-.. _deepdraw.binseg.results.baselines.lung:
+.. _deepdraw.results.baselines.lung:
 
 =============================================
  Lung Segmentation from Frontal Chest X-Rays

@@ -8,7 +8,7 @@
 ..
 .. SPDX-License-Identifier: GPL-3.0-or-later
 
-.. _deepdraw.binseg.results.xtest.cup.hed:
+.. _deepdraw.results.xtest.cup.hed:
 
 ================================
  HED on Optic-cup Segmentation

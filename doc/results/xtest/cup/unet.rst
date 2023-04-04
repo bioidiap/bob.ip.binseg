@@ -8,7 +8,7 @@
 ..
 .. SPDX-License-Identifier: GPL-3.0-or-later
 
-.. _deepdraw.binseg.results.xtest.cup.unet:
+.. _deepdraw.results.xtest.cup.unet:
 
 ================================
  UNET on Optic-cup Segmentation

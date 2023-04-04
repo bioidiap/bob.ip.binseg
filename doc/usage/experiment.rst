@@ -8,7 +8,7 @@
 ..
 .. SPDX-License-Identifier: GPL-3.0-or-later
 
-.. _deepdraw.binseg.experiment:
+.. _deepdraw.experiment:
 
 ==============================
  Running complete experiments
@@ -67,7 +67,7 @@ pre-processing pipeline.  You could do the following:
    $ binseg train -vv <model> ./my_drive_remix.py
 
 
-.. _deepdraw.binseg.gridtk-tip:
+.. _deepdraw.gridtk-tip:
 
 Running at Idiap's SGE grid
 ===========================

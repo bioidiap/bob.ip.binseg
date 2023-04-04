@@ -8,7 +8,7 @@
 ..
 .. SPDX-License-Identifier: GPL-3.0-or-later
 
-.. _deepdraw.binseg.results.xtest.disc.m2unet:
+.. _deepdraw.results.xtest.disc.m2unet:
 
 ===================================
  M2UNET on Optic-disc Segmentation

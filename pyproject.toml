@@ -76,7 +76,7 @@ test = [
 [project.scripts]
 deepdraw = "deepdraw.script.cli:cli"
 
-[project.entry-points."binseg.config"]
+[project.entry-points."deepdraw.config"]
 # models
 driu = "deepdraw.configs.models.driu"
 driu-bn = "deepdraw.configs.models.driu_bn"

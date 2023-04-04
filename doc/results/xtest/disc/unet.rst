@@ -8,7 +8,7 @@
 ..
 .. SPDX-License-Identifier: GPL-3.0-or-later
 
-.. _deepdraw.binseg.results.xtest.disc.unet:
+.. _deepdraw.results.xtest.disc.unet:
 
 =================================
  UNET on Optic-disc Segmentation

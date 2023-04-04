@@ -127,7 +127,7 @@ class SampleListDataset(torch.utils.data.Dataset):
     ----------
 
     samples : list
-        A list of :py:class:`deepdraw.common.data.sample.Sample` objects
+        A list of :py:class:`deepdraw.data.sample.Sample` objects
 
     transforms : :py:class:`list`, Optional
         a list of transformations to be applied to **both** image and
@@ -216,7 +216,6 @@ class SampleListDataset(torch.utils.data.Dataset):
                 retval = self._transforms(*retval)
 
             return [item.key] + retval
-
 
 
 # NEVER USED IN THE PACKAGE

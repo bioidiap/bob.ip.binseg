@@ -8,7 +8,7 @@
 ..
 .. SPDX-License-Identifier: GPL-3.0-or-later
 
-.. _deepdraw.binseg.results.xtest.vessel.unet:
+.. _deepdraw.results.xtest.vessel.unet:
 
 =============================
  UNET on Vessel Segmentation

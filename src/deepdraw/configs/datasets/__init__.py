@@ -107,7 +107,7 @@ def make_dataset(subsets, transforms):
     :py:meth:`deepdraw.data.dataset.JSONDataset.subsets`,  or
     :py:meth:`deepdraw.data.dataset.CSVDataset.subsets`, mapping protocol
     names (such as ``train``, ``dev`` and ``test``) to
-    :py:class:`deepdraw.common.data.sample.DelayedSample` lists, and a set of
+    :py:class:`deepdraw.data.sample.DelayedSample` lists, and a set of
     transforms, and returns a dictionary applying
     :py:class:`deepdraw.data.utils.SampleListDataset` to these
     lists, and our standard data augmentation if a ``train`` set exists.

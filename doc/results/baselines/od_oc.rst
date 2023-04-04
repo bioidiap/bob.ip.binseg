@@ -8,7 +8,7 @@
 ..
 .. SPDX-License-Identifier: GPL-3.0-or-later
 
-.. _deepdraw.binseg.results.baselines.od_oc:
+.. _deepdraw.results.baselines.od_oc:
 
 ========================================================
  Optic disc and Optic cup Segmentation for Retinography

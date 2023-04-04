@@ -8,7 +8,7 @@
 ..
 .. SPDX-License-Identifier: GPL-3.0-or-later
 
-.. _deepdraw.binseg.results.cod.vessel:
+.. _deepdraw.results.cod.vessel:
 
 ==============================================
  Retinal Vessel Segmentation for Retinography

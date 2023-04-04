@@ -8,7 +8,7 @@
 ..
 .. SPDX-License-Identifier: GPL-3.0-or-later
 
-.. _deepdraw.binseg.results.xtest.vessel.driu:
+.. _deepdraw.results.xtest.vessel.driu:
 
 =============================
  DRIU on Vessel Segmentation

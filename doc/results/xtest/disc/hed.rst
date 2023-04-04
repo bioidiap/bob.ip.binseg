@@ -8,7 +8,7 @@
 ..
 .. SPDX-License-Identifier: GPL-3.0-or-later
 
-.. _deepdraw.binseg.results.xtest.disc.hed:
+.. _deepdraw.results.xtest.disc.hed:
 
 ================================
  HED on Optic-disc Segmentation
