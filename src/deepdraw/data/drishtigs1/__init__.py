@@ -28,8 +28,8 @@ import os
 import pkg_resources
 
 from ...data.dataset import JSONDataset
-from ..loader import load_pil_1, load_pil_rgb, make_delayed
 from ...utils.rc import load_rc
+from ..loader import load_pil_1, load_pil_rgb, make_delayed
 
 _protocols = {
     "optic-disc-all": pkg_resources.resource_filename(

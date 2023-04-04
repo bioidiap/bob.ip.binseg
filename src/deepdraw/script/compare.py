@@ -3,15 +3,14 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 import os
-import pandas
-
-from tqdm import tqdm
 
 import click
+import pandas
 import tabulate
 
 from clapper.click import verbosity_option
 from clapper.logging import setup
+from tqdm import tqdm
 
 logger = setup(__name__.split(".")[0], format="%(levelname)s: %(message)s")
 
@@ -102,7 +101,6 @@ def compare(
     verbose,
     **kwargs,
 ):
-    
     def _validate_threshold(t, dataset):
         """Validate the user threshold selection.
 
@@ -221,7 +219,7 @@ def compare(
 
     # load all data measures
     data = _load(data, threshold=threshold)
-    
+
     from ..utils.plot import precision_recall_f1iso
     from ..utils.table import performance_table
 

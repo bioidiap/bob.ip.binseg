@@ -28,9 +28,9 @@ import os
 import pkg_resources
 
 from ...data.dataset import JSONDataset
+from ...utils.rc import load_rc
 from ..loader import load_pil_1, load_pil_rgb, make_delayed
 from ..utils import invert_mode1_image, subtract_mode1_images
-from ...utils.rc import load_rc
 
 _protocols = [
     pkg_resources.resource_filename(__name__, "vessel.json"),

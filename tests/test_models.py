@@ -100,9 +100,7 @@ def test_hed():
 
 
 def test_m2unet():
-    from deepdraw.models.backbones.mobilenetv2 import (
-        MobileNetV24Segmentation,
-    )
+    from deepdraw.models.backbones.mobilenetv2 import MobileNetV24Segmentation
     from deepdraw.models.m2unet import M2UNet, m2unet
 
     model = m2unet(pretrained_backbone=True, progress=True)

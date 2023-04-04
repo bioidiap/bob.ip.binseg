@@ -4,14 +4,15 @@
 
 
 def _maker(protocol, n):
-    from ....data.transforms import Resize, ShrinkIntoSquare
     from ....data.shenzhen import dataset as raw
+    from ....data.transforms import Resize, ShrinkIntoSquare
     from .. import make_dataset as mk
 
     return mk(raw.subsets(protocol), [ShrinkIntoSquare(), Resize((n, n))])
 
 
 def _maker_augmented(protocol, n):
+    from ....data.shenzhen import dataset as raw
     from ....data.transforms import ColorJitter as _jitter
     from ....data.transforms import Compose as _compose
     from ....data.transforms import GaussianBlur as _blur
@@ -19,7 +20,6 @@ def _maker_augmented(protocol, n):
     from ....data.transforms import RandomRotation as _rotation
     from ....data.transforms import Resize as _resize
     from ....data.transforms import ShrinkIntoSquare as _shrinkintosq
-    from ....data.shenzhen import dataset as raw
     from .. import make_subset
 
     def mk_aug_subset(subsets, train_transforms, all_transforms):
@@ -60,6 +60,7 @@ def _maker_augmented(protocol, n):
 
 
 def _maker_augmented_gt_box(protocol, n):
+    from ....data.shenzhen import dataset as raw
     from ....data.transforms import ColorJitter as _jitter
     from ....data.transforms import Compose as _compose
     from ....data.transforms import GaussianBlur as _blur
@@ -68,7 +69,6 @@ def _maker_augmented_gt_box(protocol, n):
     from ....data.transforms import RandomRotation as _rotation
     from ....data.transforms import Resize as _resize
     from ....data.transforms import ShrinkIntoSquare as _shrinkintosq
-    from ....data.shenzhen import dataset as raw
     from .. import make_subset
 
     def mk_aug_subset(subsets, train_transforms, all_transforms):

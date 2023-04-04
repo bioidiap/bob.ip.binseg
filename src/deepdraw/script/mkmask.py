@@ -6,11 +6,10 @@
 import glob
 import os
 
+import click
 import numpy
 import skimage.io
 import skimage.morphology
-
-import click
 
 from clapper.click import ConfigCommand, ResourceOption, verbosity_option
 from clapper.logging import setup
@@ -87,7 +86,7 @@ from ..utils.rc import load_rc
 @click.pass_context
 def mkmask(ctx, dataset, globs, threshold, output_folder, verbose, **kwargs):
     """Commands for generating masks for images in a dataset."""
-    
+
     def threshold_and_closing(input_path, t, width=5):
         """Creates a "rough" mask from the input image, returns binary
         equivalent.

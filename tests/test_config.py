@@ -66,9 +66,7 @@ def test_drive_mtest():
 
     assert len(dataset) == 10
 
-    from deepdraw.configs.datasets.drive.default import (
-        dataset as baseline,
-    )
+    from deepdraw.configs.datasets.drive.default import dataset as baseline
 
     assert dataset["train"] == baseline["train"]
     assert dataset["test"] == baseline["test"]
@@ -96,9 +94,7 @@ def test_drive_covd():
 
     assert len(dataset) == 4
 
-    from deepdraw.configs.datasets.drive.default import (
-        dataset as baseline,
-    )
+    from deepdraw.configs.datasets.drive.default import dataset as baseline
 
     assert dataset["train"] == dataset["__valid__"]
     assert dataset["test"] == baseline["test"]
@@ -258,9 +254,7 @@ def test_chasedb1():
         _check_subset(d["train"], 8, 960, 960)
         _check_subset(d["test"], 20, 960, 960)
 
-    from deepdraw.configs.datasets.chasedb1.first_annotator_768 import (
-        dataset,
-    )
+    from deepdraw.configs.datasets.chasedb1.first_annotator_768 import dataset
 
     assert len(dataset) == 4
     _check_subset(dataset["__train__"], 8, 768, 768)
@@ -268,9 +262,7 @@ def test_chasedb1():
     _check_subset(dataset["train"], 8, 768, 768)
     _check_subset(dataset["test"], 20, 768, 768)
 
-    from deepdraw.configs.datasets.chasedb1.first_annotator_1024 import (
-        dataset,
-    )
+    from deepdraw.configs.datasets.chasedb1.first_annotator_1024 import dataset
 
     assert len(dataset) == 4
     _check_subset(dataset["__train__"], 8, 1024, 1024)
@@ -512,9 +504,7 @@ def test_iostar_mtest():
 
     assert len(dataset) == 10
 
-    from deepdraw.configs.datasets.iostar.vessel import (
-        dataset as baseline,
-    )
+    from deepdraw.configs.datasets.iostar.vessel import dataset as baseline
 
     assert dataset["train"] == baseline["train"]
     assert dataset["test"] == baseline["test"]
@@ -542,9 +532,7 @@ def test_iostar_covd():
 
     assert len(dataset) == 4
 
-    from deepdraw.configs.datasets.iostar.vessel import (
-        dataset as baseline,
-    )
+    from deepdraw.configs.datasets.iostar.vessel import dataset as baseline
 
     assert dataset["train"] == dataset["__valid__"]
     assert dataset["test"] == baseline["test"]

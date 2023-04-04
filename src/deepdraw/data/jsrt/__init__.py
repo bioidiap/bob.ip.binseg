@@ -27,12 +27,8 @@ import pkg_resources
 from PIL import Image
 
 from ...data.dataset import JSONDataset
-from ..loader import (
-    load_pil_1,
-    load_pil_raw_12bit_jsrt,
-    make_delayed,
-)
 from ...utils.rc import load_rc
+from ..loader import load_pil_1, load_pil_raw_12bit_jsrt, make_delayed
 
 _protocols = [
     pkg_resources.resource_filename(__name__, "default.json"),

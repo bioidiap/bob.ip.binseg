@@ -4,16 +4,16 @@
 
 
 def _maker(protocol):
-    from ....data.transforms import Pad
     from ....data.stare import dataset as raw
+    from ....data.transforms import Pad
     from .. import make_dataset as mk
 
     return mk(raw.subsets(protocol), [Pad((2, 1, 2, 2))])
 
 
 def _maker_square(protocol, size):
-    from ....data.transforms import Pad, Resize
     from ....data.stare import dataset as raw
+    from ....data.transforms import Pad, Resize
     from .. import make_dataset as mk
 
     return mk(

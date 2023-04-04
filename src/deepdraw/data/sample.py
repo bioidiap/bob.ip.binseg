@@ -83,7 +83,6 @@ class Sample:
         _copy_attributes(self, kwargs)
 
 
-
 # NEVER USED ANYWHERE IN THE PACKAGE
 # Should it be kept?
 class SampleSet(MutableSequence):

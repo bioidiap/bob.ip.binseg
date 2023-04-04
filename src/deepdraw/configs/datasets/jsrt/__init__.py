@@ -4,21 +4,21 @@
 
 
 def _maker(protocol):
-    from ....data.transforms import Resize
     from ....data.jsrt import dataset as raw
+    from ....data.transforms import Resize
     from .. import make_dataset as mk
 
     return mk(raw.subsets(protocol), [Resize((512, 512))])
 
 
 def _maker_augmented(protocol):
+    from ....data.jsrt import dataset as raw
     from ....data.transforms import ColorJitter as _jitter
     from ....data.transforms import Compose as _compose
     from ....data.transforms import GaussianBlur as _blur
     from ....data.transforms import RandomHorizontalFlip as _hflip
     from ....data.transforms import RandomRotation as _rotation
     from ....data.transforms import Resize as _resize
-    from ....data.jsrt import dataset as raw
     from .. import make_subset
 
     def mk_aug_subset(subsets, train_transforms, all_transforms):
@@ -58,6 +58,7 @@ def _maker_augmented(protocol):
 
 
 def _maker_augmented_gt_box(protocol):
+    from ....data.jsrt import dataset as raw
     from ....data.transforms import ColorJitter as _jitter
     from ....data.transforms import Compose as _compose
     from ....data.transforms import GaussianBlur as _blur
@@ -65,7 +66,6 @@ def _maker_augmented_gt_box(protocol):
     from ....data.transforms import RandomHorizontalFlip as _hflip
     from ....data.transforms import RandomRotation as _rotation
     from ....data.transforms import Resize as _resize
-    from ....data.jsrt import dataset as raw
     from .. import make_subset
 
     def mk_aug_subset(subsets, train_transforms, all_transforms):
