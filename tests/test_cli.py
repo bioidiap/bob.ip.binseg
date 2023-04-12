@@ -474,7 +474,7 @@ def _check_experiment_stare_mean_teacher(
             "from deepdraw.binseg.configs.datasets.stare.ah import dataset\n"
         )
         # add the unlabeled training set
-        config.write("dataset['__unlabeled_train__'] = [dataset['train']]\n")
+        config.write("dataset['__unlabeled_train__'] = dataset['train']\n")
 
         if extra_valid > 0:
             # simulates the existence of a single extra validation dataset
