@@ -475,7 +475,9 @@ def _check_experiment_stare_mean_teacher(
         )
         # split dataset to labeled and unlabeled datasets
         config.write("dataset['train'] = [dataset['train'][5:]]\n")
-        config.write("dataset['__unlabeled_train__'] = [dataset['train'][:5]]\n")
+        config.write(
+            "dataset['__unlabeled_train__'] = [dataset['train'][:5]]\n"
+        )
 
         if extra_valid > 0:
             # simulates the existence of a single extra validation dataset
