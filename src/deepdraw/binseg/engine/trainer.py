@@ -307,8 +307,7 @@ def mt_train_epoch(
                 device=device, non_blocking=torch.cuda.is_available()
             )
         )
-        if len(samples) > 4:
-            flags = samples[-1]
+        flags = samples[-1]
 
         # forward pass on the SSL network
         outputs1, outputs2 = model(images)
