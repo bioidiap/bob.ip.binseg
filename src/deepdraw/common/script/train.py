@@ -76,12 +76,14 @@ def base_train(
                 f"--batch-size ({batch_size}) must be lager than 1)."
             )
 
-        else:
+        elif batch_size > 2:
             k = (
                 (batch_size - 1)
                 * len(dataset["train"])
                 // len(dataset["__unlabeled_train__"])
             )
+        else:
+            k = 1
 
             # k is how many labeled data can be allocated to one batch
             # if k is smaller than 1, the labeled data is not enough for only one in every batch. Then we need to shuffle and reuse the labeled data
