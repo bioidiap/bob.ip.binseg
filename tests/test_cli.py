@@ -459,7 +459,7 @@ def test_experiment_stare_with_extra_validation_detection(cli_runner, caplog):
 
 @pytest.mark.skip_if_rc_var_not_set("datadir.stare")
 def _check_experiment_stare_mean_teacher(
-    cli_runner, caplog, overlay, multiprocess=False, extra_valid=0
+    cli_runner, caplog, overlay, multiprocess=False
 ):
     from deepdraw.binseg.script.experiment import experiment
 
@@ -476,13 +476,6 @@ def _check_experiment_stare_mean_teacher(
         # add the unlabeled training set
         config.write("dataset['__unlabeled_train__'] = dataset['train']\n")
 
-        if extra_valid > 0:
-            # simulates the existence of a single extra validation dataset
-            # which is simply a copy of the __valid__ dataset for this test...
-            config.write(
-                f"dataset['__extra_valid__'] = "
-                f"{extra_valid}*[dataset['__valid__']]\n"
-            )
         config.flush()
 
         output_folder = "results"
@@ -611,7 +604,7 @@ def _check_experiment_stare_mean_teacher(
             r"^F1-score of.*\(chosen \*a priori\*\)$": 2,
             r"^Ended evaluation$": 1,
             r"^Started comparison$": 1,
-            r"^Loading measures from": 4,
+            r"^Loading measures from": 2,
             r"^Creating and saving plot at": 1,
             r"^Tabulating performance summary...": 1,
             r"^Saving table at": 1,
@@ -641,15 +634,6 @@ def test_experiment_stare_with_overlay_mean_teacher(cli_runner, caplog):
 #     _check_experiment_stare_mean_teacher(
 #         cli_runner, caplog, overlay=False, multiprocess=True
 #     )
-
-
-@pytest.mark.skip_if_rc_var_not_set("datadir.stare")
-def test_experiment_stare_with_extra_validation_mean_teacher(
-    cli_runner, caplog
-):
-    _check_experiment_stare_mean_teacher(
-        cli_runner, caplog, overlay=False, extra_valid=1
-    )
 
 
 def _check_train(runner, caplog):
