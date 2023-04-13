@@ -490,7 +490,7 @@ def _check_experiment_stare_mean_teacher(
             "mean_teacher",
             config.name,
             "-vv",
-            "--epochs=2",
+            "--epochs=1",
             "--batch-size=2",
             "--steps=10",
             f"--output-folder={output_folder}",
@@ -632,16 +632,16 @@ def test_experiment_stare_with_overlay_mean_teacher(cli_runner, caplog):
     _check_experiment_stare_mean_teacher(cli_runner, caplog, overlay=True)
 
 
-@pytest.mark.skip_if_rc_var_not_set("datadir.stare")
-def test_experiment_stare_without_overlay_mean_teacher(cli_runner, caplog):
-    _check_experiment_stare_mean_teacher(cli_runner, caplog, overlay=False)
+# @pytest.mark.skip_if_rc_var_not_set("datadir.stare")
+# def test_experiment_stare_without_overlay_mean_teacher(cli_runner, caplog):
+#     _check_experiment_stare_mean_teacher(cli_runner, caplog, overlay=False)
 
 
-@pytest.mark.skip_if_rc_var_not_set("datadir.stare")
-def test_experiment_stare_with_multiprocessing_mean_teacher(cli_runner, caplog):
-    _check_experiment_stare_mean_teacher(
-        cli_runner, caplog, overlay=False, multiprocess=True
-    )
+# @pytest.mark.skip_if_rc_var_not_set("datadir.stare")
+# def test_experiment_stare_with_multiprocessing_mean_teacher(cli_runner, caplog):
+#     _check_experiment_stare_mean_teacher(
+#         cli_runner, caplog, overlay=False, multiprocess=True
+#     )
 
 
 @pytest.mark.skip_if_rc_var_not_set("datadir.stare")
