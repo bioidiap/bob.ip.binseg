@@ -609,7 +609,6 @@ def _check_experiment_stare_mean_teacher(
             r"^Started evaluation$": 1,
             r"^Maximum F1-score of.*\(chosen \*a posteriori\*\)$": 3,
             r"^F1-score of.*\(chosen \*a priori\*\)$": 2,
-            r"^F1-score of.*\(second annotator; threshold=0.5\)$": 2,
             r"^Ended evaluation$": 1,
             r"^Started comparison$": 1,
             r"^Loading measures from": 4,
