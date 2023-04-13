@@ -592,7 +592,7 @@ def _check_experiment_stare_mean_teacher(
         keywords = {
             r"^Started training$": 1,
             r"^Found \(dedicated\) 'unlabeled_train' set for semi-supervised training$": 1,
-            r"^ Start setting semi-supervised training dataset$": 1,
+            r"^ Start setting semi-supervised training dataset": 1,
             r"^Found \(dedicated\) '__valid__' set for validation$": 1,
             r"^Will checkpoint lowest loss model on validation set$": 1,
             r"^Found 1 extra validation set(s) to be tracked during training$": 1,
