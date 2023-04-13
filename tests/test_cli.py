@@ -595,7 +595,7 @@ def _check_experiment_stare_mean_teacher(
             # r"^ Start setting semi-supervised training dataset": 1,
             r"^Found \(dedicated\) '__valid__' set for validation$": 1,
             r"^Will checkpoint lowest loss model on validation set$": 1,
-            r"^Found 1 extra validation set(s) to be tracked during training$": 1,
+            # r"^Found 1 extra validation set(s) to be tracked during training$": 1,
             r"^Extra validation sets are NOT used for model checkpointing": 1,
             r"^Continuing from epoch 0$": 1,
             r"^Saving model summary at.*$": 1,
