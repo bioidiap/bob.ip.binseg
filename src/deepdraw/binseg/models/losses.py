@@ -270,16 +270,16 @@ class Semi_supervised_Loss(_Loss):
 
     Attributes
     ----------
-    jacalpha : float
+    jalpha : float
         determines the weighting of SoftJaccard and BCE. Default: ``0.7
 
 
     """
 
-    def __init__(self, jacalpha=0.7):
+    def __init__(self, jalpha=0.7):
         super().__init__()
 
-        self.jacalpha = jacalpha
+        self.jacalpha = jalpha
 
     def forward(
         self,

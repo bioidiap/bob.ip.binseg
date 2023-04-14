@@ -474,10 +474,10 @@ def _check_experiment_stare_mean_teacher(
             "from deepdraw.binseg.configs.datasets.stare.ah import dataset\n"
         )
         # set labeled training set to 5 images
-        config.write("labeled = [dataset['train'][:5]]\n")
+        config.write("labeled = (dataset['train'][:5])\n")
         config.write("dataset['train'] = labeled\n")
         # set unlabeled training set to 5 images
-        config.write("unlabeled = [dataset['train'][5:]]\n")
+        config.write("unlabeled = (dataset['train'][5:])\n")
         config.write("dataset['__unlabeled_train__'] = unlabeled\n")
         # set validation set to 5 images
         config.write("dataset['__valid__'] = dataset['train']\n")
