@@ -266,13 +266,10 @@ class MixJacLoss(_Loss):
 
 
 class Semi_supervised_Loss(_Loss):
-    """
+    """A loss function for consistency learning( the mean teacher model).
 
-    Attributes
-    ----------
-    jalpha : float
-        the weight of the SoftJaccardBCELogitsLoss
-
+    The supervised loss is the soft jaccard BCE loss and the
+    unsupervised loss is the cross entropy loss.
     """
 
     def __init__(self, jalpha=0.7):
