@@ -272,7 +272,7 @@ class Semi_supervised_Loss(_Loss):
     ----------
     jalpha : float
         determines the weighting of SoftJaccard and BCE. Default: ``0.7
-
+    noindex : int
 
     """
 

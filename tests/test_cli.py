@@ -534,7 +534,7 @@ def _check_experiment_stare_mean_teacher(
         predict_folder = os.path.join(output_folder, "predictions")
         traindir = os.path.join(predict_folder, "train", "stare-images")
         assert os.path.exists(traindir)
-        assert len(fnmatch.filter(os.listdir(traindir), "*.hdf5")) == 10
+        assert len(fnmatch.filter(os.listdir(traindir), "*.hdf5")) == 5
         testdir = os.path.join(predict_folder, "test", "stare-images")
         assert os.path.exists(testdir)
         assert len(fnmatch.filter(os.listdir(testdir), "*.hdf5")) == 10
@@ -545,7 +545,7 @@ def _check_experiment_stare_mean_teacher(
         if overlay:
             # check overlayed images are there (since we requested them)
             assert os.path.exists(traindir)
-            assert len(fnmatch.filter(os.listdir(traindir), "*.png")) == 10
+            assert len(fnmatch.filter(os.listdir(traindir), "*.png")) == 5
             # check overlayed images are there (since we requested them)
             assert os.path.exists(testdir)
             assert len(fnmatch.filter(os.listdir(testdir), "*.png")) == 10
@@ -559,7 +559,7 @@ def _check_experiment_stare_mean_teacher(
         # checks individual performance figures are there
         traindir = os.path.join(eval_folder, "train", "stare-images")
         assert os.path.exists(traindir)
-        assert len(fnmatch.filter(os.listdir(traindir), "*.csv")) == 10
+        assert len(fnmatch.filter(os.listdir(traindir), "*.csv")) == 5
 
         assert os.path.exists(os.path.join(eval_folder, "test.csv"))
         # checks individual performance figures are there
@@ -570,7 +570,7 @@ def _check_experiment_stare_mean_teacher(
         # checks individual performance figures are there
         traindir_sa = os.path.join(eval_folder, "train", "stare-images")
         assert os.path.exists(traindir_sa)
-        assert len(fnmatch.filter(os.listdir(traindir_sa), "*.csv")) == 10
+        assert len(fnmatch.filter(os.listdir(traindir_sa), "*.csv")) == 5
 
         assert os.path.exists(os.path.join(eval_folder, "test.csv"))
         testdir_sa = os.path.join(eval_folder, "test", "stare-images")
@@ -583,7 +583,7 @@ def _check_experiment_stare_mean_teacher(
         if overlay:
             # check overlayed images are there (since we requested them)
             assert os.path.exists(traindir)
-            assert len(fnmatch.filter(os.listdir(traindir), "*.png")) == 10
+            assert len(fnmatch.filter(os.listdir(traindir), "*.png")) == 5
             assert os.path.exists(testdir)
             assert len(fnmatch.filter(os.listdir(testdir), "*.png")) == 10
         else:
