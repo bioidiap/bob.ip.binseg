@@ -554,7 +554,7 @@ class Gaussian_noise:
         Standard deviation of the gaussian noise.
     """
 
-    def __init__(self, mean=0.0, std=1.0):
+    def __init__(self, mean, std):
         self.mean = mean
         self.std = std
 
@@ -577,13 +577,13 @@ class Grayscale:
         Number of channels to output. If 1, the image will be converted to grayscale. If 3, the image will be converted to RGB.
     """
 
-    def __init__(self, num_output_channels=1):
+    def __init__(self, num_output_channels):
         self.num_output_channels = num_output_channels
 
     def __call__(self, *args):
         return [
             torchvision.transforms.functional.to_grayscale(
-                args[0], num_output_channels=1
+                args[0], num_output_channels=self.num_output_channels
             ),
             *args[1:],
         ]

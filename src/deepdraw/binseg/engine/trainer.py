@@ -302,7 +302,7 @@ def mt_train_epoch(
         )
         masks = (
             torch.ones_like(ground_truths)
-            if len(samples) < 4
+            if len(samples) < 5
             else samples[3].to(
                 device=device, non_blocking=torch.cuda.is_available()
             )

@@ -459,7 +459,7 @@ def test_experiment_stare_with_extra_validation_detection(cli_runner, caplog):
 
 @pytest.mark.skip_if_rc_var_not_set("datadir.stare")
 def _check_experiment_stare_mean_teacher(
-    cli_runner, caplog, overlay, multiprocess=False
+    cli_runner, caplog, overlay, multiprocess=False, extra_valid=0
 ):
     from deepdraw.binseg.script.experiment import experiment
 
@@ -473,9 +473,21 @@ def _check_experiment_stare_mean_teacher(
         config.write(
             "from deepdraw.binseg.configs.datasets.stare.ah import dataset\n"
         )
-        # add the unlabeled training set
-        config.write("dataset['__unlabeled_train__'] = dataset['train']\n")
-
+        # set labeled training set to 5 images
+        config.write("labeled = [dataset['train'][:5]]\n")
+        config.write("dataset['train'] = labeled\n")
+        # set unlabeled training set to 5 images
+        config.write("unlabeled = [dataset['train'][5:]]\n")
+        config.write("dataset['__unlabeled_train__'] = unlabeled\n")
+        # set validation set to 5 images
+        config.write("dataset['__valid__'] = dataset['train']\n")
+        if extra_valid > 0:
+            # simulates the existence of a single extra validation dataset
+            # which is simply a copy of the __valid__ dataset for this test...
+            config.write(
+                f"dataset['__extra_valid__'] = "
+                f"{extra_valid}*[dataset['__valid__']]\n"
+            )
         config.flush()
 
         output_folder = "results"
@@ -585,7 +597,7 @@ def _check_experiment_stare_mean_teacher(
         keywords = {
             r"^Started training$": 1,
             r"^Found \(dedicated\) 'unlabeled_train' set for semi-supervised training$": 1,
-            # r"^ Start setting semi-supervised training dataset": 1,
+            r"^Start setting semi-supervised training dataset$": 1,
             r"^Found \(dedicated\) '__valid__' set for validation$": 1,
             r"^Will checkpoint lowest loss model on validation set$": 1,
             # r"^Found 1 extra validation set(s) to be tracked during training$": 1,
@@ -633,6 +645,15 @@ def test_experiment_stare_with_overlay_mean_teacher(cli_runner, caplog):
 # def test_experiment_stare_with_multiprocessing_mean_teacher(cli_runner, caplog):
 #     _check_experiment_stare_mean_teacher(
 #         cli_runner, caplog, overlay=False, multiprocess=True
+#     )
+
+
+# @pytest.mark.skip_if_rc_var_not_set("datadir.stare")
+# def test_experiment_stare_with_extra_validation_mean_teacher(
+#     cli_runner, caplog
+# ):
+#     _check_experiment_stare_mean_teacher(
+#         cli_runner, caplog, overlay=False, extra_valid=1
 #     )
 
 

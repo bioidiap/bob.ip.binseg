@@ -268,9 +268,10 @@ class MixJacLoss(_Loss):
 class Semi_supervised_Loss(_Loss):
     """
 
-    Parameters
+    Attributes
     ----------
-
+    jacalpha : float
+        determines the weighting of SoftJaccard and BCE. Default: ``0.7
 
 
     """
@@ -293,11 +294,17 @@ class Semi_supervised_Loss(_Loss):
         Parameters
         ----------
 
-        samples : dict
+        target : :py:class:`torch.Tensor`
+            ground truth of the labeled data
+        mask : :py:class:`torch.Tensor`
         unlabeled_input : :py:class:`torch.Tensor`
+            prediction of the teacher model
         unlabeled_target : :py:class:`torch.Tensor`
+            prediction of the student model
         ramp_up_factor : float
-
+            weight for consistency loss
+        flag : str
+            flag to indicate if the input is labeled(1) or unlabeled(0)
         Returns
         -------
 

@@ -18,28 +18,12 @@ jitter1 = T.ColorJitter(contrast=0.3)
 jitter2 = T.ColorJitter(contrast=0.4)
 
 
-def gauss1(x):
-    return x + 0.01 * torch.randn_like(x)
+def gauss(x, std):
+    return x + std * torch.randn_like(x)
 
 
-def gauss2(x):
-    return x + 0.02 * torch.randn_like(x)
-
-
-def rotate1(x):
-    return T.functional.rotate(x, angle=4.5)
-
-
-def rotate2(x):
-    return T.functional.rotate(x, angle=3)
-
-
-def sharp1(x):
-    return T.functional.adjust_sharpness(x, sharpness_factor=0.0)
-
-
-def sharp2(x):
-    return T.functional.adjust_sharpness(x, sharpness_factor=0.5)
+def rotate(x, ang):
+    return T.functional.rotate(x, angle=ang)
 
 
 class Mean_teacher(torch.nn.Module):
@@ -72,8 +56,8 @@ class Mean_teacher(torch.nn.Module):
     def forward(self, x):
         self.x = x
         # data augmentation on input image
-        x_t = gray(gauss1(x))
-        x_s = gray(gauss2(x))
+        x_t = gray(gauss(x, 0.01))
+        x_s = gray(gauss(x, 0.02))
         y_s = self.S_model(x_s)
         y_t = self.T_model(x_t)
         return y_s, y_t
