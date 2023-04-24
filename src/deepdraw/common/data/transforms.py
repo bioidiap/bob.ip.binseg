@@ -537,3 +537,53 @@ class GroundTruthCrop:
         new_args = [PIL.ImageOps.crop(k, border) for k in new_args]
 
         return new_args
+
+
+class Gaussian_noise:
+    """Applies a gaussian noise transformation on the **first** image.
+
+    Notice this transform extension, unlike others in this module, only affects
+    the first image passed as input argument.
+
+    Parameters
+    ----------
+    mean : :py:class:`float`, Optional
+        Mean of the gaussian noise.
+
+    std : :py:class:`float`, Optional
+        Standard deviation of the gaussian noise.
+    """
+
+    def __init__(self, mean, std):
+        self.mean = mean
+        self.std = std
+
+    def __call__(self, *args):
+        # convert to tensor
+        k = torchvision.transforms.functional.to_tensor(args[0])
+        k = k + torch.randn_like(k) * self.std + self.mean
+        img = torchvision.transforms.functional.to_pil_image(k)
+        return [img, *args[1:]]
+
+
+class Grayscale:
+    """Convert image to grayscale. Applies on the **first** image.
+
+    Notice this transform extension, unlike others in this module, only affects
+    the first image passed as input argument.
+    Parameters
+    ----------
+    num_output_channels : :py:class:`int`, Optional
+        Number of channels to output. If 1, the image will be converted to grayscale. If 3, the image will be converted to RGB.
+    """
+
+    def __init__(self, num_output_channels):
+        self.num_output_channels = num_output_channels
+
+    def __call__(self, *args):
+        return [
+            torchvision.transforms.functional.to_grayscale(
+                args[0], num_output_channels=self.num_output_channels
+            ),
+            *args[1:],
+        ]

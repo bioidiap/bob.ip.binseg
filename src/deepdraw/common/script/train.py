@@ -3,7 +3,9 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 import logging
+import math
 import multiprocessing
+import random
 import sys
 
 import torch
@@ -49,8 +51,101 @@ def base_train(
     use_dataset = dataset
     validation_dataset = None
     extra_validation_datasets = []
+
+    def semi_supervised_use_dataset(dataset):
+        logger.info("Start setting semi-supervised training dataset")
+        datalist = [None] * (
+            ((len(dataset["__unlabeled_train__"])) + len(dataset["train"])) * 2
+        )
+        dataset_dic = {"train": datalist}
+
+        unlabeled = []
+        labeled = []
+        for e in dataset["__unlabeled_train__"]:
+            unlabeled.append(e)
+        for e1 in unlabeled:
+            e1.append("0")
+        for e in dataset["train"]:
+            labeled.append(e)
+        for e in labeled:
+            e.append("1")
+
+        # batch size shoud be bigger than 1
+        if batch_size == 1:
+            raise RuntimeError(
+                f"--batch-size ({batch_size}) must be lager than 1)."
+            )
+
+        elif batch_size > 2:
+            k = (
+                (batch_size - 1)
+                * len(dataset["train"])
+                // len(dataset["__unlabeled_train__"])
+            )
+        else:
+            k = 1
+
+            # k is how many labeled data can be allocated to one batch
+            # if k is smaller than 1, the labeled data is not enough for only one in every batch. Then we need to shuffle and reuse the labeled data
+
+            if k == 0:
+                logger.info("Not enough labeled samples for all batches")
+                myshuffle = random.sample(labeled, len(labeled))
+                for i in range(
+                    len(unlabeled) // (batch_size - 1)
+                ):  # i is the number of batches
+                    for j in range(batch_size):
+                        if j == 0:
+                            if i < len(labeled):
+                                dataset_dic["train"][i * batch_size] = labeled[
+                                    i
+                                ]
+                            else:
+                                dataset_dic["train"][
+                                    i * batch_size
+                                ] = myshuffle[i % len(labeled)]
+                        else:
+                            if i * (batch_size - 1) + j < len(unlabeled):
+                                dataset_dic["train"][
+                                    i * batch_size + j
+                                ] = unlabeled[i * (batch_size - 1) + j]
+
+            # if k is larger than 0, we will try to balabce the labeled data and unlabeled data in every batch. When unlabeled data is used up, the rest of the batch will be filled with labeled data.
+            else:
+                # j is the number of unlabeled data in one batch
+                j = math.ceil(
+                    len(unlabeled)
+                    / ((len(labeled) + len(unlabeled)) // batch_size)
+                )
+                logger.info(
+                    f"The number of unlabeled samples in one batch is {j}"
+                )
+                k = len(unlabeled)
+                for i in range(len(unlabeled) + len(labeled)):
+                    if k > 0:
+                        if i % batch_size < j:
+                            dataset_dic["train"][i] = unlabeled[
+                                len(unlabeled) - k
+                            ]
+                            k = k - 1
+                        else:
+                            dataset_dic["train"][i] = labeled[
+                                i - len(unlabeled) + k
+                            ]
+                    else:
+                        dataset_dic["train"][i] = labeled[i - len(unlabeled)]
+
+        res = [i for i in dataset_dic["train"] if i is not None]
+        dataset_dic["train"] = res
+        return dataset_dic
+
     if isinstance(dataset, dict):
-        if "__train__" in dataset:
+        if "__unlabeled_train__" in dataset:
+            logger.info(
+                "Found (dedicated) 'unlabeled_train' set for semi-supervised training"
+            )
+            use_dataset = semi_supervised_use_dataset(dataset)["train"]
+        elif "__train__" in dataset:
             logger.info("Found (dedicated) '__train__' set for training")
             use_dataset = dataset["__train__"]
         else:
@@ -143,14 +238,33 @@ def base_train(
     else:
         from ...binseg.engine.trainer import run
 
-        data_loader = DataLoader(
-            dataset=use_dataset,
-            batch_size=batch_chunk_size,
-            shuffle=True,
-            drop_last=drop_incomplete_batch,
-            pin_memory=torch.cuda.is_available(),
-            **multiproc_kwargs,
-        )
+        # In the mean teacher model, the training data is not shuffled.
+        if hasattr(model, "name") and model.name == "mean_teacher":
+            data_loader = DataLoader(
+                dataset=use_dataset,
+                batch_size=batch_chunk_size,
+                shuffle=False,
+                drop_last=drop_incomplete_batch,
+                # set for one GPU
+                pin_memory=torch.cuda.is_available(),
+                # set for multiple GPUs
+                # persistent_workers=True,
+                # pin_memory=False,
+                **multiproc_kwargs,
+            )
+        else:
+            data_loader = DataLoader(
+                dataset=use_dataset,
+                batch_size=batch_chunk_size,
+                shuffle=True,
+                drop_last=drop_incomplete_batch,
+                # set for one GPU
+                pin_memory=torch.cuda.is_available(),
+                # set for multiple GPUs
+                # persistent_workers=True,
+                # pin_memory=False,
+                **multiproc_kwargs,
+            )
 
         valid_loader = None
         if validation_dataset is not None:

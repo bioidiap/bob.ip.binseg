@@ -457,6 +457,200 @@ def test_experiment_stare_with_extra_validation_detection(cli_runner, caplog):
     )
 
 
+@pytest.mark.skip_if_rc_var_not_set("datadir.stare")
+def _check_experiment_stare_mean_teacher(
+    cli_runner, caplog, overlay, multiprocess=False, extra_valid=0
+):
+    from deepdraw.binseg.script.experiment import experiment
+
+    # ensures we capture only ERROR messages and above by default
+    caplog.set_level(logging.ERROR)
+
+    with cli_runner.isolated_filesystem(), caplog.at_level(
+        logging.INFO, logger="deepdraw.binseg.mean_teacher"
+    ), tempfile.NamedTemporaryFile(mode="wt") as config:
+        # re-write STARE dataset configuration for test
+        config.write(
+            "from deepdraw.binseg.configs.datasets.stare.ah import dataset\n"
+        )
+        # set unlabeled training set
+        config.write("dataset['__unlabeled_train__'] = dataset['train']\n")
+        if extra_valid > 0:
+            # simulates the existence of a single extra validation dataset
+            # which is simply a copy of the __valid__ dataset for this test...
+            config.write(
+                f"dataset['__extra_valid__'] = "
+                f"{extra_valid}*[dataset['__valid__']]\n"
+            )
+        config.flush()
+
+        output_folder = "results"
+        options = [
+            "mean_teacher",
+            config.name,
+            "-vv",
+            "--epochs=1",
+            "--batch-size=2",
+            "--steps=10",
+            f"--output-folder={output_folder}",
+            "--monitoring-interval=2",
+            "--plot-limits=0.1",
+            "1.0",
+            "0.1",
+            "1.0",
+        ]
+        if overlay:
+            options += ["--overlayed"]
+        if multiprocess:
+            options += ["--parallel=1"]
+
+        result = cli_runner.invoke(experiment, options)
+
+        _assert_exit_0(result)
+
+        # check command-line
+        assert os.path.exists(os.path.join(output_folder, "command.sh"))
+
+        # check model was saved
+        train_folder = os.path.join(output_folder, "model")
+        assert os.path.exists(
+            os.path.join(train_folder, "model_final_epoch.pth")
+        )
+        assert os.path.exists(
+            os.path.join(train_folder, "model_lowest_valid_loss.pth")
+        )
+        assert os.path.exists(os.path.join(train_folder, "last_checkpoint"))
+        assert os.path.exists(os.path.join(train_folder, "constants.csv"))
+        assert os.path.exists(os.path.join(train_folder, "trainlog.csv"))
+        assert os.path.exists(os.path.join(train_folder, "model_summary.txt"))
+
+        # check predictions are there
+        predict_folder = os.path.join(output_folder, "predictions")
+        traindir = os.path.join(predict_folder, "train", "stare-images")
+        assert os.path.exists(traindir)
+        assert len(fnmatch.filter(os.listdir(traindir), "*.hdf5")) == 10
+        testdir = os.path.join(predict_folder, "test", "stare-images")
+        assert os.path.exists(testdir)
+        assert len(fnmatch.filter(os.listdir(testdir), "*.hdf5")) == 10
+
+        overlay_folder = os.path.join(output_folder, "overlayed", "predictions")
+        traindir = os.path.join(overlay_folder, "train", "stare-images")
+        testdir = os.path.join(overlay_folder, "test", "stare-images")
+        if overlay:
+            # check overlayed images are there (since we requested them)
+            assert os.path.exists(traindir)
+            assert len(fnmatch.filter(os.listdir(traindir), "*.png")) == 10
+            # check overlayed images are there (since we requested them)
+            assert os.path.exists(testdir)
+            assert len(fnmatch.filter(os.listdir(testdir), "*.png")) == 10
+        else:
+            assert not os.path.exists(traindir)
+            assert not os.path.exists(testdir)
+
+        # check evaluation outputs
+        eval_folder = os.path.join(output_folder, "analysis")
+        assert os.path.exists(os.path.join(eval_folder, "train.csv"))
+        # checks individual performance figures are there
+        traindir = os.path.join(eval_folder, "train", "stare-images")
+        assert os.path.exists(traindir)
+        assert len(fnmatch.filter(os.listdir(traindir), "*.csv")) == 10
+
+        assert os.path.exists(os.path.join(eval_folder, "test.csv"))
+        # checks individual performance figures are there
+        testdir = os.path.join(eval_folder, "test", "stare-images")
+        assert os.path.exists(testdir)
+        assert len(fnmatch.filter(os.listdir(testdir), "*.csv")) == 10
+
+        # checks individual performance figures are there
+        traindir_sa = os.path.join(eval_folder, "train", "stare-images")
+        assert os.path.exists(traindir_sa)
+        assert len(fnmatch.filter(os.listdir(traindir_sa), "*.csv")) == 10
+
+        assert os.path.exists(os.path.join(eval_folder, "test.csv"))
+        testdir_sa = os.path.join(eval_folder, "test", "stare-images")
+        assert os.path.exists(testdir_sa)
+        assert len(fnmatch.filter(os.listdir(testdir_sa), "*.csv")) == 10
+
+        overlay_folder = os.path.join(output_folder, "overlayed", "analysis")
+        traindir = os.path.join(overlay_folder, "train", "stare-images")
+        testdir = os.path.join(overlay_folder, "test", "stare-images")
+        if overlay:
+            # check overlayed images are there (since we requested them)
+            assert os.path.exists(traindir)
+            assert len(fnmatch.filter(os.listdir(traindir), "*.png")) == 10
+            assert os.path.exists(testdir)
+            assert len(fnmatch.filter(os.listdir(testdir), "*.png")) == 10
+        else:
+            assert not os.path.exists(traindir)
+            assert not os.path.exists(testdir)
+
+        # check outcomes of the comparison phase
+        assert os.path.exists(os.path.join(output_folder, "comparison.pdf"))
+        assert os.path.exists(os.path.join(output_folder, "comparison.rst"))
+
+        keywords = {
+            r"^Started training$": 1,
+            r"^Found \(dedicated\) 'unlabeled_train' set for semi-supervised training$": 1,
+            r"^Start setting semi-supervised training dataset$": 1,
+            r"^Found \(dedicated\) '__valid__' set for validation$": 1,
+            r"^Will checkpoint lowest loss model on validation set$": 1,
+            # r"^Found 1 extra validation set(s) to be tracked during training$": 1,
+            r"^Extra validation sets are NOT used for model checkpointing": 1,
+            r"^Continuing from epoch 0$": 1,
+            r"^Saving model summary at.*$": 1,
+            r"^Model has.*$": 1,
+            r"^Found new low on validation set.*$": 1,
+            r"^Saving checkpoint": 2,
+            r"^Ended training$": 1,
+            r"^Started prediction$": 1,
+            r"^Loading checkpoint from": 1,
+            r"^Ended prediction$": 1,
+            r"^Started evaluation$": 1,
+            r"^Maximum F1-score of.*\(chosen \*a posteriori\*\)$": 3,
+            r"^F1-score of.*\(chosen \*a priori\*\)$": 2,
+            r"^Ended evaluation$": 1,
+            r"^Started comparison$": 1,
+            r"^Loading measures from": 2,
+            r"^Creating and saving plot at": 1,
+            r"^Tabulating performance summary...": 1,
+            r"^Saving table at": 1,
+            r"^Ended comparison.*$": 1,
+        }
+        messages = "\n".join([k.getMessage() for k in caplog.records])
+        for k, v in keywords.items():
+            total = _str_counter(k, messages)
+            assert total == v, (
+                f"message '{k}' appears {total} times, but I expected "
+                f"it to appear {v} times"
+            )
+
+
+@pytest.mark.skip_if_rc_var_not_set("datadir.stare")
+def test_experiment_stare_with_overlay_mean_teacher(cli_runner, caplog):
+    _check_experiment_stare_mean_teacher(cli_runner, caplog, overlay=True)
+
+
+# @pytest.mark.skip_if_rc_var_not_set("datadir.stare")
+# def test_experiment_stare_without_overlay_mean_teacher(cli_runner, caplog):
+#     _check_experiment_stare_mean_teacher(cli_runner, caplog, overlay=False)
+
+
+# @pytest.mark.skip_if_rc_var_not_set("datadir.stare")
+# def test_experiment_stare_with_multiprocessing_mean_teacher(cli_runner, caplog):
+#     _check_experiment_stare_mean_teacher(
+#         cli_runner, caplog, overlay=False, multiprocess=True
+#     )
+
+
+# @pytest.mark.skip_if_rc_var_not_set("datadir.stare")
+# def test_experiment_stare_with_extra_validation_mean_teacher(
+#     cli_runner, caplog
+# ):
+#     _check_experiment_stare_mean_teacher(
+#         cli_runner, caplog, overlay=False, extra_valid=1
+#     )
+
+
 def _check_train(runner, caplog):
     from deepdraw.binseg.script.train import train
 

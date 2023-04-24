@@ -263,3 +263,64 @@ class MixJacLoss(_Loss):
 
         loss = ll + self.lambda_u * ramp_up_factor * ul
         return loss, ll, ul
+
+
+class Semi_supervised_Loss(_Loss):
+    """A loss function for consistency learning( the mean teacher model).
+
+    The supervised loss is the soft jaccard BCE loss and the
+    unsupervised loss is the cross entropy loss.
+    """
+
+    def __init__(self, jalpha=0.7):
+        super().__init__()
+
+        self.jacalpha = jalpha
+
+    def forward(
+        self,
+        target,
+        mask,
+        unlabeled_input,
+        unlabeled_target,
+        flag,
+        ramp_up_factor,
+    ):
+        """
+        Parameters
+        ----------
+
+        target : :py:class:`torch.Tensor`
+            ground truth of the labeled data
+        mask : :py:class:`torch.Tensor`
+        unlabeled_input : :py:class:`torch.Tensor`
+            prediction of the teacher model
+        unlabeled_target : :py:class:`torch.Tensor`
+            prediction of the student model
+        ramp_up_factor : float
+            weight for consistency loss
+        flag : str
+            flag to indicate if the input is labeled(1) or unlabeled(0)
+        Returns
+        -------
+
+        list
+
+        """
+        ll = 0
+        sigmoid = torch.nn.Sigmoid()
+        u_target = sigmoid(unlabeled_target)
+        ul = torch.nn.functional.binary_cross_entropy_with_logits(
+            unlabeled_input, u_target, reduction="mean"
+        )  # consistency loss
+        labeled_loss = SoftJaccardBCELogitsLoss(
+            self.jacalpha
+        )  # segmenation loss
+        # if input is unlabeled data, return consistency loss
+        if flag[0] == "0":
+            loss = ul
+        # if input is labeled data, return combined loss
+        else:
+            ll = labeled_loss(unlabeled_input, target, mask)
+            loss = ll + ramp_up_factor * ul
+        return loss, ll, ul
