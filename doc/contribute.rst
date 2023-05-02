@@ -8,7 +8,7 @@
 ..
 .. SPDX-License-Identifier: GPL-3.0-or-later
 
-.. _deepdraw.binseg.contribute:
+.. _deepdraw.contribute:
 
 ===================================
  Getting Involved and Contributing

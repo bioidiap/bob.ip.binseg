@@ -13,7 +13,7 @@ from . import count_bw
 
 
 def test_protocol_consistency():
-    from deepdraw.binseg.data.drionsdb import dataset
+    from deepdraw.data.drionsdb import dataset
 
     for protocol in ("expert1", "expert2"):
         subset = dataset.subsets(protocol)
@@ -33,7 +33,7 @@ def test_protocol_consistency():
 @pytest.mark.skip_if_rc_var_not_set("datadir.drionsdb")
 @pytest.mark.slow
 def test_loading():
-    from deepdraw.binseg.data.drionsdb import dataset
+    from deepdraw.data.drionsdb import dataset
 
     image_size = (600, 400)
 
@@ -94,6 +94,6 @@ def test_loading():
 @pytest.mark.skip_if_rc_var_not_set("datadir.drionsdb")
 @pytest.mark.slow
 def test_check():
-    from deepdraw.binseg.data.drionsdb import dataset
+    from deepdraw.data.drionsdb import dataset
 
     assert dataset.check() == 0

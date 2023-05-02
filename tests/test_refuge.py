@@ -11,7 +11,7 @@ from . import count_bw
 
 
 def test_protocol_consistency():
-    from deepdraw.binseg.data.refuge import dataset
+    from deepdraw.data.refuge import dataset
 
     for protocol in ("optic-disc", "optic-cup"):
         subset = dataset.subsets(protocol)
@@ -36,7 +36,7 @@ def test_protocol_consistency():
 @pytest.mark.skip_if_rc_var_not_set("datadir.refuge")
 @pytest.mark.slow
 def test_loading():
-    from deepdraw.binseg.data.refuge import dataset
+    from deepdraw.data.refuge import dataset
 
     def _check_sample(
         s, image_size, glaucoma_label, entries, bw_threshold_label
@@ -121,6 +121,6 @@ def test_loading():
 @pytest.mark.skip_if_rc_var_not_set("datadir.refuge")
 @pytest.mark.slow
 def test_check():
-    from deepdraw.binseg.data.refuge import dataset
+    from deepdraw.data.refuge import dataset
 
     assert dataset.check() == 0

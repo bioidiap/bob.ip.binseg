@@ -11,7 +11,7 @@ from . import count_bw
 
 
 def test_protocol_consistency():
-    from deepdraw.binseg.data.drhagis import dataset
+    from deepdraw.data.drhagis import dataset
 
     subset = dataset.subsets("default")
     assert len(subset) == 2
@@ -29,7 +29,7 @@ def test_protocol_consistency():
 
 @pytest.mark.skip_if_rc_var_not_set("datadir.drhagis")
 def test_loading():
-    from deepdraw.binseg.data.drhagis import dataset
+    from deepdraw.data.drhagis import dataset
 
     def _check_sample(s, bw_threshold_label, bw_threshold_mask):
         data = s.data
@@ -97,6 +97,6 @@ def test_loading():
 
 @pytest.mark.skip_if_rc_var_not_set("datadir.drhagis")
 def test_check():
-    from deepdraw.binseg.data.drhagis import dataset
+    from deepdraw.data.drhagis import dataset
 
     assert dataset.check() == 0

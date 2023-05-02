@@ -8,7 +8,7 @@
 ..
 .. SPDX-License-Identifier: GPL-3.0-or-later
 
-.. _deepdraw.binseg.usage:
+.. _deepdraw.usage:
 
 =======
  Usage
@@ -29,7 +29,7 @@ semantic binary segmentation with support for the following activities:
   evaluate the significance between the results of two systems on the same
   dataset.
 
-We provide :ref:`command-line interfaces (CLI) <deepdraw.binseg.cli>` that implement
+We provide :ref:`command-line interfaces (CLI) <deepdraw.cli>` that implement
 each of the phases above. This interface is configurable using :ref:`clapper's
 extensible configuration framework <clapper.config>`.  In essence, each
 command-line option may be provided as a variable with the same name in a
@@ -56,12 +56,12 @@ the end of each step.
 
 
 We provide a number of :ref:`preset configuration files that you can check with "config list all"
-<deepdraw.binseg.cli>` that can be used in one or more of the
+<deepdraw.cli>` that can be used in one or more of the
 activities described in this section.  Our command-line framework allows you to
 refer to these preset configuration files using special names (a.k.a.
 "resources"), that procure and load these for you automatically.  Aside preset
 configuration files, you may also create your own to extend existing baseline
-experiments by :ref:`locally copying with "config copy"<deepdraw.binseg.cli>` and
+experiments by :ref:`locally copying with "config copy"<deepdraw.cli>` and
 modifying one of our configuration resources.
 
 

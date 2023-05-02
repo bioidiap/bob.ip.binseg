@@ -8,13 +8,13 @@
 ..
 .. SPDX-License-Identifier: GPL-3.0-or-later
 
-.. _deepdraw.binseg.experiment:
+.. _deepdraw.experiment:
 
 ==============================
  Running complete experiments
 ==============================
 
-We provide an :ref:`"experiment" command <deepdraw.binseg.cli>`
+We provide an :ref:`"experiment" command <deepdraw.cli>`
 that runs training, followed by prediction,
 evaluation and comparison.  After running, you will be able to find results
 from model fitting, prediction, evaluation and comparison under a single output
@@ -37,7 +37,7 @@ Using your own dataset
 ======================
 
 To use your own dataset, we recommend you read our instructions at
-:py:mod:`deepdraw.binseg.configs.datasets.csv`, and setup one or more CSV file
+:py:mod:`deepdraw.configs.datasets.csv`, and setup one or more CSV file
 describing input data and ground-truth (segmentation maps), and potential test
 data.  Then, prepare a configuration file by copying our configuration example
 and edit it to apply the required transforms to your input data.  Once you are
@@ -55,7 +55,7 @@ Changing defaults
 
 We provide a large set of preset configurations to build models from known
 datasets.  You can :ref:`copy any of the existing configuration resources using the "copy" command
-<deepdraw.binseg.cli>` and edit to build your own customized version.
+<deepdraw.cli>` and edit to build your own customized version.
 Once you're happy, you may use the newly created files directly on your command
 line.  For example, suppose you wanted to slightly change the DRIVE
 pre-processing pipeline.  You could do the following:
@@ -67,7 +67,7 @@ pre-processing pipeline.  You could do the following:
    $ binseg train -vv <model> ./my_drive_remix.py
 
 
-.. _deepdraw.binseg.gridtk-tip:
+.. _deepdraw.gridtk-tip:
 
 Running at Idiap's SGE grid
 ===========================

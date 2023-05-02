@@ -8,7 +8,7 @@
 ..
 .. SPDX-License-Identifier: GPL-3.0-or-later
 
-.. _deepdraw.binseg.results.xtest.cup.m2unet:
+.. _deepdraw.results.xtest.cup.m2unet:
 
 ==================================
  M2UNET on Optic-cup Segmentation
@@ -26,15 +26,15 @@
      - 768 x 768
      - 768 x 768
      - 768 x 768
-   * - :py:mod:`drishtigs1-cup <deepdraw.binseg.configs.datasets.drishtigs1.cup_all_768>`
+   * - :py:mod:`drishtigs1-cup <deepdraw.configs.datasets.drishtigs1.cup_all_768>`
      - **0.918**
      - 0.729
      - 0.735
-   * - :py:mod:`refuge-cup <deepdraw.binseg.configs.datasets.refuge.cup_768>`
+   * - :py:mod:`refuge-cup <deepdraw.configs.datasets.refuge.cup_768>`
      - 0.837
      - **0.787**
      - 0.693
-   * - :py:mod:`rimoner3-cup <deepdraw.binseg.configs.datasets.rimoner3.cup_exp1_512>`
+   * - :py:mod:`rimoner3-cup <deepdraw.configs.datasets.rimoner3.cup_exp1_512>`
      - 0.601
      - 0.441
      - **0.824**

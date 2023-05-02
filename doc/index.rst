@@ -2,7 +2,7 @@
 ..
 .. SPDX-License-Identifier: GPL-3.0-or-later
 
-.. _deepdraw.binseg:
+.. _deepdraw:
 
 ===============================================
  Binary Segmentation Benchmark Package

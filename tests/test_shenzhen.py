@@ -11,7 +11,7 @@ from . import count_bw
 
 
 def test_protocol_consistency():
-    from deepdraw.binseg.data.shenzhen import dataset
+    from deepdraw.data.shenzhen import dataset
 
     subset = dataset.subsets("default")
     assert len(subset) == 3
@@ -34,7 +34,7 @@ def test_protocol_consistency():
 
 @pytest.mark.skip_if_rc_var_not_set("datadir.shenzhen")
 def test_loading():
-    from deepdraw.binseg.data.shenzhen import dataset
+    from deepdraw.data.shenzhen import dataset
 
     min_image_size = (1130, 948)
     max_image_size = (3001, 3001)
@@ -86,6 +86,6 @@ def test_loading():
 
 @pytest.mark.skip_if_rc_var_not_set("datadir.shenzhen")
 def test_check():
-    from deepdraw.binseg.data.shenzhen import dataset
+    from deepdraw.data.shenzhen import dataset
 
     assert dataset.check() == 0
