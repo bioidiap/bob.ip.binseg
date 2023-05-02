@@ -13,7 +13,7 @@ from . import count_bw
 
 
 def test_protocol_consistency():
-    from deepdraw.binseg.data.stare import dataset
+    from deepdraw.data.stare import dataset
 
     subset = dataset.subsets("ah")
     assert len(subset) == 2
@@ -44,7 +44,7 @@ def test_protocol_consistency():
 
 @pytest.mark.skip_if_rc_var_not_set("datadir.stare")
 def test_loading():
-    from deepdraw.binseg.data.stare import dataset
+    from deepdraw.data.stare import dataset
 
     image_size = (700, 605)
 
@@ -117,6 +117,6 @@ def test_loading():
 
 @pytest.mark.skip_if_rc_var_not_set("datadir.stare")
 def test_check():
-    from deepdraw.binseg.data.stare import dataset
+    from deepdraw.data.stare import dataset
 
     assert dataset.check() == 0

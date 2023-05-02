@@ -10,7 +10,7 @@ from tempfile import TemporaryDirectory
 
 import torch
 
-from deepdraw.common.utils.checkpointer import Checkpointer
+from deepdraw.utils.checkpointer import Checkpointer
 
 
 class TestCheckpointer(unittest.TestCase):
@@ -85,8 +85,8 @@ class TestCheckpointer(unittest.TestCase):
             assert trained_p.equal(loaded_p)
 
     def test_checkpointer_process(self):
-        from deepdraw.binseg.configs.models.lwnet import model
-        from deepdraw.binseg.engine.trainer import checkpointer_process
+        from deepdraw.configs.models.lwnet import model
+        from deepdraw.engine.trainer import checkpointer_process
 
         with TemporaryDirectory() as f:
             checkpointer = Checkpointer(model, path=f)

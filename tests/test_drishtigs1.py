@@ -13,7 +13,7 @@ from . import count_bw
 
 
 def test_protocol_consistency():
-    from deepdraw.binseg.data.drishtigs1 import dataset
+    from deepdraw.data.drishtigs1 import dataset
 
     for protocol in (
         "optic-disc-all",
@@ -46,7 +46,7 @@ def test_protocol_consistency():
 @pytest.mark.skip_if_rc_var_not_set("datadir.drishtigs1")
 @pytest.mark.slow
 def test_loading():
-    from deepdraw.binseg.data.drishtigs1 import dataset
+    from deepdraw.data.drishtigs1 import dataset
 
     def _check_sample(s, bw_threshold_label):
         data = s.data
@@ -124,6 +124,6 @@ def test_loading():
 @pytest.mark.skip_if_rc_var_not_set("datadir.drishtigs1")
 @pytest.mark.slow
 def test_check():
-    from deepdraw.binseg.data.drishtigs1 import dataset
+    from deepdraw.data.drishtigs1 import dataset
 
     assert dataset.check() == 0

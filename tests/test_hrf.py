@@ -13,7 +13,7 @@ from . import count_bw
 
 
 def test_protocol_consistency():
-    from deepdraw.binseg.data.hrf import dataset
+    from deepdraw.data.hrf import dataset
 
     subset = dataset.subsets("default")
     assert len(subset) == 2
@@ -31,7 +31,7 @@ def test_protocol_consistency():
 
 @pytest.mark.skip_if_rc_var_not_set("datadir.hrf")
 def test_loading():
-    from deepdraw.binseg.data.hrf import dataset
+    from deepdraw.data.hrf import dataset
 
     image_size = (3504, 2336)
 
@@ -100,6 +100,6 @@ def test_loading():
 
 @pytest.mark.skip_if_rc_var_not_set("datadir.hrf")
 def test_check():
-    from deepdraw.binseg.data.hrf import dataset
+    from deepdraw.data.hrf import dataset
 
     assert dataset.check() == 0

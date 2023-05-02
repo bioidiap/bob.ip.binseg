@@ -8,7 +8,7 @@
 ..
 .. SPDX-License-Identifier: GPL-3.0-or-later
 
-.. _deepdraw.binseg.cli:
+.. _deepdraw.cli:
 
 ========================
  Command-line Interface
@@ -18,7 +18,7 @@ This section contains an overview of command-line applications shipped with
 this package.
 
 
-.. click:: deepdraw.binseg.script.cli:cli
+.. click:: deepdraw.script.cli:cli
    :prog: binseg
    :nested: full
 

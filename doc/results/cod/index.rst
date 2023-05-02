@@ -8,7 +8,7 @@
 ..
 .. SPDX-License-Identifier: GPL-3.0-or-later
 
-.. _deepdraw.binseg.results.cod:
+.. _deepdraw.results.cod:
 
 ================================
  Combined Dataset (COD) Results

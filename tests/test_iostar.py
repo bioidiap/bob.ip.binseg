@@ -13,7 +13,7 @@ from . import count_bw
 
 
 def test_protocol_consistency():
-    from deepdraw.binseg.data.iostar import dataset
+    from deepdraw.data.iostar import dataset
 
     subset = dataset.subsets("vessel")
     assert len(subset) == 2
@@ -44,7 +44,7 @@ def test_protocol_consistency():
 
 @pytest.mark.skip_if_rc_var_not_set("datadir.iostar")
 def test_loading():
-    from deepdraw.binseg.data.iostar import dataset
+    from deepdraw.data.iostar import dataset
 
     image_size = (1024, 1024)
 
@@ -125,6 +125,6 @@ def test_loading():
 
 @pytest.mark.skip_if_rc_var_not_set("datadir.iostar")
 def test_check():
-    from deepdraw.binseg.data.iostar import dataset
+    from deepdraw.data.iostar import dataset
 
     assert dataset.check() == 0

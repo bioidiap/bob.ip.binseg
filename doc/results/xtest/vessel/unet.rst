@@ -8,7 +8,7 @@
 ..
 .. SPDX-License-Identifier: GPL-3.0-or-later
 
-.. _deepdraw.binseg.results.xtest.vessel.unet:
+.. _deepdraw.results.xtest.vessel.unet:
 
 =============================
  UNET on Vessel Segmentation
@@ -31,31 +31,31 @@
      - 768 x 768
      - 768 x 768
      - 768 x 768
-   * - :py:mod:`drive <deepdraw.binseg.configs.datasets.drive.default_768>`
+   * - :py:mod:`drive <deepdraw.configs.datasets.drive.default_768>`
      - **0.814**
      - 0.807
      - 0.752
      - 0.736
      - 0.739
-   * - :py:mod:`stare <deepdraw.binseg.configs.datasets.stare.ah_768>`
+   * - :py:mod:`stare <deepdraw.configs.datasets.stare.ah_768>`
      - 0.767
      - **0.829**
      - 0.752
      - 0.755
      - 0.739
-   * - :py:mod:`chasedb1 <deepdraw.binseg.configs.datasets.chasedb1.first_annotator_768>`
+   * - :py:mod:`chasedb1 <deepdraw.configs.datasets.chasedb1.first_annotator_768>`
      - 0.774
      - 0.800
      - **0.803**
      - 0.730
      - 0.771
-   * - :py:mod:`hrf <deepdraw.binseg.configs.datasets.hrf.default_768>`
+   * - :py:mod:`hrf <deepdraw.configs.datasets.hrf.default_768>`
      - 0.712
      - 0.769
      - 0.648
      - **0.804**
      - 0.700
-   * - :py:mod:`iostar-vessel <deepdraw.binseg.configs.datasets.iostar.vessel_768>`
+   * - :py:mod:`iostar-vessel <deepdraw.configs.datasets.iostar.vessel_768>`
      - 0.768
      - 0.783
      - 0.773
@@ -80,31 +80,31 @@
      - 1024 x 1024
      - 1024 x 1024
      - 1024 x 1024
-   * - :py:mod:`drive <deepdraw.binseg.configs.datasets.drive.default_1024>`
+   * - :py:mod:`drive <deepdraw.configs.datasets.drive.default_1024>`
      - **0.815**
      - 0.812
      - 0.732
      - 0.742
      - 0.780
-   * - :py:mod:`stare <deepdraw.binseg.configs.datasets.stare.ah_1024>`
+   * - :py:mod:`stare <deepdraw.configs.datasets.stare.ah_1024>`
      - 0.772
      - **0.824**
      - 0.767
      - 0.758
      - 0.766
-   * - :py:mod:`chasedb1 <deepdraw.binseg.configs.datasets.chasedb1.first_annotator_1024>`
+   * - :py:mod:`chasedb1 <deepdraw.configs.datasets.chasedb1.first_annotator_1024>`
      - 0.774
      - 0.762
      - **0.806**
      - 0.729
      - 0.779
-   * - :py:mod:`hrf <deepdraw.binseg.configs.datasets.hrf.default_1024>`
+   * - :py:mod:`hrf <deepdraw.configs.datasets.hrf.default_1024>`
      - 0.710
      - 0.762
      - 0.569
      - **0.807**
      - 0.672
-   * - :py:mod:`iostar-vessel <deepdraw.binseg.configs.datasets.iostar.vessel>`
+   * - :py:mod:`iostar-vessel <deepdraw.configs.datasets.iostar.vessel>`
      - 0.764
      - 0.775
      - 0.776

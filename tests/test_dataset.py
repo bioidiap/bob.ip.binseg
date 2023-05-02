@@ -8,8 +8,8 @@ import os
 
 import pkg_resources
 
-from deepdraw.common.data.dataset import CSVDataset, JSONDataset
-from deepdraw.common.data.sample import Sample
+from deepdraw.data.dataset import CSVDataset, JSONDataset
+from deepdraw.data.sample import Sample
 
 
 def _data_file(f):

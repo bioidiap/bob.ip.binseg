@@ -12,7 +12,7 @@
 
 # Runs cross database tests
 
-BOB=$HOME/work/bob/deepdraw.binseg/bin/bob
+BOB=$HOME/work/bob/deepdraw/bin/bob
 
 for d in drive stare chasedb1 iostar-vessel hrf; do
     for m in driu hed m2unet unet; do

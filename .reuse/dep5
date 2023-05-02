@@ -4,11 +4,10 @@ Upstream-Contact: Andre Anjos <andre.anjos@idiap.ch>
 Source: https://gitlab.idiap.ch/biosignal/software/deepdraw
 
 Files:
- * src/deepdraw/binseg/data/*/masks*/*.png
- * src/deepdraw/binseg/data/*/masks/**/*.png
- * src/deepdraw/binseg/data/*/masks/**/*.jpg
- * src/deepdraw/binseg/data/*/*.json
- * src/deepdraw/detect/data/*/*.json
+ * src/deepdraw/data/*/masks*/*.png
+ * src/deepdraw/data/*/masks/**/*.png
+ * src/deepdraw/data/*/masks/**/*.jpg
+ * src/deepdraw/data/*/*.json
  * tests/data/*
  * doc/catalog.json
  * doc/extras.inv
