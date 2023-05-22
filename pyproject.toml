@@ -47,6 +47,8 @@ dependencies = [
     "scikit-image",
     "tensorboard",
     "tomli_w",
+    "lightning",
+    "tensorboard",
 ]
 
 [project.urls]

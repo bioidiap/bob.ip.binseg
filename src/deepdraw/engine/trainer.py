@@ -16,8 +16,14 @@ import torch
 
 from tqdm import tqdm
 
+from lightning.pytorch.loggers import CSVLogger, TensorBoardLogger
+from lightning.pytorch.callbacks import ModelCheckpoint
+from lightning.pytorch import Trainer
+
+from ..utils.accelerator import AcceleratorProcessor
 from ..utils.resources import ResourceMonitor, cpu_constants, gpu_constants
 from ..utils.summary import summary
+from .callbacks import LoggingCallback
 
 logger = logging.getLogger(__name__)
 
@@ -110,7 +116,7 @@ def static_information_to_csv(static_logfile_name, device, n):
         shutil.move(static_logfile_name, backup)
     with open(static_logfile_name, "w", newline="") as f:
         logdata = cpu_constants()
-        if device.type == "cuda":
+        if device == "cuda":
             logdata += gpu_constants()
         logdata += (("model_size", n),)
         logwriter = csv.DictWriter(f, fieldnames=[k[0] for k in logdata])
@@ -477,16 +483,13 @@ def run(
     data_loader,
     valid_loader,
     extra_valid_loaders,
-    optimizer,
-    criterion,
-    scheduler,
-    checkpointer,
     checkpoint_period,
-    device,
+    accelerator,
     arguments,
     output_folder,
     monitoring_interval,
     batch_chunk_count,
+    checkpoint
 ):
     """Fits an FCN model using supervised learning and save it to disk.
 
@@ -549,129 +552,59 @@ def run(
         exchanges for longer processing times in this case.
     """
 
-    start_epoch = arguments["epoch"]
+    
+
     max_epoch = arguments["max_epoch"]
 
-    check_gpu(device)
+    accelerator_processor = AcceleratorProcessor(accelerator)
 
     os.makedirs(output_folder, exist_ok=True)
 
     # Save model summary
     r, n = save_model_summary(output_folder, model)
 
-    # write static information to a CSV file
-    static_logfile_name = os.path.join(output_folder, "constants.csv")
+    csv_logger = CSVLogger(output_folder, "logs_csv")
+    tensorboard_logger = TensorBoardLogger(output_folder, "logs_tensorboard")
 
-    static_information_to_csv(static_logfile_name, device, n)
-
-    # Log continous information to (another) file
-    logfile_name = os.path.join(output_folder, "trainlog.csv")
-
-    check_exist_logfile(logfile_name, arguments)
-
-    logfile_fields = create_logfile_fields(
-        valid_loader, extra_valid_loaders, device
+    resource_monitor = ResourceMonitor(
+        interval=monitoring_interval,
+        has_gpu=(accelerator_processor.accelerator == "gpu"),
+        main_pid=os.getpid(),
+        logging_level=logging.ERROR,
     )
 
-    # the lowest validation loss obtained so far - this value is updated only
-    # if a validation set is available
-    lowest_validation_loss = sys.float_info.max
+    checkpoint_callback = ModelCheckpoint(
+        output_folder,
+        "model_lowest_valid_loss",
+        save_last=True,
+        monitor="validation_loss",
+        mode="min",
+        save_on_train_epoch_end=False,
+        every_n_epochs=checkpoint_period
+    )
+    checkpoint_callback.CHECKPOINT_NAME_LAST = "model_final_epoch"
 
-    with open(logfile_name, "a+", newline="") as logfile:
-        logwriter = csv.DictWriter(logfile, fieldnames=logfile_fields)
+    # write static information to a CSV file
+    static_logfile_name = os.path.join(output_folder, "constants.csv")
+    static_information_to_csv(
+        static_logfile_name, accelerator_processor.to_torch(), n
+    )
 
-        if arguments["epoch"] == 0:
-            logwriter.writeheader()
+    if accelerator_processor.device is None:
+        devices = "auto"
+    else:
+        devices = accelerator_processor.device
 
-        model.train()  # set training mode
+    with resource_monitor:
 
-        model.to(device)  # set/cast parameters to device
-        for state in optimizer.state.values():
-            for k, v in state.items():
-                if isinstance(v, torch.Tensor):
-                    state[k] = v.to(device)
-
-        # Total training timer
-        start_training_time = time.time()
-
-        for epoch in tqdm(
-            range(start_epoch, max_epoch),
-            desc="epoch",
-            leave=False,
-            disable=None,
-        ):
-            with ResourceMonitor(
-                interval=monitoring_interval,
-                has_gpu=(device.type == "cuda"),
-                main_pid=os.getpid(),
-                logging_level=logging.ERROR,
-            ) as resource_monitor:
-                epoch = epoch + 1
-                arguments["epoch"] = epoch
-
-                # Epoch time
-                start_epoch_time = time.time()
-
-                train_loss = train_epoch(
-                    data_loader,
-                    model,
-                    optimizer,
-                    device,
-                    criterion,
-                    batch_chunk_count,
-                )
-
-                scheduler.step()
-
-                valid_loss = (
-                    validate_epoch(
-                        valid_loader, model, device, criterion, "valid"
-                    )
-                    if valid_loader is not None
-                    else None
-                )
-
-                extra_valid_losses = []
-                for pos, extra_valid_loader in enumerate(extra_valid_loaders):
-                    loss = validate_epoch(
-                        extra_valid_loader,
-                        model,
-                        device,
-                        criterion,
-                        f"xval@{pos+1}",
-                    )
-                    extra_valid_losses.append(loss)
-
-            lowest_validation_loss = checkpointer_process(
-                checkpointer,
-                checkpoint_period,
-                valid_loss,
-                lowest_validation_loss,
-                arguments,
-                epoch,
-                max_epoch,
-            )
-
-            # computes ETA (estimated time-of-arrival; end of training) taking
-            # into consideration previous epoch performance
-            epoch_time = time.time() - start_epoch_time
-            eta_seconds = epoch_time * (max_epoch - epoch)
-            current_time = time.time() - start_training_time
-
-            write_log_info(
-                epoch,
-                current_time,
-                eta_seconds,
-                train_loss,
-                valid_loss,
-                extra_valid_losses,
-                optimizer,
-                logwriter,
-                logfile,
-                resource_monitor.data,
-            )
-
-        total_training_time = time.time() - start_training_time
-        logger.info(
-            f"Total training time: {datetime.timedelta(seconds=total_training_time)} ({(total_training_time/max_epoch):.4f}s in average per epoch)"
+        trainer = Trainer(
+            accelerator=accelerator_processor.accelerator,
+            devices=devices,
+            max_epochs=max_epoch,
+            accumulate_grad_batches=batch_chunk_count,
+            logger=[csv_logger, tensorboard_logger],
+            check_val_every_n_epoch=1,
+            callbacks=[LoggingCallback(resource_monitor), checkpoint_callback]
         )
+
+        _ = trainer.fit(model, data_loader, valid_loader, ckpt_path=checkpoint)

@@ -16,7 +16,6 @@ from torch.utils.data import DataLoader
 logger = setup(__name__.split(".")[0], format="%(levelname)s: %(message)s")
 
 from ..engine.predictor import run
-from ..utils.checkpointer import Checkpointer
 from .common import download_to_tempfile, setup_pytorch_device
 
 

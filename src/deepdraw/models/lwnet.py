@@ -15,9 +15,14 @@ guide segmentation.
 Reference: [GALDRAN-2020]_
 """
 
+import lightning.pytorch as pl
 
 import torch
 import torch.nn
+
+from torch.optim import Adam
+
+from deepdraw.models.losses import MultiWeightedBCELogitsLoss
 
 
 def _conv1x1(in_planes, out_planes, stride=1):
@@ -210,7 +215,7 @@ class LittleUNet(torch.nn.Module):
         return self.final(x)
 
 
-class LittleWNet(torch.nn.Module):
+class LittleWNet(pl.LightningModule):
     """Little W-Net model, concatenating two Little U-Net models."""
 
     def __init__(
@@ -223,6 +228,9 @@ class LittleWNet(torch.nn.Module):
         mode="train",
     ):
         super().__init__()
+
+        self.save_hyperparameters(ignore=["criterion", "criterion_valid"])
+
         self.unet1 = LittleUNet(
             in_c=in_c,
             n_classes=n_classes,
@@ -246,61 +254,57 @@ class LittleWNet(torch.nn.Module):
         if self.mode != "train":
             return x2
         return x1, x2
+    
+    def training_step(self, batch, batch_idx):
+        images = batch[1]
+        ground_truths = batch[2]
+        masks = (
+            torch.ones_like(ground_truths)
+            if len(batch) < 4 else batch[3]
+        )
 
+        outputs = self(images)
 
-def lunet(input_channels=3, output_classes=1):
-    """Builds Little U-Net segmentation network (uninitialized)
+        criterion = getattr(self, "criterion", MultiWeightedBCELogitsLoss())
+        training_loss = criterion(outputs, ground_truths, masks)
 
-    Parameters
-    ----------
+        return {"loss": training_loss}
 
-    input_channels : :py:class:`int`, Optional
-        Number of input channels the network should operate with
+    def validation_step(self, batch, batch_idx):
+        images = batch[1]
+        ground_truths = batch[2]
+        masks = (
+            torch.ones_like(ground_truths)
+            if len(batch) < 4 else batch[3]
+        )
 
-    output_classes : :py:class:`int`, Optional
-        Number of output classes
+        outputs = self(images)
 
+        valid_criterion = getattr(
+            self, "valid_criterion", MultiWeightedBCELogitsLoss()
+        )
+        validation_loss = valid_criterion(outputs, ground_truths, masks)
 
-    Returns
-    -------
+        return {"validation_loss": validation_loss}
 
-    module : :py:class:`torch.nn.Module`
-        Network model for Little U-Net
-    """
+    def predict_step(self, batch, batch_idx):
+        names = batch[0]
+        images = batch[1]
 
-    return LittleUNet(
-        in_c=input_channels,
-        n_classes=output_classes,
-        layers=[8, 16, 32],
-        conv_bridge=True,
-        shortcut=True,
-    )
+        outputs = self(images)
+        predictions = torch.sigmoid(outputs)
 
+        return names[0], predictions
 
-def lwnet(input_channels=3, output_classes=1):
-    """Builds Little W-Net segmentation network (uninitialized)
+    def configure_optimizers(self):
+        optimizer = getattr(
+            self, 'optimizer', Adam(self.parameters(), lr=1e-3)
+        )
+        if optimizer is None:
+            raise ValueError("Optimizer not found. Please provide an optimizer.")
 
-    Parameters
-    ----------
-
-    input_channels : :py:class:`int`, Optional
-        Number of input channels the network should operate with
-
-    output_classes : :py:class:`int`, Optional
-        Number of output classes
-
-
-    Returns
-    -------
-
-    module : :py:class:`torch.nn.Module`
-        Network model for Little W-Net
-    """
-
-    return LittleWNet(
-        in_c=input_channels,
-        n_classes=output_classes,
-        layers=[8, 16, 32],
-        conv_bridge=True,
-        shortcut=True,
-    )
+        scheduler = getattr(self, 'scheduler', None)
+        if scheduler is None:
+            return {'optimizer': optimizer}
+        else:
+            return {'optimizer': optimizer, 'lr_scheduler': scheduler}

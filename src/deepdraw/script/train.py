@@ -2,21 +2,17 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-import multiprocessing
-import sys
-
 import click
-import torch
 
 from clapper.click import ConfigCommand, ResourceOption, verbosity_option
 from clapper.logging import setup
-from torch.utils.data import DataLoader
+from lightning.pytorch import seed_everything
+
+from ..utils.checkpointer import get_checkpoint
 
 logger = setup(__name__.split(".")[0], format="%(levelname)s: %(message)s")
 
-from ..engine.trainer import run
-from ..utils.checkpointer import Checkpointer
-from .common import set_seeds, setup_pytorch_device
+
 
 
 @click.command(
@@ -98,6 +94,14 @@ from .common import set_seeds, setup_pytorch_device
     help="A loss function to compute the FCN error for every sample "
     "respecting the PyTorch API for loss functions (see torch.nn.modules.loss)",
     required=True,
+    cls=ResourceOption,
+)
+@click.option(
+    "--criterion-valid",
+    help="A specific loss function for the validation set to compute the FCN"
+    "error for every sample respecting the PyTorch API for loss functions"
+    "(see torch.nn.modules.loss)",
+    required=False,
     cls=ResourceOption,
 )
 @click.option(
@@ -184,9 +188,10 @@ from .common import set_seeds, setup_pytorch_device
     cls=ResourceOption,
 )
 @click.option(
-    "--device",
-    "-d",
-    help='A string indicating the device to use (e.g. "cpu" or "cuda:0")',
+    "--accelerator",
+    "-a",
+    help="A string indicating the accelerator to use (e.g. \"cpu\" or \"gpu\"). "
+    "The device can also be specified (gpu:0)",
     show_default=True,
     required=True,
     default="cpu",
@@ -231,10 +236,17 @@ from .common import set_seeds, setup_pytorch_device
     default=5.0,
     cls=ResourceOption,
 )
+@click.option(
+    "--resume-from",
+    help="Which checkpoint to resume training from. Can be one of 'None', "
+    "'best', 'last', or a path to a  model checkpoint.",
+    type=str,
+    required=False,
+    default=None,
+    cls=ResourceOption,
+)
 @verbosity_option(logger=logger, cls=ResourceOption)
-@click.pass_context
 def train(
-    ctx,
     model,
     optimizer,
     scheduler,
@@ -244,12 +256,14 @@ def train(
     batch_chunk_count,
     drop_incomplete_batch,
     criterion,
+    criterion_valid,
     dataset,
     checkpoint_period,
-    device,
+    accelerator,
     seed,
     parallel,
     monitoring_interval,
+    resume_from,
     verbose,
     **kwargs,
 ):
@@ -266,13 +280,25 @@ def train(
     changing the number of epochs to a number greater than the number where
     the original training session stopped (or the last checkpoint was saved).
     """
-    device = setup_pytorch_device(device)
 
-    set_seeds(seed, all_gpus=False)
+    import multiprocessing
+    import sys
+
+    import torch.cuda
+    import torch.nn
+
+    from torch.utils.data import DataLoader
+
+    from ..engine.trainer import run
+    # from ..utils.checkpointer import Checkpointer
+    # from .common import set_seeds, setup_pytorch_device
+
+    seed_everything(seed)
 
     use_dataset = dataset
     validation_dataset = None
     extra_validation_datasets = []
+
     if isinstance(dataset, dict):
         if "__train__" in dataset:
             logger.info("Found (dedicated) '__train__' set for training")
@@ -359,13 +385,16 @@ def train(
         for k in extra_validation_datasets
     ]
 
-    checkpointer = Checkpointer(model, optimizer, scheduler, path=output_folder)
-
     arguments = {}
-    arguments["epoch"] = 0
-    extra_checkpoint_data = checkpointer.load()
-    arguments.update(extra_checkpoint_data)
     arguments["max_epoch"] = epochs
+    arguments["epoch"] = 0
+    
+    checkpoint_file = get_checkpoint(output_folder, resume_from)
+
+    # We only load the checkpoint to get some information about its state. The actual loading of the model is done in trainer.fit()
+    if checkpoint_file is not None:
+        checkpoint = torch.load(checkpoint_file)
+        arguments["epoch"] = checkpoint["epoch"]
 
     logger.info("Training for {} epochs".format(arguments["max_epoch"]))
     logger.info("Continuing from epoch {}".format(arguments["epoch"]))
@@ -375,14 +404,11 @@ def train(
         data_loader,
         valid_loader,
         extra_valid_loaders,
-        optimizer,
-        criterion,
-        scheduler,
-        checkpointer,
         checkpoint_period,
-        device,
+        accelerator,
         arguments,
         output_folder,
         monitoring_interval,
         batch_chunk_count,
+        checkpoint_file
     )

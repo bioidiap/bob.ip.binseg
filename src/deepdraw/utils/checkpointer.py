@@ -10,91 +10,58 @@ import torch
 logger = logging.getLogger(__name__)
 
 
-class Checkpointer:
-    """A simple pytorch checkpointer.
+def get_checkpoint(output_folder, resume_from):
+    """Gets a checkpoint file.
+
+    Can return the best or last checkpoint, or a checkpoint at a specific path.
+    Ensures the checkpoint exists, raising an error if it is not the case.
 
     Parameters
     ----------
 
-    model : torch.nn.Module
-        Network model, eventually loaded from a checkpointed file
+    output_folder : :py:class:`str`
+        Directory in which checkpoints are stored.
 
-    optimizer : :py:mod:`torch.optim`, Optional
-        Optimizer
+    resume_from : :py:class:`str`
+        Which model to get. Can be one of "best", "last", or a path to a checkpoint.
 
-    scheduler : :py:mod:`torch.optim`, Optional
-        Learning rate scheduler
+    Returns
+    -------
 
-    path : :py:class:`str`, Optional
-        Directory where to save checkpoints.
+    checkpoint_file : :py:class:`str`
+        The requested model.
     """
+    last_checkpoint_path = os.path.join(output_folder, "model_final_epoch.ckpt")
+    best_checkpoint_path = os.path.join(
+        output_folder, "model_lowest_valid_loss.ckpt"
+    )
 
-    def __init__(self, model, optimizer=None, scheduler=None, path="."):
-        self.model = model
-        self.optimizer = optimizer
-        self.scheduler = scheduler
-        self.path = os.path.realpath(path)
+    if resume_from == "last":
+        if os.path.isfile(last_checkpoint_path):
+            checkpoint_file = last_checkpoint_path
+            logger.info(f"Resuming training from {resume_from} checkpoint")
+        else:
+            raise FileNotFoundError(
+                f"Could not find checkpoint {last_checkpoint_path}"
+            )
 
-    def save(self, name, **kwargs):
-        data = {}
-        data["model"] = self.model.state_dict()
-        if self.optimizer is not None:
-            data["optimizer"] = self.optimizer.state_dict()
-        if self.scheduler is not None:
-            data["scheduler"] = self.scheduler.state_dict()
-        data.update(kwargs)
+    elif resume_from == "best":
+        if os.path.isfile(best_checkpoint_path):
+            checkpoint_file = last_checkpoint_path
+            logger.info(f"Resuming training from {resume_from} checkpoint")
+        else:
+            raise FileNotFoundError(
+                f"Could not find checkpoint {best_checkpoint_path}"
+            )
 
-        name = f"{name}.pth"
-        outf = os.path.join(self.path, name)
-        logger.info(f"Saving checkpoint to {outf}")
-        torch.save(data, outf)
-        with open(self._last_checkpoint_filename, "w") as f:
-            f.write(name)
+    elif resume_from is None:
+        checkpoint_file = None
 
-    def load(self, f=None):
-        """Loads model, optimizer and scheduler from file.
+    else:
+        if os.path.isfile(resume_from):
+            checkpoint_file = resume_from
+            logger.info(f"Resuming training from checkpoint {resume_from}")
+        else:
+            raise FileNotFoundError(f"Could not find checkpoint {resume_from}")
 
-        Parameters
-        ==========
-
-        f : :py:class:`str`, Optional
-            Name of a file (absolute or relative to ``self.path``), that
-            contains the checkpoint data to load into the model, and optionally
-            into the optimizer and the scheduler.  If not specified, loads data
-            from current path.
-        """
-
-        if f is None:
-            f = self.last_checkpoint()
-
-        if f is None:
-            # no checkpoint could be found
-            logger.warning("No checkpoint found (and none passed)")
-            return {}
-
-        # loads file data into memory
-        logger.info(f"Loading checkpoint from {f}...")
-        checkpoint = torch.load(f, map_location=torch.device("cpu"))
-
-        # converts model entry to model parameters
-        self.model.load_state_dict(checkpoint.pop("model"))
-
-        if self.optimizer is not None:
-            self.optimizer.load_state_dict(checkpoint.pop("optimizer"))
-        if self.scheduler is not None:
-            self.scheduler.load_state_dict(checkpoint.pop("scheduler"))
-
-        return checkpoint
-
-    @property
-    def _last_checkpoint_filename(self):
-        return os.path.join(self.path, "last_checkpoint")
-
-    def has_checkpoint(self):
-        return os.path.exists(self._last_checkpoint_filename)
-
-    def last_checkpoint(self):
-        if self.has_checkpoint():
-            with open(self._last_checkpoint_filename) as fobj:
-                return os.path.join(self.path, fobj.read().strip())
-        return None
+    return checkpoint_file

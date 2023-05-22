@@ -293,6 +293,10 @@ class _InformationGatherer:
             for i, k in enumerate(gpu_log()):
                 self.data[i + self.cpu_keys_len].append(k[1])
 
+    def clear(self):
+        """Clears accumulated data."""
+        self.data = [[] for _ in self.keys]
+
     def summary(self):
         """Returns the current data."""
 
@@ -304,7 +308,9 @@ class _InformationGatherer:
         return tuple(retval)
 
 
-def _monitor_worker(interval, has_gpu, main_pid, stop, queue, logging_level):
+def _monitor_worker(
+    interval, has_gpu, main_pid, stop, summary_event, queue, logging_level
+):
     """A monitoring worker that measures resources and returns lists.
 
     Parameters
@@ -336,6 +342,12 @@ def _monitor_worker(interval, has_gpu, main_pid, stop, queue, logging_level):
     while not stop.is_set():
         try:
             ra.acc()  # guarantees at least an entry will be available
+
+            if summary_event.is_set():
+                queue.put(ra.summary())
+                ra.clear()
+                summary_event.clear()
+
             time.sleep(interval)
         except Exception:
             logger.warning(
@@ -343,8 +355,6 @@ def _monitor_worker(interval, has_gpu, main_pid, stop, queue, logging_level):
                 exc_info=True,
             )
             time.sleep(0.5)  # wait half a second, and try again!
-
-    queue.put(ra.summary())
 
 
 class ResourceMonitor:
@@ -371,7 +381,8 @@ class ResourceMonitor:
         self.interval = interval
         self.has_gpu = has_gpu
         self.main_pid = main_pid
-        self.event = multiprocessing.Event()
+        self.stop_event = multiprocessing.Event()
+        self.summary_event = multiprocessing.Event()
         self.q = multiprocessing.Queue()
         self.logging_level = logging_level
 
@@ -382,7 +393,8 @@ class ResourceMonitor:
                 self.interval,
                 self.has_gpu,
                 self.main_pid,
-                self.event,
+                self.stop_event,
+                self.summary_event,
                 self.q,
                 self.logging_level,
             ),
@@ -398,19 +410,9 @@ class ResourceMonitor:
         """Starts the monitoring process."""
 
         self.monitor.start()
-        return self
 
-    def __exit__(self, *exc):
-        """Stops the monitoring process and returns the summary of
-        observations."""
-
-        self.event.set()
-        self.monitor.join()
-        if self.monitor.exitcode != 0:
-            logger.error(
-                f"CPU/GPU resource monitor process exited with code "
-                f"{self.monitor.exitcode}.  Check logs for errors!"
-            )
+    def trigger_summary(self):
+        self.summary_event.set()
 
         try:
             data = self.q.get(timeout=2 * self.interval)
@@ -434,3 +436,15 @@ class ResourceMonitor:
                 else:
                     summary.append((k, 0.0))
             self.data = tuple(summary)
+
+    def __exit__(self, *exc):
+        """Stops the monitoring process and returns the summary of
+        observations."""
+
+        self.stop_event.set()
+        self.monitor.join()
+        if self.monitor.exitcode != 0:
+            logger.error(
+                f"CPU/GPU resource monitor process exited with code "
+                f"{self.monitor.exitcode}.  Check logs for errors!"
+            )

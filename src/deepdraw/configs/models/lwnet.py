@@ -14,24 +14,28 @@ from torch.optim import Adam
 from torch.optim.lr_scheduler import CosineAnnealingLR
 
 from deepdraw.models.losses import MultiWeightedBCELogitsLoss
-from deepdraw.models.lwnet import lwnet
+from deepdraw.models.lwnet import LittleWNet
 
 # config
 max_lr = 0.01  # start
 min_lr = 1e-08  # valley
-cycle = 50  # epochs for a complete scheduling cycle
+cycle = 5  # epochs for a complete scheduling cycle
 
-model = lwnet()
+model = LittleWNet()
 
 criterion = MultiWeightedBCELogitsLoss()
+model.criterion = criterion
+model.valid_criterion = criterion
 
 optimizer = Adam(
     model.parameters(),
     lr=max_lr,
 )
+model.optimizer = optimizer
 
 scheduler = CosineAnnealingLR(
     optimizer,
     T_max=cycle,
     eta_min=min_lr,
 )
+model.scheduler = scheduler

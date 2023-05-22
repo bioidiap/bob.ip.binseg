@@ -39,6 +39,7 @@ requirements:
     - tqdm {{ tqdm }}
     - scikit-image {{ scikit_image }}
     - tensorboard {{ tensorboard }}
+    - lightning {{ lightning }}
     - tomli-w {{ tomli_w }}
     - clapper
   run:
@@ -59,6 +60,7 @@ requirements:
     - {{ pin_compatible('tqdm') }}
     - {{ pin_compatible('scikit-image') }}
     - {{ pin_compatible('tensorboard') }}
+    - {{ pin_compatible('lightning') }}
     - {{ pin_compatible('tomli-w') }}
     - clapper
 
