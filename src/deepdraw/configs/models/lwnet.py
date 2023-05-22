@@ -19,7 +19,7 @@ from deepdraw.models.lwnet import LittleWNet
 # config
 max_lr = 0.01  # start
 min_lr = 1e-08  # valley
-cycle = 5  # epochs for a complete scheduling cycle
+cycle = 50  # epochs for a complete scheduling cycle
 
 model = LittleWNet()
 
